@@ -5,6 +5,8 @@ extends Node2D
 @onready var pause_menu: Control = $CanvasLayer/PauseMenu
 
 func _ready() -> void:
+	# Đảm bảo Node này luôn nhận input kể cả khi paused
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	pause_menu.visible = false
 	if player:
 		player.state_changed.connect(_on_player_state_changed)
@@ -13,6 +15,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		_toggle_pause()
+		get_viewport().set_input_as_handled()
 
 func _on_player_state_changed(new_state: String) -> void:
 	if state_label:
