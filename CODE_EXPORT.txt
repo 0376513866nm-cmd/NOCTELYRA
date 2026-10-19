@@ -1,11 +1,11 @@
-=================================================== 
-  PROJECT: NOCTELYRA (Godot 4 - Milestone M0)       
-  EXPORTED AT: Tue 10/20/2026  0:11:46.13                        
-=================================================== 
- 
-=================================================== 
-FILE: "project.godot" 
-=================================================== 
+﻿===================================================
+  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M0 Architecture Refactor)
+  EXPORTED AT: 10/20/2026 00:53:02
+===================================================
+
+===================================================
+FILE: project.godot
+===================================================
 ; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
 ; but it can also be edited by hand if needed.
@@ -70,11 +70,93 @@ pause={
 
 textures/canvas_textures/default_texture_filter=1
 renderer/rendering_method="forward_plus"
- 
- 
-=================================================== 
-FILE: "src\actors\player\player_movement_data.gd" 
-=================================================== 
+
+
+===================================================
+FILE: README.md
+===================================================
+# NOCTELYRA â€” 2D Action RPG Cross-platform (Milestone M0)
+
+Dá»± Ã¡n game Fantasy 2D mÃ n hÃ¬nh ngang phÃ¡t triá»ƒn báº±ng **Godot 4.3 (GDScript)**, hÆ°á»›ng tá»›i phÃ¡t hÃ nh PC (Steam), Android vÃ  iOS.
+
+---
+
+## 1. Cáº¥u trÃºc thÆ° má»¥c dá»± Ã¡n
+
+```text
+D:\project\game\NOCTELYRA\
+â”œâ”€â”€ .gitignore                      # Loáº¡i bá» thÆ° má»¥c cache .godot/
+â”œâ”€â”€ README.md                       # TÃ i liá»‡u hÆ°á»›ng dáº«n
+â”œâ”€â”€ icon.svg                        # Icon chuáº©n cá»§a dá»± Ã¡n (128x128 SVG)
+â”œâ”€â”€ project.godot                   # File cáº¥u hÃ¬nh engine Godot 4.3 (1280x720, stretch mode)
+â”œâ”€â”€ run_game.bat                    # Script 1-Click cháº¡y game test ngay láº­p tá»©c
+â”œâ”€â”€ open_editor.bat                 # Script 1-Click má»Ÿ Godot Editor
+â”œâ”€â”€ export_code_for_ai.bat          # Script gom toÃ n bá»™ code thÃ nh 1 file text Ä‘á»ƒ gá»­i AI review
+â”‚
+â”œâ”€â”€ assets\
+â”‚   â””â”€â”€ sprites\
+â”‚       â””â”€â”€ player\
+â”‚           â”œâ”€â”€ player_idle_strip.png         # Sprite Idle (48 frames)
+â”‚           â”œâ”€â”€ player_idle_strip.png.import  # File import cá»§a Godot
+â”‚           â”œâ”€â”€ player_run_strip.png          # Sprite Run (14 frames)
+â”‚           â””â”€â”€ player_run_strip.png.import   # File import cá»§a Godot
+â”‚
+â””â”€â”€ src\
+    â”œâ”€â”€ actors\
+    â”‚   â””â”€â”€ player\
+    â”‚       â”œâ”€â”€ player.gd                    # State Machine: IDLE, RUN, JUMP, FALL, DASH
+    â”‚       â”œâ”€â”€ player.tscn                  # Scene Player (CharacterBody2D, Capsule, AnimPlayer)
+    â”‚       â””â”€â”€ player_movement_data.gd      # Resource thÃ´ng sá»‘ di chuyá»ƒn, nháº£y, dash
+    â”œâ”€â”€ ui\
+    â”‚   â””â”€â”€ pause_controller.gd              # Node quáº£n lÃ½ Pause Ä‘á»™c láº­p (PROCESS_MODE_ALWAYS)
+    â””â”€â”€ world\
+        â”œâ”€â”€ test_level.gd                    # Gameplay test level (PROCESS_MODE_PAUSABLE)
+        â””â”€â”€ test_level.tscn                  # Map test: máº·t Ä‘áº¥t 3400px, 4 bá»¥c platform, Camera2D
+```
+
+---
+
+## 2. CÃ¡c phÃ­m Ä‘iá»u khiá»ƒn (Controls)
+
+| PhÃ­m | Chá»©c nÄƒng | Ghi chÃº |
+| :--- | :--- | :--- |
+| **A / D** hoáº·c **MÅ©i tÃªn** | Di chuyá»ƒn TrÃ¡i / Pháº£i | CÃ³ gia tá»‘c mÆ°á»£t, tá»± Ä‘á»™ng quay máº·t nhÃ¢n váº­t |
+| **Space** | Nháº£y / Nháº£y Ä‘Ã´i | Nháº¥n láº§n 1 nháº£y, nháº¥n láº§n 2 trÃªn khÃ´ng Ä‘á»ƒ Double Jump |
+| **Shift** | LÆ°á»›t nhanh (Dash) | LÆ°á»›t ngang tá»‘c Ä‘á»™ cao (0.2s), cÃ³ thá»ƒ Air-Dash trÃªn khÃ´ng |
+| **Esc** | Pause / Resume | Táº¡m dá»«ng hoáº·c tiáº¿p tá»¥c game (báº±ng phÃ­m hoáº·c nÃºt Resume) |
+
+---
+
+## 3. Kiáº¿n trÃºc há»‡ thá»‘ng Milestone M0
+
+1. **State Machine (`player.gd`)**:
+   - Khi áº¥n di chuyá»ƒn + nháº£y cÃ¹ng lÃºc: State `JUMP` Ä‘Æ°á»£c Æ°u tiÃªn vÃ  thá»±c thi trá»n váº¹n, khÃ´ng bá»‹ `RUN` ghi Ä‘Ã¨ trong cÃ¹ng 1 frame.
+   - Há»— trá»£ **Air Dash**: CÃ³ thá»ƒ báº¥m Shift Ä‘á»ƒ lÆ°á»›t khi Ä‘ang á»Ÿ tráº¡ng thÃ¡i `JUMP` hoáº·c `FALL`.
+   - Trong thá»i gian lÆ°á»›t (0.2s), tráº¡ng thÃ¡i `DASH` Ä‘Æ°á»£c giá»¯ á»•n Ä‘á»‹nh vÃ  cooldown (0.8s) Ä‘Æ°á»£c Ä‘áº¿m ngÆ°á»£c Ä‘á»™c láº­p.
+   - Tiáº¿p Ä‘áº¥t khÃ´i phá»¥c lÆ°á»£t nháº£y Ä‘Ã´i chÃ­nh xÃ¡c.
+
+2. **Kiáº¿n trÃºc Pause / Resume chuáº©n Godot**:
+   - `TestLevel` (Scene gá»‘c) vÃ  cÃ¡c node gameplay con hoáº¡t Ä‘á»™ng á»Ÿ cháº¿ Ä‘á»™ `PROCESS_MODE_PAUSABLE`.
+   - `PauseController` Ä‘Æ°á»£c tÃ¡ch thÃ nh node riÃªng cháº¡y Ä‘á»™c láº­p á»Ÿ cháº¿ Ä‘á»™ `PROCESS_MODE_ALWAYS` Ä‘á»ƒ báº¯t sá»± kiá»‡n phÃ­m `Esc`.
+   - Menu Pause (`PauseMenu`) hoáº¡t Ä‘á»™ng á»Ÿ cháº¿ Ä‘á»™ `PROCESS_MODE_WHEN_PAUSED`.
+   - **XÃ¡c minh dá»«ng tuyá»‡t Ä‘á»‘i:** Khi game á»Ÿ tráº¡ng thÃ¡i Pause, toÃ n bá»™ chuyá»ƒn Ä‘á»™ng nhÃ¢n váº­t, animation vÃ  timer cá»§a Player hoÃ n toÃ n dá»«ng háº³n, khÃ´ng bá»‹ trÃ´i thá»i gian hay trÃ´i váº­n tá»‘c.
+   - PhÃ­m `Esc` láº§n Ä‘áº§u Pause, `Esc` láº§n hai Resume. NÃºt **Resume** hoáº¡t Ä‘á»™ng hoÃ n háº£o mÃ  khÃ´ng lÃ m káº¹t Ä‘iá»u khiá»ƒn.
+
+3. **Sprite & Assets**:
+   - Äáº§y Ä‘á»§ file `icon.svg` há»£p lá»‡ trong `project.godot`.
+   - Sá»­ dá»¥ng AnimationPlayer vá»›i dáº£i frame Idle vÃ  Run; kÃ¨m cÆ¡ cháº¿ visual placeholder cho Jump, Fall, Dash Ä‘áº£m báº£o sau nÃ y thay sprite má»›i tá»« video mÃ  khÃ´ng cáº§n viáº¿t láº¡i logic code.
+
+---
+
+## 4. CÃ¡ch cháº¡y vÃ  kiá»ƒm thá»­ dá»± Ã¡n
+
+- **CÃ¡ch 1 (Nhanh nháº¥t):** Click Ä‘Ãºp vÃ o file `run_game.bat` náº±m ngay trong thÆ° má»¥c dá»± Ã¡n.
+- **CÃ¡ch 2:** Má»Ÿ báº±ng Godot 4 Editor báº±ng cÃ¡ch click Ä‘Ãºp vÃ o file `open_editor.bat`.
+
+
+===================================================
+FILE: src\actors\player\player_movement_data.gd
+===================================================
 class_name PlayerMovementData
 extends Resource
 
@@ -90,11 +172,11 @@ extends Resource
 @export var dash_speed: float = 800.0
 @export var dash_duration: float = 0.2
 @export var dash_cooldown: float = 0.8
- 
- 
-=================================================== 
-FILE: "src\actors\player\player.gd" 
-=================================================== 
+
+
+===================================================
+FILE: src\actors\player\player.gd
+===================================================
 class_name Player
 extends CharacterBody2D
 
@@ -127,92 +209,146 @@ func _ready() -> void:
 	_change_state(State.IDLE)
 
 func _physics_process(delta: float) -> void:
+	# LuÃ´n giáº£m thá»i gian há»“i chiÃªu Dash Ä‘á»™c láº­p
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
 
 	match current_state:
-		State.IDLE:
-			_process_ground_movement(delta)
-			_check_jump()
-			_check_dash()
-			if not is_on_floor():
-				_change_state(State.FALL)
-			elif abs(velocity.x) > 10.0:
-				_change_state(State.RUN)
-
-		State.RUN:
-			_process_ground_movement(delta)
-			_check_jump()
-			_check_dash()
-			if not is_on_floor():
-				_change_state(State.FALL)
-			elif abs(velocity.x) <= 10.0 and _get_input_direction() == 0.0:
-				_change_state(State.IDLE)
-
-		State.JUMP:
-			_apply_gravity(delta)
-			_process_air_movement(delta)
-			_check_jump()
-			_check_dash()
-			if velocity.y >= 0.0:
-				_change_state(State.FALL)
-			elif is_on_floor():
-				_change_state(State.IDLE)
-
-		State.FALL:
-			_apply_gravity(delta)
-			_process_air_movement(delta)
-			_check_jump()
-			_check_dash()
-			if is_on_floor():
-				if abs(velocity.x) > 10.0:
-					_change_state(State.RUN)
-				else:
-					_change_state(State.IDLE)
-
 		State.DASH:
+			# Trong lÃºc DASH: Giá»¯ nguyÃªn váº­n tá»‘c lÆ°á»›t vÃ  khÃ´ng bá»‹ ghi Ä‘Ã¨ bá»Ÿi state khÃ¡c
 			dash_timer -= delta
 			velocity.x = dash_direction * movement_data.dash_speed
 			velocity.y = 0.0
 			if dash_timer <= 0.0:
 				if is_on_floor():
-					_change_state(State.IDLE)
+					var dir := _get_input_direction()
+					if dir != 0.0:
+						_change_state(State.RUN)
+					else:
+						_change_state(State.IDLE)
 				else:
 					_change_state(State.FALL)
 
+		State.JUMP:
+			# Æ¯u tiÃªn Dash trÃªn khÃ´ng hoáº·c Nháº£y Ä‘Ã´i
+			if _check_dash():
+				pass
+			elif _check_double_jump():
+				pass
+			else:
+				_apply_gravity(delta)
+				_process_air_movement(delta)
+				if velocity.y >= 0.0:
+					_change_state(State.FALL)
+				elif is_on_floor():
+					_restore_jumps()
+					if abs(velocity.x) > 10.0:
+						_change_state(State.RUN)
+					else:
+						_change_state(State.IDLE)
+
+		State.FALL:
+			# CÃ³ thá»ƒ Dash hoáº·c Nháº£y Ä‘Ã´i giá»¯a lÃºc rÆ¡i
+			if _check_dash():
+				pass
+			elif _check_double_jump():
+				pass
+			else:
+				_apply_gravity(delta)
+				_process_air_movement(delta)
+				if is_on_floor():
+					_restore_jumps()
+					var dir := _get_input_direction()
+					if dir != 0.0 or abs(velocity.x) > 10.0:
+						_change_state(State.RUN)
+					else:
+						_change_state(State.IDLE)
+
+		State.IDLE:
+			_restore_jumps()
+			if _check_dash():
+				pass
+			elif _check_jump():
+				pass
+			elif not is_on_floor():
+				_change_state(State.FALL)
+			else:
+				_process_ground_movement(delta)
+				if abs(velocity.x) > 10.0:
+					_change_state(State.RUN)
+
+		State.RUN:
+			_restore_jumps()
+			if _check_dash():
+				pass
+			elif _check_jump():
+				pass
+			elif not is_on_floor():
+				_change_state(State.FALL)
+			else:
+				_process_ground_movement(delta)
+				if abs(velocity.x) <= 10.0 and _get_input_direction() == 0.0:
+					_change_state(State.IDLE)
+
 	move_and_slide()
 
+	# KhÃ´i phá»¥c sá»‘ láº§n nháº£y khi Ä‘ang cháº¡m Ä‘áº¥t
 	if is_on_floor() and current_state != State.JUMP:
-		jumps_left = movement_data.max_jumps
+		_restore_jumps()
+
+func _restore_jumps() -> void:
+	jumps_left = movement_data.max_jumps
 
 func _change_state(new_state: State) -> void:
 	current_state = new_state
 	var state_name := _get_state_name(current_state)
 	emit_signal("state_changed", state_name)
 
+	var has_player := (anim_player != null)
+
 	match current_state:
 		State.IDLE:
-			if anim_player.has_animation("idle"):
+			if has_player and anim_player.has_animation("idle"):
 				anim_player.play("idle")
 		State.RUN:
-			if anim_player.has_animation("run"):
+			if has_player and anim_player.has_animation("run"):
 				anim_player.play("run")
 		State.JUMP:
-			if anim_player.has_animation("jump"):
+			if has_player and anim_player.has_animation("jump"):
 				anim_player.play("jump")
 			else:
-				anim_player.play("idle")
+				_play_fallback_air_visual()
 		State.FALL:
-			if anim_player.has_animation("fall"):
+			if has_player and anim_player.has_animation("fall"):
 				anim_player.play("fall")
 			else:
-				anim_player.play("idle")
+				_play_fallback_air_visual()
 		State.DASH:
-			if anim_player.has_animation("dash"):
+			if has_player and anim_player.has_animation("dash"):
 				anim_player.play("dash")
+			else:
+				_play_fallback_dash_visual()
 			dash_timer = movement_data.dash_duration
 			dash_cooldown_timer = movement_data.dash_cooldown
-			dash_direction = facing_direction
+			
+			var move_dir := int(sign(_get_input_direction()))
+			if move_dir != 0:
+				dash_direction = move_dir
+				_set_facing(dash_direction)
+			else:
+				dash_direction = facing_direction
+
+func _play_fallback_air_visual() -> void:
+	if anim_player and anim_player.has_animation("run"):
+		anim_player.play("run")
+		anim_player.seek(0.12, true)
+		anim_player.pause()
+
+func _play_fallback_dash_visual() -> void:
+	if anim_player and anim_player.has_animation("run"):
+		anim_player.play("run")
+		anim_player.seek(0.48, true)
+		anim_player.pause()
 
 func _get_input_direction() -> float:
 	return Input.get_axis("move_left", "move_right")
@@ -236,26 +372,35 @@ func _process_air_movement(delta: float) -> void:
 func _apply_gravity(delta: float) -> void:
 	velocity.y += movement_data.gravity * delta
 
-func _check_jump() -> void:
+func _check_jump() -> bool:
 	if Input.is_action_just_pressed("jump"):
 		if is_on_floor() or jumps_left == movement_data.max_jumps:
 			velocity.y = movement_data.jump_velocity
 			jumps_left = movement_data.max_jumps - 1
 			_change_state(State.JUMP)
-		elif jumps_left > 0:
-			velocity.y = movement_data.double_jump_velocity
-			jumps_left -= 1
-			_change_state(State.JUMP)
+			return true
+	return false
 
-func _check_dash() -> void:
+func _check_double_jump() -> bool:
+	if Input.is_action_just_pressed("jump") and jumps_left > 0:
+		velocity.y = movement_data.double_jump_velocity
+		jumps_left -= 1
+		_change_state(State.JUMP)
+		return true
+	return false
+
+func _check_dash() -> bool:
 	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0.0:
 		_change_state(State.DASH)
+		return true
+	return false
 
 func _set_facing(dir: int) -> void:
 	if dir == 0 or dir == facing_direction:
 		return
 	facing_direction = dir
-	sprite_root.scale.x = float(facing_direction)
+	if sprite_root:
+		sprite_root.scale.x = float(facing_direction)
 
 func _get_state_name(state: State) -> String:
 	match state:
@@ -265,11 +410,11 @@ func _get_state_name(state: State) -> String:
 		State.FALL: return "FALL"
 		State.DASH: return "DASH"
 		_: return "UNKNOWN"
- 
- 
-=================================================== 
-FILE: "src\actors\player\player.tscn" 
-=================================================== 
+
+
+===================================================
+FILE: src\actors\player\player.tscn
+===================================================
 [gd_scene load_steps=12 format=3 uid="uid://c8m4p7k1y2r3"]
 
 [ext_resource type="Script" path="res://src/actors/player/player.gd" id="1_player"]
@@ -412,50 +557,88 @@ hframes = 14
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_player")
-} 
- 
-=================================================== 
-FILE: "src\world\test_level.gd" 
-=================================================== 
+}
+
+
+===================================================
+FILE: src\ui\pause_controller.gd
+===================================================
+class_name PauseController
+extends Node
+
+@export var pause_menu: Control
+
+func _ready() -> void:
+	# PauseController luÃ´n luÃ´n xá»­ lÃ½ input báº¥t ká»ƒ game Ä‘ang pause hay khÃ´ng
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	if pause_menu:
+		pause_menu.visible = false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause"):
+		toggle_pause()
+		get_viewport().set_input_as_handled()
+
+func toggle_pause() -> void:
+	var tree := get_tree()
+	if tree == null:
+		return
+	var is_paused := not tree.paused
+	tree.paused = is_paused
+	if pause_menu:
+		pause_menu.visible = is_paused
+
+func resume() -> void:
+	var tree := get_tree()
+	if tree == null:
+		return
+	tree.paused = false
+	if pause_menu:
+		pause_menu.visible = false
+
+
+===================================================
+FILE: src\world\test_level.gd
+===================================================
 extends Node2D
 
 @onready var player: Player = $Player
 @onready var state_label: Label = $CanvasLayer/HUD/StateLabel
-@onready var pause_menu: Control = $CanvasLayer/PauseMenu
+@onready var pause_controller: PauseController = $PauseController
 
 func _ready() -> void:
-	pause_menu.visible = false
+	# Gameplay level Ä‘áº·t PROCESS_MODE_PAUSABLE
+	process_mode = Node.PROCESS_MODE_PAUSABLE
 	if player:
 		player.state_changed.connect(_on_player_state_changed)
 		_on_player_state_changed("IDLE")
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("pause"):
-		_toggle_pause()
 
 func _on_player_state_changed(new_state: String) -> void:
 	if state_label:
 		state_label.text = "State: %s" % new_state
 
-func _toggle_pause() -> void:
-	var is_paused := not get_tree().paused
-	get_tree().paused = is_paused
-	pause_menu.visible = is_paused
-
 func _on_resume_button_pressed() -> void:
-	_toggle_pause()
+	var ctrl = pause_controller if pause_controller else get_node_or_null("PauseController")
+	if ctrl:
+		ctrl.resume()
+	else:
+		get_tree().paused = false
+		var menu = get_node_or_null("CanvasLayer/PauseMenu")
+		if menu:
+			menu.visible = false
 
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
- 
- 
-=================================================== 
-FILE: "src\world\test_level.tscn" 
-=================================================== 
-[gd_scene load_steps=8 format=3 uid="uid://b0f1q8k7v3m2"]
+
+
+===================================================
+FILE: src\world\test_level.tscn
+===================================================
+[gd_scene load_steps=9 format=3 uid="uid://b0f1q8k7v3m2"]
 
 [ext_resource type="Script" path="res://src/world/test_level.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="3_pause"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(3400, 80)
@@ -473,7 +656,13 @@ size = Vector2(180, 20)
 size = Vector2(140, 20)
 
 [node name="TestLevel" type="Node2D"]
+process_mode = 1
 script = ExtResource("1_world")
+
+[node name="PauseController" type="Node" parent="." node_paths=PackedStringArray("pause_menu")]
+process_mode = 3
+script = ExtResource("3_pause")
+pause_menu = NodePath("../CanvasLayer/PauseMenu")
 
 [node name="Background" type="ColorRect" parent="."]
 offset_left = -200.0
@@ -729,5 +918,6 @@ grow_vertical = 2
 text = "Quit"
 
 [connection signal="pressed" from="CanvasLayer/PauseMenu/Panel/ResumeBtn" to="." method="_on_resume_button_pressed"]
-[connection signal="pressed" from="CanvasLayer/PauseMenu/Panel/QuitBtn" to="." method="_on_quit_button_pressed"] 
- 
+[connection signal="pressed" from="CanvasLayer/PauseMenu/Panel/QuitBtn" to="." method="_on_quit_button_pressed"]
+
+

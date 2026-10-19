@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://b0f1q8k7v3m2"]
+[gd_scene load_steps=9 format=3 uid="uid://b0f1q8k7v3m2"]
 
 [ext_resource type="Script" path="res://src/world/test_level.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="3_pause"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(3400, 80)
@@ -19,7 +20,13 @@ size = Vector2(180, 20)
 size = Vector2(140, 20)
 
 [node name="TestLevel" type="Node2D"]
+process_mode = 1
 script = ExtResource("1_world")
+
+[node name="PauseController" type="Node" parent="." node_paths=PackedStringArray("pause_menu")]
+process_mode = 3
+script = ExtResource("3_pause")
+pause_menu = NodePath("../CanvasLayer/PauseMenu")
 
 [node name="Background" type="ColorRect" parent="."]
 offset_left = -200.0
