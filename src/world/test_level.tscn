@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://b0f1q8k7v3m2"]
+[gd_scene load_steps=10 format=3 uid="uid://b0f1q8k7v3m2"]
 
 [ext_resource type="Script" path="res://src/world/test_level.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="3_pause"]
+[ext_resource type="PackedScene" uid="uid://b7y2n4m8q1v9" path="res://src/actors/enemy/enemy.tscn" id="4_enemy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(3400, 80)
@@ -152,6 +153,9 @@ position = Vector2(180, 640)
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
 remote_path = NodePath("../../Camera2D")
 
+[node name="TestEnemy" parent="." instance=ExtResource("4_enemy")]
+position = Vector2(550, 640)
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(180, 640)
 limit_left = 0
@@ -177,16 +181,33 @@ mouse_filter = 2
 layout_mode = 0
 offset_left = 24.0
 offset_top = 20.0
-offset_right = 320.0
+offset_right = 350.0
 offset_bottom = 50.0
-text = "NOCTELYRA - Milestone M0"
+text = "NOCTELYRA - Milestone M1 Combat"
+
+[node name="VBoxBars" type="VBoxContainer" parent="CanvasLayer/HUD"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 50.0
+offset_right = 260.0
+offset_bottom = 98.0
+
+[node name="HPBar" type="ProgressBar" parent="CanvasLayer/HUD/VBoxBars"]
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+
+[node name="MPBar" type="ProgressBar" parent="CanvasLayer/HUD/VBoxBars"]
+layout_mode = 2
+max_value = 60.0
+value = 60.0
 
 [node name="StateLabel" type="Label" parent="CanvasLayer/HUD"]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 50.0
+offset_top = 105.0
 offset_right = 240.0
-offset_bottom = 80.0
+offset_bottom = 135.0
 text = "State: IDLE"
 
 [node name="ControlsInfo" type="Label" parent="CanvasLayer/HUD"]
@@ -195,15 +216,15 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 24.0
-offset_top = -120.0
+offset_top = -160.0
 offset_right = 450.0
 offset_bottom = -20.0
 grow_vertical = 0
 text = "Controls:
-- A / D or Left/Right: Move
-- Space: Jump / Double Jump
-- Shift: Dash
-- Esc: Pause"
+- A / D: Move | Space: Jump / Double Jump | Shift: Dash
+- J: Melee Attack (Cooldown)
+- K: Magic Spell (Cost MP)
+- Esc: Pause / Resume"
 
 [node name="PauseMenu" type="Control" parent="CanvasLayer"]
 process_mode = 2

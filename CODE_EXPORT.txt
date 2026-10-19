@@ -1,6 +1,6 @@
 ﻿===================================================
-  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M0 Architecture Refactor)
-  EXPORTED AT: 10/20/2026 00:53:02
+  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M1 Combat Deliverable)
+  EXPORTED AT: 10/20/2026 01:05:27
 ===================================================
 
 ===================================================
@@ -65,6 +65,16 @@ pause={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":4194305,"physical_keycode":0,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+attack={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":74,"physical_keycode":0,"key_label":0,"unicode":106,"location":0,"echo":false,"script":null)
+]
+}
+cast_spell={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":75,"physical_keycode":0,"key_label":0,"unicode":107,"location":0,"echo":false,"script":null)
+]
+}
 
 [rendering]
 
@@ -75,7 +85,7 @@ renderer/rendering_method="forward_plus"
 ===================================================
 FILE: README.md
 ===================================================
-# NOCTELYRA â€” 2D Action RPG Cross-platform (Milestone M0)
+# NOCTELYRA â€” 2D Action RPG Cross-platform (Milestone M1 Combat)
 
 Dá»± Ã¡n game Fantasy 2D mÃ n hÃ¬nh ngang phÃ¡t triá»ƒn báº±ng **Godot 4.3 (GDScript)**, hÆ°á»›ng tá»›i phÃ¡t hÃ nh PC (Steam), Android vÃ  iOS.
 
@@ -86,9 +96,9 @@ Dá»± Ã¡n game Fantasy 2D mÃ n hÃ¬nh ngang phÃ¡t triá»ƒn báº±ng 
 ```text
 D:\project\game\NOCTELYRA\
 â”œâ”€â”€ .gitignore                      # Loáº¡i bá» thÆ° má»¥c cache .godot/
-â”œâ”€â”€ README.md                       # TÃ i liá»‡u hÆ°á»›ng dáº«n
+â”œâ”€â”€ README.md                       # TÃ i liá»‡u hÆ°á»›ng dáº«n & kiáº¿n trÃºc M1
 â”œâ”€â”€ icon.svg                        # Icon chuáº©n cá»§a dá»± Ã¡n (128x128 SVG)
-â”œâ”€â”€ project.godot                   # File cáº¥u hÃ¬nh engine Godot 4.3 (1280x720, stretch mode)
+â”œâ”€â”€ project.godot                   # Cáº¥u hÃ¬nh engine Godot 4.3 (1280x720, input maps: J, K)
 â”œâ”€â”€ run_game.bat                    # Script 1-Click cháº¡y game test ngay láº­p tá»©c
 â”œâ”€â”€ open_editor.bat                 # Script 1-Click má»Ÿ Godot Editor
 â”œâ”€â”€ export_code_for_ai.bat          # Script gom toÃ n bá»™ code thÃ nh 1 file text Ä‘á»ƒ gá»­i AI review
@@ -103,55 +113,411 @@ D:\project\game\NOCTELYRA\
 â”‚
 â””â”€â”€ src\
     â”œâ”€â”€ actors\
-    â”‚   â””â”€â”€ player\
-    â”‚       â”œâ”€â”€ player.gd                    # State Machine: IDLE, RUN, JUMP, FALL, DASH
-    â”‚       â”œâ”€â”€ player.tscn                  # Scene Player (CharacterBody2D, Capsule, AnimPlayer)
-    â”‚       â””â”€â”€ player_movement_data.gd      # Resource thÃ´ng sá»‘ di chuyá»ƒn, nháº£y, dash
+    â”‚   â”œâ”€â”€ player\
+    â”‚   â”‚   â”œâ”€â”€ player.gd                    # Player Controller: State Machine, Jump, Dash, Combat
+    â”‚   â”‚   â”œâ”€â”€ player.tscn                  # Player Scene (HealthComp, CombatComp, Hurtbox, Hitbox)
+    â”‚   â”‚   â””â”€â”€ player_movement_data.gd      # Resource thÃ´ng sá»‘ di chuyá»ƒn, nháº£y, dash
+    â”‚   â””â”€â”€ enemy\
+    â”‚       â”œâ”€â”€ enemy.gd                     # Enemy AI State Machine (IDLE, CHASE, ATTACK, HURT, DEAD)
+    â”‚       â””â”€â”€ enemy.tscn                   # Enemy Scene (HealthComp, Hurtbox, AttackHitbox, HPBar)
+    â”œâ”€â”€ combat\
+    â”‚   â”œâ”€â”€ damage_info.gd                   # Struct dá»¯ liá»‡u sÃ¡t thÆ°Æ¡ng & lá»±c Ä‘áº©y lÃ¹i (Knockback)
+    â”‚   â”œâ”€â”€ health_component.gd              # Quáº£n lÃ½ HP, MP, há»“i mana & thá»i gian miá»…n nhiá»…m (I-frames)
+    â”‚   â”œâ”€â”€ hurtbox.gd                       # VÃ¹ng nháº­n Ä‘Ã²n chuyá»ƒn tiáº¿p tá»›i HealthComponent
+    â”‚   â”œâ”€â”€ hitbox.gd                        # VÃ¹ng gÃ¢y sÃ¡t thÆ°Æ¡ng chÃ©m cáº­n chiáº¿n / Ä‘Ã²n cáº¯n
+    â”‚   â”œâ”€â”€ combat_component.gd              # Quáº£n lÃ½ cooldown chÃ©m thÆ°á»ng vÃ  báº¯n ma phÃ¡p
+    â”‚   â”œâ”€â”€ magic_projectile.gd              # Script Ä‘áº¡n phÃ©p ma phÃ¡p bay tháº³ng gÃ¢y ná»•
+    â”‚   â””â”€â”€ magic_projectile.tscn            # Scene Ä‘áº¡n phÃ©p ma phÃ¡p vá»›i hiá»‡u á»©ng Ã¡nh sÃ¡ng core
     â”œâ”€â”€ ui\
-    â”‚   â””â”€â”€ pause_controller.gd              # Node quáº£n lÃ½ Pause Ä‘á»™c láº­p (PROCESS_MODE_ALWAYS)
+    â”‚   â””â”€â”€ pause_controller.gd              # Quáº£n lÃ½ Pause/Resume Ä‘á»™c láº­p (PROCESS_MODE_ALWAYS)
     â””â”€â”€ world\
-        â”œâ”€â”€ test_level.gd                    # Gameplay test level (PROCESS_MODE_PAUSABLE)
-        â””â”€â”€ test_level.tscn                  # Map test: máº·t Ä‘áº¥t 3400px, 4 bá»¥c platform, Camera2D
+        â”œâ”€â”€ test_level.gd                    # Gameplay test level káº¿t ná»‘i thanh HP/MP lÃªn HUD
+        â””â”€â”€ test_level.tscn                  # Level test tÃ­ch há»£p Player, TestEnemy, Camera2D, HUD
 ```
 
 ---
 
 ## 2. CÃ¡c phÃ­m Ä‘iá»u khiá»ƒn (Controls)
 
-| PhÃ­m | Chá»©c nÄƒng | Ghi chÃº |
+| PhÃ­m | Chá»©c nÄƒng | CÆ¡ cháº¿ hoáº¡t Ä‘á»™ng |
 | :--- | :--- | :--- |
-| **A / D** hoáº·c **MÅ©i tÃªn** | Di chuyá»ƒn TrÃ¡i / Pháº£i | CÃ³ gia tá»‘c mÆ°á»£t, tá»± Ä‘á»™ng quay máº·t nhÃ¢n váº­t |
+| **A / D** hoáº·c **MÅ©i tÃªn** | Di chuyá»ƒn TrÃ¡i / Pháº£i | Gia tá»‘c mÆ°á»£t, tá»± Ä‘á»™ng quay máº·t nhÃ¢n váº­t |
 | **Space** | Nháº£y / Nháº£y Ä‘Ã´i | Nháº¥n láº§n 1 nháº£y, nháº¥n láº§n 2 trÃªn khÃ´ng Ä‘á»ƒ Double Jump |
 | **Shift** | LÆ°á»›t nhanh (Dash) | LÆ°á»›t ngang tá»‘c Ä‘á»™ cao (0.2s), cÃ³ thá»ƒ Air-Dash trÃªn khÃ´ng |
-| **Esc** | Pause / Resume | Táº¡m dá»«ng hoáº·c tiáº¿p tá»¥c game (báº±ng phÃ­m hoáº·c nÃºt Resume) |
+| **J** | **ÄÃ¡nh thÆ°á»ng (Melee)** | ChÃ©m cáº­n chiáº¿n (25 DMG), cÃ³ cooldown (0.35s) vÃ  Ä‘áº©y lÃ¹i quÃ¡i |
+| **K** | **Ma phÃ¡p (Magic Spell)** | Báº¯n quáº£ cáº§u ma phÃ¡p (30 DMG), tiÃªu hao 15 MP, cÃ³ cooldown |
+| **Esc** | Pause / Resume | Táº¡m dá»«ng hoáº·c tiáº¿p tá»¥c game (báº±ng phÃ­m Esc hoáº·c nÃºt Resume) |
 
 ---
 
-## 3. Kiáº¿n trÃºc há»‡ thá»‘ng Milestone M0
+## 3. Kiáº¿n trÃºc Há»‡ thá»‘ng Chiáº¿n Ä‘áº¥u M1 (Combat Modules)
 
-1. **State Machine (`player.gd`)**:
-   - Khi áº¥n di chuyá»ƒn + nháº£y cÃ¹ng lÃºc: State `JUMP` Ä‘Æ°á»£c Æ°u tiÃªn vÃ  thá»±c thi trá»n váº¹n, khÃ´ng bá»‹ `RUN` ghi Ä‘Ã¨ trong cÃ¹ng 1 frame.
-   - Há»— trá»£ **Air Dash**: CÃ³ thá»ƒ báº¥m Shift Ä‘á»ƒ lÆ°á»›t khi Ä‘ang á»Ÿ tráº¡ng thÃ¡i `JUMP` hoáº·c `FALL`.
-   - Trong thá»i gian lÆ°á»›t (0.2s), tráº¡ng thÃ¡i `DASH` Ä‘Æ°á»£c giá»¯ á»•n Ä‘á»‹nh vÃ  cooldown (0.8s) Ä‘Æ°á»£c Ä‘áº¿m ngÆ°á»£c Ä‘á»™c láº­p.
-   - Tiáº¿p Ä‘áº¥t khÃ´i phá»¥c lÆ°á»£t nháº£y Ä‘Ã´i chÃ­nh xÃ¡c.
-
-2. **Kiáº¿n trÃºc Pause / Resume chuáº©n Godot**:
-   - `TestLevel` (Scene gá»‘c) vÃ  cÃ¡c node gameplay con hoáº¡t Ä‘á»™ng á»Ÿ cháº¿ Ä‘á»™ `PROCESS_MODE_PAUSABLE`.
-   - `PauseController` Ä‘Æ°á»£c tÃ¡ch thÃ nh node riÃªng cháº¡y Ä‘á»™c láº­p á»Ÿ cháº¿ Ä‘á»™ `PROCESS_MODE_ALWAYS` Ä‘á»ƒ báº¯t sá»± kiá»‡n phÃ­m `Esc`.
-   - Menu Pause (`PauseMenu`) hoáº¡t Ä‘á»™ng á»Ÿ cháº¿ Ä‘á»™ `PROCESS_MODE_WHEN_PAUSED`.
-   - **XÃ¡c minh dá»«ng tuyá»‡t Ä‘á»‘i:** Khi game á»Ÿ tráº¡ng thÃ¡i Pause, toÃ n bá»™ chuyá»ƒn Ä‘á»™ng nhÃ¢n váº­t, animation vÃ  timer cá»§a Player hoÃ n toÃ n dá»«ng háº³n, khÃ´ng bá»‹ trÃ´i thá»i gian hay trÃ´i váº­n tá»‘c.
-   - PhÃ­m `Esc` láº§n Ä‘áº§u Pause, `Esc` láº§n hai Resume. NÃºt **Resume** hoáº¡t Ä‘á»™ng hoÃ n háº£o mÃ  khÃ´ng lÃ m káº¹t Ä‘iá»u khiá»ƒn.
-
-3. **Sprite & Assets**:
-   - Äáº§y Ä‘á»§ file `icon.svg` há»£p lá»‡ trong `project.godot`.
-   - Sá»­ dá»¥ng AnimationPlayer vá»›i dáº£i frame Idle vÃ  Run; kÃ¨m cÆ¡ cháº¿ visual placeholder cho Jump, Fall, Dash Ä‘áº£m báº£o sau nÃ y thay sprite má»›i tá»« video mÃ  khÃ´ng cáº§n viáº¿t láº¡i logic code.
+1. **`HealthComponent` & I-frames**:
+   - Quáº£n lÃ½ thanh mÃ¡u `current_health` vÃ  thanh nÄƒng lÆ°á»£ng `current_mana`.
+   - CÃ³ cÆ¡ cháº¿ tá»± Ä‘á»™ng há»“i phá»¥c Mana dáº§n theo thá»i gian (`mana_regen_rate = 6.0 MP/s`).
+   - Há»— trá»£ thá»i gian miá»…n nhiá»…m (`invulnerability_duration`): Sau khi Player trÃºng Ä‘Ã²n, nhÃ¢n váº­t chuyá»ƒn sang tráº¡ng thÃ¡i nháº¥p nhÃ¡y Ä‘á» vÃ  miá»…n nhiá»…m sÃ¡t thÆ°Æ¡ng trong 0.8s, chá»‘ng bá»‹ máº¥t mÃ¡u dá»“n dáº­p trong 1 Ä‘Ã²n Ä‘Ã¡nh.
+2. **`Hitbox` & `Hurtbox` tÃ¡i sá»­ dá»¥ng**:
+   - TÃ¡ch rá»i theo chuáº©n Godot Component Pattern: DÃ¹ng chung cho cáº£ Player, QuÃ¡i váº­t vÃ  Äáº¡n ma phÃ¡p.
+   - CÆ¡ cháº¿ `_already_hit_nodes` ngÄƒn ngá»«a viá»‡c má»™t nhÃ¡t chÃ©m gÃ¢y sÃ¡t thÆ°Æ¡ng nhiá»u láº§n cho cÃ¹ng 1 má»¥c tiÃªu.
+   - TÃ­nh toÃ¡n vector Ä‘áº©y lÃ¹i Knockback chÃ­nh xÃ¡c dá»±a trÃªn vá»‹ trÃ­ tÆ°Æ¡ng Ä‘á»‘i giá»¯a ngÆ°á»i ra Ä‘Ã²n vÃ  má»¥c tiÃªu.
+3. **`Enemy AI` 5 Tráº¡ng thÃ¡i (FSM)**:
+   - **IDLE:** Äá»©ng quan sÃ¡t, tÃ¬m má»¥c tiÃªu Player trong táº§m phÃ¡t hiá»‡n (`detection_range = 380px`).
+   - **CHASE:** Di chuyá»ƒn Ä‘uá»•i theo Player khi phÃ¡t hiá»‡n, tá»± quay máº·t vá» hÆ°á»›ng Player.
+   - **ATTACK:** KÃ­ch hoáº¡t Ä‘Ã²n cáº¯n cáº­n chiáº¿n khi tá»›i gáº§n (`attack_range = 55px`), chá»›p mÃ u vÃ ng vÃ  kÃ­ch hoáº¡t Hitbox.
+   - **HURT:** Bá»‹ khá»±ng nháº¹ vÃ  giáº­t lÃ¹i vá» phÃ­a sau (Knockback) khi trÃºng kiáº¿m hoáº·c trÃºng Ä‘áº¡n ma phÃ¡p.
+   - **DEAD:** Khi HP = 0, quÃ¡i chuyá»ƒn sang tráº¡ng thÃ¡i DEAD, táº¯t toÃ n bá»™ va cháº¡m, má» dáº§n trong 1 giÃ¢y rá»“i biáº¿n máº¥t hoÃ n toÃ n.
+4. **Giao diá»‡n HUD**:
+   - Thanh HP (MÃ u Ä‘á»/xanh lÃ¡) vÃ  thanh MP (MÃ u xanh dÆ°Æ¡ng) trÃªn gÃ³c mÃ n hÃ¬nh hiá»ƒn thá»‹ trá»±c tiáº¿p chá»‰ sá»‘ cá»§a Player.
+   - TrÃªn Ä‘áº§u QuÃ¡i váº­t cÃ³ thanh HP mini hiá»ƒn thá»‹ lÆ°á»£ng mÃ¡u cÃ²n láº¡i cá»§a quÃ¡i theo thá»i gian thá»±c.
+5. **Äá»™c láº­p Pause Mode**:
+   - ToÃ n bá»™ combat logic (chÃ©m, Ä‘áº¡n bay, quÃ¡i Ä‘uá»•i) Ä‘á»u tuÃ¢n thá»§ `PROCESS_MODE_PAUSABLE`, dá»«ng tuyá»‡t Ä‘á»‘i khi báº¥m `Esc` vÃ  tiáº¿p tá»¥c mÆ°á»£t mÃ  sau khi `Resume`.
 
 ---
 
-## 4. CÃ¡ch cháº¡y vÃ  kiá»ƒm thá»­ dá»± Ã¡n
+## 4. CÃ¡ch cháº¡y vÃ  kiá»ƒm thá»­ nhanh
 
-- **CÃ¡ch 1 (Nhanh nháº¥t):** Click Ä‘Ãºp vÃ o file `run_game.bat` náº±m ngay trong thÆ° má»¥c dá»± Ã¡n.
-- **CÃ¡ch 2:** Má»Ÿ báº±ng Godot 4 Editor báº±ng cÃ¡ch click Ä‘Ãºp vÃ o file `open_editor.bat`.
+- **Cháº¡y game test ngay:** Click Ä‘Ãºp vÃ o file `run_game.bat` náº±m ngay trong thÆ° má»¥c dá»± Ã¡n.
+- **Má»Ÿ Godot Editor:** Click Ä‘Ãºp vÃ o file `open_editor.bat`.
+- **Xuáº¥t toÃ n bá»™ code cho AI:** Click Ä‘Ãºp vÃ o file `export_code_for_ai.bat`.
+
+
+===================================================
+FILE: src\combat\damage_info.gd
+===================================================
+class_name DamageInfo
+extends RefCounted
+
+var amount: float = 10.0
+var source: Node = null
+var knockback_dir: Vector2 = Vector2.ZERO
+var knockback_force: float = 0.0
+
+func _init(p_amount: float = 10.0, p_source: Node = null, p_knockback_dir: Vector2 = Vector2.ZERO, p_knockback_force: float = 0.0) -> void:
+	amount = p_amount
+	source = p_source
+	knockback_dir = p_knockback_dir
+	knockback_force = p_knockback_force
+
+
+===================================================
+FILE: src\combat\health_component.gd
+===================================================
+class_name HealthComponent
+extends Node
+
+signal health_changed(current: float, max_val: float)
+signal mana_changed(current: float, max_val: float)
+signal damaged(amount: float, source: Node)
+signal died()
+signal invulnerability_started()
+signal invulnerability_ended()
+
+@export var max_health: float = 100.0
+@export var current_health: float = 100.0
+@export var max_mana: float = 50.0
+@export var current_mana: float = 50.0
+@export var mana_regen_rate: float = 5.0 # MP há»“i phá»¥c má»—i giÃ¢y
+@export var invulnerability_duration: float = 0.6 # Thá»i gian miá»…n nhiá»…m sÃ¡t thÆ°Æ¡ng sau khi trÃºng Ä‘Ã²n
+
+var is_invulnerable: bool = false
+var _invuln_timer: float = 0.0
+
+func _ready() -> void:
+	current_health = clamp(current_health, 0.0, max_health)
+	current_mana = clamp(current_mana, 0.0, max_mana)
+	emit_signal("health_changed", current_health, max_health)
+	emit_signal("mana_changed", current_mana, max_mana)
+
+func _process(delta: float) -> void:
+	# Cáº­p nháº­t thá»i gian miá»…n nhiá»…m sÃ¡t thÆ°Æ¡ng
+	if is_invulnerable:
+		_invuln_timer -= delta
+		if _invuln_timer <= 0.0:
+			is_invulnerable = false
+			emit_signal("invulnerability_ended")
+
+	# Tá»± Ä‘á»™ng há»“i MP dáº§n theo thá»i gian náº¿u chÆ°a Ä‘áº§y
+	if mana_regen_rate > 0.0 and current_mana < max_mana:
+		current_mana = min(max_mana, current_mana + mana_regen_rate * delta)
+		emit_signal("mana_changed", current_mana, max_mana)
+
+func take_damage(damage: DamageInfo) -> bool:
+	if is_invulnerable or current_health <= 0.0:
+		return false
+
+	var final_dmg := damage.amount
+	current_health = max(0.0, current_health - final_dmg)
+	emit_signal("health_changed", current_health, max_health)
+	emit_signal("damaged", final_dmg, damage.source)
+
+	if invulnerability_duration > 0.0:
+		is_invulnerable = true
+		_invuln_timer = invulnerability_duration
+		emit_signal("invulnerability_started")
+
+	if current_health <= 0.0:
+		emit_signal("died")
+
+	return true
+
+func consume_mana(amount: float) -> bool:
+	if current_mana >= amount:
+		current_mana -= amount
+		emit_signal("mana_changed", current_mana, max_mana)
+		return true
+	return false
+
+func is_alive() -> bool:
+	return current_health > 0.0
+
+
+===================================================
+FILE: src\combat\hurtbox.gd
+===================================================
+class_name Hurtbox
+extends Area2D
+
+signal hit_received(damage: DamageInfo)
+
+@export var health_component: HealthComponent
+@export var owner_node: Node
+
+func _ready() -> void:
+	if owner_node == null:
+		owner_node = get_parent()
+
+func apply_damage(damage: DamageInfo) -> bool:
+	if health_component and health_component.is_alive():
+		var taken = health_component.take_damage(damage)
+		if taken:
+			emit_signal("hit_received", damage)
+		return taken
+	return false
+
+
+===================================================
+FILE: src\combat\hitbox.gd
+===================================================
+class_name Hitbox
+extends Area2D
+
+signal hit_landed(target_hurtbox: Hurtbox)
+
+@export var damage: float = 15.0
+@export var knockback_force: float = 200.0
+@export var owner_node: Node
+
+var _already_hit_nodes: Array[Node] = []
+
+func _ready() -> void:
+	if owner_node == null:
+		owner_node = get_parent()
+	area_entered.connect(_on_area_entered)
+
+func reset_hits() -> void:
+	_already_hit_nodes.clear()
+
+func _on_area_entered(area: Area2D) -> void:
+	if area is Hurtbox:
+		var hurtbox := area as Hurtbox
+		if hurtbox.owner_node == owner_node:
+			return # KhÃ´ng tá»± Ä‘Ã¡nh trÃºng chÃ­nh mÃ¬nh
+		if hurtbox.owner_node in _already_hit_nodes:
+			return # ÄÃ£ trÃºng trong lÆ°á»£t Ä‘Ã¡nh nÃ y rá»“i
+
+		var knock_dir := Vector2.RIGHT
+		if owner_node is Node2D and hurtbox.owner_node is Node2D:
+			knock_dir = (hurtbox.owner_node.global_position - owner_node.global_position).normalized()
+			if knock_dir == Vector2.ZERO:
+				knock_dir = Vector2.RIGHT
+
+		var dmg_info := DamageInfo.new(damage, owner_node, knock_dir, knockback_force)
+		var success := hurtbox.apply_damage(dmg_info)
+		if success:
+			_already_hit_nodes.append(hurtbox.owner_node)
+			emit_signal("hit_landed", hurtbox)
+
+
+===================================================
+FILE: src\combat\combat_component.gd
+===================================================
+class_name CombatComponent
+extends Node
+
+signal attack_started()
+signal attack_finished()
+signal spell_cast()
+
+@export var attack_cooldown: float = 0.35
+@export var spell_cooldown: float = 0.6
+@export var spell_mana_cost: float = 15.0
+@export var melee_hitbox: Hitbox
+@export var projectile_scene: PackedScene = preload("res://src/combat/magic_projectile.tscn")
+@export var projectile_spawn_offset: Vector2 = Vector2(30, -40)
+
+var _attack_timer: float = 0.0
+var _spell_timer: float = 0.0
+var _is_attacking: bool = false
+var _attack_anim_duration: float = 0.25
+
+func _ready() -> void:
+	if melee_hitbox:
+		melee_hitbox.monitoring = false
+		melee_hitbox.visible = false
+
+func _process(delta: float) -> void:
+	if _attack_timer > 0.0:
+		_attack_timer -= delta
+	if _spell_timer > 0.0:
+		_spell_timer -= delta
+
+	if _is_attacking:
+		_attack_anim_duration -= delta
+		if _attack_anim_duration <= 0.0:
+			end_attack()
+
+func can_attack() -> bool:
+	return _attack_timer <= 0.0 and not _is_attacking
+
+func can_cast_spell(health_comp: HealthComponent) -> bool:
+	if _spell_timer > 0.0 or _is_attacking:
+		return false
+	if health_comp and health_comp.current_mana < spell_mana_cost:
+		return false
+	return true
+
+func perform_attack(facing_dir: int) -> bool:
+	if not can_attack():
+		return false
+
+	_is_attacking = true
+	_attack_timer = attack_cooldown
+	_attack_anim_duration = 0.22
+
+	if melee_hitbox:
+		melee_hitbox.reset_hits()
+		melee_hitbox.monitoring = true
+		melee_hitbox.visible = true
+		# CÄƒn chá»‰nh hitbox theo hÆ°á»›ng máº·t
+		melee_hitbox.position.x = abs(melee_hitbox.position.x) * float(facing_dir)
+
+	emit_signal("attack_started")
+	return true
+
+func end_attack() -> void:
+	_is_attacking = false
+	if melee_hitbox:
+		melee_hitbox.monitoring = false
+		melee_hitbox.visible = false
+	emit_signal("attack_finished")
+
+func cast_spell(owner_node: Node2D, facing_dir: int, health_comp: HealthComponent) -> bool:
+	if not can_cast_spell(health_comp):
+		return false
+
+	if health_comp:
+		var success := health_comp.consume_mana(spell_mana_cost)
+		if not success:
+			return false
+
+	_spell_timer = spell_cooldown
+
+	if projectile_scene and owner_node:
+		var proj := projectile_scene.instantiate() as MagicProjectile
+		var spawn_pos := owner_node.global_position + Vector2(projectile_spawn_offset.x * float(facing_dir), projectile_spawn_offset.y)
+		proj.global_position = spawn_pos
+		proj.setup(Vector2(float(facing_dir), 0.0), owner_node)
+		var spawn_root: Node = owner_node.get_parent()
+		if owner_node.get_tree() and owner_node.get_tree().current_scene:
+			spawn_root = owner_node.get_tree().current_scene
+		if spawn_root:
+			spawn_root.add_child.call_deferred(proj)
+
+	emit_signal("spell_cast")
+	return true
+
+func is_attacking() -> bool:
+	return _is_attacking
+
+
+===================================================
+FILE: src\combat\magic_projectile.gd
+===================================================
+class_name MagicProjectile
+extends Area2D
+
+@export var speed: float = 550.0
+@export var damage_amount: float = 30.0
+@export var lifetime: float = 2.5
+@export var knockback_force: float = 250.0
+
+var direction: Vector2 = Vector2.RIGHT
+var shooter: Node = null
+var _timer: float = 0.0
+
+func setup(p_direction: Vector2, p_shooter: Node, p_damage: float = 30.0) -> void:
+	direction = p_direction.normalized()
+	shooter = p_shooter
+	damage_amount = p_damage
+	rotation = direction.angle()
+
+func _ready() -> void:
+	area_entered.connect(_on_area_entered)
+	body_entered.connect(_on_body_entered)
+
+func _physics_process(delta: float) -> void:
+	global_position += direction * speed * delta
+	_timer += delta
+	if _timer >= lifetime:
+		queue_free()
+
+func _on_area_entered(area: Area2D) -> void:
+	if area is Hurtbox:
+		var hurtbox := area as Hurtbox
+		if hurtbox.owner_node == shooter:
+			return
+		var dmg_info := DamageInfo.new(damage_amount, shooter, direction, knockback_force)
+		hurtbox.apply_damage(dmg_info)
+		queue_free()
+
+func _on_body_entered(body: Node) -> void:
+	if body == shooter:
+		return
+	if body is TileMap or body is StaticBody2D:
+		queue_free()
+
+
+===================================================
+FILE: src\combat\magic_projectile.tscn
+===================================================
+[gd_scene load_steps=3 format=3 uid="uid://c5e3f2m1p0q7"]
+
+[ext_resource type="Script" path="res://src/combat/magic_projectile.gd" id="1_proj"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_orb"]
+radius = 12.0
+
+[node name="MagicProjectile" type="Area2D"]
+collision_layer = 16
+collision_mask = 5
+script = ExtResource("1_proj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_orb")
+
+[node name="VisualOrb" type="ColorRect" parent="."]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(0.2, 0.7, 1.0, 0.9)
+
+[node name="CoreGlow" type="ColorRect" parent="."]
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+color = Color(0.9, 0.95, 1.0, 1.0)
 
 
 ===================================================
@@ -195,6 +561,9 @@ enum State {
 @onready var sprite_root: Node2D = $SpriteRoot
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var health_component: HealthComponent = $HealthComponent
+@onready var combat_component: CombatComponent = $CombatComponent
+@onready var hurtbox: Hurtbox = $Hurtbox
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -208,10 +577,17 @@ func _ready() -> void:
 		movement_data = PlayerMovementData.new()
 	_change_state(State.IDLE)
 
+	if health_component:
+		health_component.invulnerability_started.connect(_on_invuln_started)
+		health_component.invulnerability_ended.connect(_on_invuln_ended)
+
 func _physics_process(delta: float) -> void:
 	# LuÃ´n giáº£m thá»i gian há»“i chiÃªu Dash Ä‘á»™c láº­p
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
+
+	# Xá»­ lÃ½ input táº¥n cÃ´ng & ma phÃ¡p (J & K)
+	_handle_combat_inputs()
 
 	match current_state:
 		State.DASH:
@@ -295,6 +671,22 @@ func _physics_process(delta: float) -> void:
 	# KhÃ´i phá»¥c sá»‘ láº§n nháº£y khi Ä‘ang cháº¡m Ä‘áº¥t
 	if is_on_floor() and current_state != State.JUMP:
 		_restore_jumps()
+
+func _handle_combat_inputs() -> void:
+	if combat_component == null:
+		return
+	if Input.is_action_just_pressed("attack"):
+		combat_component.perform_attack(facing_direction)
+	elif Input.is_action_just_pressed("cast_spell"):
+		combat_component.cast_spell(self, facing_direction, health_component)
+
+func _on_invuln_started() -> void:
+	if sprite_root:
+		sprite_root.modulate = Color(1.0, 0.4, 0.4, 0.7)
+
+func _on_invuln_ended() -> void:
+	if sprite_root:
+		sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 func _restore_jumps() -> void:
 	jumps_left = movement_data.max_jumps
@@ -415,12 +807,16 @@ func _get_state_name(state: State) -> String:
 ===================================================
 FILE: src\actors\player\player.tscn
 ===================================================
-[gd_scene load_steps=12 format=3 uid="uid://c8m4p7k1y2r3"]
+[gd_scene load_steps=17 format=3 uid="uid://c8m4p7k1y2r3"]
 
 [ext_resource type="Script" path="res://src/actors/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://src/actors/player/player_movement_data.gd" id="2_data"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/player_idle_strip.png" id="3_idle"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/player_run_strip.png" id="4_run"]
+[ext_resource type="Script" path="res://src/combat/health_component.gd" id="5_health"]
+[ext_resource type="Script" path="res://src/combat/combat_component.gd" id="6_combat"]
+[ext_resource type="Script" path="res://src/combat/hitbox.gd" id="7_hitbox"]
+[ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="8_hurtbox"]
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
@@ -440,6 +836,13 @@ dash_cooldown = 0.8
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 16.0
 height = 84.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurtbox"]
+radius = 18.0
+height = 86.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
+size = Vector2(50, 60)
 
 [sub_resource type="Animation" id="Animation_idle"]
 resource_name = "idle"
@@ -559,6 +962,345 @@ libraries = {
 "": SubResource("AnimationLibrary_player")
 }
 
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("5_health")
+max_health = 100.0
+current_health = 100.0
+max_mana = 60.0
+current_mana = 60.0
+mana_regen_rate = 6.0
+invulnerability_duration = 0.8
+
+[node name="CombatComponent" type="Node" parent="." node_paths=PackedStringArray("melee_hitbox")]
+script = ExtResource("6_combat")
+melee_hitbox = NodePath("../MeleeHitbox")
+projectile_spawn_offset = Vector2(25, -42)
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health_component", "owner_node")]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("8_hurtbox")
+health_component = NodePath("../HealthComponent")
+owner_node = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -42)
+shape = SubResource("CapsuleShape2D_hurtbox")
+
+[node name="MeleeHitbox" type="Area2D" parent="." node_paths=PackedStringArray("owner_node")]
+position = Vector2(35, -42)
+collision_layer = 8
+collision_mask = 4
+monitoring = false
+visible = false
+script = ExtResource("7_hitbox")
+damage = 25.0
+knockback_force = 220.0
+owner_node = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
+shape = SubResource("RectangleShape2D_melee")
+
+[node name="SlashEffectPlaceholder" type="ColorRect" parent="MeleeHitbox"]
+offset_left = -25.0
+offset_top = -30.0
+offset_right = 25.0
+offset_bottom = 30.0
+color = Color(1, 0.9, 0.3, 0.5)
+
+
+===================================================
+FILE: src\actors\enemy\enemy.gd
+===================================================
+class_name Enemy
+extends CharacterBody2D
+
+signal state_changed(new_state_name: String)
+
+enum State {
+	IDLE,
+	CHASE,
+	ATTACK,
+	HURT,
+	DEAD
+}
+
+@export var move_speed: float = 120.0
+@export var detection_range: float = 380.0
+@export var attack_range: float = 55.0
+@export var attack_cooldown: float = 1.2
+@export var gravity: float = 1100.0
+
+@onready var health_component: HealthComponent = $HealthComponent
+@onready var hurtbox: Hurtbox = $Hurtbox
+@onready var attack_hitbox: Hitbox = $AttackHitbox
+@onready var visual_root: Node2D = $VisualRoot
+@onready var body_rect: ColorRect = $VisualRoot/BodyRect
+@onready var eye_rect: ColorRect = $VisualRoot/EyeRect
+@onready var hp_bar: ProgressBar = $VisualRoot/HPBar
+
+var current_state: State = State.IDLE
+var target_player: Player = null
+var facing_direction: int = -1
+var attack_timer: float = 0.0
+var state_timer: float = 0.0
+
+func _ready() -> void:
+	if attack_hitbox:
+		attack_hitbox.monitoring = false
+		attack_hitbox.visible = false
+
+	if health_component:
+		health_component.health_changed.connect(_on_health_changed)
+		health_component.died.connect(_on_died)
+		if hp_bar:
+			hp_bar.max_value = health_component.max_health
+			hp_bar.value = health_component.current_health
+
+	if hurtbox:
+		hurtbox.hit_received.connect(_on_hit_received)
+
+	_change_state(State.IDLE)
+
+func _physics_process(delta: float) -> void:
+	if attack_timer > 0.0:
+		attack_timer -= delta
+
+	if not is_on_floor():
+		velocity.y += gravity * delta
+
+	match current_state:
+		State.IDLE:
+			velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
+			_find_target()
+			if target_player and _is_target_in_range(detection_range):
+				_change_state(State.CHASE)
+
+		State.CHASE:
+			if target_player == null or not is_instance_valid(target_player):
+				_change_state(State.IDLE)
+				return
+
+			var dist := global_position.distance_to(target_player.global_position)
+			if dist > detection_range * 1.4:
+				_change_state(State.IDLE)
+			elif dist <= attack_range:
+				if attack_timer <= 0.0:
+					_change_state(State.ATTACK)
+				else:
+					velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
+			else:
+				var dir: float = sign(target_player.global_position.x - global_position.x)
+				if dir != 0.0:
+					_set_facing(int(dir))
+					velocity.x = dir * move_speed
+
+		State.ATTACK:
+			velocity.x = move_toward(velocity.x, 0.0, 1000.0 * delta)
+			state_timer -= delta
+			if state_timer <= 0.0:
+				_finish_attack()
+
+		State.HURT:
+			state_timer -= delta
+			velocity.x = move_toward(velocity.x, 0.0, 900.0 * delta)
+			if state_timer <= 0.0:
+				if target_player:
+					_change_state(State.CHASE)
+				else:
+					_change_state(State.IDLE)
+
+		State.DEAD:
+			velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
+			state_timer -= delta
+			if visual_root:
+				visual_root.modulate.a = max(0.0, state_timer / 1.0)
+			if state_timer <= 0.0:
+				queue_free()
+
+	move_and_slide()
+
+func _change_state(new_state: State) -> void:
+	current_state = new_state
+	var sname := _get_state_name(current_state)
+	emit_signal("state_changed", sname)
+
+	match current_state:
+		State.IDLE:
+			if body_rect:
+				body_rect.color = Color(0.8, 0.2, 0.2) # Äá» thÆ°á»ng
+		State.CHASE:
+			if body_rect:
+				body_rect.color = Color(0.9, 0.35, 0.1) # Cam cáº£nh bÃ¡o
+		State.ATTACK:
+			state_timer = 0.35 # Thá»i lÆ°á»£ng Ä‘Ã²n Ä‘Ã¡nh
+			attack_timer = attack_cooldown
+			if body_rect:
+				body_rect.color = Color(1.0, 0.8, 0.1) # VÃ ng chá»›p Ä‘Ã²n
+			if attack_hitbox:
+				attack_hitbox.reset_hits()
+				attack_hitbox.monitoring = true
+				attack_hitbox.visible = true
+				attack_hitbox.position.x = abs(attack_hitbox.position.x) * float(facing_direction)
+		State.HURT:
+			state_timer = 0.25 # ChoÃ¡ng nháº¹
+			if body_rect:
+				body_rect.color = Color(1.0, 1.0, 1.0) # Nháº¥p nhÃ¡y tráº¯ng khi bá»‹ thÆ°Æ¡ng
+			if attack_hitbox:
+				attack_hitbox.monitoring = false
+				attack_hitbox.visible = false
+		State.DEAD:
+			state_timer = 1.0 # 1 giÃ¢y má» dáº§n rá»“i biáº¿n máº¥t
+			if attack_hitbox:
+				attack_hitbox.monitoring = false
+				attack_hitbox.visible = false
+			if hurtbox:
+				hurtbox.set_deferred("monitoring", false)
+				hurtbox.set_deferred("monitorable", false)
+			collision_layer = 0
+
+func _finish_attack() -> void:
+	if attack_hitbox:
+		attack_hitbox.monitoring = false
+		attack_hitbox.visible = false
+	if target_player:
+		_change_state(State.CHASE)
+	else:
+		_change_state(State.IDLE)
+
+func _find_target() -> void:
+	if target_player and is_instance_valid(target_player):
+		return
+	var players := get_tree().get_nodes_in_group("players")
+	if players.size() > 0:
+		target_player = players[0] as Player
+
+func _is_target_in_range(range_val: float) -> bool:
+	if target_player and is_instance_valid(target_player):
+		return global_position.distance_to(target_player.global_position) <= range_val
+	return false
+
+func _set_facing(dir: int) -> void:
+	if dir == 0 or dir == facing_direction:
+		return
+	facing_direction = dir
+	if visual_root:
+		visual_root.scale.x = float(-facing_direction) # quay máº·t theo hÆ°á»›ng di chuyá»ƒn
+
+func _on_health_changed(cur: float, max_v: float) -> void:
+	if hp_bar:
+		hp_bar.value = cur
+
+func _on_hit_received(dmg: DamageInfo) -> void:
+	if current_state == State.DEAD:
+		return
+	# Ãp dá»¥ng lá»±c Ä‘áº©y lÃ¹i (Knockback)
+	velocity.x = dmg.knockback_dir.x * dmg.knockback_force
+	velocity.y = -120.0
+	_change_state(State.HURT)
+
+func _on_died() -> void:
+	_change_state(State.DEAD)
+
+func _get_state_name(st: State) -> String:
+	match st:
+		State.IDLE: return "IDLE"
+		State.CHASE: return "CHASE"
+		State.ATTACK: return "ATTACK"
+		State.HURT: return "HURT"
+		State.DEAD: return "DEAD"
+		_: return "UNKNOWN"
+
+
+===================================================
+FILE: src\actors\enemy\enemy.tscn
+===================================================
+[gd_scene load_steps=7 format=3 uid="uid://b7y2n4m8q1v9"]
+
+[ext_resource type="Script" path="res://src/actors/enemy/enemy.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://src/combat/health_component.gd" id="2_health"]
+[ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" path="res://src/combat/hitbox.gd" id="4_hitbox"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_enemy"]
+radius = 18.0
+height = 60.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_enemy_hitbox"]
+size = Vector2(40, 50)
+
+[node name="Enemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_enemy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -30)
+shape = SubResource("CapsuleShape2D_enemy")
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="BodyRect" type="ColorRect" parent="VisualRoot"]
+offset_left = -18.0
+offset_top = -60.0
+offset_right = 18.0
+offset_bottom = 0.0
+color = Color(0.8, 0.2, 0.2, 1)
+
+[node name="EyeRect" type="ColorRect" parent="VisualRoot"]
+offset_left = -12.0
+offset_top = -48.0
+offset_right = -4.0
+offset_bottom = -40.0
+color = Color(1, 1, 1, 1)
+
+[node name="HPBar" type="ProgressBar" parent="VisualRoot"]
+offset_left = -25.0
+offset_top = -75.0
+offset_right = 25.0
+offset_bottom = -67.0
+max_value = 80.0
+value = 80.0
+show_percentage = false
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 80.0
+current_health = 80.0
+invulnerability_duration = 0.2
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health_component", "owner_node")]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("3_hurtbox")
+health_component = NodePath("../HealthComponent")
+owner_node = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -30)
+shape = SubResource("CapsuleShape2D_enemy")
+
+[node name="AttackHitbox" type="Area2D" parent="." node_paths=PackedStringArray("owner_node")]
+position = Vector2(-28, -30)
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+visible = false
+script = ExtResource("4_hitbox")
+damage = 15.0
+knockback_force = 200.0
+owner_node = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("RectangleShape2D_enemy_hitbox")
+
+[node name="BiteEffectPlaceholder" type="ColorRect" parent="AttackHitbox"]
+offset_left = -20.0
+offset_top = -25.0
+offset_right = 20.0
+offset_bottom = 25.0
+color = Color(1, 0.2, 0.2, 0.5)
+
 
 ===================================================
 FILE: src\ui\pause_controller.gd
@@ -604,18 +1346,40 @@ extends Node2D
 
 @onready var player: Player = $Player
 @onready var state_label: Label = $CanvasLayer/HUD/StateLabel
+@onready var hp_bar: ProgressBar = $CanvasLayer/HUD/VBoxBars/HPBar
+@onready var mp_bar: ProgressBar = $CanvasLayer/HUD/VBoxBars/MPBar
 @onready var pause_controller: PauseController = $PauseController
 
 func _ready() -> void:
 	# Gameplay level Ä‘áº·t PROCESS_MODE_PAUSABLE
 	process_mode = Node.PROCESS_MODE_PAUSABLE
+
 	if player:
+		# ThÃªm Player vÃ o group "players" Ä‘á»ƒ Enemy dá»… nháº­n diá»‡n
+		player.add_to_group("players")
 		player.state_changed.connect(_on_player_state_changed)
 		_on_player_state_changed("IDLE")
+
+		var health_comp: HealthComponent = player.get_node_or_null("HealthComponent")
+		if health_comp:
+			health_comp.health_changed.connect(_on_player_health_changed)
+			health_comp.mana_changed.connect(_on_player_mana_changed)
+			_on_player_health_changed(health_comp.current_health, health_comp.max_health)
+			_on_player_mana_changed(health_comp.current_mana, health_comp.max_mana)
 
 func _on_player_state_changed(new_state: String) -> void:
 	if state_label:
 		state_label.text = "State: %s" % new_state
+
+func _on_player_health_changed(cur: float, max_v: float) -> void:
+	if hp_bar:
+		hp_bar.max_value = max_v
+		hp_bar.value = cur
+
+func _on_player_mana_changed(cur: float, max_v: float) -> void:
+	if mp_bar:
+		mp_bar.max_value = max_v
+		mp_bar.value = cur
 
 func _on_resume_button_pressed() -> void:
 	var ctrl = pause_controller if pause_controller else get_node_or_null("PauseController")
@@ -634,11 +1398,12 @@ func _on_quit_button_pressed() -> void:
 ===================================================
 FILE: src\world\test_level.tscn
 ===================================================
-[gd_scene load_steps=9 format=3 uid="uid://b0f1q8k7v3m2"]
+[gd_scene load_steps=10 format=3 uid="uid://b0f1q8k7v3m2"]
 
 [ext_resource type="Script" path="res://src/world/test_level.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
 [ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="3_pause"]
+[ext_resource type="PackedScene" uid="uid://b7y2n4m8q1v9" path="res://src/actors/enemy/enemy.tscn" id="4_enemy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(3400, 80)
@@ -788,6 +1553,9 @@ position = Vector2(180, 640)
 [node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
 remote_path = NodePath("../../Camera2D")
 
+[node name="TestEnemy" parent="." instance=ExtResource("4_enemy")]
+position = Vector2(550, 640)
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(180, 640)
 limit_left = 0
@@ -813,16 +1581,33 @@ mouse_filter = 2
 layout_mode = 0
 offset_left = 24.0
 offset_top = 20.0
-offset_right = 320.0
+offset_right = 350.0
 offset_bottom = 50.0
-text = "NOCTELYRA - Milestone M0"
+text = "NOCTELYRA - Milestone M1 Combat"
+
+[node name="VBoxBars" type="VBoxContainer" parent="CanvasLayer/HUD"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 50.0
+offset_right = 260.0
+offset_bottom = 98.0
+
+[node name="HPBar" type="ProgressBar" parent="CanvasLayer/HUD/VBoxBars"]
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+
+[node name="MPBar" type="ProgressBar" parent="CanvasLayer/HUD/VBoxBars"]
+layout_mode = 2
+max_value = 60.0
+value = 60.0
 
 [node name="StateLabel" type="Label" parent="CanvasLayer/HUD"]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 50.0
+offset_top = 105.0
 offset_right = 240.0
-offset_bottom = 80.0
+offset_bottom = 135.0
 text = "State: IDLE"
 
 [node name="ControlsInfo" type="Label" parent="CanvasLayer/HUD"]
@@ -831,15 +1616,15 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 24.0
-offset_top = -120.0
+offset_top = -160.0
 offset_right = 450.0
 offset_bottom = -20.0
 grow_vertical = 0
 text = "Controls:
-- A / D or Left/Right: Move
-- Space: Jump / Double Jump
-- Shift: Dash
-- Esc: Pause"
+- A / D: Move | Space: Jump / Double Jump | Shift: Dash
+- J: Melee Attack (Cooldown)
+- K: Magic Spell (Cost MP)
+- Esc: Pause / Resume"
 
 [node name="PauseMenu" type="Control" parent="CanvasLayer"]
 process_mode = 2

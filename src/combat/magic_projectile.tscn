@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5e3f2m1p0q7"]
+
+[ext_resource type="Script" path="res://src/combat/magic_projectile.gd" id="1_proj"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_orb"]
+radius = 12.0
+
+[node name="MagicProjectile" type="Area2D"]
+collision_layer = 16
+collision_mask = 5
+script = ExtResource("1_proj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_orb")
+
+[node name="VisualOrb" type="ColorRect" parent="."]
+offset_left = -10.0
+offset_top = -10.0
+offset_right = 10.0
+offset_bottom = 10.0
+color = Color(0.2, 0.7, 1.0, 0.9)
+
+[node name="CoreGlow" type="ColorRect" parent="."]
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+color = Color(0.9, 0.95, 1.0, 1.0)

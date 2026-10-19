@@ -1,0 +1,85 @@
+[gd_scene load_steps=7 format=3 uid="uid://b7y2n4m8q1v9"]
+
+[ext_resource type="Script" path="res://src/actors/enemy/enemy.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://src/combat/health_component.gd" id="2_health"]
+[ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" path="res://src/combat/hitbox.gd" id="4_hitbox"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_enemy"]
+radius = 18.0
+height = 60.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_enemy_hitbox"]
+size = Vector2(40, 50)
+
+[node name="Enemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_enemy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -30)
+shape = SubResource("CapsuleShape2D_enemy")
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="BodyRect" type="ColorRect" parent="VisualRoot"]
+offset_left = -18.0
+offset_top = -60.0
+offset_right = 18.0
+offset_bottom = 0.0
+color = Color(0.8, 0.2, 0.2, 1)
+
+[node name="EyeRect" type="ColorRect" parent="VisualRoot"]
+offset_left = -12.0
+offset_top = -48.0
+offset_right = -4.0
+offset_bottom = -40.0
+color = Color(1, 1, 1, 1)
+
+[node name="HPBar" type="ProgressBar" parent="VisualRoot"]
+offset_left = -25.0
+offset_top = -75.0
+offset_right = 25.0
+offset_bottom = -67.0
+max_value = 80.0
+value = 80.0
+show_percentage = false
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 80.0
+current_health = 80.0
+invulnerability_duration = 0.2
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health_component", "owner_node")]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("3_hurtbox")
+health_component = NodePath("../HealthComponent")
+owner_node = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -30)
+shape = SubResource("CapsuleShape2D_enemy")
+
+[node name="AttackHitbox" type="Area2D" parent="." node_paths=PackedStringArray("owner_node")]
+position = Vector2(-28, -30)
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+visible = false
+script = ExtResource("4_hitbox")
+damage = 15.0
+knockback_force = 200.0
+owner_node = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+shape = SubResource("RectangleShape2D_enemy_hitbox")
+
+[node name="BiteEffectPlaceholder" type="ColorRect" parent="AttackHitbox"]
+offset_left = -20.0
+offset_top = -25.0
+offset_right = 20.0
+offset_bottom = 25.0
+color = Color(1, 0.2, 0.2, 0.5)

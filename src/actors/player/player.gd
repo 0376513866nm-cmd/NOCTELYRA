@@ -16,6 +16,9 @@ enum State {
 @onready var sprite_root: Node2D = $SpriteRoot
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var health_component: HealthComponent = $HealthComponent
+@onready var combat_component: CombatComponent = $CombatComponent
+@onready var hurtbox: Hurtbox = $Hurtbox
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -29,10 +32,17 @@ func _ready() -> void:
 		movement_data = PlayerMovementData.new()
 	_change_state(State.IDLE)
 
+	if health_component:
+		health_component.invulnerability_started.connect(_on_invuln_started)
+		health_component.invulnerability_ended.connect(_on_invuln_ended)
+
 func _physics_process(delta: float) -> void:
 	# Luôn giảm thời gian hồi chiêu Dash độc lập
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
+
+	# Xử lý input tấn công & ma pháp (J & K)
+	_handle_combat_inputs()
 
 	match current_state:
 		State.DASH:
@@ -116,6 +126,22 @@ func _physics_process(delta: float) -> void:
 	# Khôi phục số lần nhảy khi đang chạm đất
 	if is_on_floor() and current_state != State.JUMP:
 		_restore_jumps()
+
+func _handle_combat_inputs() -> void:
+	if combat_component == null:
+		return
+	if Input.is_action_just_pressed("attack"):
+		combat_component.perform_attack(facing_direction)
+	elif Input.is_action_just_pressed("cast_spell"):
+		combat_component.cast_spell(self, facing_direction, health_component)
+
+func _on_invuln_started() -> void:
+	if sprite_root:
+		sprite_root.modulate = Color(1.0, 0.4, 0.4, 0.7)
+
+func _on_invuln_ended() -> void:
+	if sprite_root:
+		sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 func _restore_jumps() -> void:
 	jumps_left = movement_data.max_jumps

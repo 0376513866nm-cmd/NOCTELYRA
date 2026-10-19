@@ -1,9 +1,13 @@
-[gd_scene load_steps=12 format=3 uid="uid://c8m4p7k1y2r3"]
+[gd_scene load_steps=17 format=3 uid="uid://c8m4p7k1y2r3"]
 
 [ext_resource type="Script" path="res://src/actors/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://src/actors/player/player_movement_data.gd" id="2_data"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/player_idle_strip.png" id="3_idle"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/player_run_strip.png" id="4_run"]
+[ext_resource type="Script" path="res://src/combat/health_component.gd" id="5_health"]
+[ext_resource type="Script" path="res://src/combat/combat_component.gd" id="6_combat"]
+[ext_resource type="Script" path="res://src/combat/hitbox.gd" id="7_hitbox"]
+[ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="8_hurtbox"]
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
@@ -23,6 +27,13 @@ dash_cooldown = 0.8
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 16.0
 height = 84.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurtbox"]
+radius = 18.0
+height = 86.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_melee"]
+size = Vector2(50, 60)
 
 [sub_resource type="Animation" id="Animation_idle"]
 resource_name = "idle"
@@ -141,3 +152,49 @@ hframes = 14
 libraries = {
 "": SubResource("AnimationLibrary_player")
 }
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("5_health")
+max_health = 100.0
+current_health = 100.0
+max_mana = 60.0
+current_mana = 60.0
+mana_regen_rate = 6.0
+invulnerability_duration = 0.8
+
+[node name="CombatComponent" type="Node" parent="." node_paths=PackedStringArray("melee_hitbox")]
+script = ExtResource("6_combat")
+melee_hitbox = NodePath("../MeleeHitbox")
+projectile_spawn_offset = Vector2(25, -42)
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health_component", "owner_node")]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("8_hurtbox")
+health_component = NodePath("../HealthComponent")
+owner_node = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -42)
+shape = SubResource("CapsuleShape2D_hurtbox")
+
+[node name="MeleeHitbox" type="Area2D" parent="." node_paths=PackedStringArray("owner_node")]
+position = Vector2(35, -42)
+collision_layer = 8
+collision_mask = 4
+monitoring = false
+visible = false
+script = ExtResource("7_hitbox")
+damage = 25.0
+knockback_force = 220.0
+owner_node = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHitbox"]
+shape = SubResource("RectangleShape2D_melee")
+
+[node name="SlashEffectPlaceholder" type="ColorRect" parent="MeleeHitbox"]
+offset_left = -25.0
+offset_top = -30.0
+offset_right = 25.0
+offset_bottom = 30.0
+color = Color(1, 0.9, 0.3, 0.5)
