@@ -1,0 +1,278 @@
+[gd_scene load_steps=8 format=3 uid="uid://b0f1q8k7v3m2"]
+
+[ext_resource type="Script" path="res://src/world/test_level.gd" id="1_world"]
+[ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(3400, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(60, 800)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_large"]
+size = Vector2(260, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_mid"]
+size = Vector2(180, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat_small"]
+size = Vector2(140, 20)
+
+[node name="TestLevel" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_left = -200.0
+offset_top = -300.0
+offset_right = 3500.0
+offset_bottom = 800.0
+color = Color(0.0784314, 0.0901961, 0.129412, 1)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1600, 680)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Ground"]
+offset_left = -1700.0
+offset_top = -40.0
+offset_right = 1700.0
+offset_bottom = 40.0
+color = Color(0.18, 0.22, 0.28, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-20, 320)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/LeftWall"]
+offset_left = -30.0
+offset_top = -400.0
+offset_right = 30.0
+offset_bottom = 400.0
+color = Color(0.12, 0.15, 0.2, 1)
+
+[node name="RightWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3220, 320)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/RightWall"]
+offset_left = -30.0
+offset_top = -400.0
+offset_right = 30.0
+offset_bottom = 400.0
+color = Color(0.12, 0.15, 0.2, 1)
+
+[node name="Platform1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(400, 520)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform1"]
+shape = SubResource("RectangleShape2D_plat_large")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform1"]
+offset_left = -130.0
+offset_top = -10.0
+offset_right = 130.0
+offset_bottom = 10.0
+color = Color(0.28, 0.42, 0.58, 1)
+
+[node name="Platform2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(750, 420)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform2"]
+shape = SubResource("RectangleShape2D_plat_mid")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform2"]
+offset_left = -90.0
+offset_top = -10.0
+offset_right = 90.0
+offset_bottom = 10.0
+color = Color(0.28, 0.42, 0.58, 1)
+
+[node name="Platform3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1100, 320)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform3"]
+shape = SubResource("RectangleShape2D_plat_small")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform3"]
+offset_left = -70.0
+offset_top = -10.0
+offset_right = 70.0
+offset_bottom = 10.0
+color = Color(0.28, 0.42, 0.58, 1)
+
+[node name="Platform4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(1500, 450)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform4"]
+shape = SubResource("RectangleShape2D_plat_large")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform4"]
+offset_left = -130.0
+offset_top = -10.0
+offset_right = 130.0
+offset_bottom = 10.0
+color = Color(0.28, 0.42, 0.58, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(180, 640)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
+remote_path = NodePath("../../Camera2D")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(180, 640)
+limit_left = 0
+limit_top = -200
+limit_right = 3200
+limit_bottom = 720
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 320.0
+offset_bottom = 50.0
+text = "NOCTELYRA - Milestone M0"
+
+[node name="StateLabel" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 50.0
+offset_right = 240.0
+offset_bottom = 80.0
+text = "State: IDLE"
+
+[node name="ControlsInfo" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -120.0
+offset_right = 450.0
+offset_bottom = -20.0
+grow_vertical = 0
+text = "Controls:
+- A / D or Left/Right: Move
+- Space: Jump / Double Jump
+- Shift: Dash
+- Esc: Pause"
+
+[node name="PauseMenu" type="Control" parent="CanvasLayer"]
+process_mode = 2
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="CanvasLayer/PauseMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="Panel" parent="CanvasLayer/PauseMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -120.0
+offset_right = 160.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/PauseMenu/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -60.0
+offset_top = 24.0
+offset_right = 60.0
+offset_bottom = 54.0
+grow_horizontal = 2
+text = "GAME PAUSED"
+horizontal_alignment = 1
+
+[node name="ResumeBtn" type="Button" parent="CanvasLayer/PauseMenu/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -15.0
+offset_right = 80.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Resume"
+
+[node name="QuitBtn" type="Button" parent="CanvasLayer/PauseMenu/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = 40.0
+offset_right = 80.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Quit"
+
+[connection signal="pressed" from="CanvasLayer/PauseMenu/Panel/ResumeBtn" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/PauseMenu/Panel/QuitBtn" to="." method="_on_quit_button_pressed"]
