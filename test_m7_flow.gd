@@ -647,9 +647,186 @@ func _run_suite() -> void:
 	await _wait_seconds(0.2)
 
 	# -------------------------------------------------------------
-	# CATEGORY 13: Isolation Verification
+	# CATEGORY 13: Milestone M7.1 Stabilization Suite
 	# -------------------------------------------------------------
-	print("\n--- CATEGORY 13: Isolation Verification ---")
+	print("\n--- CATEGORY 13: Milestone M7.1 Stabilization Suite ---")
+
+	# Subtest 1: Ember Lizard Loot Drop
+	var m71_lizard_parent := Node2D.new()
+	root.add_child(m71_lizard_parent)
+	var m71_lizard_def := EnemyDefScript.get_definition("ember_lizard")
+	_assert(m71_lizard_def.drop_item_id == "ember_core", "Ember Lizard definition có drop_item_id == 'ember_core'")
+
+	var m71_test_lizard: Enemy = EnemyScene.instantiate() as Enemy
+	m71_test_lizard.enemy_type_id = "ember_lizard"
+	m71_test_lizard.definition = m71_lizard_def
+	m71_lizard_parent.add_child(m71_test_lizard)
+	m71_test_lizard._spawn_loot()
+	await _wait_seconds(0.1)
+
+	var m71_found_core: ItemPickup = null
+	for child in m71_lizard_parent.get_children():
+		if child is ItemPickup and child.item_id == "ember_core":
+			m71_found_core = child
+			break
+	_assert(m71_found_core != null, "Ember Lizard bị tiêu diệt sinh ra pickup ember_core hợp lệ (không phải mana_shard)")
+	m71_lizard_parent.queue_free()
+	await _wait_seconds(0.1)
+
+	# Subtest 2: Pre-quest Mooncap Kills (Chống kẹt nhiệm vụ Kaelis)
+	var stab_player_scene: PackedScene = preload("res://src/actors/player/player.tscn")
+	var stab_player := stab_player_scene.instantiate() as Player
+	root.add_child(stab_player)
+	var stab_journal := stab_player.quest_journal_component
+
+	# Trường hợp 1: Diệt 1 Mooncap trước khi nhận quest
+	var pre_m1: Enemy = EnemyScene.instantiate() as Enemy
+	pre_m1.enemy_type_id = "corrupted_mooncap"
+	pre_m1.enemy_id = "pre_mooncap_1"
+	stab_journal.register_enemy_kill(pre_m1)
+	pre_m1.queue_free()
+
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.NOT_STARTED, "Quest chưa bắt đầu trước khi gặp Kaelis")
+	stab_journal.start_quest("quest_elyndra_cleansing")
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.ACTIVE, "Quest Kaelis ACTIVE sau khi nhận")
+	_assert(stab_journal.get_quest_progress("quest_elyndra_cleansing") == 1, "Tiến độ tự động đồng bộ 1/3 từ quái diệt trước đó")
+
+	# Diệt nốt 2 con sau khi đã nhận quest
+	var pre_m2: Enemy = EnemyScene.instantiate() as Enemy
+	pre_m2.enemy_type_id = "corrupted_mooncap"
+	pre_m2.enemy_id = "pre_mooncap_2"
+	stab_journal.register_enemy_kill(pre_m2)
+	pre_m2.queue_free()
+
+	var pre_m3: Enemy = EnemyScene.instantiate() as Enemy
+	pre_m3.enemy_type_id = "corrupted_mooncap"
+	pre_m3.enemy_id = "pre_mooncap_3"
+	stab_journal.register_enemy_kill(pre_m3)
+	pre_m3.queue_free()
+
+	_assert(stab_journal.get_quest_progress("quest_elyndra_cleansing") == 3, "Tiến độ đạt đủ 3/3")
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Quest Kaelis READY_TO_TURN_IN")
+
+	# Trường hợp 2: Diệt TOÀN BỘ 3 Mooncap trước khi gặp Kaelis
+	var stab_player2 := stab_player_scene.instantiate() as Player
+	root.add_child(stab_player2)
+	var stab_journal2 := stab_player2.quest_journal_component
+
+	for i in range(1, 4):
+		var all_m: Enemy = EnemyScene.instantiate() as Enemy
+		all_m.enemy_type_id = "corrupted_mooncap"
+		all_m.enemy_id = "all_mooncap_%d" % i
+		stab_journal2.register_enemy_kill(all_m)
+		all_m.queue_free()
+
+	stab_journal2.start_quest("quest_elyndra_cleansing")
+	_assert(stab_journal2.get_quest_progress("quest_elyndra_cleansing") == 3, "Diệt cả 3 Mooncap trước: tiến độ tự nhận đủ 3/3 ngay khi nhận quest")
+	_assert(stab_journal2.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Quest lập tức READY_TO_TURN_IN (không bị kẹt 0/3)")
+
+	# Bảo toàn lịch sử diệt quái qua to_dict / from_dict (Save/Load)
+	var serialized_j := stab_journal2.to_dict()
+	_assert(serialized_j.has("_kill_history"), "Bản serialize quest journal chứa _kill_history")
+	var stab_player3 := stab_player_scene.instantiate() as Player
+	root.add_child(stab_player3)
+	var stab_journal3 := stab_player3.quest_journal_component
+	stab_journal3.from_dict(serialized_j)
+	_assert(stab_journal3.get_quest_progress("quest_elyndra_cleansing") == 3, "Khôi phục chính xác tiến độ 3/3 từ save")
+	_assert(stab_journal3.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Khôi phục chính xác trạng thái READY_TO_TURN_IN từ save")
+
+	stab_player2.queue_free()
+	stab_player3.queue_free()
+
+	# Subtest 3: Atomic Turn-in when Inventory is Full
+	var stab_inv := stab_player.inventory_component
+	stab_inv.clear()
+	for i in range(16):
+		stab_inv.add_item("moonsteel_sword", 1)
+	_assert(stab_inv.get_free_slots_count() == 0, "Túi đồ đã đầy 16/16 ô")
+
+	var qm_mock: QuestManager = QuestManager.new()
+	var gold_pre = qm_mock.gold
+
+	_assert(stab_journal.can_turn_in("quest_elyndra_cleansing", stab_inv) == false, "can_turn_in trả về false khi túi đồ không còn chỗ nhận thưởng")
+
+	var fail_turn_in := stab_journal.turn_in_quest("quest_elyndra_cleansing", stab_inv, qm_mock)
+	_assert(fail_turn_in.get("success") == false, "turn_in_quest từ chối trả thưởng thành công khi túi đầy")
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Trạng thái nhiệm vụ vẫn là READY_TO_TURN_IN (không bị mất nhiệm vụ)")
+	_assert(qm_mock.gold == gold_pre, "Vàng không bị phát trước khi có chỗ chứa")
+	_assert(stab_inv.get_item_count("health_potion") == 0, "Không nhận bình máu khi chưa có chỗ")
+
+	stab_inv.remove_item_at(0, 1)
+	_assert(stab_inv.get_free_slots_count() >= 1, "Đã dọn thành công ít nhất 1 ô trống")
+	_assert(stab_journal.can_turn_in("quest_elyndra_cleansing", stab_inv) == true, "can_turn_in trả về true sau khi đã có chỗ trống")
+
+	var success_turn_in := stab_journal.turn_in_quest("quest_elyndra_cleansing", stab_inv, qm_mock)
+	_assert(success_turn_in.get("success") == true, "turn_in_quest hoàn thành thuận lợi khi đã đủ chỗ")
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.COMPLETED, "Quest chuyển sang COMPLETED")
+	_assert(qm_mock.gold == gold_pre + 80, "Đã nhận đúng 80 Vàng thưởng")
+	_assert(stab_inv.get_item_count("health_potion") == 2, "Đã nhận đúng 2 Bình Máu thưởng")
+
+	# Subtest 4: Collection Progress Auto-Sync via inventory_updated
+	stab_inv.clear()
+	stab_journal.start_quest("quest_vharok_embers")
+	_assert(stab_journal.get_quest_state("quest_vharok_embers") == QuestDefScript.QuestState.ACTIVE, "Quest Rhaek ACTIVE")
+	_assert(stab_journal.get_quest_progress("quest_vharok_embers") == 0, "Tiến độ ban đầu: 0/3 Lõi Tàn Hỏa")
+
+	stab_inv.add_item("ember_core", 1)
+	_assert(stab_journal.get_quest_progress("quest_vharok_embers") == 1, "Tự động đồng bộ tiến độ 1/3 khi nhặt 1 Lõi Tàn Hỏa")
+
+	stab_inv.add_item("ember_core", 2)
+	_assert(stab_journal.get_quest_progress("quest_vharok_embers") == 3, "Tự động đồng bộ tiến độ 3/3 khi có đủ 3 Lõi Tàn Hỏa")
+	_assert(stab_journal.get_quest_state("quest_vharok_embers") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Tự động chuyển sang READY_TO_TURN_IN")
+
+	stab_inv.remove_item_by_id("ember_core", 1)
+	_assert(stab_journal.get_quest_progress("quest_vharok_embers") == 2, "Tiến độ tự động giảm về 2/3 khi mất vật phẩm")
+	_assert(stab_journal.get_quest_state("quest_vharok_embers") == QuestDefScript.QuestState.ACTIVE, "Trạng thái tự động quay về ACTIVE khi thiếu số lượng")
+
+	stab_player.queue_free()
+	qm_mock.free()
+	await _wait_seconds(0.1)
+
+	# Subtest 5: Player Control Lock & UI Mutual Exclusivity
+	var ctrl_zone = elyndra_scene.instantiate()
+	root.add_child(ctrl_zone)
+	current_scene = ctrl_zone
+	await _wait_seconds(0.3)
+
+	var ctrl_player: Player = ctrl_zone.get_node_or_null("Player") as Player
+	var ctrl_ui: GameUI = ctrl_zone.get_node_or_null("GameUI") as GameUI
+
+	ctrl_ui.open_quest_journal()
+	_assert(ctrl_ui.is_quest_journal_open() == true, "Quest Journal đang mở")
+	_assert(ctrl_ui.is_inventory_open() == false, "Túi đồ không mở khi đang mở Journal")
+
+	ctrl_player.velocity.x = 200.0
+	ctrl_player._physics_process(0.016)
+	_assert(ctrl_player.velocity.x < 200.0, "Vận tốc di chuyển của Player bị hãm dừng khi Journal đang mở")
+
+	ctrl_ui.open_inventory()
+	_assert(ctrl_ui.is_inventory_open() == true, "Túi đồ đã mở")
+	_assert(ctrl_ui.is_quest_journal_open() == false, "Quest Journal tự động đóng khi mở Túi đồ (loại trừ lẫn nhau)")
+
+	ctrl_ui.open_quest_journal()
+	_assert(ctrl_ui.is_quest_journal_open() == true, "Quest Journal mở lại")
+	_assert(ctrl_ui.is_inventory_open() == false, "Túi đồ tự động đóng khi mở Quest Journal")
+
+	var mock_key_j := InputEventAction.new()
+	mock_key_j.action = "attack"
+	mock_key_j.pressed = true
+	ctrl_ui._unhandled_input(mock_key_j)
+	_assert(ctrl_ui.is_quest_journal_open() == false, "Đóng Quest Journal thành công bằng phím J (attack)")
+
+	ctrl_player.velocity.x = 0.0
+	ctrl_player._physics_process(0.016)
+	_assert(ctrl_ui.is_quest_journal_open() == false, "Journal đã đóng hoàn toàn, Player phục hồi điều khiển")
+
+	ctrl_zone.queue_free()
+	await _wait_seconds(0.2)
+
+	# -------------------------------------------------------------
+	# CATEGORY 14: Isolation Verification
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 14: Isolation Verification ---")
 	var real_file_existed_at_end = FileAccess.file_exists(REAL_SAVE_PATH)
 	if real_file_existed_at_start:
 		_assert(real_file_existed_at_end == true, "File save thật vẫn tồn tại nguyên vẹn")

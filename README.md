@@ -1,17 +1,17 @@
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M7: Regional Gameplay Expansion)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M7.1: Gameplay Stabilization)
 
 Dự án game Action RPG 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Milestone M7)
+## 1. Cấu trúc thư mục & Module dự án (Milestone M7.1)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu kiến trúc Milestone M7 & kết quả kiểm thử
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M7 Final)
-├── test_m7_flow.gd                 # [M7] Kịch bản kiểm thử 13 nhóm tính năng mở rộng vùng đất (116/116 tests PASS 100%)
+├── README.md                       # Tài liệu kiến trúc Milestone M7.1 & kết quả kiểm thử
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M7.1 Final)
+├── test_m7_flow.gd                 # [M7.1] Kịch bản kiểm thử 14 nhóm tính năng và ổn định gameplay (156/156 tests PASS 100%)
 ├── test_m6_flow.gd                 # Kịch bản kiểm thử thế giới mở rộng & cổng dịch chuyển (117/117 tests PASS 100%)
 ├── test_m5_flow.gd                 # Kịch bản kiểm thử 26 nhóm tính năng ma pháp (100/100 tests PASS 100%)
 ├── test_m4_flow.gd                 # Kịch bản kiểm thử 17 hạng mục Boss M4 (87/87 tests PASS 100%)
@@ -35,14 +35,14 @@ D:\project\game\NOCTELYRA\
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player, tích hợp QuestJournalComponent
+    │   │   ├── player.gd                    # FSM Player, tích hợp QuestJournalComponent, khóa điều khiển khi mở Journal
     │   │   ├── player.tscn                  # Scene Player có đủ các Component chiến đấu và dữ liệu
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy đôi, dash
     │   ├── npc\
     │   │   ├── npc.gd                       # Logic NPC: Elyra (Noctis), Kaelis (Elyndra), Rhaek (Vharok)
     │   │   └── npc.tscn                     # Scene NPC xuyên người mượt mà (collision_layer = 0)
     │   └── enemy\
-    │       ├── enemy.gd                     # Enemy AI đa hình thái: MELEE, LUNGE, RANGED, Leash, Stop on Player Death
+    │       ├── enemy.gd                     # Enemy AI: MELEE, LUNGE, RANGED, Leash, Stop on Player Death, rớt drop_item_id
     │       ├── enemy.tscn                   # Scene Enemy mô đun hóa (Health, Hitbox, Hurtbox, Visual)
     │       ├── enemy_definition.gd          # Custom Resource EnemyDefinition (5 presets cấu hình)
     │       ├── enemy_projectile.gd          # Đạn ma pháp / cầu lửa của quái tầm xa (mask 2: Player hurtbox)
@@ -63,7 +63,7 @@ D:\project\game\NOCTELYRA\
     ├── inventory\
     │   ├── item_database.gd                 # Cơ sở dữ liệu vật phẩm (thêm ember_core Lõi Tàn Hỏa)
     │   ├── item_definition.gd               # Custom Resource ItemDefinition
-    │   ├── inventory_component.gd           # Túi đồ 16 ô, stack item, kiểm tra chỗ trống an toàn
+    │   ├── inventory_component.gd           # Túi đồ 16 ô, stack item, kiểm tra can_receive_items an toàn
     │   ├── equipment_component.gd           # Quản lý 2 ô trang bị (weapon, accessory)
     │   ├── inventory_ui.gd                  # UI túi đồ 16 ô
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ
@@ -74,16 +74,16 @@ D:\project\game\NOCTELYRA\
     │   └── projectiles\                     # Đạn phép thuật của Player
     ├── quest\
     │   ├── quest_data.gd                    # Nhiệm vụ chính của Elyra (M0–M6)
-    │   ├── quest_definition.gd              # [M7] Resource nhiệm vụ phụ: KILL_ENEMY_TYPE & COLLECT_ITEMS
-    │   ├── quest_journal_component.gd       # [M7] Component quản lý nhật ký nhiệm vụ, lọc quái, trao thưởng an toàn
+    │   ├── quest_definition.gd              # Resource nhiệm vụ phụ: KILL_ENEMY_TYPE & COLLECT_ITEMS
+    │   ├── quest_journal_component.gd       # Component quản lý nhật ký nhiệm vụ, chống kẹt diệt quái sớm, đồng bộ nhặt đồ
     │   └── quest_manager.gd                 # Quản lý nhiệm vụ chính và Vàng
     ├── save\
-    │   └── save_manager.gd                  # [M7 v1.4.0] Ghi nguyên tử, lưu Quest Journal, world state, backward-compatible
+    │   └── save_manager.gd                  # [M7 v1.4.0] Ghi nguyên tử, lưu Quest Journal & _kill_history, backward-compatible
     ├── ui\
-    │   ├── game_ui.gd                       # HUD chính, kết nối phím Q bật Sổ Nhiệm Vụ, thoại NPC Kaelis/Rhaek
+    │   ├── game_ui.gd                       # HUD chính, kết nối phím Q/J đóng mở Sổ Nhiệm Vụ, thoại NPC Kaelis/Rhaek
     │   ├── game_ui.tscn                     # CanvasLayer HUD, tích hợp QuestJournalUI
-    │   ├── quest_journal_ui.gd              # [M7] UI Sổ Nhiệm Vụ: hiển thị 3 nhiệm vụ, tiến độ, phần thưởng, badge
-    │   ├── quest_journal_ui.tscn            # [M7] Scene Sổ Nhiệm Vụ
+    │   ├── quest_journal_ui.gd              # UI Sổ Nhiệm Vụ: hiển thị 3 nhiệm vụ, tiến độ, phần thưởng, badge
+    │   ├── quest_journal_ui.tscn            # Scene Sổ Nhiệm Vụ
     │   ├── spell_hotbar.gd                  # Thanh kỹ năng ma pháp HUD
     │   └── spell_hotbar.tscn                # Scene thanh kỹ năng ma pháp
     └── world\
@@ -98,60 +98,36 @@ D:\project\game\NOCTELYRA\
         ├── elyndra_glade.gd                 # Vùng 2: Thánh Lâm Elyndra
         ├── elyndra_glade.tscn               # (Chứa NPC Kaelis, 3 Corrupted Mooncap, 2 Corrupted Mana Wisp)
         ├── vharok_outpost.gd                # Vùng 3: Tiền Đồn Vharok
-        └── vharok_outpost.tscn              # (Chứa NPC Rhaek, 3 Ashfang Wolf, 2 Ember Lizard, 3 Ember Core pickups)
+        └── vharok_outpost.tscn              # (Chứa NPC Rhaek, 3 Ashfang Wolf, 2 Ember Lizard)
 ```
 
 ---
 
-## 2. Chi Tiết Triển Khai Milestone M7
+## 2. Các điểm cải tiến và khắc phục lỗi trong M7.1 Stabilization
 
-### A. Hệ thống Sinh vật & Chiến đấu Vùng miền (Regional Creatures)
-- **Kiến trúc dữ liệu:**
-  + Sử dụng `EnemyDefinition` để cấu hình thông số riêng biệt cho từng loài quái, tách biệt dữ liệu khỏi mã logic.
-  + Hỗ trợ 3 kiểu tấn công: `MELEE` (cận chiến), `LUNGE` (lao tới tốc độ cao), `RANGED` (bắn đạn ma thuật/cầu lửa từ xa).
-  + Hỗ trợ giai đoạn báo trước (`telegraph`) và thời gian khựng nghỉ (`recovery`), tạo nhịp điệu chiến đấu side-scrolling rõ ràng, công bằng cho người chơi.
-  + **Cơ chế Leash Protection:** Quái vật rượt đuổi người chơi nhưng tự động hủy mục tiêu và quay về khi vượt quá `leash_distance` tính từ điểm sinh ban đầu.
-  + **Dừng tấn công khi Player tử vong:** Quái vật tự động hủy mục tiêu và tắt hitbox tấn công ngay lập tức khi Player chết.
-  + **Chống sát thương trùng lặp (No Infinite Damage Loop):** Sử dụng `reset_hits()` và bộ đệm kiểm tra mục tiêu đã trúng đòn trong cùng một lượt đánh.
-- **Sinh vật Thánh Lâm Elyndra:**
-  + **Corrupted Mooncap (Nấm Mộng Tha Hóa):** Cận chiến, di chuyển chậm, có thời gian rung lắc báo hiệu trước khi tấn công. Rơi Tinh thể Ma lực (`mana_shard`).
-  + **Corrupted Mana Wisp (Linh Hồn Tinh Mạch):** Sinh vật bay lơ lửng không chịu trọng lực rơi, bắn đạn ma pháp tím định hướng (`enemy_projectile`) gây 12 DMG.
-- **Sinh vật Tiền Đồn Vharok:**
-  + **Ashfang Wolf (Sói Tro):** Di chuyển nhanh (180 px/s), gầm báo hiệu (0.5s) rồi lao vụt tới (460 px/s) gây 18 DMG, có thời gian nghỉ hồi phục (0.85s).
-  + **Ember Lizard (Hỏa Tích Hắc Nham):** Tấn công tầm xa, tích tụ lửa và bắn cầu lửa cam (15 DMG, 280 px/s), có xác suất đánh rơi Lõi Tàn Hỏa (`ember_core`).
-- **Hiển thị Placeholder Phân biệt (`EnemyVisual`):**
-  + Mỗi loại quái có bảng màu, kích thước và chi tiết đặc trưng (Nấm có mũ đốm sáng ma thuật, Wisp có lõi năng lượng lơ lửng, Sói có mắt đỏ nhe răng, Thằn lằn có vảy đá gai lưng).
-  + Hỗ trợ đầy đủ 5 animation state: `idle`, `move`, `telegraph`, `attack`, `hit`, `death`, sẵn sàng thay thế trực tiếp bằng `AnimatedSprite2D` khi có sprite art hoàn chỉnh.
+1. **Khắc phục triệt để nguy cơ kẹt nhiệm vụ Kaelis (Softlock Prevention):**
+   - Bổ sung `_kill_history` trong `QuestJournalComponent` để tự động ghi nhận mọi quái vật bị hạ gục trước khi nhận quest.
+   - Khi nhận nhiệm vụ `quest_elyndra_cleansing`, hệ thống tự động đồng bộ số Mooncap đã diệt trước đó từ `_kill_history` và `defeated_enemy_ids` của bản đồ.
+   - Nếu đã diệt 1, 2 hoặc cả 3 Mooncap trước khi nói chuyện với Kaelis, tiến độ lập tức được ghi nhận chính xác (1/3, 2/3, 3/3 `READY_TO_TURN_IN`) mà không bị kẹt 0/3.
+   - Lịch sử diệt quái được serialize/deserialize nguyên vẹn trong Save v1.4.0.
 
-### B. Hệ thống Nhiệm vụ Phụ & Đối thoại NPC
-- **Nhiệm vụ Thánh Lâm — Kaelis (`quest_elyndra_cleansing`):**
-  + Kaelis nhờ thanh tẩy các cây Nấm Mộng Tha Hóa làm ô nhiễm dòng chảy Tinh Mạch.
-  + Mục tiêu: Tiêu diệt 3 `corrupted_mooncap`. Giết các loài quái khác không làm tăng tiến độ.
-  + Phần thưởng: **80 Vàng + 2 Bình Máu (`health_potion`)**.
-  + Sau khi hoàn thành: Kaelis chia sẻ lore về lịch sử Tinh Mạch và mối quan hệ cổ xưa giữa Tinh Linh và Quỷ tộc bán thú.
-- **Nhiệm vụ Tiền Đồn — Rhaek (`quest_vharok_embers`):**
-  + Rhaek cần Lõi Tàn Hỏa để duy trì ngọn lửa rèn của Tiền Đồn.
-  + Mục tiêu: Thu thập 3 `ember_core` (nhặt từ 3 vị trí trên bản đồ Tiền Đồn Vharok hoặc đánh rơi từ Hỏa Tích Hắc Nham).
-  + Khi trả nhiệm vụ: Hệ thống tự động kiểm tra và **trừ đúng 3 `ember_core`** khỏi Inventory của người chơi.
-  + Phần thưởng: **100 Vàng + 3 Mảnh Chân Ma (`mana_shard`)**.
-  + Sau khi hoàn thành: Rhaek khen ngợi lòng quả cảm của người chơi và kể về tinh thần trọng danh dự của Quỷ tộc.
-- **Bảo vệ chống nhận thưởng lặp lại:** Cờ `reward_claimed` ngăn chặn tuyệt đối việc nhận vàng hay vật phẩm nhiều lần khi tương tác lại.
-- **Bảo vệ túi đồ đầy:** Nếu túi đồ không còn chỗ trống khi nhận thưởng, vật phẩm tự động rơi xuống mặt đất dưới dạng item pickup an toàn, không bị mất dữ liệu.
+2. **Sửa rơi đồ của Ember Lizard (Lõi Tàn Hỏa - Ember Core):**
+   - Trong `Enemy._spawn_loot()`, tôn trọng thuộc tính `definition.drop_item_id` nếu có (đối với `ember_lizard` là `"ember_core"`), chỉ fallback về `"mana_shard"` nếu không cấu hình.
+   - Khi Ember Lizard bị tiêu diệt, luôn sinh ra `ItemPickup` hợp lệ chứa `"ember_core"`.
 
-### C. Sổ Nhiệm Vụ (Quest Journal UI — Phím Q)
-- Bật/tắt nhanh bằng phím **Q**, nút **[✕]** hoặc phím **ESC**.
-- Hiển thị danh sách đầy đủ cả 3 nhiệm vụ:
-  1. **Nhiệm vụ chính:** Thanh Tẩy Rừng Noctis (Elyra)
-  2. **Nhiệm vụ phụ 1:** Thanh Tẩy Thánh Lâm (Kaelis)
-  3. **Nhiệm vụ phụ 2:** Lửa Rèn Tiền Đồn (Rhaek)
-- Mỗi thẻ nhiệm vụ hiển thị trực quan: Tên nhiệm vụ, Người giao, Khu vực, Mô tả, Mục tiêu & Tiến độ chi tiết, Phần thưởng và Huy hiệu Trạng thái màu sắc: `[Chưa nhận]`, `[Đang thực hiện]`, `[Sẵn sàng trả]`, `[Đã hoàn thành]`.
-- Tự động tạm khóa các phím hành động (đánh, nhảy, lướt, dùng phép) khi Sổ Nhiệm Vụ đang mở.
+3. **Xử lý túi đồ đầy khi trả quest (Atomic Turn-in):**
+   - Bổ sung hàm `can_receive_items(items_to_add, items_to_remove)` trong `InventoryComponent` để mô phỏng chính xác không gian túi đồ sau khi trừ vật phẩm quest và cộng phần thưởng.
+   - Cả `QuestJournalComponent.can_turn_in()`, `turn_in_quest()` và đối thoại NPC Kaelis/Rhaek đều kiểm tra điều kiện này.
+   - Nếu túi đồ không đủ chỗ, từ chối giao dịch an toàn: không mất quest items, không trao vàng/đồ dang dở, không autosave lỗi, giữ nguyên trạng thái `READY_TO_TURN_IN` và hướng dẫn người chơi dọn chỗ trống.
 
-### D. Nâng cấp Hệ thống Lưu & Tải Tiến trình v1.4.0
-- Nâng cấp `CURRENT_VERSION = "1.4.0"`.
-- Lưu trữ toàn bộ dữ liệu `QuestJournalComponent`: trạng thái nhiệm vụ, tiến độ, cờ đã nhận thưởng, danh sách quái đã hạ gục.
-- Lưu trữ trạng thái thế giới của từng khu vực: các quái vật đã bị tiêu diệt và các vật phẩm đã nhặt tại Elyndra Glade và Vharok Outpost được lưu nhớ chính xác, không bị hồi sinh hay tạo lại khi tải game.
-- **Tương thích ngược hoàn hảo:** Tải an toàn các bản lưu cũ v1.0.0, v1.1.0, v1.2.0, v1.3.0 mà không gây crash hoặc lỗi dữ liệu.
+4. **Khóa thao tác Player khi mở Quest Journal & Loại trừ lẫn nhau:**
+   - Trong `Player._physics_process()`, kiểm tra `ui.is_quest_journal_open()` để khóa toàn bộ input di chuyển, nhảy, dash, tấn công cận chiến và niệm phép.
+   - Khi đóng Journal (phím Q, phím J, ESC hoặc nút Close), Player phục hồi điều khiển bình thường.
+   - Thiết lập tính loại trừ lẫn nhau (mutual exclusivity) giữa Inventory (phím I) và Quest Journal (phím Q/J): mở cái này sẽ tự động đóng cái kia, không mở đè lên nhau.
+
+5. **Đồng bộ tiến độ thu thập khi nhặt đồ:**
+   - Kết nối tín hiệu `inventory_updated` của `InventoryComponent` vào `QuestJournalComponent`.
+   - Tiến độ thu thập Lõi Tàn Hỏa tự động cập nhật ngay khi nhặt từ mặt đất hoặc thay đổi số lượng trong túi đồ, có cơ chế chặn vòng lặp tín hiệu vô hạn (chỉ phát tín hiệu khi giá trị hoặc trạng thái thực sự thay đổi).
 
 ---
 
@@ -163,14 +139,14 @@ Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-
 ========================================================================================
  BỘ KIỂM THỬ                         | SỐ TEST    | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
 ----------------------------------------------------------------------------------------
- test_m7_flow.gd (Mở rộng vùng M7)   | 116 tests  | PASS 100%    | 0
+ test_m7_flow.gd (Mở rộng & M7.1)    | 156 tests  | PASS 100%    | 0
  test_m6_flow.gd (Thế giới & M6.1)   | 117 tests  | PASS 100%    | 0
  test_m5_flow.gd (Ma pháp M5.1)      | 100 tests  | PASS 100%    | 0
  test_m4_flow.gd (Boss Lunareth M4)  |  87 tests  | PASS 100%    | 0
  test_m3_2_flow.gd (Save/Load M3.2)  |  50 tests  | PASS 100%    | 0
  test_m2_1_flow.gd (NPC & Quest M2)  |  42 tests  | PASS 100%    | 0
 ========================================================================================
- TỔNG CỘNG                           | 512 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
+ TỔNG CỘNG                           | 552 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
 ========================================================================================
 ```
 
@@ -183,7 +159,7 @@ Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-
 | **A / D** | Di chuyển trái / phải (Camera bám sát mượt mà) |
 | **Space** | Nhảy đơn / Nhảy đôi (Double Jump) |
 | **Shift** | Lướt nhanh (Dash) |
-| **J** | Tấn công cận chiến (Chém kiếm) |
+| **J** | Tấn công cận chiến (Chém kiếm) \| Đóng Quest Journal khi đang mở |
 | **K** | Thi triển phép thuật đang chọn (Bắn ma pháp, tiêu hao MP) |
 | **1, 2, 3** | Chọn phép thuật: [1] Nguyệt Quang Đạn \| [2] Tinh Hỏa Bùng Nổ \| [3] Hàn Tinh Tiễn |
 | **U** | Nâng cấp phép thuật đang chọn (Tiêu hao Tinh thể Ma lực `mana_shard`) |

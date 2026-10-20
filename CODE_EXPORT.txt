@@ -1,6 +1,6 @@
 ﻿===================================================
-  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M7 FINAL)
-  EXPORTED AT: 2026-10-20 18:39:49
+  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M7.1 FINAL)
+  EXPORTED AT: 2026-10-20 19:04:45
 ===================================================
 
 
@@ -123,20 +123,20 @@ renderer/rendering_method="forward_plus"
 FILE: README.md
 ===================================================
 
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M7: Regional Gameplay Expansion)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M7.1: Gameplay Stabilization)
 
 Dự án game Action RPG 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Milestone M7)
+## 1. Cấu trúc thư mục & Module dự án (Milestone M7.1)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu kiến trúc Milestone M7 & kết quả kiểm thử
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M7 Final)
-├── test_m7_flow.gd                 # [M7] Kịch bản kiểm thử 13 nhóm tính năng mở rộng vùng đất (116/116 tests PASS 100%)
+├── README.md                       # Tài liệu kiến trúc Milestone M7.1 & kết quả kiểm thử
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M7.1 Final)
+├── test_m7_flow.gd                 # [M7.1] Kịch bản kiểm thử 14 nhóm tính năng và ổn định gameplay (156/156 tests PASS 100%)
 ├── test_m6_flow.gd                 # Kịch bản kiểm thử thế giới mở rộng & cổng dịch chuyển (117/117 tests PASS 100%)
 ├── test_m5_flow.gd                 # Kịch bản kiểm thử 26 nhóm tính năng ma pháp (100/100 tests PASS 100%)
 ├── test_m4_flow.gd                 # Kịch bản kiểm thử 17 hạng mục Boss M4 (87/87 tests PASS 100%)
@@ -160,14 +160,14 @@ D:\project\game\NOCTELYRA\
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player, tích hợp QuestJournalComponent
+    │   │   ├── player.gd                    # FSM Player, tích hợp QuestJournalComponent, khóa điều khiển khi mở Journal
     │   │   ├── player.tscn                  # Scene Player có đủ các Component chiến đấu và dữ liệu
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy đôi, dash
     │   ├── npc\
     │   │   ├── npc.gd                       # Logic NPC: Elyra (Noctis), Kaelis (Elyndra), Rhaek (Vharok)
     │   │   └── npc.tscn                     # Scene NPC xuyên người mượt mà (collision_layer = 0)
     │   └── enemy\
-    │       ├── enemy.gd                     # Enemy AI đa hình thái: MELEE, LUNGE, RANGED, Leash, Stop on Player Death
+    │       ├── enemy.gd                     # Enemy AI: MELEE, LUNGE, RANGED, Leash, Stop on Player Death, rớt drop_item_id
     │       ├── enemy.tscn                   # Scene Enemy mô đun hóa (Health, Hitbox, Hurtbox, Visual)
     │       ├── enemy_definition.gd          # Custom Resource EnemyDefinition (5 presets cấu hình)
     │       ├── enemy_projectile.gd          # Đạn ma pháp / cầu lửa của quái tầm xa (mask 2: Player hurtbox)
@@ -188,7 +188,7 @@ D:\project\game\NOCTELYRA\
     ├── inventory\
     │   ├── item_database.gd                 # Cơ sở dữ liệu vật phẩm (thêm ember_core Lõi Tàn Hỏa)
     │   ├── item_definition.gd               # Custom Resource ItemDefinition
-    │   ├── inventory_component.gd           # Túi đồ 16 ô, stack item, kiểm tra chỗ trống an toàn
+    │   ├── inventory_component.gd           # Túi đồ 16 ô, stack item, kiểm tra can_receive_items an toàn
     │   ├── equipment_component.gd           # Quản lý 2 ô trang bị (weapon, accessory)
     │   ├── inventory_ui.gd                  # UI túi đồ 16 ô
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ
@@ -199,16 +199,16 @@ D:\project\game\NOCTELYRA\
     │   └── projectiles\                     # Đạn phép thuật của Player
     ├── quest\
     │   ├── quest_data.gd                    # Nhiệm vụ chính của Elyra (M0–M6)
-    │   ├── quest_definition.gd              # [M7] Resource nhiệm vụ phụ: KILL_ENEMY_TYPE & COLLECT_ITEMS
-    │   ├── quest_journal_component.gd       # [M7] Component quản lý nhật ký nhiệm vụ, lọc quái, trao thưởng an toàn
+    │   ├── quest_definition.gd              # Resource nhiệm vụ phụ: KILL_ENEMY_TYPE & COLLECT_ITEMS
+    │   ├── quest_journal_component.gd       # Component quản lý nhật ký nhiệm vụ, chống kẹt diệt quái sớm, đồng bộ nhặt đồ
     │   └── quest_manager.gd                 # Quản lý nhiệm vụ chính và Vàng
     ├── save\
-    │   └── save_manager.gd                  # [M7 v1.4.0] Ghi nguyên tử, lưu Quest Journal, world state, backward-compatible
+    │   └── save_manager.gd                  # [M7 v1.4.0] Ghi nguyên tử, lưu Quest Journal & _kill_history, backward-compatible
     ├── ui\
-    │   ├── game_ui.gd                       # HUD chính, kết nối phím Q bật Sổ Nhiệm Vụ, thoại NPC Kaelis/Rhaek
+    │   ├── game_ui.gd                       # HUD chính, kết nối phím Q/J đóng mở Sổ Nhiệm Vụ, thoại NPC Kaelis/Rhaek
     │   ├── game_ui.tscn                     # CanvasLayer HUD, tích hợp QuestJournalUI
-    │   ├── quest_journal_ui.gd              # [M7] UI Sổ Nhiệm Vụ: hiển thị 3 nhiệm vụ, tiến độ, phần thưởng, badge
-    │   ├── quest_journal_ui.tscn            # [M7] Scene Sổ Nhiệm Vụ
+    │   ├── quest_journal_ui.gd              # UI Sổ Nhiệm Vụ: hiển thị 3 nhiệm vụ, tiến độ, phần thưởng, badge
+    │   ├── quest_journal_ui.tscn            # Scene Sổ Nhiệm Vụ
     │   ├── spell_hotbar.gd                  # Thanh kỹ năng ma pháp HUD
     │   └── spell_hotbar.tscn                # Scene thanh kỹ năng ma pháp
     └── world\
@@ -223,60 +223,36 @@ D:\project\game\NOCTELYRA\
         ├── elyndra_glade.gd                 # Vùng 2: Thánh Lâm Elyndra
         ├── elyndra_glade.tscn               # (Chứa NPC Kaelis, 3 Corrupted Mooncap, 2 Corrupted Mana Wisp)
         ├── vharok_outpost.gd                # Vùng 3: Tiền Đồn Vharok
-        └── vharok_outpost.tscn              # (Chứa NPC Rhaek, 3 Ashfang Wolf, 2 Ember Lizard, 3 Ember Core pickups)
+        └── vharok_outpost.tscn              # (Chứa NPC Rhaek, 3 Ashfang Wolf, 2 Ember Lizard)
 ```
 
 ---
 
-## 2. Chi Tiết Triển Khai Milestone M7
+## 2. Các điểm cải tiến và khắc phục lỗi trong M7.1 Stabilization
 
-### A. Hệ thống Sinh vật & Chiến đấu Vùng miền (Regional Creatures)
-- **Kiến trúc dữ liệu:**
-  + Sử dụng `EnemyDefinition` để cấu hình thông số riêng biệt cho từng loài quái, tách biệt dữ liệu khỏi mã logic.
-  + Hỗ trợ 3 kiểu tấn công: `MELEE` (cận chiến), `LUNGE` (lao tới tốc độ cao), `RANGED` (bắn đạn ma thuật/cầu lửa từ xa).
-  + Hỗ trợ giai đoạn báo trước (`telegraph`) và thời gian khựng nghỉ (`recovery`), tạo nhịp điệu chiến đấu side-scrolling rõ ràng, công bằng cho người chơi.
-  + **Cơ chế Leash Protection:** Quái vật rượt đuổi người chơi nhưng tự động hủy mục tiêu và quay về khi vượt quá `leash_distance` tính từ điểm sinh ban đầu.
-  + **Dừng tấn công khi Player tử vong:** Quái vật tự động hủy mục tiêu và tắt hitbox tấn công ngay lập tức khi Player chết.
-  + **Chống sát thương trùng lặp (No Infinite Damage Loop):** Sử dụng `reset_hits()` và bộ đệm kiểm tra mục tiêu đã trúng đòn trong cùng một lượt đánh.
-- **Sinh vật Thánh Lâm Elyndra:**
-  + **Corrupted Mooncap (Nấm Mộng Tha Hóa):** Cận chiến, di chuyển chậm, có thời gian rung lắc báo hiệu trước khi tấn công. Rơi Tinh thể Ma lực (`mana_shard`).
-  + **Corrupted Mana Wisp (Linh Hồn Tinh Mạch):** Sinh vật bay lơ lửng không chịu trọng lực rơi, bắn đạn ma pháp tím định hướng (`enemy_projectile`) gây 12 DMG.
-- **Sinh vật Tiền Đồn Vharok:**
-  + **Ashfang Wolf (Sói Tro):** Di chuyển nhanh (180 px/s), gầm báo hiệu (0.5s) rồi lao vụt tới (460 px/s) gây 18 DMG, có thời gian nghỉ hồi phục (0.85s).
-  + **Ember Lizard (Hỏa Tích Hắc Nham):** Tấn công tầm xa, tích tụ lửa và bắn cầu lửa cam (15 DMG, 280 px/s), có xác suất đánh rơi Lõi Tàn Hỏa (`ember_core`).
-- **Hiển thị Placeholder Phân biệt (`EnemyVisual`):**
-  + Mỗi loại quái có bảng màu, kích thước và chi tiết đặc trưng (Nấm có mũ đốm sáng ma thuật, Wisp có lõi năng lượng lơ lửng, Sói có mắt đỏ nhe răng, Thằn lằn có vảy đá gai lưng).
-  + Hỗ trợ đầy đủ 5 animation state: `idle`, `move`, `telegraph`, `attack`, `hit`, `death`, sẵn sàng thay thế trực tiếp bằng `AnimatedSprite2D` khi có sprite art hoàn chỉnh.
+1. **Khắc phục triệt để nguy cơ kẹt nhiệm vụ Kaelis (Softlock Prevention):**
+   - Bổ sung `_kill_history` trong `QuestJournalComponent` để tự động ghi nhận mọi quái vật bị hạ gục trước khi nhận quest.
+   - Khi nhận nhiệm vụ `quest_elyndra_cleansing`, hệ thống tự động đồng bộ số Mooncap đã diệt trước đó từ `_kill_history` và `defeated_enemy_ids` của bản đồ.
+   - Nếu đã diệt 1, 2 hoặc cả 3 Mooncap trước khi nói chuyện với Kaelis, tiến độ lập tức được ghi nhận chính xác (1/3, 2/3, 3/3 `READY_TO_TURN_IN`) mà không bị kẹt 0/3.
+   - Lịch sử diệt quái được serialize/deserialize nguyên vẹn trong Save v1.4.0.
 
-### B. Hệ thống Nhiệm vụ Phụ & Đối thoại NPC
-- **Nhiệm vụ Thánh Lâm — Kaelis (`quest_elyndra_cleansing`):**
-  + Kaelis nhờ thanh tẩy các cây Nấm Mộng Tha Hóa làm ô nhiễm dòng chảy Tinh Mạch.
-  + Mục tiêu: Tiêu diệt 3 `corrupted_mooncap`. Giết các loài quái khác không làm tăng tiến độ.
-  + Phần thưởng: **80 Vàng + 2 Bình Máu (`health_potion`)**.
-  + Sau khi hoàn thành: Kaelis chia sẻ lore về lịch sử Tinh Mạch và mối quan hệ cổ xưa giữa Tinh Linh và Quỷ tộc bán thú.
-- **Nhiệm vụ Tiền Đồn — Rhaek (`quest_vharok_embers`):**
-  + Rhaek cần Lõi Tàn Hỏa để duy trì ngọn lửa rèn của Tiền Đồn.
-  + Mục tiêu: Thu thập 3 `ember_core` (nhặt từ 3 vị trí trên bản đồ Tiền Đồn Vharok hoặc đánh rơi từ Hỏa Tích Hắc Nham).
-  + Khi trả nhiệm vụ: Hệ thống tự động kiểm tra và **trừ đúng 3 `ember_core`** khỏi Inventory của người chơi.
-  + Phần thưởng: **100 Vàng + 3 Mảnh Chân Ma (`mana_shard`)**.
-  + Sau khi hoàn thành: Rhaek khen ngợi lòng quả cảm của người chơi và kể về tinh thần trọng danh dự của Quỷ tộc.
-- **Bảo vệ chống nhận thưởng lặp lại:** Cờ `reward_claimed` ngăn chặn tuyệt đối việc nhận vàng hay vật phẩm nhiều lần khi tương tác lại.
-- **Bảo vệ túi đồ đầy:** Nếu túi đồ không còn chỗ trống khi nhận thưởng, vật phẩm tự động rơi xuống mặt đất dưới dạng item pickup an toàn, không bị mất dữ liệu.
+2. **Sửa rơi đồ của Ember Lizard (Lõi Tàn Hỏa - Ember Core):**
+   - Trong `Enemy._spawn_loot()`, tôn trọng thuộc tính `definition.drop_item_id` nếu có (đối với `ember_lizard` là `"ember_core"`), chỉ fallback về `"mana_shard"` nếu không cấu hình.
+   - Khi Ember Lizard bị tiêu diệt, luôn sinh ra `ItemPickup` hợp lệ chứa `"ember_core"`.
 
-### C. Sổ Nhiệm Vụ (Quest Journal UI — Phím Q)
-- Bật/tắt nhanh bằng phím **Q**, nút **[✕]** hoặc phím **ESC**.
-- Hiển thị danh sách đầy đủ cả 3 nhiệm vụ:
-  1. **Nhiệm vụ chính:** Thanh Tẩy Rừng Noctis (Elyra)
-  2. **Nhiệm vụ phụ 1:** Thanh Tẩy Thánh Lâm (Kaelis)
-  3. **Nhiệm vụ phụ 2:** Lửa Rèn Tiền Đồn (Rhaek)
-- Mỗi thẻ nhiệm vụ hiển thị trực quan: Tên nhiệm vụ, Người giao, Khu vực, Mô tả, Mục tiêu & Tiến độ chi tiết, Phần thưởng và Huy hiệu Trạng thái màu sắc: `[Chưa nhận]`, `[Đang thực hiện]`, `[Sẵn sàng trả]`, `[Đã hoàn thành]`.
-- Tự động tạm khóa các phím hành động (đánh, nhảy, lướt, dùng phép) khi Sổ Nhiệm Vụ đang mở.
+3. **Xử lý túi đồ đầy khi trả quest (Atomic Turn-in):**
+   - Bổ sung hàm `can_receive_items(items_to_add, items_to_remove)` trong `InventoryComponent` để mô phỏng chính xác không gian túi đồ sau khi trừ vật phẩm quest và cộng phần thưởng.
+   - Cả `QuestJournalComponent.can_turn_in()`, `turn_in_quest()` và đối thoại NPC Kaelis/Rhaek đều kiểm tra điều kiện này.
+   - Nếu túi đồ không đủ chỗ, từ chối giao dịch an toàn: không mất quest items, không trao vàng/đồ dang dở, không autosave lỗi, giữ nguyên trạng thái `READY_TO_TURN_IN` và hướng dẫn người chơi dọn chỗ trống.
 
-### D. Nâng cấp Hệ thống Lưu & Tải Tiến trình v1.4.0
-- Nâng cấp `CURRENT_VERSION = "1.4.0"`.
-- Lưu trữ toàn bộ dữ liệu `QuestJournalComponent`: trạng thái nhiệm vụ, tiến độ, cờ đã nhận thưởng, danh sách quái đã hạ gục.
-- Lưu trữ trạng thái thế giới của từng khu vực: các quái vật đã bị tiêu diệt và các vật phẩm đã nhặt tại Elyndra Glade và Vharok Outpost được lưu nhớ chính xác, không bị hồi sinh hay tạo lại khi tải game.
-- **Tương thích ngược hoàn hảo:** Tải an toàn các bản lưu cũ v1.0.0, v1.1.0, v1.2.0, v1.3.0 mà không gây crash hoặc lỗi dữ liệu.
+4. **Khóa thao tác Player khi mở Quest Journal & Loại trừ lẫn nhau:**
+   - Trong `Player._physics_process()`, kiểm tra `ui.is_quest_journal_open()` để khóa toàn bộ input di chuyển, nhảy, dash, tấn công cận chiến và niệm phép.
+   - Khi đóng Journal (phím Q, phím J, ESC hoặc nút Close), Player phục hồi điều khiển bình thường.
+   - Thiết lập tính loại trừ lẫn nhau (mutual exclusivity) giữa Inventory (phím I) và Quest Journal (phím Q/J): mở cái này sẽ tự động đóng cái kia, không mở đè lên nhau.
+
+5. **Đồng bộ tiến độ thu thập khi nhặt đồ:**
+   - Kết nối tín hiệu `inventory_updated` của `InventoryComponent` vào `QuestJournalComponent`.
+   - Tiến độ thu thập Lõi Tàn Hỏa tự động cập nhật ngay khi nhặt từ mặt đất hoặc thay đổi số lượng trong túi đồ, có cơ chế chặn vòng lặp tín hiệu vô hạn (chỉ phát tín hiệu khi giá trị hoặc trạng thái thực sự thay đổi).
 
 ---
 
@@ -288,14 +264,14 @@ Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-
 ========================================================================================
  BỘ KIỂM THỬ                         | SỐ TEST    | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
 ----------------------------------------------------------------------------------------
- test_m7_flow.gd (Mở rộng vùng M7)   | 116 tests  | PASS 100%    | 0
+ test_m7_flow.gd (Mở rộng & M7.1)    | 156 tests  | PASS 100%    | 0
  test_m6_flow.gd (Thế giới & M6.1)   | 117 tests  | PASS 100%    | 0
  test_m5_flow.gd (Ma pháp M5.1)      | 100 tests  | PASS 100%    | 0
  test_m4_flow.gd (Boss Lunareth M4)  |  87 tests  | PASS 100%    | 0
  test_m3_2_flow.gd (Save/Load M3.2)  |  50 tests  | PASS 100%    | 0
  test_m2_1_flow.gd (NPC & Quest M2)  |  42 tests  | PASS 100%    | 0
 ========================================================================================
- TỔNG CỘNG                           | 512 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
+ TỔNG CỘNG                           | 552 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
 ========================================================================================
 ```
 
@@ -308,7 +284,7 @@ Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-
 | **A / D** | Di chuyển trái / phải (Camera bám sát mượt mà) |
 | **Space** | Nhảy đơn / Nhảy đôi (Double Jump) |
 | **Shift** | Lướt nhanh (Dash) |
-| **J** | Tấn công cận chiến (Chém kiếm) |
+| **J** | Tấn công cận chiến (Chém kiếm) \| Đóng Quest Journal khi đang mở |
 | **K** | Thi triển phép thuật đang chọn (Bắn ma pháp, tiêu hao MP) |
 | **1, 2, 3** | Chọn phép thuật: [1] Nguyệt Quang Đạn \| [2] Tinh Hỏa Bùng Nổ \| [3] Hàn Tinh Tiễn |
 | **U** | Nâng cấp phép thuật đang chọn (Tiêu hao Tinh thể Ma lực `mana_shard`) |
@@ -3780,9 +3756,186 @@ func _run_suite() -> void:
 	await _wait_seconds(0.2)
 
 	# -------------------------------------------------------------
-	# CATEGORY 13: Isolation Verification
+	# CATEGORY 13: Milestone M7.1 Stabilization Suite
 	# -------------------------------------------------------------
-	print("\n--- CATEGORY 13: Isolation Verification ---")
+	print("\n--- CATEGORY 13: Milestone M7.1 Stabilization Suite ---")
+
+	# Subtest 1: Ember Lizard Loot Drop
+	var m71_lizard_parent := Node2D.new()
+	root.add_child(m71_lizard_parent)
+	var m71_lizard_def := EnemyDefScript.get_definition("ember_lizard")
+	_assert(m71_lizard_def.drop_item_id == "ember_core", "Ember Lizard definition có drop_item_id == 'ember_core'")
+
+	var m71_test_lizard: Enemy = EnemyScene.instantiate() as Enemy
+	m71_test_lizard.enemy_type_id = "ember_lizard"
+	m71_test_lizard.definition = m71_lizard_def
+	m71_lizard_parent.add_child(m71_test_lizard)
+	m71_test_lizard._spawn_loot()
+	await _wait_seconds(0.1)
+
+	var m71_found_core: ItemPickup = null
+	for child in m71_lizard_parent.get_children():
+		if child is ItemPickup and child.item_id == "ember_core":
+			m71_found_core = child
+			break
+	_assert(m71_found_core != null, "Ember Lizard bị tiêu diệt sinh ra pickup ember_core hợp lệ (không phải mana_shard)")
+	m71_lizard_parent.queue_free()
+	await _wait_seconds(0.1)
+
+	# Subtest 2: Pre-quest Mooncap Kills (Chống kẹt nhiệm vụ Kaelis)
+	var stab_player_scene: PackedScene = preload("res://src/actors/player/player.tscn")
+	var stab_player := stab_player_scene.instantiate() as Player
+	root.add_child(stab_player)
+	var stab_journal := stab_player.quest_journal_component
+
+	# Trường hợp 1: Diệt 1 Mooncap trước khi nhận quest
+	var pre_m1: Enemy = EnemyScene.instantiate() as Enemy
+	pre_m1.enemy_type_id = "corrupted_mooncap"
+	pre_m1.enemy_id = "pre_mooncap_1"
+	stab_journal.register_enemy_kill(pre_m1)
+	pre_m1.queue_free()
+
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.NOT_STARTED, "Quest chưa bắt đầu trước khi gặp Kaelis")
+	stab_journal.start_quest("quest_elyndra_cleansing")
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.ACTIVE, "Quest Kaelis ACTIVE sau khi nhận")
+	_assert(stab_journal.get_quest_progress("quest_elyndra_cleansing") == 1, "Tiến độ tự động đồng bộ 1/3 từ quái diệt trước đó")
+
+	# Diệt nốt 2 con sau khi đã nhận quest
+	var pre_m2: Enemy = EnemyScene.instantiate() as Enemy
+	pre_m2.enemy_type_id = "corrupted_mooncap"
+	pre_m2.enemy_id = "pre_mooncap_2"
+	stab_journal.register_enemy_kill(pre_m2)
+	pre_m2.queue_free()
+
+	var pre_m3: Enemy = EnemyScene.instantiate() as Enemy
+	pre_m3.enemy_type_id = "corrupted_mooncap"
+	pre_m3.enemy_id = "pre_mooncap_3"
+	stab_journal.register_enemy_kill(pre_m3)
+	pre_m3.queue_free()
+
+	_assert(stab_journal.get_quest_progress("quest_elyndra_cleansing") == 3, "Tiến độ đạt đủ 3/3")
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Quest Kaelis READY_TO_TURN_IN")
+
+	# Trường hợp 2: Diệt TOÀN BỘ 3 Mooncap trước khi gặp Kaelis
+	var stab_player2 := stab_player_scene.instantiate() as Player
+	root.add_child(stab_player2)
+	var stab_journal2 := stab_player2.quest_journal_component
+
+	for i in range(1, 4):
+		var all_m: Enemy = EnemyScene.instantiate() as Enemy
+		all_m.enemy_type_id = "corrupted_mooncap"
+		all_m.enemy_id = "all_mooncap_%d" % i
+		stab_journal2.register_enemy_kill(all_m)
+		all_m.queue_free()
+
+	stab_journal2.start_quest("quest_elyndra_cleansing")
+	_assert(stab_journal2.get_quest_progress("quest_elyndra_cleansing") == 3, "Diệt cả 3 Mooncap trước: tiến độ tự nhận đủ 3/3 ngay khi nhận quest")
+	_assert(stab_journal2.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Quest lập tức READY_TO_TURN_IN (không bị kẹt 0/3)")
+
+	# Bảo toàn lịch sử diệt quái qua to_dict / from_dict (Save/Load)
+	var serialized_j := stab_journal2.to_dict()
+	_assert(serialized_j.has("_kill_history"), "Bản serialize quest journal chứa _kill_history")
+	var stab_player3 := stab_player_scene.instantiate() as Player
+	root.add_child(stab_player3)
+	var stab_journal3 := stab_player3.quest_journal_component
+	stab_journal3.from_dict(serialized_j)
+	_assert(stab_journal3.get_quest_progress("quest_elyndra_cleansing") == 3, "Khôi phục chính xác tiến độ 3/3 từ save")
+	_assert(stab_journal3.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Khôi phục chính xác trạng thái READY_TO_TURN_IN từ save")
+
+	stab_player2.queue_free()
+	stab_player3.queue_free()
+
+	# Subtest 3: Atomic Turn-in when Inventory is Full
+	var stab_inv := stab_player.inventory_component
+	stab_inv.clear()
+	for i in range(16):
+		stab_inv.add_item("moonsteel_sword", 1)
+	_assert(stab_inv.get_free_slots_count() == 0, "Túi đồ đã đầy 16/16 ô")
+
+	var qm_mock: QuestManager = QuestManager.new()
+	var gold_pre = qm_mock.gold
+
+	_assert(stab_journal.can_turn_in("quest_elyndra_cleansing", stab_inv) == false, "can_turn_in trả về false khi túi đồ không còn chỗ nhận thưởng")
+
+	var fail_turn_in := stab_journal.turn_in_quest("quest_elyndra_cleansing", stab_inv, qm_mock)
+	_assert(fail_turn_in.get("success") == false, "turn_in_quest từ chối trả thưởng thành công khi túi đầy")
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Trạng thái nhiệm vụ vẫn là READY_TO_TURN_IN (không bị mất nhiệm vụ)")
+	_assert(qm_mock.gold == gold_pre, "Vàng không bị phát trước khi có chỗ chứa")
+	_assert(stab_inv.get_item_count("health_potion") == 0, "Không nhận bình máu khi chưa có chỗ")
+
+	stab_inv.remove_item_at(0, 1)
+	_assert(stab_inv.get_free_slots_count() >= 1, "Đã dọn thành công ít nhất 1 ô trống")
+	_assert(stab_journal.can_turn_in("quest_elyndra_cleansing", stab_inv) == true, "can_turn_in trả về true sau khi đã có chỗ trống")
+
+	var success_turn_in := stab_journal.turn_in_quest("quest_elyndra_cleansing", stab_inv, qm_mock)
+	_assert(success_turn_in.get("success") == true, "turn_in_quest hoàn thành thuận lợi khi đã đủ chỗ")
+	_assert(stab_journal.get_quest_state("quest_elyndra_cleansing") == QuestDefScript.QuestState.COMPLETED, "Quest chuyển sang COMPLETED")
+	_assert(qm_mock.gold == gold_pre + 80, "Đã nhận đúng 80 Vàng thưởng")
+	_assert(stab_inv.get_item_count("health_potion") == 2, "Đã nhận đúng 2 Bình Máu thưởng")
+
+	# Subtest 4: Collection Progress Auto-Sync via inventory_updated
+	stab_inv.clear()
+	stab_journal.start_quest("quest_vharok_embers")
+	_assert(stab_journal.get_quest_state("quest_vharok_embers") == QuestDefScript.QuestState.ACTIVE, "Quest Rhaek ACTIVE")
+	_assert(stab_journal.get_quest_progress("quest_vharok_embers") == 0, "Tiến độ ban đầu: 0/3 Lõi Tàn Hỏa")
+
+	stab_inv.add_item("ember_core", 1)
+	_assert(stab_journal.get_quest_progress("quest_vharok_embers") == 1, "Tự động đồng bộ tiến độ 1/3 khi nhặt 1 Lõi Tàn Hỏa")
+
+	stab_inv.add_item("ember_core", 2)
+	_assert(stab_journal.get_quest_progress("quest_vharok_embers") == 3, "Tự động đồng bộ tiến độ 3/3 khi có đủ 3 Lõi Tàn Hỏa")
+	_assert(stab_journal.get_quest_state("quest_vharok_embers") == QuestDefScript.QuestState.READY_TO_TURN_IN, "Tự động chuyển sang READY_TO_TURN_IN")
+
+	stab_inv.remove_item_by_id("ember_core", 1)
+	_assert(stab_journal.get_quest_progress("quest_vharok_embers") == 2, "Tiến độ tự động giảm về 2/3 khi mất vật phẩm")
+	_assert(stab_journal.get_quest_state("quest_vharok_embers") == QuestDefScript.QuestState.ACTIVE, "Trạng thái tự động quay về ACTIVE khi thiếu số lượng")
+
+	stab_player.queue_free()
+	qm_mock.free()
+	await _wait_seconds(0.1)
+
+	# Subtest 5: Player Control Lock & UI Mutual Exclusivity
+	var ctrl_zone = elyndra_scene.instantiate()
+	root.add_child(ctrl_zone)
+	current_scene = ctrl_zone
+	await _wait_seconds(0.3)
+
+	var ctrl_player: Player = ctrl_zone.get_node_or_null("Player") as Player
+	var ctrl_ui: GameUI = ctrl_zone.get_node_or_null("GameUI") as GameUI
+
+	ctrl_ui.open_quest_journal()
+	_assert(ctrl_ui.is_quest_journal_open() == true, "Quest Journal đang mở")
+	_assert(ctrl_ui.is_inventory_open() == false, "Túi đồ không mở khi đang mở Journal")
+
+	ctrl_player.velocity.x = 200.0
+	ctrl_player._physics_process(0.016)
+	_assert(ctrl_player.velocity.x < 200.0, "Vận tốc di chuyển của Player bị hãm dừng khi Journal đang mở")
+
+	ctrl_ui.open_inventory()
+	_assert(ctrl_ui.is_inventory_open() == true, "Túi đồ đã mở")
+	_assert(ctrl_ui.is_quest_journal_open() == false, "Quest Journal tự động đóng khi mở Túi đồ (loại trừ lẫn nhau)")
+
+	ctrl_ui.open_quest_journal()
+	_assert(ctrl_ui.is_quest_journal_open() == true, "Quest Journal mở lại")
+	_assert(ctrl_ui.is_inventory_open() == false, "Túi đồ tự động đóng khi mở Quest Journal")
+
+	var mock_key_j := InputEventAction.new()
+	mock_key_j.action = "attack"
+	mock_key_j.pressed = true
+	ctrl_ui._unhandled_input(mock_key_j)
+	_assert(ctrl_ui.is_quest_journal_open() == false, "Đóng Quest Journal thành công bằng phím J (attack)")
+
+	ctrl_player.velocity.x = 0.0
+	ctrl_player._physics_process(0.016)
+	_assert(ctrl_ui.is_quest_journal_open() == false, "Journal đã đóng hoàn toàn, Player phục hồi điều khiển")
+
+	ctrl_zone.queue_free()
+	await _wait_seconds(0.2)
+
+	# -------------------------------------------------------------
+	# CATEGORY 14: Isolation Verification
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 14: Isolation Verification ---")
 	var real_file_existed_at_end = FileAccess.file_exists(REAL_SAVE_PATH)
 	if real_file_existed_at_start:
 		_assert(real_file_existed_at_end == true, "File save thật vẫn tồn tại nguyên vẹn")
@@ -4176,11 +4329,14 @@ func _spawn_loot() -> void:
 		if loot_table:
 			loot_table.spawn_loot(global_position, spawn_parent)
 		else:
+			var drop_id: String = "mana_shard"
+			if definition and not definition.drop_item_id.is_empty():
+				drop_id = definition.drop_item_id
 			var pickup_scene: PackedScene = load("res://src/loot/item_pickup.tscn")
 			if pickup_scene:
 				var pickup := pickup_scene.instantiate() as ItemPickup
 				if pickup:
-					pickup.item_id = "mana_shard"
+					pickup.item_id = drop_id
 					pickup.amount = 1
 					pickup.is_dynamic = true
 					pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
@@ -4816,11 +4972,19 @@ func trigger_interaction() -> void:
 				]
 				action = "none"
 			QuestDefinition.QuestState.READY_TO_TURN_IN:
-				lines = [
-					"Thật phi thường! Dòng chảy Tinh Mạch đã bắt đầu lưu thông thanh khiết trở lại.",
-					"Xin hãy nhận 80 Vàng và 2 Bình Máu như lời cảm tạ chân thành từ Thánh Lâm Elyndra!"
-				]
-				action = "complete_quest:quest_elyndra_cleansing"
+				var inv := player.inventory_component if player else null
+				if p_journal and not p_journal.can_turn_in("quest_elyndra_cleansing", inv):
+					lines = [
+						"Ngươi đã thanh tẩy Thánh Lâm, nhưng túi đồ của ngươi hiện đã đầy!",
+						"Hãy dọn chỗ trống trong túi đồ trước khi nhận thưởng nhé."
+					]
+					action = "none"
+				else:
+					lines = [
+						"Thật phi thường! Dòng chảy Tinh Mạch đã bắt đầu lưu thông thanh khiết trở lại.",
+						"Xin hãy nhận 80 Vàng và 2 Bình Máu như lời cảm tạ chân thành từ Thánh Lâm Elyndra!"
+					]
+					action = "complete_quest:quest_elyndra_cleansing"
 			QuestDefinition.QuestState.COMPLETED:
 				lines = [
 					"Cảm ơn ngươi đã bảo vệ Thánh Lâm. Nơi này từng là điểm giao thoa hòa bình giữa Tinh Linh và Quỷ tộc bán thú từ thời cổ đại.",
@@ -4850,11 +5014,19 @@ func trigger_interaction() -> void:
 				]
 				action = "none"
 			QuestDefinition.QuestState.READY_TO_TURN_IN:
-				lines = [
-					"Hahaha! Tốt lắm! Đúng là Lõi Tàn Hỏa rực lửa nguyên chất!",
-					"Quỷ tộc bán thú luôn sòng phẳng: đây là 100 Vàng và 3 Mảnh Chân Ma dành cho lòng quả cảm của ngươi!"
-				]
-				action = "complete_quest:quest_vharok_embers"
+				var inv := player.inventory_component if player else null
+				if p_journal and not p_journal.can_turn_in("quest_vharok_embers", inv):
+					lines = [
+						"Ngươi đã thu thập đủ Lõi Tàn Hỏa, nhưng túi đồ của ngươi chật cứng rồi!",
+						"Hãy dọn chỗ trống trong túi đồ rồi quay lại đây nhận thưởng. Quỷ tộc không để bạn hữu chịu thiệt!"
+					]
+					action = "none"
+				else:
+					lines = [
+						"Hahaha! Tốt lắm! Đúng là Lõi Tàn Hỏa rực lửa nguyên chất!",
+						"Quỷ tộc bán thú luôn sòng phẳng: đây là 100 Vàng và 3 Mảnh Chân Ma dành cho lòng quả cảm của ngươi!"
+					]
+					action = "complete_quest:quest_vharok_embers"
 			QuestDefinition.QuestState.COMPLETED:
 				lines = [
 					"Lò rèn của tiền đồn đã rực cháy trở lại! Ngươi đã chứng minh được dũng khí của một chiến binh thực thụ.",
@@ -5093,10 +5265,12 @@ func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
 
-	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, hoặc đang mở túi đồ thì tạm ngừng nhận input
+	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ hoặc đang mở sổ nhiệm vụ thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open()):
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
+		if not is_on_floor():
+			velocity.y += movement_data.gravity * delta
 		move_and_slide()
 		return
 
@@ -5223,7 +5397,7 @@ func _upgrade_current_spell() -> void:
 	if get_tree().paused:
 		return
 	var ui := _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open()):
 		return
 	var world := get_tree().current_scene
 	var res := sb.upgrade_spell(sb.selected_spell_id, inv, world)
@@ -7281,6 +7455,13 @@ func is_slot_empty(index: int) -> bool:
 	var s := get_slot(index)
 	return str(s.get("item_id", "")).is_empty() or int(s.get("amount", 0)) <= 0
 
+func get_free_slots_count() -> int:
+	var count: int = 0
+	for i in range(slots.size()):
+		if is_slot_empty(i):
+			count += 1
+	return count
+
 func can_add_item(item_id: String, amount: int = 1) -> bool:
 	if amount <= 0 or not ItemDatabase.has_item(item_id):
 		return false
@@ -7308,6 +7489,73 @@ func can_add_item(item_id: String, amount: int = 1) -> bool:
 				return true
 
 	return false
+
+func can_receive_items(items_to_add: Array, items_to_remove: Array = []) -> bool:
+	if items_to_add.is_empty():
+		return true
+
+	# Tạo bản sao giả lập các ô đồ
+	var sim_slots: Array[Dictionary] = []
+	for s in slots:
+		sim_slots.append({
+			"item_id": str(s.get("item_id", "")),
+			"amount": int(s.get("amount", 0))
+		})
+
+	# 1. Trừ vật phẩm yêu cầu trong bản sao
+	for rem in items_to_remove:
+		if not (rem is Dictionary):
+			continue
+		var rem_id: String = str(rem.get("item_id", ""))
+		var rem_amt: int = int(rem.get("amount", 0))
+		for s in sim_slots:
+			if rem_amt <= 0:
+				break
+			if s["item_id"] == rem_id and s["amount"] > 0:
+				var take: int = min(rem_amt, s["amount"])
+				s["amount"] -= take
+				rem_amt -= take
+				if s["amount"] <= 0:
+					s["item_id"] = ""
+					s["amount"] = 0
+
+	# 2. Kiểm tra xem các vật phẩm thưởng có thể thêm trọn vẹn vào bản sao không
+	for add_req in items_to_add:
+		if not (add_req is Dictionary):
+			continue
+		var add_id: String = str(add_req.get("item_id", ""))
+		var add_amt: int = int(add_req.get("amount", 0))
+		if add_amt <= 0 or not ItemDatabase.has_item(add_id):
+			continue
+		var idef := ItemDatabase.get_item(add_id)
+		var needed := add_amt
+
+		# Điền vào các ô cùng loại chưa đầy nếu stack được
+		if idef.max_stack > 1:
+			for s in sim_slots:
+				if s["item_id"] == add_id and s["amount"] < idef.max_stack:
+					var space: int = idef.max_stack - s["amount"]
+					var take: int = min(needed, space)
+					s["amount"] += take
+					needed -= take
+					if needed <= 0:
+						break
+
+		# Điền vào các ô trống còn lại
+		if needed > 0:
+			for s in sim_slots:
+				if s["item_id"].is_empty() or s["amount"] <= 0:
+					var take: int = min(needed, idef.max_stack)
+					s["item_id"] = add_id
+					s["amount"] = take
+					needed -= take
+					if needed <= 0:
+						break
+
+		if needed > 0:
+			return false # Không đủ chỗ chứa
+
+	return true
 
 func add_item(item_id: String, amount: int = 1) -> int:
 	if amount <= 0 or not ItemDatabase.has_item(item_id):
@@ -9234,9 +9482,22 @@ const State = QuestDefinition.State
 #   "counted_enemy_ids": Array[String]
 # }
 var _quests: Dictionary = {}
+var _kill_history: Dictionary = {} # { "corrupted_mooncap": ["elyndra_mooncap_1", ...] }
 
 func _ready() -> void:
 	_ensure_default_quests()
+	var p := get_parent()
+	if p:
+		var inv := p.get_node_or_null("InventoryComponent") as InventoryComponent
+		if inv and not inv.inventory_updated.is_connected(_on_inventory_updated):
+			inv.inventory_updated.connect(_on_inventory_updated)
+
+func _on_inventory_updated() -> void:
+	var p := get_parent()
+	if p:
+		var inv := p.get_node_or_null("InventoryComponent") as InventoryComponent
+		if inv:
+			update_item_collection(inv)
 
 func _ensure_default_quests() -> void:
 	if not _quests.has("quest_elyndra_cleansing"):
@@ -9286,10 +9547,54 @@ func start_quest(quest_id: String) -> bool:
 	q["counted_enemy_ids"] = []
 
 	var def := QuestDefinition.get_definition(quest_id)
+
+	# 1. Nếu là nhiệm vụ diệt quái: đồng bộ số quái đã từng diệt trước đó (chống kẹt do diệt quái sớm)
+	if def.quest_type == QuestDefinition.QuestType.KILL_ENEMY_TYPE:
+		_sync_prior_kills(quest_id, def)
+	# 2. Nếu là nhiệm vụ thu thập: đồng bộ vật phẩm sẵn có trong túi đồ
+	elif def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS:
+		var p := get_parent()
+		var inv: InventoryComponent = p.get_node_or_null("InventoryComponent") as InventoryComponent if p else null
+		if inv:
+			update_item_collection(inv)
+
 	emit_signal("quest_started", quest_id)
-	emit_signal("quest_updated", quest_id, 0, def.target_amount, State.ACTIVE)
+	emit_signal("quest_updated", quest_id, q["current_amount"], def.target_amount, q["state"])
 	emit_signal("journal_changed")
 	return true
+
+func _sync_prior_kills(quest_id: String, def: QuestDefinition) -> void:
+	if not _quests.has(quest_id):
+		return
+	var q: Dictionary = _quests[quest_id]
+	var counted: Array = q.get("counted_enemy_ids", [])
+
+	# 1. Lấy từ lịch sử kill của component
+	var prior_kills: Array = _kill_history.get(def.target_id, [])
+	for kid in prior_kills:
+		var skid := str(kid)
+		if not skid in counted:
+			counted.append(skid)
+
+	# 2. Lấy từ danh sách quái đã hạ gục của map hiện tại (trường hợp load save)
+	if get_tree() and get_tree().current_scene:
+		var scene = get_tree().current_scene
+		if "defeated_enemy_ids" in scene and (scene.defeated_enemy_ids is Array):
+			for did in scene.defeated_enemy_ids:
+				var sdid := str(did)
+				if def.target_id == "corrupted_mooncap" and sdid.find("mooncap") != -1:
+					if not sdid in counted:
+						counted.append(sdid)
+						if not _kill_history.has("corrupted_mooncap"):
+							_kill_history["corrupted_mooncap"] = []
+						if not sdid in _kill_history["corrupted_mooncap"]:
+							_kill_history["corrupted_mooncap"].append(sdid)
+
+	q["counted_enemy_ids"] = counted
+	q["current_amount"] = clamp(counted.size(), 0, def.target_amount)
+	if q["current_amount"] >= def.target_amount:
+		q["state"] = State.READY_TO_TURN_IN
+		emit_signal("quest_ready", quest_id)
 
 func register_enemy_kill(enemy: Node) -> void:
 	if enemy == null:
@@ -9307,6 +9612,12 @@ func register_enemy_kill(enemy: Node) -> void:
 		enemy_id_str = str(enemy.enemy_id)
 	else:
 		enemy_id_str = "inst_" + str(enemy.get_instance_id())
+
+	# Luôn lưu vào lịch sử diệt quái (kể cả khi chưa nhận quest)
+	if not _kill_history.has(enemy_type):
+		_kill_history[enemy_type] = []
+	if not enemy_id_str in _kill_history[enemy_type]:
+		_kill_history[enemy_type].append(enemy_id_str)
 
 	# 1. Kiểm tra nhiệm vụ Kaelis: Thanh Lọc Tinh Mạch (chỉ tính quái corrupted_mooncap)
 	if enemy_type == "corrupted_mooncap":
@@ -9340,18 +9651,18 @@ func update_item_collection(inventory: InventoryComponent) -> void:
 	if st == State.ACTIVE or st == State.READY_TO_TURN_IN:
 		var def := QuestDefinition.get_definition(q_id)
 		var count: int = inventory.get_item_count(def.target_id)
-		q["current_amount"] = count
+		var prev_count: int = int(q.get("current_amount", -1))
+		var prev_state: int = st
+		var new_state: int = State.READY_TO_TURN_IN if count >= def.target_amount else State.ACTIVE
 
-		var prev_state := st
-		if count >= def.target_amount:
-			q["state"] = State.READY_TO_TURN_IN
-			if prev_state != State.READY_TO_TURN_IN:
+		# Chỉ phát tín hiệu và cập nhật khi có thay đổi thực tế (chống vòng lặp & refresh vô hạn)
+		if count != prev_count or new_state != prev_state:
+			q["current_amount"] = count
+			q["state"] = new_state
+			if new_state == State.READY_TO_TURN_IN and prev_state != State.READY_TO_TURN_IN:
 				emit_signal("quest_ready", q_id)
-		else:
-			q["state"] = State.ACTIVE
-
-		emit_signal("quest_updated", q_id, count, def.target_amount, q["state"])
-		emit_signal("journal_changed")
+			emit_signal("quest_updated", q_id, count, def.target_amount, q["state"])
+			emit_signal("journal_changed")
 
 func can_turn_in(quest_id: String, inventory: InventoryComponent = null) -> bool:
 	_ensure_default_quests()
@@ -9368,18 +9679,37 @@ func can_turn_in(quest_id: String, inventory: InventoryComponent = null) -> bool
 		if inventory.get_item_count(def.target_id) < def.target_amount:
 			return false
 
+	# Kiểm tra túi đồ có đủ chỗ chứa toàn bộ phần thưởng không
+	if inventory != null and def.reward_items.size() > 0:
+		var items_to_remove: Array = []
+		if def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS:
+			items_to_remove.append({"item_id": def.target_id, "amount": def.target_amount})
+		if not inventory.can_receive_items(def.reward_items, items_to_remove):
+			return false
+
 	return true
 
 func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manager: QuestManager) -> Dictionary:
 	_ensure_default_quests()
-	if not can_turn_in(quest_id, inventory):
-		return {"success": false, "reason": "Chưa đủ điều kiện hoàn thành!"}
+	if not _quests.has(quest_id):
+		return {"success": false, "reason": "Nhiệm vụ không tồn tại!"}
 
 	var q: Dictionary = _quests[quest_id]
+	if q.get("state") != State.READY_TO_TURN_IN:
+		return {"success": false, "reason": "Chưa đủ điều kiện hoàn thành!"}
+
 	if q.get("reward_claimed", false):
 		return {"success": false, "reason": "Phần thưởng đã nhận trước đó!"}
 
 	var def := QuestDefinition.get_definition(quest_id)
+
+	# Kiểm tra túi đồ trước: nếu không đủ chỗ chứa phần thưởng, hủy giao dịch an toàn
+	if inventory != null and def.reward_items.size() > 0:
+		var items_to_remove: Array = []
+		if def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS:
+			items_to_remove.append({"item_id": def.target_id, "amount": def.target_amount})
+		if not inventory.can_receive_items(def.reward_items, items_to_remove):
+			return {"success": false, "reason": "Túi đồ đã đầy! Hãy dọn chỗ trống trước khi trả nhiệm vụ."}
 
 	# 1. Trừ vật phẩm yêu cầu trong túi đồ nếu là nhiệm vụ thu thập
 	if def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS and inventory:
@@ -9400,11 +9730,7 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 			var i_id: String = str(item_rew.get("item_id", ""))
 			var amt: int = int(item_rew.get("amount", 1))
 			if not i_id.is_empty():
-				if inventory.can_add_item(i_id, amt):
-					inventory.add_item(i_id, amt)
-				else:
-					# Túi đồ đầy: sinh drop pickup an toàn tại vị trí Player
-					_spawn_reward_drop(i_id, amt, inventory.get_parent())
+				inventory.add_item(i_id, amt)
 
 	emit_signal("quest_completed", quest_id)
 	emit_signal("journal_changed")
@@ -9416,34 +9742,23 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 		"reward_items": def.reward_items
 	}
 
-func _spawn_reward_drop(item_id: String, amount: int, owner_node: Node) -> void:
-	if owner_node == null:
-		return
-	var parent_world = owner_node.get_parent()
-	if parent_world == null:
-		return
-
-	var p_scene: PackedScene = load("res://src/loot/item_pickup.tscn")
-	if p_scene:
-		var p := p_scene.instantiate() as ItemPickup
-		if p:
-			p.item_id = item_id
-			p.amount = amount
-			p.is_dynamic = true
-			p.pickup_id = "quest_reward_" + item_id + "_" + str(Time.get_ticks_usec())
-			p.global_position = owner_node.global_position if "global_position" in owner_node else Vector2(300, 630)
-			parent_world.add_child.call_deferred(p)
-
 func to_dict() -> Dictionary:
 	_ensure_default_quests()
-	return _quests.duplicate(true)
+	var d := _quests.duplicate(true)
+	d["_kill_history"] = _kill_history.duplicate(true)
+	return d
 
 func from_dict(data: Dictionary) -> void:
 	_ensure_default_quests()
 	if data == null or data.is_empty():
 		return
 
+	if data.has("_kill_history") and (data["_kill_history"] is Dictionary):
+		_kill_history = data["_kill_history"].duplicate(true)
+
 	for k in data.keys():
+		if k == "_kill_history":
+			continue
 		if data[k] is Dictionary:
 			var q_data: Dictionary = data[k]
 			_quests[k] = {
@@ -10123,6 +10438,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
+	# Đóng Journal nếu đang mở bằng phím J (attack)
+	if is_quest_journal_open() and event.is_action_pressed("attack"):
+		close_quest_journal()
+		get_viewport().set_input_as_handled()
+		return
+
 	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ / sổ nhiệm vụ
 	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open() or is_quest_journal_open():
 		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash") or event.is_action_pressed("spell_1") or event.is_action_pressed("spell_2") or event.is_action_pressed("spell_3") or event.is_action_pressed("spell_upgrade"):
@@ -10185,6 +10506,9 @@ func close_dialogue() -> void:
 				update_quest_journal_ui()
 				# Tự động lưu sau khi hoàn thành nhiệm vụ
 				SaveManager.save_game(scene)
+			else:
+				var fail_reason: String = str(res.get("reason", "Túi đồ đã đầy! Hãy dọn chỗ trống trước khi trả nhiệm vụ."))
+				show_notification(fail_reason)
 	elif quest_mgr:
 		if _current_quest_action == "start_quest":
 			quest_mgr.start_quest()
@@ -10206,10 +10530,16 @@ func is_dialogue_cooling_down() -> bool:
 	return _dialogue_cooldown > 0.0
 
 func toggle_inventory() -> void:
-	if inventory_ui:
-		inventory_ui.toggle()
+	if is_inventory_open():
+		close_inventory()
+	else:
+		if is_quest_journal_open():
+			close_quest_journal()
+		open_inventory()
 
 func open_inventory() -> void:
+	if is_quest_journal_open():
+		close_quest_journal()
 	if inventory_ui:
 		inventory_ui.open()
 
@@ -10221,10 +10551,16 @@ func is_inventory_open() -> bool:
 	return inventory_ui != null and inventory_ui.is_open()
 
 func toggle_quest_journal() -> void:
-	if quest_journal_ui:
-		quest_journal_ui.toggle()
+	if is_quest_journal_open():
+		close_quest_journal()
+	else:
+		if is_inventory_open():
+			close_inventory()
+		open_quest_journal()
 
 func open_quest_journal() -> void:
+	if is_inventory_open():
+		close_inventory()
 	if quest_journal_ui:
 		quest_journal_ui.open()
 

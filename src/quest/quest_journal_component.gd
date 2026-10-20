@@ -22,9 +22,22 @@ const State = QuestDefinition.State
 #   "counted_enemy_ids": Array[String]
 # }
 var _quests: Dictionary = {}
+var _kill_history: Dictionary = {} # { "corrupted_mooncap": ["elyndra_mooncap_1", ...] }
 
 func _ready() -> void:
 	_ensure_default_quests()
+	var p := get_parent()
+	if p:
+		var inv := p.get_node_or_null("InventoryComponent") as InventoryComponent
+		if inv and not inv.inventory_updated.is_connected(_on_inventory_updated):
+			inv.inventory_updated.connect(_on_inventory_updated)
+
+func _on_inventory_updated() -> void:
+	var p := get_parent()
+	if p:
+		var inv := p.get_node_or_null("InventoryComponent") as InventoryComponent
+		if inv:
+			update_item_collection(inv)
 
 func _ensure_default_quests() -> void:
 	if not _quests.has("quest_elyndra_cleansing"):
@@ -74,10 +87,54 @@ func start_quest(quest_id: String) -> bool:
 	q["counted_enemy_ids"] = []
 
 	var def := QuestDefinition.get_definition(quest_id)
+
+	# 1. Nếu là nhiệm vụ diệt quái: đồng bộ số quái đã từng diệt trước đó (chống kẹt do diệt quái sớm)
+	if def.quest_type == QuestDefinition.QuestType.KILL_ENEMY_TYPE:
+		_sync_prior_kills(quest_id, def)
+	# 2. Nếu là nhiệm vụ thu thập: đồng bộ vật phẩm sẵn có trong túi đồ
+	elif def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS:
+		var p := get_parent()
+		var inv: InventoryComponent = p.get_node_or_null("InventoryComponent") as InventoryComponent if p else null
+		if inv:
+			update_item_collection(inv)
+
 	emit_signal("quest_started", quest_id)
-	emit_signal("quest_updated", quest_id, 0, def.target_amount, State.ACTIVE)
+	emit_signal("quest_updated", quest_id, q["current_amount"], def.target_amount, q["state"])
 	emit_signal("journal_changed")
 	return true
+
+func _sync_prior_kills(quest_id: String, def: QuestDefinition) -> void:
+	if not _quests.has(quest_id):
+		return
+	var q: Dictionary = _quests[quest_id]
+	var counted: Array = q.get("counted_enemy_ids", [])
+
+	# 1. Lấy từ lịch sử kill của component
+	var prior_kills: Array = _kill_history.get(def.target_id, [])
+	for kid in prior_kills:
+		var skid := str(kid)
+		if not skid in counted:
+			counted.append(skid)
+
+	# 2. Lấy từ danh sách quái đã hạ gục của map hiện tại (trường hợp load save)
+	if get_tree() and get_tree().current_scene:
+		var scene = get_tree().current_scene
+		if "defeated_enemy_ids" in scene and (scene.defeated_enemy_ids is Array):
+			for did in scene.defeated_enemy_ids:
+				var sdid := str(did)
+				if def.target_id == "corrupted_mooncap" and sdid.find("mooncap") != -1:
+					if not sdid in counted:
+						counted.append(sdid)
+						if not _kill_history.has("corrupted_mooncap"):
+							_kill_history["corrupted_mooncap"] = []
+						if not sdid in _kill_history["corrupted_mooncap"]:
+							_kill_history["corrupted_mooncap"].append(sdid)
+
+	q["counted_enemy_ids"] = counted
+	q["current_amount"] = clamp(counted.size(), 0, def.target_amount)
+	if q["current_amount"] >= def.target_amount:
+		q["state"] = State.READY_TO_TURN_IN
+		emit_signal("quest_ready", quest_id)
 
 func register_enemy_kill(enemy: Node) -> void:
 	if enemy == null:
@@ -95,6 +152,12 @@ func register_enemy_kill(enemy: Node) -> void:
 		enemy_id_str = str(enemy.enemy_id)
 	else:
 		enemy_id_str = "inst_" + str(enemy.get_instance_id())
+
+	# Luôn lưu vào lịch sử diệt quái (kể cả khi chưa nhận quest)
+	if not _kill_history.has(enemy_type):
+		_kill_history[enemy_type] = []
+	if not enemy_id_str in _kill_history[enemy_type]:
+		_kill_history[enemy_type].append(enemy_id_str)
 
 	# 1. Kiểm tra nhiệm vụ Kaelis: Thanh Lọc Tinh Mạch (chỉ tính quái corrupted_mooncap)
 	if enemy_type == "corrupted_mooncap":
@@ -128,18 +191,18 @@ func update_item_collection(inventory: InventoryComponent) -> void:
 	if st == State.ACTIVE or st == State.READY_TO_TURN_IN:
 		var def := QuestDefinition.get_definition(q_id)
 		var count: int = inventory.get_item_count(def.target_id)
-		q["current_amount"] = count
+		var prev_count: int = int(q.get("current_amount", -1))
+		var prev_state: int = st
+		var new_state: int = State.READY_TO_TURN_IN if count >= def.target_amount else State.ACTIVE
 
-		var prev_state := st
-		if count >= def.target_amount:
-			q["state"] = State.READY_TO_TURN_IN
-			if prev_state != State.READY_TO_TURN_IN:
+		# Chỉ phát tín hiệu và cập nhật khi có thay đổi thực tế (chống vòng lặp & refresh vô hạn)
+		if count != prev_count or new_state != prev_state:
+			q["current_amount"] = count
+			q["state"] = new_state
+			if new_state == State.READY_TO_TURN_IN and prev_state != State.READY_TO_TURN_IN:
 				emit_signal("quest_ready", q_id)
-		else:
-			q["state"] = State.ACTIVE
-
-		emit_signal("quest_updated", q_id, count, def.target_amount, q["state"])
-		emit_signal("journal_changed")
+			emit_signal("quest_updated", q_id, count, def.target_amount, q["state"])
+			emit_signal("journal_changed")
 
 func can_turn_in(quest_id: String, inventory: InventoryComponent = null) -> bool:
 	_ensure_default_quests()
@@ -156,18 +219,37 @@ func can_turn_in(quest_id: String, inventory: InventoryComponent = null) -> bool
 		if inventory.get_item_count(def.target_id) < def.target_amount:
 			return false
 
+	# Kiểm tra túi đồ có đủ chỗ chứa toàn bộ phần thưởng không
+	if inventory != null and def.reward_items.size() > 0:
+		var items_to_remove: Array = []
+		if def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS:
+			items_to_remove.append({"item_id": def.target_id, "amount": def.target_amount})
+		if not inventory.can_receive_items(def.reward_items, items_to_remove):
+			return false
+
 	return true
 
 func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manager: QuestManager) -> Dictionary:
 	_ensure_default_quests()
-	if not can_turn_in(quest_id, inventory):
-		return {"success": false, "reason": "Chưa đủ điều kiện hoàn thành!"}
+	if not _quests.has(quest_id):
+		return {"success": false, "reason": "Nhiệm vụ không tồn tại!"}
 
 	var q: Dictionary = _quests[quest_id]
+	if q.get("state") != State.READY_TO_TURN_IN:
+		return {"success": false, "reason": "Chưa đủ điều kiện hoàn thành!"}
+
 	if q.get("reward_claimed", false):
 		return {"success": false, "reason": "Phần thưởng đã nhận trước đó!"}
 
 	var def := QuestDefinition.get_definition(quest_id)
+
+	# Kiểm tra túi đồ trước: nếu không đủ chỗ chứa phần thưởng, hủy giao dịch an toàn
+	if inventory != null and def.reward_items.size() > 0:
+		var items_to_remove: Array = []
+		if def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS:
+			items_to_remove.append({"item_id": def.target_id, "amount": def.target_amount})
+		if not inventory.can_receive_items(def.reward_items, items_to_remove):
+			return {"success": false, "reason": "Túi đồ đã đầy! Hãy dọn chỗ trống trước khi trả nhiệm vụ."}
 
 	# 1. Trừ vật phẩm yêu cầu trong túi đồ nếu là nhiệm vụ thu thập
 	if def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS and inventory:
@@ -188,11 +270,7 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 			var i_id: String = str(item_rew.get("item_id", ""))
 			var amt: int = int(item_rew.get("amount", 1))
 			if not i_id.is_empty():
-				if inventory.can_add_item(i_id, amt):
-					inventory.add_item(i_id, amt)
-				else:
-					# Túi đồ đầy: sinh drop pickup an toàn tại vị trí Player
-					_spawn_reward_drop(i_id, amt, inventory.get_parent())
+				inventory.add_item(i_id, amt)
 
 	emit_signal("quest_completed", quest_id)
 	emit_signal("journal_changed")
@@ -204,34 +282,23 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 		"reward_items": def.reward_items
 	}
 
-func _spawn_reward_drop(item_id: String, amount: int, owner_node: Node) -> void:
-	if owner_node == null:
-		return
-	var parent_world = owner_node.get_parent()
-	if parent_world == null:
-		return
-
-	var p_scene: PackedScene = load("res://src/loot/item_pickup.tscn")
-	if p_scene:
-		var p := p_scene.instantiate() as ItemPickup
-		if p:
-			p.item_id = item_id
-			p.amount = amount
-			p.is_dynamic = true
-			p.pickup_id = "quest_reward_" + item_id + "_" + str(Time.get_ticks_usec())
-			p.global_position = owner_node.global_position if "global_position" in owner_node else Vector2(300, 630)
-			parent_world.add_child.call_deferred(p)
-
 func to_dict() -> Dictionary:
 	_ensure_default_quests()
-	return _quests.duplicate(true)
+	var d := _quests.duplicate(true)
+	d["_kill_history"] = _kill_history.duplicate(true)
+	return d
 
 func from_dict(data: Dictionary) -> void:
 	_ensure_default_quests()
 	if data == null or data.is_empty():
 		return
 
+	if data.has("_kill_history") and (data["_kill_history"] is Dictionary):
+		_kill_history = data["_kill_history"].duplicate(true)
+
 	for k in data.keys():
+		if k == "_kill_history":
+			continue
 		if data[k] is Dictionary:
 			var q_data: Dictionary = data[k]
 			_quests[k] = {

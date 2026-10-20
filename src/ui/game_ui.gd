@@ -132,6 +132,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
+	# Đóng Journal nếu đang mở bằng phím J (attack)
+	if is_quest_journal_open() and event.is_action_pressed("attack"):
+		close_quest_journal()
+		get_viewport().set_input_as_handled()
+		return
+
 	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ / sổ nhiệm vụ
 	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open() or is_quest_journal_open():
 		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash") or event.is_action_pressed("spell_1") or event.is_action_pressed("spell_2") or event.is_action_pressed("spell_3") or event.is_action_pressed("spell_upgrade"):
@@ -194,6 +200,9 @@ func close_dialogue() -> void:
 				update_quest_journal_ui()
 				# Tự động lưu sau khi hoàn thành nhiệm vụ
 				SaveManager.save_game(scene)
+			else:
+				var fail_reason: String = str(res.get("reason", "Túi đồ đã đầy! Hãy dọn chỗ trống trước khi trả nhiệm vụ."))
+				show_notification(fail_reason)
 	elif quest_mgr:
 		if _current_quest_action == "start_quest":
 			quest_mgr.start_quest()
@@ -215,10 +224,16 @@ func is_dialogue_cooling_down() -> bool:
 	return _dialogue_cooldown > 0.0
 
 func toggle_inventory() -> void:
-	if inventory_ui:
-		inventory_ui.toggle()
+	if is_inventory_open():
+		close_inventory()
+	else:
+		if is_quest_journal_open():
+			close_quest_journal()
+		open_inventory()
 
 func open_inventory() -> void:
+	if is_quest_journal_open():
+		close_quest_journal()
 	if inventory_ui:
 		inventory_ui.open()
 
@@ -230,10 +245,16 @@ func is_inventory_open() -> bool:
 	return inventory_ui != null and inventory_ui.is_open()
 
 func toggle_quest_journal() -> void:
-	if quest_journal_ui:
-		quest_journal_ui.toggle()
+	if is_quest_journal_open():
+		close_quest_journal()
+	else:
+		if is_inventory_open():
+			close_inventory()
+		open_quest_journal()
 
 func open_quest_journal() -> void:
+	if is_inventory_open():
+		close_inventory()
 	if quest_journal_ui:
 		quest_journal_ui.open()
 

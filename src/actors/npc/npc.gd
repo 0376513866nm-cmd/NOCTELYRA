@@ -60,11 +60,19 @@ func trigger_interaction() -> void:
 				]
 				action = "none"
 			QuestDefinition.QuestState.READY_TO_TURN_IN:
-				lines = [
-					"Thật phi thường! Dòng chảy Tinh Mạch đã bắt đầu lưu thông thanh khiết trở lại.",
-					"Xin hãy nhận 80 Vàng và 2 Bình Máu như lời cảm tạ chân thành từ Thánh Lâm Elyndra!"
-				]
-				action = "complete_quest:quest_elyndra_cleansing"
+				var inv := player.inventory_component if player else null
+				if p_journal and not p_journal.can_turn_in("quest_elyndra_cleansing", inv):
+					lines = [
+						"Ngươi đã thanh tẩy Thánh Lâm, nhưng túi đồ của ngươi hiện đã đầy!",
+						"Hãy dọn chỗ trống trong túi đồ trước khi nhận thưởng nhé."
+					]
+					action = "none"
+				else:
+					lines = [
+						"Thật phi thường! Dòng chảy Tinh Mạch đã bắt đầu lưu thông thanh khiết trở lại.",
+						"Xin hãy nhận 80 Vàng và 2 Bình Máu như lời cảm tạ chân thành từ Thánh Lâm Elyndra!"
+					]
+					action = "complete_quest:quest_elyndra_cleansing"
 			QuestDefinition.QuestState.COMPLETED:
 				lines = [
 					"Cảm ơn ngươi đã bảo vệ Thánh Lâm. Nơi này từng là điểm giao thoa hòa bình giữa Tinh Linh và Quỷ tộc bán thú từ thời cổ đại.",
@@ -94,11 +102,19 @@ func trigger_interaction() -> void:
 				]
 				action = "none"
 			QuestDefinition.QuestState.READY_TO_TURN_IN:
-				lines = [
-					"Hahaha! Tốt lắm! Đúng là Lõi Tàn Hỏa rực lửa nguyên chất!",
-					"Quỷ tộc bán thú luôn sòng phẳng: đây là 100 Vàng và 3 Mảnh Chân Ma dành cho lòng quả cảm của ngươi!"
-				]
-				action = "complete_quest:quest_vharok_embers"
+				var inv := player.inventory_component if player else null
+				if p_journal and not p_journal.can_turn_in("quest_vharok_embers", inv):
+					lines = [
+						"Ngươi đã thu thập đủ Lõi Tàn Hỏa, nhưng túi đồ của ngươi chật cứng rồi!",
+						"Hãy dọn chỗ trống trong túi đồ rồi quay lại đây nhận thưởng. Quỷ tộc không để bạn hữu chịu thiệt!"
+					]
+					action = "none"
+				else:
+					lines = [
+						"Hahaha! Tốt lắm! Đúng là Lõi Tàn Hỏa rực lửa nguyên chất!",
+						"Quỷ tộc bán thú luôn sòng phẳng: đây là 100 Vàng và 3 Mảnh Chân Ma dành cho lòng quả cảm của ngươi!"
+					]
+					action = "complete_quest:quest_vharok_embers"
 			QuestDefinition.QuestState.COMPLETED:
 				lines = [
 					"Lò rèn của tiền đồn đã rực cháy trở lại! Ngươi đã chứng minh được dũng khí của một chiến binh thực thụ.",

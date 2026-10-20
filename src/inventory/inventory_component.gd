@@ -35,6 +35,13 @@ func is_slot_empty(index: int) -> bool:
 	var s := get_slot(index)
 	return str(s.get("item_id", "")).is_empty() or int(s.get("amount", 0)) <= 0
 
+func get_free_slots_count() -> int:
+	var count: int = 0
+	for i in range(slots.size()):
+		if is_slot_empty(i):
+			count += 1
+	return count
+
 func can_add_item(item_id: String, amount: int = 1) -> bool:
 	if amount <= 0 or not ItemDatabase.has_item(item_id):
 		return false
@@ -62,6 +69,73 @@ func can_add_item(item_id: String, amount: int = 1) -> bool:
 				return true
 
 	return false
+
+func can_receive_items(items_to_add: Array, items_to_remove: Array = []) -> bool:
+	if items_to_add.is_empty():
+		return true
+
+	# Tạo bản sao giả lập các ô đồ
+	var sim_slots: Array[Dictionary] = []
+	for s in slots:
+		sim_slots.append({
+			"item_id": str(s.get("item_id", "")),
+			"amount": int(s.get("amount", 0))
+		})
+
+	# 1. Trừ vật phẩm yêu cầu trong bản sao
+	for rem in items_to_remove:
+		if not (rem is Dictionary):
+			continue
+		var rem_id: String = str(rem.get("item_id", ""))
+		var rem_amt: int = int(rem.get("amount", 0))
+		for s in sim_slots:
+			if rem_amt <= 0:
+				break
+			if s["item_id"] == rem_id and s["amount"] > 0:
+				var take: int = min(rem_amt, s["amount"])
+				s["amount"] -= take
+				rem_amt -= take
+				if s["amount"] <= 0:
+					s["item_id"] = ""
+					s["amount"] = 0
+
+	# 2. Kiểm tra xem các vật phẩm thưởng có thể thêm trọn vẹn vào bản sao không
+	for add_req in items_to_add:
+		if not (add_req is Dictionary):
+			continue
+		var add_id: String = str(add_req.get("item_id", ""))
+		var add_amt: int = int(add_req.get("amount", 0))
+		if add_amt <= 0 or not ItemDatabase.has_item(add_id):
+			continue
+		var idef := ItemDatabase.get_item(add_id)
+		var needed := add_amt
+
+		# Điền vào các ô cùng loại chưa đầy nếu stack được
+		if idef.max_stack > 1:
+			for s in sim_slots:
+				if s["item_id"] == add_id and s["amount"] < idef.max_stack:
+					var space: int = idef.max_stack - s["amount"]
+					var take: int = min(needed, space)
+					s["amount"] += take
+					needed -= take
+					if needed <= 0:
+						break
+
+		# Điền vào các ô trống còn lại
+		if needed > 0:
+			for s in sim_slots:
+				if s["item_id"].is_empty() or s["amount"] <= 0:
+					var take: int = min(needed, idef.max_stack)
+					s["item_id"] = add_id
+					s["amount"] = take
+					needed -= take
+					if needed <= 0:
+						break
+
+		if needed > 0:
+			return false # Không đủ chỗ chứa
+
+	return true
 
 func add_item(item_id: String, amount: int = 1) -> int:
 	if amount <= 0 or not ItemDatabase.has_item(item_id):

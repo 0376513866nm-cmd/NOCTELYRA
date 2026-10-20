@@ -362,11 +362,14 @@ func _spawn_loot() -> void:
 		if loot_table:
 			loot_table.spawn_loot(global_position, spawn_parent)
 		else:
+			var drop_id: String = "mana_shard"
+			if definition and not definition.drop_item_id.is_empty():
+				drop_id = definition.drop_item_id
 			var pickup_scene: PackedScene = load("res://src/loot/item_pickup.tscn")
 			if pickup_scene:
 				var pickup := pickup_scene.instantiate() as ItemPickup
 				if pickup:
-					pickup.item_id = "mana_shard"
+					pickup.item_id = drop_id
 					pickup.amount = 1
 					pickup.is_dynamic = true
 					pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)

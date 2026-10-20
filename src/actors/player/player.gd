@@ -60,10 +60,12 @@ func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
 
-	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, hoặc đang mở túi đồ thì tạm ngừng nhận input
+	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ hoặc đang mở sổ nhiệm vụ thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open()):
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
+		if not is_on_floor():
+			velocity.y += movement_data.gravity * delta
 		move_and_slide()
 		return
 
@@ -190,7 +192,7 @@ func _upgrade_current_spell() -> void:
 	if get_tree().paused:
 		return
 	var ui := _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open()):
 		return
 	var world := get_tree().current_scene
 	var res := sb.upgrade_spell(sb.selected_spell_id, inv, world)
