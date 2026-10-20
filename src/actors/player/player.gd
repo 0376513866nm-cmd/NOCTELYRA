@@ -25,6 +25,7 @@ enum State {
 @onready var melee_hitbox: Hitbox = $MeleeHitbox
 @onready var inventory_component: InventoryComponent = $InventoryComponent
 @onready var equipment_component: EquipmentComponent = $EquipmentComponent
+@onready var spellbook_component: SpellbookComponent = $SpellbookComponent
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -154,10 +155,46 @@ func _physics_process(delta: float) -> void:
 func _handle_combat_inputs() -> void:
 	if combat_component == null:
 		return
+
+	# Phím 1, 2, 3: Chọn phép thuật, phím U: Nâng cấp phép
+	var sb := spellbook_component
+	if sb == null:
+		sb = get_node_or_null("SpellbookComponent") as SpellbookComponent
+	if sb:
+		if Input.is_action_just_pressed("spell_1"):
+			sb.select_spell_by_index(0)
+		elif Input.is_action_just_pressed("spell_2"):
+			sb.select_spell_by_index(1)
+		elif Input.is_action_just_pressed("spell_3"):
+			sb.select_spell_by_index(2)
+		elif Input.is_action_just_pressed("spell_upgrade"):
+			_upgrade_current_spell()
+
 	if Input.is_action_just_pressed("attack"):
 		combat_component.perform_attack(facing_direction)
 	elif Input.is_action_just_pressed("cast_spell"):
 		combat_component.cast_spell(self, facing_direction, health_component)
+
+func _upgrade_current_spell() -> void:
+	var sb := spellbook_component
+	if sb == null:
+		sb = get_node_or_null("SpellbookComponent") as SpellbookComponent
+	var inv := inventory_component
+	if inv == null:
+		inv = get_node_or_null("InventoryComponent") as InventoryComponent
+	if sb == null or inv == null:
+		return
+	if current_state == State.DEAD:
+		return
+	if get_tree().paused:
+		return
+	var ui := _get_game_ui()
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open()):
+		return
+	var world := get_tree().current_scene
+	var res := sb.upgrade_spell(sb.selected_spell_id, inv, world)
+	if ui and res.has("message"):
+		ui.show_notification(res["message"])
 
 func _on_invuln_started() -> void:
 	if sprite_root and current_state != State.DEAD:

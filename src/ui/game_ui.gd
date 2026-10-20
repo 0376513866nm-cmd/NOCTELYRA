@@ -41,6 +41,7 @@ signal victory_dismissed()
 @onready var pause_menu: Control = $PauseMenu
 @onready var save_btn: Button = $PauseMenu/Panel/SaveBtn
 @onready var inventory_ui: InventoryUI = $InventoryUI
+@onready var spell_hotbar: SpellHotbar = $HUD/SpellHotbar
 
 var _dialogue_lines: Array[String] = []
 var _current_dialogue_idx: int = 0
@@ -101,7 +102,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ
 	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open():
-		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash"):
+		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash") or event.is_action_pressed("spell_1") or event.is_action_pressed("spell_2") or event.is_action_pressed("spell_3") or event.is_action_pressed("spell_upgrade"):
 			get_viewport().set_input_as_handled()
 			return
 

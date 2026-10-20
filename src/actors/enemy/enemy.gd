@@ -35,7 +35,13 @@ var attack_timer: float = 0.0
 var state_timer: float = 0.0
 var _has_reported_death: bool = false
 
+var _base_move_speed: float = 120.0
+var _is_slowed: bool = false
+var _slow_timer: float = 0.0
+var _slow_ratio: float = 0.0
+
 func _ready() -> void:
+	_base_move_speed = move_speed
 	if attack_hitbox:
 		attack_hitbox.monitoring = false
 		attack_hitbox.visible = false
@@ -66,6 +72,15 @@ func _physics_process(delta: float) -> void:
 
 	if attack_timer > 0.0:
 		attack_timer -= delta
+
+	# Cập nhật thời gian làm chậm (M5 Frost Shard)
+	if _is_slowed:
+		_slow_timer -= delta
+		if _slow_timer <= 0.0:
+			_is_slowed = false
+			move_speed = _base_move_speed
+			if visual_root and current_state != State.DEAD:
+				visual_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 	if not is_on_floor():
 		velocity.y += gravity * delta
@@ -232,6 +247,21 @@ func _on_hit_received(dmg: DamageInfo) -> void:
 
 func _on_died() -> void:
 	_change_state(State.DEAD)
+
+func get_current_speed() -> float:
+	return move_speed
+
+func apply_slow(ratio: float, duration: float) -> void:
+	if current_state == State.DEAD:
+		return
+	if not _is_slowed:
+		_base_move_speed = move_speed
+		_is_slowed = true
+	_slow_ratio = ratio
+	_slow_timer = duration # Làm mới thời gian nếu trúng tiếp (không cộng dồn vô hạn)
+	move_speed = _base_move_speed * (1.0 - _slow_ratio)
+	if visual_root:
+		visual_root.modulate = Color(0.6, 0.85, 1.0, 1.0)
 
 func _get_state_name(st: State) -> String:
 	match st:

@@ -88,6 +88,8 @@ func init_references() -> void:
 		game_ui.retry_requested.connect(_on_retry_requested)
 		if player and game_ui.inventory_ui:
 			game_ui.inventory_ui.setup_player(player)
+		if player and game_ui.spell_hotbar and player.spellbook_component:
+			game_ui.spell_hotbar.set_spellbook(player.spellbook_component)
 		if quest_manager and quest_manager.current_quest:
 			game_ui.update_quest_info(quest_manager.current_quest)
 			game_ui.update_gold(quest_manager.gold)

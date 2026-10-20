@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://c8m4p7k1y2r3"]
+[gd_scene load_steps=20 format=3 uid="uid://c8m4p7k1y2r3"]
 
 [ext_resource type="Script" path="res://src/actors/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://src/actors/player/player_movement_data.gd" id="2_data"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="8_hurtbox"]
 [ext_resource type="Script" path="res://src/inventory/inventory_component.gd" id="9_inv"]
 [ext_resource type="Script" path="res://src/inventory/equipment_component.gd" id="10_equip"]
+[ext_resource type="Script" path="res://src/magic/spellbook_component.gd" id="11_spellbook"]
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
@@ -209,3 +210,6 @@ script = ExtResource("9_inv")
 [node name="EquipmentComponent" type="Node" parent="." node_paths=PackedStringArray("player")]
 script = ExtResource("10_equip")
 player = NodePath("..")
+
+[node name="SpellbookComponent" type="Node" parent="."]
+script = ExtResource("11_spellbook")

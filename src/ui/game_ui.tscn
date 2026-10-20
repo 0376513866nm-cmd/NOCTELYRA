@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://d3m8k1y9p2q5"]
+[gd_scene load_steps=4 format=3 uid="uid://d3m8k1y9p2q5"]
 
 [ext_resource type="Script" path="res://src/ui/game_ui.gd" id="1_ui"]
 [ext_resource type="PackedScene" uid="uid://c7m9x4v1q5p2" path="res://src/inventory/inventory_ui.tscn" id="2_inv_ui"]
+[ext_resource type="PackedScene" uid="uid://c6j2y5m4k8p1" path="res://src/ui/spell_hotbar.tscn" id="3_spell_hotbar"]
 
 [node name="GameUI" type="CanvasLayer"]
 script = ExtResource("1_ui")
@@ -243,9 +244,12 @@ offset_bottom = -20.0
 grow_vertical = 0
 text = "Controls:
 - A / D: Di chuyển | Space: Nhảy / Nhảy đôi | Shift: Lướt
-- J: Tấn công cận chiến | K: Bắn Ma pháp (Tiêu hao MP)
+- J: Tấn công | K: Dùng phép (MP) | 1, 2, 3: Chọn phép | U: Nâng cấp
 - E: Tương tác với NPC (Elyra)
 - I: Mở Túi đồ & Trang bị | Esc: Tạm dừng"
+
+[node name="SpellHotbar" parent="HUD" instance=ExtResource("3_spell_hotbar")]
+layout_mode = 1
 
 [node name="DialogueBox" type="Control" parent="."]
 visible = false

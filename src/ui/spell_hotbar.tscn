@@ -1,0 +1,302 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6j2y5m4k8p1"]
+
+[ext_resource type="Script" path="res://src/ui/spell_hotbar.gd" id="1_script"]
+
+[node name="SpellHotbar" type="Control"]
+custom_minimum_size = Vector2(360, 74)
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -84.0
+offset_right = 180.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("1_script")
+
+[node name="Slots" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 236.0
+offset_bottom = 74.0
+theme_override_constants/separation = 10
+
+[node name="Slot1" type="Panel" parent="Slots"]
+custom_minimum_size = Vector2(72, 74)
+layout_mode = 2
+
+[node name="Bg" type="ColorRect" parent="Slots/Slot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12, 0.14, 0.2, 0.85)
+
+[node name="Icon" type="ColorRect" parent="Slots/Slot1"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 18.0
+offset_right = 66.0
+offset_bottom = 54.0
+mouse_filter = 2
+color = Color(0.3, 0.7, 1.0, 0.8)
+
+[node name="KeyBadge" type="Label" parent="Slots/Slot1"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 30.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 11
+text = "[1]"
+
+[node name="LevelLabel" type="Label" parent="Slots/Slot1"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 2.0
+offset_right = 68.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 11
+text = "Lv.1"
+horizontal_alignment = 2
+
+[node name="ManaLabel" type="Label" parent="Slots/Slot1"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 55.0
+offset_right = 68.0
+offset_bottom = 72.0
+theme_override_font_sizes/font_size = 11
+text = "12 MP"
+horizontal_alignment = 1
+
+[node name="Highlight" type="ReferenceRect" parent="Slots/Slot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(1, 0.85, 0.2, 1)
+border_width = 3.0
+editor_only = false
+
+[node name="CooldownOverlay" type="ColorRect" parent="Slots/Slot1"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="CooldownLabel" type="Label" parent="Slots/Slot1/CooldownOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "0.5s"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot2" type="Panel" parent="Slots"]
+custom_minimum_size = Vector2(72, 74)
+layout_mode = 2
+
+[node name="Bg" type="ColorRect" parent="Slots/Slot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12, 0.14, 0.2, 0.85)
+
+[node name="Icon" type="ColorRect" parent="Slots/Slot2"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 18.0
+offset_right = 66.0
+offset_bottom = 54.0
+mouse_filter = 2
+color = Color(1, 0.45, 0.15, 0.85)
+
+[node name="KeyBadge" type="Label" parent="Slots/Slot2"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 30.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 11
+text = "[2]"
+
+[node name="LevelLabel" type="Label" parent="Slots/Slot2"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 2.0
+offset_right = 68.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 11
+text = "Lv.1"
+horizontal_alignment = 2
+
+[node name="ManaLabel" type="Label" parent="Slots/Slot2"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 55.0
+offset_right = 68.0
+offset_bottom = 72.0
+theme_override_font_sizes/font_size = 11
+text = "18 MP"
+horizontal_alignment = 1
+
+[node name="Highlight" type="ReferenceRect" parent="Slots/Slot2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(1, 0.85, 0.2, 1)
+border_width = 3.0
+editor_only = false
+
+[node name="CooldownOverlay" type="ColorRect" parent="Slots/Slot2"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="CooldownLabel" type="Label" parent="Slots/Slot2/CooldownOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "1.0s"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Slot3" type="Panel" parent="Slots"]
+custom_minimum_size = Vector2(72, 74)
+layout_mode = 2
+
+[node name="Bg" type="ColorRect" parent="Slots/Slot3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12, 0.14, 0.2, 0.85)
+
+[node name="Icon" type="ColorRect" parent="Slots/Slot3"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 18.0
+offset_right = 66.0
+offset_bottom = 54.0
+mouse_filter = 2
+color = Color(0.4, 0.85, 1, 0.85)
+
+[node name="KeyBadge" type="Label" parent="Slots/Slot3"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 30.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 11
+text = "[3]"
+
+[node name="LevelLabel" type="Label" parent="Slots/Slot3"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 2.0
+offset_right = 68.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 11
+text = "Lv.1"
+horizontal_alignment = 2
+
+[node name="ManaLabel" type="Label" parent="Slots/Slot3"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 55.0
+offset_right = 68.0
+offset_bottom = 72.0
+theme_override_font_sizes/font_size = 11
+text = "15 MP"
+horizontal_alignment = 1
+
+[node name="Highlight" type="ReferenceRect" parent="Slots/Slot3"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(1, 0.85, 0.2, 1)
+border_width = 3.0
+editor_only = false
+
+[node name="CooldownOverlay" type="ColorRect" parent="Slots/Slot3"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="CooldownLabel" type="Label" parent="Slots/Slot3/CooldownOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "0.7s"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UpgradeBtn" type="Button" parent="."]
+custom_minimum_size = Vector2(110, 74)
+layout_mode = 0
+offset_left = 246.0
+offset_right = 360.0
+offset_bottom = 74.0
+theme_override_font_sizes/font_size = 11
+text = "[U] Nâng cấp
+(3 Shard)"
+autowrap_mode = 3

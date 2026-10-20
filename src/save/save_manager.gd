@@ -7,8 +7,8 @@ extends RefCounted
 ## thẩm định (validation) chặt chẽ và cách ly dữ liệu kiểm thử an toàn 100%.
 
 const DEFAULT_SAVE_PATH: String = "user://noctelyra_slot1.json"
-const CURRENT_VERSION: String = "1.1.0"
-const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0"]
+const CURRENT_VERSION: String = "1.2.0"
+const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0"]
 
 static var custom_save_path: String = ""
 static var should_load_on_start: bool = false
@@ -111,6 +111,7 @@ static func save_game(world: Node) -> bool:
 	var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
 	var p_inv := player.get_node_or_null("InventoryComponent") as InventoryComponent
 	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
+	var p_spellbook := player.get_node_or_null("SpellbookComponent") as SpellbookComponent
 
 	var save_path := get_save_path()
 	var tmp_path := get_tmp_path()
@@ -128,6 +129,11 @@ static func save_game(world: Node) -> bool:
 		"gold": max(0, quest_mgr.gold),
 		"inventory": p_inv.to_dict() if p_inv else [],
 		"equipment": p_eq.to_dict() if p_eq else {},
+		"spellbook": p_spellbook.to_dict() if p_spellbook else {
+			"selected_spell": "moon_bolt",
+			"known_spells": ["moon_bolt", "ember_bloom", "frost_shard"],
+			"spell_levels": {"moon_bolt": 1, "ember_bloom": 1, "frost_shard": 1}
+		},
 		"quest": {
 			"state": int(quest_mgr.current_quest.current_state) if quest_mgr.current_quest else 0,
 			"current_amount": int(quest_mgr.current_quest.current_amount) if quest_mgr.current_quest else 0
@@ -270,6 +276,23 @@ static func load_game(world: Node) -> bool:
 			p_inv.load_from_dict(data["inventory"])
 		else:
 			p_inv._initialize_slots()
+
+	# BƯỚC 1.5: Khôi phục Sách Phép (SpellbookComponent - M5)
+	var p_spellbook := player.get_node_or_null("SpellbookComponent") as SpellbookComponent
+	if p_spellbook:
+		if data.has("spellbook") and (data["spellbook"] is Dictionary):
+			p_spellbook.from_dict(data["spellbook"])
+		else:
+			# Tương thích ngược v1.0.0 và v1.1.0: mặc định mở khóa 3 phép cấp 1
+			p_spellbook.from_dict({
+				"selected_spell": "moon_bolt",
+				"known_spells": ["moon_bolt", "ember_bloom", "frost_shard"],
+				"spell_levels": {
+					"moon_bolt": 1,
+					"ember_bloom": 1,
+					"frost_shard": 1
+				}
+			})
 
 	# BƯỚC 2: Khôi phục Player (Tọa độ & HP/MP)
 	# Nhờ Bước 1 đã chạy, p_health.max_mana đã được cập nhật chính xác (80 nếu đeo moon_amulet, 60 nếu không)

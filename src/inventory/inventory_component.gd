@@ -23,6 +23,9 @@ func _initialize_slots() -> void:
 	for i in range(max_slots):
 		slots.append({ "item_id": "", "amount": 0 })
 
+func clear() -> void:
+	_initialize_slots()
+
 func get_slot(index: int) -> Dictionary:
 	if index >= 0 and index < slots.size():
 		return slots[index]
@@ -133,6 +136,9 @@ func remove_item_by_id(item_id: String, amount: int = 1) -> bool:
 	emit_signal("item_removed", item_id, amount)
 	emit_signal("inventory_updated")
 	return true
+
+func remove_item(item_id: String, amount: int = 1) -> bool:
+	return remove_item_by_id(item_id, amount)
 
 func has_item(item_id: String, amount: int = 1) -> bool:
 	var count := get_item_count(item_id)

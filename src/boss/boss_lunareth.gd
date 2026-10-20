@@ -38,6 +38,10 @@ enum AttackType {
 @export var recovery_time_p2: float = 1.1 # Giảm ~21% thời gian nghỉ ở Phase 2
 @export var gravity: float = 1100.0
 
+var move_speed: float:
+	get:
+		return move_speed_p2 if is_phase_2 else move_speed_p1
+
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var charge_hitbox: Hitbox = $ChargeHitbox
@@ -347,6 +351,10 @@ func _on_died() -> void:
 func activate_boss() -> void:
 	if current_state == State.DORMANT and not _is_defeated:
 		_change_state(State.INTRO)
+
+func apply_slow(_ratio: float, _duration: float) -> void:
+	# Boss Lunareth là linh thú ma pháp cổ xưa, miễn nhiễm hoàn toàn với hiệu ứng làm chậm
+	pass
 
 func reset_boss() -> void:
 	global_position = _initial_spawn_position

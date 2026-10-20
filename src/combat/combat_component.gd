@@ -37,7 +37,16 @@ func can_attack() -> bool:
 	return _attack_timer <= 0.0 and not _is_attacking
 
 func can_cast_spell(health_comp: HealthComponent) -> bool:
-	if _spell_timer > 0.0 or _is_attacking:
+	if _is_attacking:
+		return false
+	var owner_node := get_parent() as Node2D
+	var spellbook: SpellbookComponent = null
+	if owner_node:
+		spellbook = owner_node.get_node_or_null("SpellbookComponent") as SpellbookComponent
+	if spellbook:
+		var check := spellbook.can_cast_selected(health_comp)
+		return bool(check.get("can_cast", false))
+	if _spell_timer > 0.0:
 		return false
 	if health_comp and health_comp.current_mana < spell_mana_cost:
 		return false
@@ -69,6 +78,19 @@ func end_attack() -> void:
 	emit_signal("attack_finished")
 
 func cast_spell(owner_node: Node2D, facing_dir: int, health_comp: HealthComponent) -> bool:
+	if _is_attacking:
+		return false
+
+	var spellbook: SpellbookComponent = null
+	if owner_node:
+		spellbook = owner_node.get_node_or_null("SpellbookComponent") as SpellbookComponent
+
+	if spellbook:
+		var success := spellbook.cast_selected_spell(owner_node, facing_dir, health_comp)
+		if success:
+			emit_signal("spell_cast")
+		return success
+
 	if not can_cast_spell(health_comp):
 		return false
 

@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://m5p1mb01q7v2"]
+
+[ext_resource type="Script" path="res://src/magic/projectiles/moon_bolt_projectile.gd" id="1_mb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_orb"]
+radius = 12.0
+
+[node name="MoonBoltProjectile" type="Area2D"]
+collision_layer = 16
+collision_mask = 5
+script = ExtResource("1_mb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_orb")
+
+[node name="VisualOrb" type="ColorRect" parent="."]
+offset_left = -12.0
+offset_top = -8.0
+offset_right = 12.0
+offset_bottom = 8.0
+color = Color(0.2, 0.75, 1.0, 0.9)
+
+[node name="CoreGlow" type="ColorRect" parent="."]
+offset_left = -6.0
+offset_top = -4.0
+offset_right = 6.0
+offset_bottom = 4.0
+color = Color(0.9, 0.98, 1.0, 1.0)
