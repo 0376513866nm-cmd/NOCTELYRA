@@ -17,6 +17,8 @@ enum State {
 @export var attack_range: float = 55.0
 @export var attack_cooldown: float = 1.2
 @export var gravity: float = 1100.0
+@export var enemy_id: String = ""
+@export var loot_table: LootTable = null
 
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -167,6 +169,20 @@ func _notify_kill_once() -> void:
 	if not _has_reported_death:
 		_has_reported_death = true
 		emit_signal("enemy_defeated", self)
+		_spawn_loot()
+
+func _spawn_loot() -> void:
+	var spawn_parent = get_parent()
+	if spawn_parent:
+		if loot_table:
+			loot_table.spawn_loot(global_position, spawn_parent)
+		else:
+			var pickup_scene: PackedScene = preload("res://src/loot/item_pickup.tscn")
+			var pickup := pickup_scene.instantiate() as ItemPickup
+			pickup.item_id = "mana_shard"
+			pickup.amount = 1
+			pickup.global_position = global_position
+			spawn_parent.add_child.call_deferred(pickup)
 
 func _finish_attack() -> void:
 	if attack_hitbox:

@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5m9n2q8v3k1"]
+
+[ext_resource type="Script" path="res://src/loot/item_pickup.gd" id="1_pickup"]
+[ext_resource type="Texture2D" path="res://icon.svg" id="2_icon"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 28.0
+
+[node name="ItemPickup" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_pickup")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pickup")
+
+[node name="IconSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_icon")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -70.0
+offset_top = -32.0
+offset_right = 70.0
+offset_bottom = -12.0
+theme_override_font_sizes/font_size = 12
+text = "Item"
+horizontal_alignment = 1

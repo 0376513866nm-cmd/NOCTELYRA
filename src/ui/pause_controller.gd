@@ -11,6 +11,15 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
+		# Nếu túi đồ đang mở thì Esc đóng túi đồ trước thay vì mở PauseMenu
+		var cur_scene = get_tree().current_scene if get_tree() else null
+		if cur_scene:
+			var ui := cur_scene.get_node_or_null("GameUI") as GameUI
+			if ui and ui.is_inventory_open():
+				ui.close_inventory()
+				get_viewport().set_input_as_handled()
+				return
+
 		toggle_pause()
 		get_viewport().set_input_as_handled()
 
@@ -18,10 +27,18 @@ func toggle_pause() -> void:
 	var tree := get_tree()
 	if tree == null:
 		return
-	var is_paused := not tree.paused
-	tree.paused = is_paused
+	if tree.paused:
+		resume()
+	else:
+		pause()
+
+func pause() -> void:
+	var tree := get_tree()
+	if tree == null:
+		return
+	tree.paused = true
 	if pause_menu:
-		pause_menu.visible = is_paused
+		pause_menu.visible = true
 
 func resume() -> void:
 	var tree := get_tree()

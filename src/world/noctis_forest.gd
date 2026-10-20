@@ -7,6 +7,7 @@ var quest_manager: QuestManager
 var pause_controller: PauseController
 var npc_elyra: NPC
 var interaction_coordinator: InteractionCoordinator
+var defeated_enemy_ids: Array = []
 
 func _enter_tree() -> void:
 	init_references()
@@ -14,6 +15,9 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	init_references()
+	if SaveManager.should_load_on_start:
+		SaveManager.should_load_on_start = false
+		SaveManager.load_game(self)
 
 func init_references() -> void:
 	if player == null:
@@ -46,6 +50,8 @@ func init_references() -> void:
 	# Kết nối GameUI
 	if game_ui and not game_ui.retry_requested.is_connected(_on_retry_requested):
 		game_ui.retry_requested.connect(_on_retry_requested)
+		if player and game_ui.inventory_ui:
+			game_ui.inventory_ui.setup_player(player)
 		if quest_manager and quest_manager.current_quest:
 			game_ui.update_quest_info(quest_manager.current_quest)
 			game_ui.update_gold(quest_manager.gold)
@@ -63,11 +69,19 @@ func init_references() -> void:
 	if npc_elyra and not npc_elyra.dialogue_requested.is_connected(_on_npc_dialogue_requested):
 		npc_elyra.dialogue_requested.connect(_on_npc_dialogue_requested)
 
-	# Kết nối các quái vật trên map với QuestManager
+	# Kết nối các quái vật trên map với QuestManager và ghi nhận ID quái đã diệt
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	for e in enemies:
-		if e is Enemy and quest_manager and not e.enemy_defeated.is_connected(quest_manager.register_enemy_kill):
-			e.enemy_defeated.connect(quest_manager.register_enemy_kill)
+		if e is Enemy:
+			if quest_manager and not e.enemy_defeated.is_connected(quest_manager.register_enemy_kill):
+				e.enemy_defeated.connect(quest_manager.register_enemy_kill)
+			if not e.enemy_defeated.is_connected(_on_enemy_defeated):
+				e.enemy_defeated.connect(_on_enemy_defeated)
+
+func _on_enemy_defeated(enemy_node: Node) -> void:
+	if enemy_node is Enemy and not enemy_node.enemy_id.is_empty():
+		if not enemy_node.enemy_id in defeated_enemy_ids:
+			defeated_enemy_ids.append(enemy_node.enemy_id)
 
 func _on_player_state_changed(st_name: String) -> void:
 	if game_ui:

@@ -1,0 +1,156 @@
+[gd_scene load_steps=2 format=3 uid="uid://c7m9x4v1q5p2"]
+
+[ext_resource type="Script" path="res://src/inventory/inventory_ui.gd" id="1_inv_ui"]
+
+[node name="InventoryUI" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_inv_ui")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleHBox" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = 10.0
+offset_right = -16.0
+offset_bottom = 36.0
+grow_horizontal = 2
+
+[node name="Title" type="Label" parent="Panel/TitleHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "HÀNH TRANG & TRANG BỊ [I]"
+
+[node name="CloseBtn" type="Button" parent="Panel/TitleHBox"]
+custom_minimum_size = Vector2(28, 24)
+layout_mode = 2
+text = "X"
+
+[node name="MainHBox" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 45.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="LeftVBox" type="VBoxContainer" parent="Panel/MainHBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="GridContainer" type="GridContainer" parent="Panel/MainHBox/LeftVBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 4
+
+[node name="EquipTitle" type="Label" parent="Panel/MainHBox/LeftVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Ô TRANG BỊ HIỆN TẠI:"
+
+[node name="EquipHBox" type="HBoxContainer" parent="Panel/MainHBox/LeftVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="WeaponSlotBtn" type="Button" parent="Panel/MainHBox/LeftVBox/EquipHBox"]
+custom_minimum_size = Vector2(125, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Vũ khí: Trống"
+
+[node name="AccessorySlotBtn" type="Button" parent="Panel/MainHBox/LeftVBox/EquipHBox"]
+custom_minimum_size = Vector2(125, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Phụ kiện: Trống"
+
+[node name="RightVBox" type="VBoxContainer" parent="Panel/MainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="DetailIcon" type="TextureRect" parent="Panel/MainHBox/RightVBox"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 3
+
+[node name="DetailName" type="Label" parent="Panel/MainHBox/RightVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Tên vật phẩm"
+
+[node name="DetailType" type="Label" parent="Panel/MainHBox/RightVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "Loại: Nguyên liệu"
+
+[node name="DetailStats" type="Label" parent="Panel/MainHBox/RightVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "+10 Sát thương"
+
+[node name="DetailDesc" type="Label" parent="Panel/MainHBox/RightVBox"]
+custom_minimum_size = Vector2(240, 100)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 11
+text = "Mô tả chi tiết vật phẩm..."
+autowrap_mode = 2
+
+[node name="ActionHBox" type="HBoxContainer" parent="Panel/MainHBox/RightVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="UseBtn" type="Button" parent="Panel/MainHBox/RightVBox/ActionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "Dùng"
+
+[node name="EquipBtn" type="Button" parent="Panel/MainHBox/RightVBox/ActionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "Trang bị"
+
+[node name="UnequipBtn" type="Button" parent="Panel/MainHBox/RightVBox/ActionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "Tháo"
+
+[node name="DropBtn" type="Button" parent="Panel/MainHBox/RightVBox/ActionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "Vứt"

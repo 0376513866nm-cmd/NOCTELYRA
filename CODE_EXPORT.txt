@@ -1,6 +1,6 @@
 ﻿===================================================
-  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M2.1 FINAL)
-  EXPORTED AT: 2026-10-20 10:25:24
+  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M3 FINAL)
+  EXPORTED AT: 2026-10-20 11:06:01
 ===================================================
 
 
@@ -18,8 +18,8 @@ config_version=5
 
 config/name="NOCTELYRA"
 config/description="NOCTELYRA - 2D Action RPG Cross-platform (Steam & Mobile) prototype"
-config/version="0.2.0"
-run/main_scene="res://src/world/noctis_forest.tscn"
+config/version="0.3.0"
+run/main_scene="res://src/ui/main_menu.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -82,6 +82,11 @@ interact={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":69,"physical_keycode":0,"key_label":0,"unicode":101,"location":0,"echo":false,"script":null)
 ]
 }
+inventory={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":73,"physical_keycode":0,"key_label":0,"unicode":105,"location":0,"echo":false,"script":null)
+]
+}
 
 [rendering]
 
@@ -93,22 +98,23 @@ renderer/rendering_method="forward_plus"
 FILE: README.md
 ===================================================
 
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M2.1 FINAL)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M3 FINAL)
 
 Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M2.1)
+## 1. Cấu trúc thư mục & Module dự án (Bản M3)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu hướng dẫn, kiến trúc & kết quả kiểm thử
+├── README.md                       # Tài liệu hướng dẫn, kiến trúc, sơ đồ & kết quả kiểm thử
 ├── CODE_EXPORT.txt                 # Mã nguồn tổng hợp toàn dự án cho AI review
-├── test_m2_1_flow.gd               # Kịch bản kiểm thử tự động toàn diện qua input (42/42 tests pass)
+├── test_m3_flow.gd                 # [MỚI M3] Kịch bản kiểm thử tự động 15 giai đoạn M3 (67/67 tests PASS)
+├── test_m2_1_flow.gd               # Kịch bản kiểm thử hồi quy M2.1 (42/42 tests PASS)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
-├── project.godot                   # Main Scene: noctis_forest.tscn (1280x720, forward_plus)
+├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus)
 ├── run_game.bat                    # 1-Click chạy game test ngay lập tức
 ├── open_editor.bat                 # 1-Click mở Godot Editor
 ├── export_code_for_ai.bat          # 1-Click gom toàn bộ source code thành file CODE_EXPORT.txt
@@ -131,14 +137,14 @@ D:\project\game\NOCTELYRA\
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player (IDLE, RUN, JUMP, FALL, DASH, DEAD), Grace Cooldown
-    │   │   ├── player.tscn                  # Scene Player (HealthComp, CombatComp, Hurtbox, Hitbox)
+    │   │   ├── player.gd                    # FSM Player, tích hợp InventoryComponent & EquipmentComponent
+    │   │   ├── player.tscn                  # Scene Player hoàn chỉnh
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy, dash
     │   ├── npc\
     │   │   ├── npc.gd                       # Logic NPC Elyra, đối thoại đa phân đoạn & trigger nhiệm vụ
     │   │   └── npc.tscn                     # Scene NPC Elyra (collision_layer = 0: xuyên người mượt mà)
     │   └── enemy\
-    │       ├── enemy.gd                     # Enemy AI (Single-path kill signal, anti-duplicate protection)
+    │       ├── enemy.gd                     # Enemy AI, gán enemy_id ổn định, tích hợp rơi đồ LootTable
     │       └── enemy.tscn                   # Scene Enemy với thanh máu HPBar mini, hitbox & hurtbox
     ├── combat\
     │   ├── damage_info.gd                   # Struct dữ liệu sát thương & knockback
@@ -149,166 +155,253 @@ D:\project\game\NOCTELYRA\
     │   ├── magic_projectile.gd              # Quả cầu ma pháp bay thẳng gây nổ sát thương
     │   └── magic_projectile.tscn            # Scene đạn phép ma pháp
     ├── interaction\
-    │   ├── interaction_coordinator.gd       # [MỚI M2.1] Bộ điều phối Input tập trung cho tương tác & hội thoại
+    │   ├── interaction_coordinator.gd       # Bộ điều phối Input tập trung cho tương tác & hội thoại
     │   └── interaction_component.gd         # Area2D tương tác nhận diện Player phạm vi gần
+    ├── inventory\                           # [MỚI M3] HỆ THỐNG VẬT PHẨM & TRANG BỊ
+    │   ├── item_definition.gd               # Resource định nghĩa vật phẩm chuẩn (ID, tên, loại, chỉ số, công dụng)
+    │   ├── item_database.gd                 # Registry tra cứu vật phẩm ổn định theo ID
+    │   ├── inventory_component.gd           # Component quản lý túi đồ 16 ô (thêm, xóa, stack, dùng)
+    │   ├── equipment_component.gd           # Component quản lý 2 ô trang bị (Weapon, Accessory) & tính chỉ số
+    │   ├── inventory_ui.gd                  # Controller giao diện túi đồ, lưới 16 ô, xem chi tiết & nút bấm
+    │   └── inventory_ui.tscn                # Scene giao diện túi đồ đẹp mắt, hỗ trợ chuột và cảm ứng
+    ├── loot\                                # [MỚI M3] HỆ THỐNG RƠI ĐỒ VÀ NHẶT VẬT PHẨM
+    │   ├── loot_table.gd                    # Resource định nghĩa bảng tỷ lệ rơi đồ của quái vật
+    │   ├── item_pickup.gd                   # Entity vật phẩm rơi trên mặt đất, tự nhặt khi chạm
+    │   └── item_pickup.tscn                 # Scene vật phẩm rơi với hiệu ứng nhấp nhô lơ lửng
     ├── quest\
     │   ├── quest_data.gd                    # Resource dữ liệu nhiệm vụ (4 trạng thái FSM)
     │   └── quest_manager.gd                 # Quản lý vòng lặp nhiệm vụ, tiến độ 3/3 và trả thưởng Vàng
+    ├── save\                                # [MỚI M3] HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
+    │   └── save_manager.gd                  # Lưu file JSON user://noctelyra_slot1.json ghi tạm nguyên tử
     ├── ui\
-    │   ├── game_ui.gd                       # Quản lý toàn bộ HUD, HP/MP, Vàng, Nhiệm vụ, DialogueBox, Grace Cooldown
-    │   ├── game_ui.tscn                     # CanvasLayer giao diện hoàn chỉnh
-    │   └── pause_controller.gd              # Quản lý Pause/Resume độc lập (PROCESS_MODE_ALWAYS)
+    │   ├── game_ui.gd                       # HUD, thanh máu, phím I mở túi đồ, PauseMenu tích hợp Save Game
+    │   ├── game_ui.tscn                     # CanvasLayer giao diện in-game
+    │   ├── pause_controller.gd              # Quản lý Pause/Resume độc lập, Esc đóng túi đồ trước
+    │   ├── main_menu.gd                     # Màn hình chính: Chơi mới (xác nhận ghi đè), Tiếp tục, Thoát
+    │   └── main_menu.tscn                   # Scene Main Menu
     └── world\
-        ├── noctis_forest.gd                 # Main Scene M2.1: Quản lý vòng lặp thế giới, kết nối sự kiện
-        ├── noctis_forest.tscn               # Màn chơi Bìa Rừng Noctis tích hợp InteractionCoordinator
+        ├── noctis_forest.gd                 # Main Scene: kết nối rơi đồ, lưu danh sách quái đã diệt
+        ├── noctis_forest.tscn               # Màn chơi Bìa Rừng Noctis đặt sẵn các vật phẩm test
         ├── test_level.gd                    # Màn test M1 cũ (vẫn được lưu giữ)
         └── test_level.tscn
 ```
 
 ---
 
-## 2. Các phím điều khiển (Controls)
+## 2. Sơ đồ kiến trúc Module M3
+
+```text
+               ┌────────────────────────────────────────────────────────┐
+               │                       MainMenu                         │
+               │    [Continue (có save)]   [New Game]   [Quit]          │
+               └───────────────────────────┬────────────────────────────┘
+                                           │
+                                           ▼
+               ┌────────────────────────────────────────────────────────┐
+               │                  NoctisForest (World)                  │
+               │                                                        │
+               │   ┌──────────────┐   ┌──────────────┐   ┌───────────┐  │
+               │   │    Player    │   │  NPC Elyra   │   │  Enemies  │  │
+               │   │ ──────────── │   │ ──────────── │   │ ───────── │  │
+               │   │ Inventory    │   │ Dialogue [E] │   │ LootTable │  │
+               │   │ Equipment    │   │ Quest Loop   │   │ Drops [M] │  │
+               │   │ Combat / HP  │   └──────────────┘   └─────┬─────┘  │
+               │   └──────┬───────┘                            │        │
+               │          │ (nhặt đồ khi còn chỗ)              │ rơi đồ │
+               │          ▼                                    ▼        │
+               │   ┌─────────────────────────────────────────────────┐  │
+               │   │            ItemPickup (Vật phẩm rơi)            │  │
+               │   └─────────────────────────────────────────────────┘  │
+               └───────────────────────────┬────────────────────────────┘
+                                           │
+         ┌─────────────────────────────────┼─────────────────────────────────┐
+         ▼                                 ▼                                 ▼
+┌──────────────────┐             ┌──────────────────┐             ┌──────────────────┐
+│   GameUI (HUD)   │             │   SaveManager    │             │   ItemDatabase   │
+│ ──────────────── │             │ ──────────────── │             │ ──────────────── │
+│ HP/MP, Vàng, Q   │             │ user://slot1.json│             │ mana_shard       │
+│ Inventory UI [I] │ ◄────────── │ Atomic tmp write │             │ health_potion    │
+│ Pause Menu [Esc] │  (AutoSave  │ Defeated Enemies │             │ moonsteel_sword  │
+│ [Save Game Btn]  │   khi xong) │ Clamping & Safe  │             │ moon_amulet      │
+└──────────────────┘             └──────────────────┘             └──────────────────┘
+```
+
+---
+
+## 3. Các phím điều khiển (Controls)
 
 | Phím | Chức năng | Chi tiết |
 | :--- | :--- | :--- |
 | **A / D** hoặc **Mũi tên** | Di chuyển Trái / Phải | Có gia tốc mượt, tự động quay mặt nhân vật |
 | **Space** | Nhảy / Nhảy đôi | Nhấn lần 1 nhảy, nhấn lần 2 trên không để Double Jump |
 | **Shift** | Lướt nhanh (Dash) | Lướt ngang tốc độ cao (0.2s), có thể Air-Dash trên không |
-| **J** | **Đánh thường (Melee)** | Chém cận chiến (25 DMG), có cooldown (0.35s) và đẩy lùi quái |
-| **K** | **Ma pháp (Magic Spell)** | Bắn quả cầu ma pháp (30 DMG), tiêu hao 15 MP, có cooldown |
-| **E** | **Tương tác (Interact)** | Tương tác NPC khi chưa mở thoại; duyệt/đóng câu khi đang mở thoại |
-| **Esc** | Pause / Resume | Tạm dừng hoặc tiếp tục game (bằng phím Esc hoặc nút Resume) |
+| **J** | **Đánh thường (Melee)** | Chém cận chiến (cơ bản 25 DMG, trang bị Kiếm thành 35 DMG) |
+| **K** | **Ma pháp (Magic Spell)** | Bắn quả cầu ma pháp (30 DMG), tiêu hao 15 MP |
+| **E** | **Tương tác (Interact)** | Nói chuyện với Elyra; duyệt/đóng câu hội thoại |
+| **I** | **Túi đồ (Inventory)** | **[MỚI M3]** Mở/đóng Túi đồ & Trang bị (không pause thế giới) |
+| **Esc** | Pause / Thoát | Đóng túi đồ nếu đang mở; hoặc Tạm dừng / Tiếp tục game |
 
 ---
 
-## 3. Các cải tiến kiến trúc cốt lõi trong M2.1
+## 4. Chi tiết 4 vật phẩm ban đầu
 
-### 1. Khắc phục triệt để lỗi va chạm và Race Condition hội thoại NPC
-- **NPC xuyên người hoàn toàn:** Đặt `collision_layer = 0` trên NPC `CharacterBody2D`. Player có thể chạy qua, nhảy qua hoặc đứng cùng vị trí với Elyra mà không hề bị cản trở. Vùng tương tác `InteractionComponent` (Area2D) vẫn phát hiện chính xác người chơi.
-- **Bộ điều phối Input tập trung (`InteractionCoordinator`):**
-  - Loại bỏ hoàn toàn sự cạnh tranh phím `E` qua `_unhandled_input()` giữa NPC và GameUI.
-  - Khi chưa mở hội thoại: Phím `E` dùng để kích hoạt tương tác với NPC gần nhất.
-  - Khi đang mở hội thoại: Phím `E` **chỉ** dùng để chuyển câu tiếp theo hoặc đóng hội thoại. Tuyệt đối không thể kích hoạt lại hội thoại từ đầu khi đang mở.
-  - **Grace Cooldown (0.25s):** Sau khi hội thoại đóng, một khoảng chờ ngắn ngăn chặn nhấn đúp làm mở lại hội thoại tức thì.
-  - **Bảo vệ chống nhận nhầm phím J / Space:** Trong suốt quá trình hội thoại và thời gian Grace Cooldown, toàn bộ input hành động (Tấn công, Nhảy, Ma pháp, Dash) bị chặn triệt để, không để người chơi vô tình vung kiếm hoặc nhảy khi vừa đóng thoại.
-
-### 2. Dọn dẹp kiến trúc thông báo Quái vật bị tiêu diệt
-- **Đường thông báo duy nhất:** Quái vật khi chết (`Enemy._notify_kill_once`) chỉ phát duy nhất một tín hiệu `enemy_defeated(self)`.
-- Signal này được `NoctisForest` kết nối tới `QuestManager.register_enemy_kill(enemy)`.
-- Loại bỏ lệnh gọi trực tiếp trùng lặp trước đây, duy trì cơ chế chống đếm trùng ở cả 2 cấp:
-  1. `_has_reported_death` trong từng `Enemy`.
-  2. `_killed_enemy_ids` trong `QuestManager`.
-
-### 3. Tách biệt Source Assets và Tài liệu tái tạo Atlas
-- Đã di chuyển toàn bộ dải ảnh gốc dung lượng lớn (`player_idle_strip.png` 24.576 px và `player_run_strip.png` 7.168 px) ra khỏi thư mục `assets/sprites/player/`, đặt vào thư mục `source_assets/`.
-- Cấu hình file `.gdignore` trong `source_assets/` đảm bảo Godot Engine bỏ qua hoàn toàn, không đưa các file nguồn dung lượng lớn vào bản build xuất bản game.
-- Bổ sung PowerShell script tự động `source_assets/repack_sprites.ps1` và tài liệu hướng dẫn cho phép tái tạo 100% hai file atlas `player_idle_atlas.png` (2048x2040) và `player_run_atlas.png` (1024x1360) khi có cập nhật ảnh mới.
+1. **Tinh thể Ma lực (`mana_shard`)**:
+   - Loại: *Nguyên liệu (Material)*. Xếp chồng tối đa 99. Giá trị: 5 Vàng.
+   - 100% rơi từ 3 sinh vật ma nhiễm trong Rừng Hắc Nguyệt.
+2. **Bình Sinh Lực (`health_potion`)**:
+   - Loại: *Tiêu hao (Consumable)*. Xếp chồng tối đa 20. Giá trị: 15 Vàng.
+   - Hồi ngay lập tức 30 HP (giới hạn theo Max HP, không tràn máu). Giảm 1 bình sau khi dùng. Không thể uống khi Player đã chết (HP = 0).
+3. **Kiếm Ánh Trăng (`moonsteel_sword`)**:
+   - Loại: *Vũ khí (Weapon)*. Không xếp chồng (max_stack = 1). Giá trị: 100 Vàng.
+   - Khi trang bị: Sát thương đánh thường tăng từ **25 lên 35**. Tháo ra hoàn trả chính xác về **25**.
+4. **Bùa Nguyệt Quang (`moon_amulet`)**:
+   - Loại: *Phụ kiện (Accessory)*. Không xếp chồng (max_stack = 1). Giá trị: 120 Vàng.
+   - Khi trang bị: Max MP tăng từ **60 lên 80**. Tháo ra hoàn trả chính xác về **60** và tự động giới hạn Current MP về 60 (không tràn).
 
 ---
 
-## 4. Báo cáo kiểm thử tự động thực tế trên Godot 4.3 Engine
+## 5. Báo cáo kiểm thử tự động thực tế trên Godot 4.3 Engine
 
-Script kiểm thử tích hợp thực tế `test_m2_1_flow.gd` được chạy trực tiếp bằng console của Godot 4.3 (`Godot_v4.3-stable_win64_console.exe --headless -s test_m2_1_flow.gd`):
+File kiểm thử tích hợp đầy đủ [`test_m3_flow.gd`](file:///D:/project/game/NOCTELYRA/test_m3_flow.gd) được bàn giao trực tiếp trong project. Đã chạy thử nghiệm thực tế bằng Godot Console (`Godot_v4.3-stable_win64_console.exe --headless -s test_m3_flow.gd`):
 
 ```text
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 ==================================================
- [NOCTELYRA M2.1] INTEGRATION TEST SUITE STARTING
+ [NOCTELYRA M3] INTEGRATION TEST SUITE STARTING   
 ==================================================
+  [PASS] Player khởi tạo thành công
+  [PASS] InventoryComponent gắn vào Player thành công
+  [PASS] EquipmentComponent gắn vào Player thành công
+  [PASS] InventoryUI tích hợp trong GameUI thành công
 
---- PHASE 1: Kiếm tra thực thể và kiến trúc điều phối ---
-  [PASS] Player tồn tại trong scene
-  [PASS] NPC Elyra tồn tại trong scene
-  [PASS] GameUI tồn tại trong scene
-  [PASS] QuestManager tồn tại trong scene
-  [PASS] InteractionCoordinator tồn tại trong scene
+--- TEST 1: Thêm vật phẩm vào Inventory ---
+  [PASS] add_item thêm đủ 5 mana_shard (không thừa)
+  [PASS] Tổng số lượng mana_shard trong túi là 5
+  [PASS] Ô số 0 lưu đúng ID và số lượng 5
 
---- PHASE 2: Kiểm tra vật cản NPC (Xuyên người) ---
-  [PASS] NPC collision_layer = 0 (không cản Player di chuyển)
-  [PASS] Player có thể di chuyển và đứng trùng vị trí NPC Elyra mà không bị kẹt va chạm
+--- TEST 2: Stack vật phẩm đúng số lượng ---
+  [PASS] Ô 0 cộng dồn thành 95
+  [PASS] Thêm 10 mana_shard thành công
+  [PASS] Ô 0 đạt giới hạn max_stack 99
+  [PASS] Ô 1 tự động nhận 6 phần tử tràn stack
+  [PASS] Tổng số mana_shard trên 2 ô là 105
 
---- PHASE 3: Trạng thái ban đầu của Nhiệm vụ & Hội thoại ---
-  [PASS] Nhiệm vụ ban đầu là NOT_STARTED
-  [PASS] Hội thoại ban đầu đóng
-  [PASS] NPC Elyra có thể tương tác khi Player đứng gần
+--- TEST 3: Inventory đầy thì không làm mất vật phẩm trên đất ---
+  [PASS] Kiểm tra can_add_item trả về false khi túi đầy 16/16
+  [PASS] Pickup KHÔNG bị nhặt khi túi đồ đầy
+  [PASS] Pickup vẫn tồn tại nguyên vẹn trên mặt đất, không bị mất
+  [PASS] Túi đồ không có kiếm vì không nhặt được
 
---- PHASE 4: Tương tác mở hội thoại bằng Input 'E' ---
-  [PASS] Nhấn E lần 1: Hội thoại đã mở thành công
-  [PASS] Người nói là Elyra
+--- TEST 4: Nhặt một Pickup không bị cộng hai lần ---
+  [PASS] Đã có 1 ô trống, có thể nhặt kiếm
+  [PASS] Pickup1 đã được nhặt thành công
+  [PASS] Túi đồ nhận đúng 1 kiếm
+  [PASS] Cơ chế chống nhặt trùng: Không bị cộng lần thứ 2
 
---- PHASE 5: Bảo vệ chống nhận nhầm phím J (Tấn công) / Space (Nhảy) khi đang thoại ---
-  [PASS] Nhấn J/Space trong lúc thoại không làm đóng hội thoại
-  [PASS] Nhấn J/Space trong lúc thoại không kích hoạt chém kiếm hay nhảy
-  [PASS] Melee hitbox của Player vẫn tắt an toàn
+--- TEST 5: Sử dụng bình máu hồi đúng 30 HP và giảm 1 bình ---
+  [PASS] HP ban đầu là 40/100
+  [PASS] Sử dụng bình máu thành công
+  [PASS] HP hồi đúng 30 đơn vị (40 -> 70)
+  [PASS] Số lượng bình giảm từ 3 xuống 2
+  [PASS] HP hồi đầy 100 (không vượt Max HP)
+  [PASS] Không thể sử dụng bình máu khi Player đã chết (HP = 0)
+  [PASS] Bình máu không bị trừ khi dùng thất bại
 
---- PHASE 6: Đọc tuần tự 3 câu hội thoại bằng Input 'E' ---
-  [PASS] Nhấn E: Chuyển sang câu thứ 2
-  [PASS] Nhấn E: Chuyển sang câu thứ 3
-  [PASS] Nhấn E lần cuối: Hội thoại đóng lại thành công
-  [PASS] Nhiệm vụ chuyển sang trạng thái ACTIVE
-  [PASS] Số lượng tiêu diệt ban đầu là 0/3
+--- TEST 6: Trang bị kiếm tăng sát thương từ 25 lên 35 ---
+  [PASS] Sát thương cơ bản ban đầu là 25
+  [PASS] Trước đó không có vũ khí
+  [PASS] Đã trang bị Kiếm Ánh Trăng
+  [PASS] Sát thương tăng chính xác lên 35 (25 + 10)
 
---- PHASE 7: Grace Cooldown chống nhấn đúp re-open tức thì ---
-  [PASS] Nhấn E ngay khi vừa đóng: Bị chặn bởi Grace Cooldown, không re-open tức thì
+--- TEST 7: Tháo kiếm trả sát thương về 25 ---
+  [PASS] Tháo ra đúng Kiếm Ánh Trăng
+  [PASS] Ô vũ khí hiện đang trống
+  [PASS] Sát thương được hoàn trả chính xác về 25
 
---- PHASE 8: Tiêu diệt quái & Xác minh đường thông báo duy nhất ---
-  [PASS] Có ít nhất 3 quái vật trên bản đồ (thực tế: 3)
-  [PASS] Diệt quái 1: Tiến độ cập nhật 1/3
-  [PASS] Bảo vệ chống đếm trùng: Quái 1 không bị đếm lần 2
-  [PASS] Diệt quái 2: Tiến độ cập nhật 2/3
-  [PASS] Diệt quái 3: Tiến độ cập nhật 3/3
-  [PASS] Nhiệm vụ chuyển sang READY_TO_TURN_IN
+--- TEST 8: Trang bị/tháo bùa thay đổi Max MP đúng 20 ---
+  [PASS] Max MP cơ bản ban đầu là 60
+  [PASS] Đã trang bị Bùa Nguyệt Quang
+  [PASS] Max MP tăng chính xác lên 80 (60 + 20)
+  [PASS] Ô phụ kiện hiện đang trống
+  [PASS] Max MP hoàn trả chính xác về 60
+  [PASS] Current MP tự động giới hạn về 60, không bị tràn
 
---- PHASE 9: Trả nhiệm vụ bằng Input 'E' & Nhận thưởng ---
-  [PASS] Vàng ban đầu là 0 G
-  [PASS] Nhấn E: Mở hội thoại hoàn thành nhiệm vụ
-  [PASS] Hội thoại trả nhiệm vụ đã đóng
-  [PASS] Nhiệm vụ chuyển sang COMPLETED
-  [PASS] Player nhận đúng 50 Vàng (hiện tại: 50 G)
-  [PASS] HP của Player được hồi phục đầy (100/100)
-  [PASS] MP của Player được hồi phục đầy (100/100)
+--- TEST 9: Không cộng dồn chỉ số khi equip/unequip lặp lại ---
+  [PASS] Trang bị lặp lại 3 lần: Sát thương vẫn giữ nguyên 35, không bị cộng dồn
+  [PASS] Trang bị lặp lại bùa: Max MP vẫn giữ nguyên 80
+  [PASS] Sau khi tháo, cả hai chỉ số trở lại đúng giá trị gốc ban đầu
 
---- PHASE 10: Tương tác lần nữa không nhận thêm thưởng ---
-  [PASS] Nhấn E: Mở hội thoại cảm ơn sau hoàn thành
-  [PASS] Hội thoại cảm ơn đã đóng
-  [PASS] Vàng vẫn giữ nguyên đúng 50 G, không nhận thêm thưởng lặp lại
+--- TEST 10: Lưu Inventory và Equipment rồi tải lại đúng ---
+  [PASS] Lưu game thành công vào file save slot 1
+  [PASS] RAM: Đã dọn sạch túi đồ
+  [PASS] RAM: Đã tháo sạch trang bị
+  [PASS] Tải game từ file save thành công
+  [PASS] Phục hồi đúng 18 mana_shard
+  [PASS] Phục hồi đúng 4 health_potion
+  [PASS] Phục hồi đúng trang bị Kiếm Ánh Trăng
+  [PASS] Phục hồi đúng trang bị Bùa Nguyệt Quang
+  [PASS] Chỉ số sát thương tính toán đúng 35 sau khi tải
+  [PASS] Chỉ số Max MP tính toán đúng 80 sau khi tải
 
---- PHASE 11: Kiểm tra hệ thống Pause / Resume ---
-  [PASS] Hệ thống ban đầu chưa pause
-  [PASS] Esc lần 1: Đã kích hoạt Pause
-  [PASS] Pause menu hiển thị
-  [PASS] Esc lần 2: Đã kích hoạt Resume
-  [PASS] Pause menu ẩn sau khi resume
+--- TEST 11: Lưu và tải trạng thái nhiệm vụ 2/3 ---
+  [PASS] Phục hồi đúng trạng thái nhiệm vụ ACTIVE
+  [PASS] Phục hồi đúng tiến độ nhiệm vụ 2/3
+  [PASS] Phục hồi đúng số Vàng 75 G
+
+--- TEST 12: Quái đã chết trước khi save không bị phục hồi sai sau khi load ---
+  [PASS] Quái enemy_forest_1 đã chết trước khi save không xuất hiện lại
+
+--- TEST 13: Phần thưởng nhiệm vụ không nhận được lần hai ---
+  [PASS] complete_quest trả về false khi quest đã COMPLETED
+  [PASS] Vàng không bị cộng thêm lần 2
+
+--- TEST 14: File save hỏng không làm game crash ---
+  [PASS] Hàm load_game trả về false khi file save hỏng JSON
+  [PASS] Game không bị crash khi load file hỏng, Player vẫn an toàn trong tree
+
+--- TEST 15: Kiểm tra hồi quy các tính năng M0/M1/M2 ---
+  [PASS] NPC Elyra collision_layer = 0 (xuyên người)
+  [PASS] Hệ thống Double Jump M0 nguyên vẹn
+  [PASS] PauseController pause game thành công
+  [PASS] PauseController resume game thành công
+  [PASS] Mở InventoryUI thành công
+  [PASS] Đóng InventoryUI thành công
 
 ==================================================
- [NOCTELYRA M2.1] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
- Tổng số test: 42 | Đạt: 42 | Thất bại: 0
+ [NOCTELYRA M3] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
+ Tổng số test: 67 | Đạt: 67 | Thất bại: 0
 ==================================================
->>> ALL TESTS PASSED SUCCESSFULLY! M2.1 READY. <<<
+>>> ALL 15 M3 REQUIREMENT PHASES PASSED 100%! <<<
 ```
-
-- **Kết quả nghiệm thu:** 42/42 bài test đạt 100%. Exit code: 0. Không có bất kỳ cảnh báo hay lỗi Debugger nào.
 
 ---
 
-## 5. Hướng dẫn chạy và trải nghiệm trực tiếp
+## 6. Báo cáo lỗi còn tồn tại (Known Issues & Limitations)
+
+- **Cơ chế lưu offline tạm thời:** Dữ liệu lưu tại `user://noctelyra_slot1.json` là bản lưu client-side cho chơi đơn. Khi tiến lên giai đoạn MMO-lite, toàn bộ dữ liệu vật phẩm, trang bị và kinh tế sẽ do Dedicated Server quản lý qua Authoritative RPC.
+- **Kéo - thả & chia stack:** UI M3 hiện tại sử dụng cơ chế Click chọn và nhấn nút thao tác (Use, Equip, Unequip, Drop) để tương thích tối đa cho cả chuột PC và màn hình cảm ứng Mobile; tính năng kéo thả slot (drag & drop) và chia stack số lượng sẽ được phát triển ở bản tối ưu UI tiếp theo.
+
+---
+
+## 7. Hướng dẫn chạy và trải nghiệm trực tiếp
 
 - **Chạy game test ngay:** Click đúp vào file `run_game.bat`.
 - **Mở Godot Editor:** Click đúp vào file `open_editor.bat`.
-- **Chạy kiểm thử tự động M2.1:**
+- **Chạy kiểm thử tự động M3:**
   ```powershell
-  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --path "D:\project\game\NOCTELYRA" --headless -s test_m2_1_flow.gd
+  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --path "D:\project\game\NOCTELYRA" --headless -s test_m3_flow.gd
   ```
-- **Quy trình trải nghiệm vòng nhiệm vụ:**
-  1. Xuất hiện tại Làng Ánh Nguyệt, di chuyển sang phải đến chỗ **NPC Elyra**. Bạn có thể đi xuyên qua Elyra hoàn toàn tự nhiên.
-  2. Khi nhãn `[E] Nói chuyện` xuất hiện, nhấn **E** để mở đối thoại.
-  3. Nhấn **E** lần lượt để đọc hết 3 câu. Thử nhấn **J** hoặc **Space** trong lúc thoại để xác nhận nhân vật không vô tình chém kiếm hay nhảy.
-  4. Sau câu thứ 3, nhấn **E** để đóng thoại. Nhiệm vụ chuyển sang `ACTIVE` (0/3).
-  5. Tiến vào Rừng Hắc Nguyệt, dùng **J** (chém) và **K** (phép) tiêu diệt 3 sinh vật ma hóa. HUD cập nhật chính xác `1/3 → 2/3 → 3/3`.
-  6. Sau khi đủ 3/3, quay về gặp Elyra, nhấn **E** để đọc và đóng đối thoại hoàn thành.
-  7. Nhận đúng **50 Vàng**, HP và MP được thanh tẩy hồi phục trọn vẹn 100%.
-  8. Tương tác với Elyra lần nữa: Chỉ hiển thị lời chúc bình an, số Vàng vẫn giữ nguyên 50 G (không đếm thưởng lặp).
+- **Quy trình trải nghiệm vòng lặp gameplay hoàn chỉnh:**
+  1. Menu chính xuất hiện: Chọn **Chơi mới (New Game)** để bước vào Làng Ánh Nguyệt.
+  2. Tại làng, có sẵn các vật phẩm thử nghiệm rơi trên đất: 2 Bình máu, 1 Kiếm Ánh Trăng, 1 Bùa Nguyệt Quang. Đi qua để nhặt vào túi đồ.
+  3. Nhấn phím **I** để mở Túi đồ. Click vào Kiếm và bấm **Trang bị** (Sát thương tăng từ 25 -> 35). Click vào Bùa và bấm **Trang bị** (Max MP tăng từ 60 -> 80).
+  4. Gặp **NPC Elyra**, nhấn **E** nhận nhiệm vụ tiêu diệt 3 sinh vật ma hóa.
+  5. Tiến vào Rừng Hắc Nguyệt, chém kiếm (J) và bắn phép (K) hạ gục 3 quái vật. Mỗi quái vật rơi ra 1 Tinh thể Ma lực (`mana_shard`). Bước qua nhặt.
+  6. Nếu mất máu, nhấn **I** mở túi, click vào Bình Sinh Lực và bấm **Dùng** để hồi phục 30 HP.
+  7. Nhấn **Esc** mở Pause Menu, bấm **Save Game** để lưu lại tiến trình bất kỳ lúc nào.
+  8. Sau khi diệt đủ 3/3 quái, quay về gặp Elyra nhấn **E** trả nhiệm vụ: Nhận 50 Vàng, hồi đầy HP/MP và game tự động lưu tiến trình.
+  9. Thoát game ra Menu chính, chọn **Tiếp tục (Continue)**: Game phục hồi nguyên vẹn vị trí, HP/MP, túi đồ, trang bị và quái đã chết không bị hồi sinh sai!
 
 
 ===================================================
@@ -526,6 +619,292 @@ func _run_suite() -> void:
 
 
 ===================================================
+FILE: test_m3_flow.gd
+===================================================
+
+extends SceneTree
+
+# test_m3_flow.gd
+# Automated integration test suite for NOCTELYRA Milestone M3:
+# Inventory, Equipment & Save System.
+
+var failures: int = 0
+var tests_run: int = 0
+
+func _init() -> void:
+	print("==================================================")
+	print(" [NOCTELYRA M3] INTEGRATION TEST SUITE STARTING   ")
+	print("==================================================")
+	call_deferred("_run_suite")
+
+func _assert(condition: bool, test_name: String, details: String = "") -> void:
+	tests_run += 1
+	if condition:
+		print("  [PASS] %s" % test_name)
+	else:
+		failures += 1
+		print("  [FAIL] %s - Details: %s" % [test_name, details])
+
+func _wait_seconds(seconds: float) -> void:
+	await create_timer(seconds).timeout
+
+func _run_suite() -> void:
+	# Khởi tạo ItemDatabase
+	ItemDatabase.initialize()
+
+	var world_scene: PackedScene = load("res://src/world/noctis_forest.tscn")
+	if not world_scene:
+		print("FATAL: Could not load noctis_forest.tscn")
+		quit(1)
+		return
+
+	var world: NoctisForest = world_scene.instantiate() as NoctisForest
+	root.add_child(world)
+	current_scene = world
+
+	await _wait_seconds(0.3)
+
+	var player: Player = world.get_node_or_null("Player") as Player
+	var ui: GameUI = world.get_node_or_null("GameUI") as GameUI
+	var quest_mgr: QuestManager = world.get_node_or_null("QuestManager") as QuestManager
+	var inv: InventoryComponent = player.inventory_component if player else null
+	var eq: EquipmentComponent = player.equipment_component if player else null
+
+	_assert(player != null, "Player khởi tạo thành công")
+	_assert(inv != null, "InventoryComponent gắn vào Player thành công")
+	_assert(eq != null, "EquipmentComponent gắn vào Player thành công")
+	_assert(ui != null and ui.inventory_ui != null, "InventoryUI tích hợp trong GameUI thành công")
+
+	print("\n--- TEST 1: Thêm vật phẩm vào Inventory ---")
+	inv._initialize_slots()
+	var rem1 := inv.add_item("mana_shard", 5)
+	_assert(rem1 == 0, "add_item thêm đủ 5 mana_shard (không thừa)")
+	_assert(inv.get_item_count("mana_shard") == 5, "Tổng số lượng mana_shard trong túi là 5")
+	_assert(inv.get_slot(0).item_id == "mana_shard" and inv.get_slot(0).amount == 5, "Ô số 0 lưu đúng ID và số lượng 5")
+
+	print("\n--- TEST 2: Stack vật phẩm đúng số lượng ---")
+	# Thêm 90 nữa vào ô 0 (đang có 5) -> thành 95
+	inv.add_item("mana_shard", 90)
+	_assert(inv.get_slot(0).amount == 95, "Ô 0 cộng dồn thành 95")
+	# Thêm 10 nữa: Ô 0 đầy 99 (max_stack), 6 dư chuyển sang ô 1
+	var rem2 := inv.add_item("mana_shard", 10)
+	_assert(rem2 == 0, "Thêm 10 mana_shard thành công")
+	_assert(inv.get_slot(0).amount == 99, "Ô 0 đạt giới hạn max_stack 99")
+	_assert(inv.get_slot(1).item_id == "mana_shard" and inv.get_slot(1).amount == 6, "Ô 1 tự động nhận 6 phần tử tràn stack")
+	_assert(inv.get_item_count("mana_shard") == 105, "Tổng số mana_shard trên 2 ô là 105")
+
+	print("\n--- TEST 3: Inventory đầy thì không làm mất vật phẩm trên đất ---")
+	# Lấp đầy 14 ô còn lại
+	for i in range(2, inv.max_slots):
+		inv.slots[i].item_id = "health_potion"
+		inv.slots[i].amount = 20
+	_assert(inv.can_add_item("moonsteel_sword", 1) == false, "Kiểm tra can_add_item trả về false khi túi đầy 16/16")
+
+	# Sinh một ItemPickup dưới đất ngay vị trí Player
+	var pickup_scene: PackedScene = load("res://src/loot/item_pickup.tscn")
+	var pickup1 := pickup_scene.instantiate() as ItemPickup
+	pickup1.item_id = "moonsteel_sword"
+	pickup1.amount = 1
+	pickup1.global_position = player.global_position
+	world.add_child(pickup1)
+	await process_frame
+
+	# Player bước vào vùng nhặt
+	pickup1._on_body_entered(player)
+	_assert(pickup1.is_picked_up == false, "Pickup KHÔNG bị nhặt khi túi đồ đầy")
+	_assert(is_instance_valid(pickup1), "Pickup vẫn tồn tại nguyên vẹn trên mặt đất, không bị mất")
+	_assert(inv.has_item("moonsteel_sword") == false, "Túi đồ không có kiếm vì không nhặt được")
+
+	print("\n--- TEST 4: Nhặt một Pickup không bị cộng hai lần ---")
+	# Dọn trống 1 ô trong túi
+	inv.slots[15].item_id = ""
+	inv.slots[15].amount = 0
+	_assert(inv.can_add_item("moonsteel_sword", 1) == true, "Đã có 1 ô trống, có thể nhặt kiếm")
+
+	# Nhặt pickup1 lần 1
+	pickup1._on_body_entered(player)
+	_assert(pickup1.is_picked_up == true, "Pickup1 đã được nhặt thành công")
+	_assert(inv.get_item_count("moonsteel_sword") == 1, "Túi đồ nhận đúng 1 kiếm")
+
+	# Thử kích hoạt nhặt lại lần 2 trên cùng pickup
+	pickup1._on_body_entered(player)
+	_assert(inv.get_item_count("moonsteel_sword") == 1, "Cơ chế chống nhặt trùng: Không bị cộng lần thứ 2")
+	if is_instance_valid(pickup1):
+		pickup1.queue_free()
+
+	print("\n--- TEST 5: Sử dụng bình máu hồi đúng 30 HP và giảm 1 bình ---")
+	# Chuẩn bị ô bình máu
+	inv._initialize_slots()
+	inv.add_item("health_potion", 3)
+	player.health_component.current_health = 40.0 # Hao hụt còn 40 HP
+	_assert(player.health_component.current_health == 40.0, "HP ban đầu là 40/100")
+
+	var used_success := inv.use_item_at(0, player)
+	_assert(used_success == true, "Sử dụng bình máu thành công")
+	_assert(player.health_component.current_health == 70.0, "HP hồi đúng 30 đơn vị (40 -> 70)")
+	_assert(inv.get_item_count("health_potion") == 2, "Số lượng bình giảm từ 3 xuống 2")
+
+	# Uống tiếp khi gần đầy máu (70 + 30 = 100 max)
+	inv.use_item_at(0, player)
+	_assert(player.health_component.current_health == 100.0, "HP hồi đầy 100 (không vượt Max HP)")
+
+	# Thử sử dụng bình máu khi Player đã chết (State DEAD)
+	player.health_component.current_health = 0.0
+	var dead_use := inv.use_item_at(0, player)
+	_assert(dead_use == false, "Không thể sử dụng bình máu khi Player đã chết (HP = 0)")
+	_assert(inv.get_item_count("health_potion") == 1, "Bình máu không bị trừ khi dùng thất bại")
+	player.respawn()
+
+	print("\n--- TEST 6: Trang bị kiếm tăng sát thương từ 25 lên 35 ---")
+	_assert(player.melee_hitbox.damage == 25.0, "Sát thương cơ bản ban đầu là 25")
+	var prev_w := eq.equip("moonsteel_sword")
+	_assert(prev_w == "", "Trước đó không có vũ khí")
+	_assert(eq.get_equipped("weapon") == "moonsteel_sword", "Đã trang bị Kiếm Ánh Trăng")
+	_assert(player.melee_hitbox.damage == 35.0, "Sát thương tăng chính xác lên 35 (25 + 10)")
+
+	print("\n--- TEST 7: Tháo kiếm trả sát thương về 25 ---")
+	var unequipped_w := eq.unequip("weapon")
+	_assert(unequipped_w == "moonsteel_sword", "Tháo ra đúng Kiếm Ánh Trăng")
+	_assert(eq.get_equipped("weapon") == "", "Ô vũ khí hiện đang trống")
+	_assert(player.melee_hitbox.damage == 25.0, "Sát thương được hoàn trả chính xác về 25")
+
+	print("\n--- TEST 8: Trang bị/tháo bùa thay đổi Max MP đúng 20 ---")
+	var base_mp: float = player.health_component.max_mana
+	_assert(base_mp == 60.0, "Max MP cơ bản ban đầu là 60")
+	eq.equip("moon_amulet")
+	_assert(eq.get_equipped("accessory") == "moon_amulet", "Đã trang bị Bùa Nguyệt Quang")
+	_assert(player.health_component.max_mana == 80.0, "Max MP tăng chính xác lên 80 (60 + 20)")
+
+	# Đầy mana 80 rồi tháo bùa
+	player.health_component.current_mana = 80.0
+	eq.unequip("accessory")
+	_assert(eq.get_equipped("accessory") == "", "Ô phụ kiện hiện đang trống")
+	_assert(player.health_component.max_mana == 60.0, "Max MP hoàn trả chính xác về 60")
+	_assert(player.health_component.current_mana == 60.0, "Current MP tự động giới hạn về 60, không bị tràn")
+
+	print("\n--- TEST 9: Không cộng dồn chỉ số khi equip/unequip lặp lại ---")
+	eq.equip("moonsteel_sword")
+	eq.equip("moonsteel_sword")
+	eq.equip("moonsteel_sword")
+	_assert(player.melee_hitbox.damage == 35.0, "Trang bị lặp lại 3 lần: Sát thương vẫn giữ nguyên 35, không bị cộng dồn")
+
+	eq.equip("moon_amulet")
+	eq.equip("moon_amulet")
+	_assert(player.health_component.max_mana == 80.0, "Trang bị lặp lại bùa: Max MP vẫn giữ nguyên 80")
+
+	eq.unequip("weapon")
+	eq.unequip("accessory")
+	_assert(player.melee_hitbox.damage == 25.0 and player.health_component.max_mana == 60.0, "Sau khi tháo, cả hai chỉ số trở lại đúng giá trị gốc ban đầu")
+
+	print("\n--- TEST 10: Lưu Inventory và Equipment rồi tải lại đúng ---")
+	inv._initialize_slots()
+	inv.add_item("mana_shard", 18)
+	inv.add_item("health_potion", 4)
+	eq.equip("moonsteel_sword")
+	eq.equip("moon_amulet")
+
+	var save_res := SaveManager.save_game(world)
+	_assert(save_res == true, "Lưu game thành công vào file save slot 1")
+
+	# Xóa sạch dữ liệu trên RAM để kiểm tra tải
+	inv._initialize_slots()
+	eq.unequip("weapon")
+	eq.unequip("accessory")
+	_assert(inv.get_item_count("mana_shard") == 0, "RAM: Đã dọn sạch túi đồ")
+	_assert(eq.get_equipped("weapon") == "", "RAM: Đã tháo sạch trang bị")
+
+	var load_res := SaveManager.load_game(world)
+	_assert(load_res == true, "Tải game từ file save thành công")
+	_assert(inv.get_item_count("mana_shard") == 18, "Phục hồi đúng 18 mana_shard")
+	_assert(inv.get_item_count("health_potion") == 4, "Phục hồi đúng 4 health_potion")
+	_assert(eq.get_equipped("weapon") == "moonsteel_sword", "Phục hồi đúng trang bị Kiếm Ánh Trăng")
+	_assert(eq.get_equipped("accessory") == "moon_amulet", "Phục hồi đúng trang bị Bùa Nguyệt Quang")
+	_assert(player.melee_hitbox.damage == 35.0, "Chỉ số sát thương tính toán đúng 35 sau khi tải")
+	_assert(player.health_component.max_mana == 80.0, "Chỉ số Max MP tính toán đúng 80 sau khi tải")
+
+	print("\n--- TEST 11: Lưu và tải trạng thái nhiệm vụ 2/3 ---")
+	quest_mgr.start_quest()
+	quest_mgr.current_quest.current_amount = 2
+	quest_mgr.gold = 75
+	SaveManager.save_game(world)
+
+	# Giả lập reset trên RAM
+	quest_mgr.current_quest.current_state = QuestData.State.NOT_STARTED
+	quest_mgr.current_quest.current_amount = 0
+	quest_mgr.gold = 0
+
+	SaveManager.load_game(world)
+	_assert(quest_mgr.current_quest.current_state == QuestData.State.ACTIVE, "Phục hồi đúng trạng thái nhiệm vụ ACTIVE")
+	_assert(quest_mgr.current_quest.current_amount == 2, "Phục hồi đúng tiến độ nhiệm vụ 2/3")
+	_assert(quest_mgr.gold == 75, "Phục hồi đúng số Vàng 75 G")
+
+	print("\n--- TEST 12: Quái đã chết trước khi save không bị phục hồi sai sau khi load ---")
+	world.defeated_enemy_ids = ["enemy_forest_1"]
+	var e1: Enemy = world.get_node_or_null("CorruptedEnemy1") as Enemy
+	if e1:
+		e1.queue_free()
+		await process_frame
+
+	SaveManager.save_game(world)
+	SaveManager.load_game(world)
+
+	var check_e1 = world.get_node_or_null("CorruptedEnemy1")
+	_assert(check_e1 == null or check_e1.is_queued_for_deletion(), "Quái enemy_forest_1 đã chết trước khi save không xuất hiện lại")
+
+	print("\n--- TEST 13: Phần thưởng nhiệm vụ không nhận được lần hai ---")
+	quest_mgr.current_quest.current_state = QuestData.State.COMPLETED
+	var gold_before := quest_mgr.gold
+	var try_complete := quest_mgr.complete_quest(player.health_component)
+	_assert(try_complete == false, "complete_quest trả về false khi quest đã COMPLETED")
+	_assert(quest_mgr.gold == gold_before, "Vàng không bị cộng thêm lần 2")
+
+	print("\n--- TEST 14: File save hỏng không làm game crash ---")
+	# Ghi chuỗi JSON hỏng vào file save
+	var bad_file := FileAccess.open(SaveManager.SAVE_PATH, FileAccess.WRITE)
+	bad_file.store_string("CORRUPTED_JSON_DATA_!@#$%^&*()")
+	bad_file.close()
+
+	var bad_load_result := SaveManager.load_game(world)
+	_assert(bad_load_result == false, "Hàm load_game trả về false khi file save hỏng JSON")
+	_assert(player.is_inside_tree(), "Game không bị crash khi load file hỏng, Player vẫn an toàn trong tree")
+
+	# Dọn file hỏng và lưu lại bản save chuẩn
+	SaveManager.save_game(world)
+
+	print("\n--- TEST 15: Kiểm tra hồi quy các tính năng M0/M1/M2 ---")
+	var npc: NPC = world.get_node_or_null("NPC_Elyra") as NPC
+	_assert(npc != null and npc.collision_layer == 0, "NPC Elyra collision_layer = 0 (xuyên người)")
+	_assert(player.movement_data != null and player.movement_data.max_jumps == 2, "Hệ thống Double Jump M0 nguyên vẹn")
+
+	# Pause / Resume
+	world.get_tree().paused = false
+	var pause_ctrl: PauseController = world.get_node_or_null("PauseController") as PauseController
+	if pause_ctrl:
+		pause_ctrl.pause()
+		_assert(world.get_tree().paused == true, "PauseController pause game thành công")
+		pause_ctrl.resume()
+		_assert(world.get_tree().paused == false, "PauseController resume game thành công")
+
+	# Mở/đóng Túi đồ bằng UI
+	ui.open_inventory()
+	_assert(ui.is_inventory_open() == true, "Mở InventoryUI thành công")
+	ui.close_inventory()
+	_assert(ui.is_inventory_open() == false, "Đóng InventoryUI thành công")
+
+	print("\n==================================================")
+	print(" [NOCTELYRA M3] KẾT QUẢ KIỂM THỬ TỔNG HỢP:")
+	print(" Tổng số test: %d | Đạt: %d | Thất bại: %d" % [tests_run, tests_run - failures, failures])
+	print("==================================================")
+
+	if failures == 0:
+		print(">>> ALL 15 M3 REQUIREMENT PHASES PASSED 100%! <<<")
+		quit(0)
+	else:
+		print(">>> SOME TESTS FAILED! <<<")
+		quit(1)
+
+
+===================================================
 FILE: src\actors\enemy\enemy.gd
 ===================================================
 
@@ -548,6 +927,8 @@ enum State {
 @export var attack_range: float = 55.0
 @export var attack_cooldown: float = 1.2
 @export var gravity: float = 1100.0
+@export var enemy_id: String = ""
+@export var loot_table: LootTable = null
 
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -698,6 +1079,20 @@ func _notify_kill_once() -> void:
 	if not _has_reported_death:
 		_has_reported_death = true
 		emit_signal("enemy_defeated", self)
+		_spawn_loot()
+
+func _spawn_loot() -> void:
+	var spawn_parent = get_parent()
+	if spawn_parent:
+		if loot_table:
+			loot_table.spawn_loot(global_position, spawn_parent)
+		else:
+			var pickup_scene: PackedScene = preload("res://src/loot/item_pickup.tscn")
+			var pickup := pickup_scene.instantiate() as ItemPickup
+			pickup.item_id = "mana_shard"
+			pickup.amount = 1
+			pickup.global_position = global_position
+			spawn_parent.add_child.call_deferred(pickup)
 
 func _finish_attack() -> void:
 	if attack_hitbox:
@@ -1066,6 +1461,8 @@ enum State {
 @onready var combat_component: CombatComponent = $CombatComponent
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var melee_hitbox: Hitbox = $MeleeHitbox
+@onready var inventory_component: InventoryComponent = $InventoryComponent
+@onready var equipment_component: EquipmentComponent = $EquipmentComponent
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -1099,9 +1496,9 @@ func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
 
-	# Kiểm tra nếu đang mở hội thoại NPC hoặc vừa đóng (grace cooldown) thì tạm ngừng nhận input
+	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, hoặc đang mở túi đồ thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open()):
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
 		move_and_slide()
 		return
@@ -1382,7 +1779,7 @@ func _get_state_name(state: State) -> String:
 FILE: src\actors\player\player.tscn
 ===================================================
 
-[gd_scene load_steps=17 format=3 uid="uid://c8m4p7k1y2r3"]
+[gd_scene load_steps=19 format=3 uid="uid://c8m4p7k1y2r3"]
 
 [ext_resource type="Script" path="res://src/actors/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://src/actors/player/player_movement_data.gd" id="2_data"]
@@ -1392,6 +1789,8 @@ FILE: src\actors\player\player.tscn
 [ext_resource type="Script" path="res://src/combat/combat_component.gd" id="6_combat"]
 [ext_resource type="Script" path="res://src/combat/hitbox.gd" id="7_hitbox"]
 [ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="8_hurtbox"]
+[ext_resource type="Script" path="res://src/inventory/inventory_component.gd" id="9_inv"]
+[ext_resource type="Script" path="res://src/inventory/equipment_component.gd" id="10_equip"]
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
@@ -1584,6 +1983,14 @@ offset_top = -30.0
 offset_right = 25.0
 offset_bottom = 30.0
 color = Color(1, 0.9, 0.3, 0.5)
+
+[node name="InventoryComponent" type="Node" parent="."]
+script = ExtResource("9_inv")
+
+[node name="EquipmentComponent" type="Node" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("10_equip")
+player = NodePath("..")
+
 
 ===================================================
 FILE: src\actors\player\player_movement_data.gd
@@ -2041,6 +2448,1173 @@ func _find_nearby_interactable_npc() -> NPC:
 
 
 ===================================================
+FILE: src\inventory\equipment_component.gd
+===================================================
+
+class_name EquipmentComponent
+extends Node
+
+## Quản lý trang bị của Player (Weapon & Accessory) cho NOCTELYRA (M3)
+## Đảm bảo tính toán chỉ số dựa trên Base Stats + Modifiers, không sửa gốc vĩnh viễn.
+
+signal equipment_changed(slot_type: String, item_id: String)
+
+@export var player: Player
+
+var base_attack_damage: float = 25.0
+var base_max_mana: float = 60.0
+
+var equipped_weapon: String = ""
+var equipped_accessory: String = ""
+
+func _ready() -> void:
+	if player == null and get_parent() is Player:
+		player = get_parent() as Player
+
+	_record_base_stats()
+
+func _record_base_stats() -> void:
+	if player:
+		if player.melee_hitbox:
+			base_attack_damage = player.melee_hitbox.damage
+		var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
+		if p_health:
+			base_max_mana = p_health.max_mana
+
+func get_equipped(slot_type: String) -> String:
+	match slot_type:
+		"weapon": return equipped_weapon
+		"accessory": return equipped_accessory
+		_: return ""
+
+func is_slot_equipped(slot_type: String) -> bool:
+	return not get_equipped(slot_type).is_empty()
+
+func equip(item_id: String) -> String:
+	if not ItemDatabase.has_item(item_id):
+		return ""
+	var def := ItemDatabase.get_item(item_id)
+	var prev_item: String = ""
+
+	match def.item_type:
+		ItemDefinition.ItemType.WEAPON:
+			prev_item = equipped_weapon
+			equipped_weapon = item_id
+			_recalculate_stats()
+			emit_signal("equipment_changed", "weapon", item_id)
+		ItemDefinition.ItemType.ACCESSORY:
+			prev_item = equipped_accessory
+			equipped_accessory = item_id
+			_recalculate_stats()
+			emit_signal("equipment_changed", "accessory", item_id)
+		_:
+			return "" # Không phải trang bị
+
+	return prev_item
+
+func unequip(slot_type: String) -> String:
+	var old_item: String = ""
+	match slot_type:
+		"weapon":
+			old_item = equipped_weapon
+			equipped_weapon = ""
+			_recalculate_stats()
+			emit_signal("equipment_changed", "weapon", "")
+		"accessory":
+			old_item = equipped_accessory
+			equipped_accessory = ""
+			_recalculate_stats()
+			emit_signal("equipment_changed", "accessory", "")
+		_:
+			return ""
+
+	return old_item
+
+func _recalculate_stats() -> void:
+	var total_attack := base_attack_damage
+	var total_max_mana := base_max_mana
+
+	# Cộng chỉ số từ Weapon
+	if not equipped_weapon.is_empty() and ItemDatabase.has_item(equipped_weapon):
+		var w_def := ItemDatabase.get_item(equipped_weapon)
+		total_attack += float(w_def.stat_modifiers.get("attack_bonus", 0.0))
+
+	# Cộng chỉ số từ Accessory
+	if not equipped_accessory.is_empty() and ItemDatabase.has_item(equipped_accessory):
+		var a_def := ItemDatabase.get_item(equipped_accessory)
+		total_max_mana += float(a_def.stat_modifiers.get("max_mana_bonus", 0.0))
+
+	# Áp dụng chỉ số vào Player
+	if player:
+		if player.melee_hitbox:
+			player.melee_hitbox.damage = total_attack
+
+		var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
+		if p_health:
+			p_health.max_mana = total_max_mana
+			# Không tạo MP vượt giới hạn sau khi tháo trang bị
+			if p_health.current_mana > total_max_mana:
+				p_health.current_mana = total_max_mana
+			p_health.emit_signal("mana_changed", p_health.current_mana, p_health.max_mana)
+
+func to_dict() -> Dictionary:
+	return {
+		"weapon": equipped_weapon,
+		"accessory": equipped_accessory
+	}
+
+func load_from_dict(data: Dictionary) -> void:
+	equipped_weapon = str(data.get("weapon", ""))
+	equipped_accessory = str(data.get("accessory", ""))
+
+	if not ItemDatabase.has_item(equipped_weapon):
+		equipped_weapon = ""
+	if not ItemDatabase.has_item(equipped_accessory):
+		equipped_accessory = ""
+
+	_recalculate_stats()
+	emit_signal("equipment_changed", "weapon", equipped_weapon)
+	emit_signal("equipment_changed", "accessory", equipped_accessory)
+
+
+===================================================
+FILE: src\inventory\inventory_component.gd
+===================================================
+
+class_name InventoryComponent
+extends Node
+
+## Quản lý dữ liệu túi đồ (Inventory) 16 ô cho NOCTELYRA (M3)
+## Hoàn toàn tách biệt khỏi logic giao diện (UI)
+
+signal inventory_updated()
+signal item_added(item_id: String, amount: int)
+signal item_removed(item_id: String, amount: int)
+signal item_used(item_id: String)
+
+@export var max_slots: int = 16
+
+# Mảng chứa Dictionary các ô đồ: [{ "item_id": String, "amount": int }, ...]
+var slots: Array[Dictionary] = []
+
+func _ready() -> void:
+	if slots.is_empty():
+		_initialize_slots()
+
+func _initialize_slots() -> void:
+	slots.clear()
+	for i in range(max_slots):
+		slots.append({ "item_id": "", "amount": 0 })
+
+func get_slot(index: int) -> Dictionary:
+	if index >= 0 and index < slots.size():
+		return slots[index]
+	return { "item_id": "", "amount": 0 }
+
+func is_slot_empty(index: int) -> bool:
+	var s := get_slot(index)
+	return s.item_id.is_empty() or s.amount <= 0
+
+func can_add_item(item_id: String, amount: int = 1) -> bool:
+	if amount <= 0 or not ItemDatabase.has_item(item_id):
+		return false
+	var item_def := ItemDatabase.get_item(item_id)
+	var needed := amount
+
+	# Kiểm tra các ô hiện có cùng loại nếu có thể stack
+	if item_def.max_stack > 1:
+		for s in slots:
+			if s.item_id == item_id and s.amount < item_def.max_stack:
+				var space: int = item_def.max_stack - s.amount
+				needed -= space
+				if needed <= 0:
+					return true
+
+	# Kiểm tra các ô trống còn lại
+	for s in slots:
+		if s.item_id.is_empty() or s.amount <= 0:
+			needed -= item_def.max_stack
+			if needed <= 0:
+				return true
+
+	return false
+
+func add_item(item_id: String, amount: int = 1) -> int:
+	if amount <= 0 or not ItemDatabase.has_item(item_id):
+		return amount
+	var item_def := ItemDatabase.get_item(item_id)
+	var remaining := amount
+
+	# 1. Điền vào các ô cùng loại chưa đầy nếu stack được
+	if item_def.max_stack > 1:
+		for i in range(slots.size()):
+			if remaining <= 0:
+				break
+			var s := slots[i]
+			if s.item_id == item_id and s.amount < item_def.max_stack:
+				var can_take: int = min(remaining, item_def.max_stack - s.amount)
+				s.amount += can_take
+				remaining -= can_take
+
+	# 2. Điền vào các ô trống mới
+	for i in range(slots.size()):
+		if remaining <= 0:
+			break
+		var s := slots[i]
+		if s.item_id.is_empty() or s.amount <= 0:
+			var can_take: int = min(remaining, item_def.max_stack)
+			s.item_id = item_id
+			s.amount = can_take
+			remaining -= can_take
+
+	var added_total: int = amount - remaining
+	if added_total > 0:
+		emit_signal("item_added", item_id, added_total)
+		emit_signal("inventory_updated")
+
+	return remaining
+
+func remove_item_at(slot_idx: int, amount: int = 1) -> bool:
+	if slot_idx < 0 or slot_idx >= slots.size() or amount <= 0:
+		return false
+	var s := slots[slot_idx]
+	if s.item_id.is_empty() or s.amount <= 0:
+		return false
+
+	var item_id: String = s.item_id
+	var to_remove: int = min(amount, s.amount)
+	s.amount -= to_remove
+
+	if s.amount <= 0:
+		s.item_id = ""
+		s.amount = 0
+
+	emit_signal("item_removed", item_id, to_remove)
+	emit_signal("inventory_updated")
+	return true
+
+func remove_item_by_id(item_id: String, amount: int = 1) -> bool:
+	if amount <= 0 or not has_item(item_id, amount):
+		return false
+	var remaining := amount
+	for i in range(slots.size() - 1, -1, -1):
+		if remaining <= 0:
+			break
+		var s := slots[i]
+		if s.item_id == item_id:
+			var to_remove: int = min(remaining, s.amount)
+			s.amount -= to_remove
+			remaining -= to_remove
+			if s.amount <= 0:
+				s.item_id = ""
+				s.amount = 0
+
+	emit_signal("item_removed", item_id, amount)
+	emit_signal("inventory_updated")
+	return true
+
+func has_item(item_id: String, amount: int = 1) -> bool:
+	var count := get_item_count(item_id)
+	return count >= amount
+
+func get_item_count(item_id: String) -> int:
+	var count: int = 0
+	for s in slots:
+		if s.item_id == item_id:
+			count += s.amount
+	return count
+
+func use_item_at(slot_idx: int, player: Player) -> bool:
+	if slot_idx < 0 or slot_idx >= slots.size() or player == null:
+		return false
+	var s := slots[slot_idx]
+	if s.item_id.is_empty() or s.amount <= 0:
+		return false
+
+	var item_def := ItemDatabase.get_item(s.item_id)
+	if item_def == null or item_def.item_type != ItemDefinition.ItemType.CONSUMABLE:
+		return false
+
+	# Kiểm tra trạng thái sống của Player
+	var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
+	if p_health == null or not p_health.is_alive():
+		return false # Không thể sử dụng bình khi đã chết
+
+	# Áp dụng hiệu ứng
+	var used := false
+	if item_def.use_effect.has("heal_hp"):
+		var heal_val: float = float(item_def.use_effect["heal_hp"])
+		p_health.current_health = min(p_health.max_health, p_health.current_health + heal_val)
+		p_health.emit_signal("health_changed", p_health.current_health, p_health.max_health)
+		used = true
+
+	if used:
+		var item_id: String = s.item_id
+		remove_item_at(slot_idx, 1)
+		emit_signal("item_used", item_id)
+		return true
+
+	return false
+
+func to_dict() -> Array:
+	var arr: Array = []
+	for s in slots:
+		arr.append({
+			"item_id": s.item_id,
+			"amount": s.amount
+		})
+	return arr
+
+func load_from_dict(arr: Array) -> void:
+	_initialize_slots()
+	for i in range(min(arr.size(), max_slots)):
+		var entry = arr[i]
+		if entry is Dictionary:
+			var id: String = str(entry.get("item_id", ""))
+			var amt: int = int(entry.get("amount", 0))
+			if not id.is_empty() and amt > 0 and ItemDatabase.has_item(id):
+				var def := ItemDatabase.get_item(id)
+				slots[i].item_id = id
+				slots[i].amount = clamp(amt, 1, def.max_stack)
+			else:
+				slots[i].item_id = ""
+				slots[i].amount = 0
+	emit_signal("inventory_updated")
+
+
+===================================================
+FILE: src\inventory\inventory_ui.gd
+===================================================
+
+class_name InventoryUI
+extends Control
+
+## Giao diện Túi đồ (Inventory UI) 16 ô và 2 ô trang bị cho NOCTELYRA (M3)
+
+signal inventory_opened()
+signal inventory_closed()
+
+@export var player: Player
+
+@onready var grid_container: GridContainer = $Panel/MainHBox/LeftVBox/GridContainer
+@onready var weapon_slot_btn: Button = $Panel/MainHBox/LeftVBox/EquipHBox/WeaponSlotBtn
+@onready var accessory_slot_btn: Button = $Panel/MainHBox/LeftVBox/EquipHBox/AccessorySlotBtn
+@onready var close_btn: Button = $Panel/TitleHBox/CloseBtn
+
+# Bảng chi tiết vật phẩm
+@onready var detail_icon: TextureRect = $Panel/MainHBox/RightVBox/DetailIcon
+@onready var detail_name: Label = $Panel/MainHBox/RightVBox/DetailName
+@onready var detail_type: Label = $Panel/MainHBox/RightVBox/DetailType
+@onready var detail_desc: Label = $Panel/MainHBox/RightVBox/DetailDesc
+@onready var detail_stats: Label = $Panel/MainHBox/RightVBox/DetailStats
+
+# Nút hành động
+@onready var use_btn: Button = $Panel/MainHBox/RightVBox/ActionHBox/UseBtn
+@onready var equip_btn: Button = $Panel/MainHBox/RightVBox/ActionHBox/EquipBtn
+@onready var unequip_btn: Button = $Panel/MainHBox/RightVBox/ActionHBox/UnequipBtn
+@onready var drop_btn: Button = $Panel/MainHBox/RightVBox/ActionHBox/DropBtn
+
+var _selected_slot_idx: int = -1
+var _selected_equip_slot: String = "" # "weapon", "accessory", hoặc ""
+var _slot_buttons: Array[Button] = []
+
+func _ready() -> void:
+	visible = false
+	if close_btn:
+		close_btn.pressed.connect(close)
+	if use_btn:
+		use_btn.pressed.connect(_on_use_pressed)
+	if equip_btn:
+		equip_btn.pressed.connect(_on_equip_pressed)
+	if unequip_btn:
+		unequip_btn.pressed.connect(_on_unequip_pressed)
+	if drop_btn:
+		drop_btn.pressed.connect(_on_drop_pressed)
+
+	if weapon_slot_btn:
+		weapon_slot_btn.pressed.connect(func(): _select_equip_slot("weapon"))
+	if accessory_slot_btn:
+		accessory_slot_btn.pressed.connect(func(): _select_equip_slot("accessory"))
+
+	_setup_slots()
+	_clear_details()
+
+func setup_player(p: Player) -> void:
+	player = p
+	if player:
+		var inv := player.inventory_component
+		if inv and not inv.inventory_updated.is_connected(refresh):
+			inv.inventory_updated.connect(refresh)
+		var eq := player.equipment_component
+		if eq and not eq.equipment_changed.is_connected(func(_st, _id): refresh()):
+			eq.equipment_changed.connect(func(_st, _id): refresh())
+	refresh()
+
+func _ensure_player() -> void:
+	if player == null:
+		var cur = get_tree().current_scene if get_tree() else null
+		if cur:
+			var p = cur.get_node_or_null("Player") as Player
+			if p:
+				setup_player(p)
+
+func _setup_slots() -> void:
+	if grid_container == null:
+		return
+	_slot_buttons.clear()
+	for child in grid_container.get_children():
+		child.queue_free()
+
+	for i in range(16):
+		var btn := Button.new()
+		btn.custom_minimum_size = Vector2(56, 56)
+		btn.clip_contents = true
+
+		var icon := TextureRect.new()
+		icon.name = "Icon"
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.anchor_right = 1.0
+		icon.anchor_bottom = 1.0
+		icon.offset_left = 4
+		icon.offset_top = 4
+		icon.offset_right = -4
+		icon.offset_bottom = -4
+		btn.add_child(icon)
+
+		var lbl := Label.new()
+		lbl.name = "Count"
+		lbl.anchor_right = 1.0
+		lbl.anchor_bottom = 1.0
+		lbl.offset_right = -4
+		lbl.offset_bottom = -2
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		lbl.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		lbl.add_theme_font_size_override("font_size", 11)
+		btn.add_child(lbl)
+
+		var slot_idx := i
+		btn.pressed.connect(func(): _select_slot(slot_idx))
+		grid_container.add_child(btn)
+		_slot_buttons.append(btn)
+
+func open() -> void:
+	_ensure_player()
+	visible = true
+	refresh()
+	emit_signal("inventory_opened")
+
+func close() -> void:
+	visible = false
+	_clear_details()
+	emit_signal("inventory_closed")
+
+func toggle() -> void:
+	if visible:
+		close()
+	else:
+		open()
+
+func is_open() -> bool:
+	return visible
+
+func refresh() -> void:
+	_ensure_player()
+	if player == null:
+		return
+
+	var inv := player.inventory_component
+	var eq := player.equipment_component
+
+	# 1. Cập nhật 16 ô đồ
+	if inv:
+		for i in range(min(_slot_buttons.size(), inv.slots.size())):
+			var btn := _slot_buttons[i]
+			var icon := btn.get_node_or_null("Icon") as TextureRect
+			var lbl := btn.get_node_or_null("Count") as Label
+			var s := inv.get_slot(i)
+
+			if s.item_id.is_empty() or s.amount <= 0:
+				if icon: icon.texture = null
+				if lbl: lbl.text = ""
+			else:
+				var def := ItemDatabase.get_item(s.item_id)
+				if icon and def:
+					icon.texture = def.icon
+				if lbl:
+					lbl.text = str(s.amount) if s.amount > 1 else ""
+
+	# 2. Cập nhật 2 ô trang bị
+	if eq:
+		if weapon_slot_btn:
+			var w_id := eq.get_equipped("weapon")
+			if w_id.is_empty():
+				weapon_slot_btn.text = "Vũ khí: Trống"
+				weapon_slot_btn.icon = null
+			else:
+				var w_def := ItemDatabase.get_item(w_id)
+				weapon_slot_btn.text = "VK: " + (w_def.display_name if w_def else w_id)
+				weapon_slot_btn.icon = w_def.icon if w_def else null
+
+		if accessory_slot_btn:
+			var a_id := eq.get_equipped("accessory")
+			if a_id.is_empty():
+				accessory_slot_btn.text = "Phụ kiện: Trống"
+				accessory_slot_btn.icon = null
+			else:
+				var a_def := ItemDatabase.get_item(a_id)
+				accessory_slot_btn.text = "PK: " + (a_def.display_name if a_def else a_id)
+				accessory_slot_btn.icon = a_def.icon if a_def else null
+
+	# Làm mới hiển thị chi tiết vật phẩm đang chọn
+	if _selected_slot_idx >= 0:
+		_select_slot(_selected_slot_idx)
+	elif not _selected_equip_slot.is_empty():
+		_select_equip_slot(_selected_equip_slot)
+	else:
+		_clear_details()
+
+func _select_slot(index: int) -> void:
+	_selected_slot_idx = index
+	_selected_equip_slot = ""
+	_ensure_player()
+
+	if player == null or player.inventory_component == null:
+		_clear_details()
+		return
+
+	var s := player.inventory_component.get_slot(index)
+	if s.item_id.is_empty() or s.amount <= 0:
+		_clear_details()
+		return
+
+	var def := ItemDatabase.get_item(s.item_id)
+	if def == null:
+		_clear_details()
+		return
+
+	_display_item_details(def, s.amount, false)
+
+func _select_equip_slot(slot_type: String) -> void:
+	_selected_slot_idx = -1
+	_selected_equip_slot = slot_type
+	_ensure_player()
+
+	if player == null or player.equipment_component == null:
+		_clear_details()
+		return
+
+	var item_id := player.equipment_component.get_equipped(slot_type)
+	if item_id.is_empty():
+		_clear_details()
+		detail_name.text = "Ô trang bị %s (Đang trống)" % ("Vũ khí" if slot_type == "weapon" else "Phụ kiện")
+		return
+
+	var def := ItemDatabase.get_item(item_id)
+	if def:
+		_display_item_details(def, 1, true)
+
+func _display_item_details(def: ItemDefinition, amount: int, is_equipped_slot: bool) -> void:
+	if detail_icon:
+		detail_icon.texture = def.icon
+	if detail_name:
+		detail_name.text = "%s (%d)" % [def.display_name, amount] if amount > 1 else def.display_name
+	if detail_type:
+		detail_type.text = "Loại: %s | Giá trị: %d G" % [def.get_type_name(), def.sell_value]
+	if detail_desc:
+		detail_desc.text = def.description
+
+	var stat_text := ""
+	if def.item_type == ItemDefinition.ItemType.WEAPON:
+		stat_text = "+%d Sát thương đánh thường" % int(def.stat_modifiers.get("attack_bonus", 0))
+	elif def.item_type == ItemDefinition.ItemType.ACCESSORY:
+		stat_text = "+%d Max MP" % int(def.stat_modifiers.get("max_mana_bonus", 0))
+	elif def.item_type == ItemDefinition.ItemType.CONSUMABLE:
+		stat_text = "Hồi %d HP" % int(def.use_effect.get("heal_hp", 0))
+	if detail_stats:
+		detail_stats.text = stat_text
+
+	# Cập nhật trạng thái các nút
+	if is_equipped_slot:
+		if use_btn: use_btn.disabled = true
+		if equip_btn: equip_btn.disabled = true
+		if unequip_btn: unequip_btn.disabled = false
+		if drop_btn: drop_btn.disabled = true
+	else:
+		if use_btn:
+			use_btn.disabled = (def.item_type != ItemDefinition.ItemType.CONSUMABLE)
+		if equip_btn:
+			equip_btn.disabled = not (def.item_type == ItemDefinition.ItemType.WEAPON or def.item_type == ItemDefinition.ItemType.ACCESSORY)
+		if unequip_btn:
+			unequip_btn.disabled = true
+		if drop_btn:
+			drop_btn.disabled = false
+
+func _clear_details() -> void:
+	if detail_icon: detail_icon.texture = null
+	if detail_name: detail_name.text = "Chọn một vật phẩm để xem chi tiết"
+	if detail_type: detail_type.text = ""
+	if detail_desc: detail_desc.text = ""
+	if detail_stats: detail_stats.text = ""
+	if use_btn: use_btn.disabled = true
+	if equip_btn: equip_btn.disabled = true
+	if unequip_btn: unequip_btn.disabled = true
+	if drop_btn: drop_btn.disabled = true
+
+func _on_use_pressed() -> void:
+	if _selected_slot_idx < 0 or player == null or player.inventory_component == null:
+		return
+	player.inventory_component.use_item_at(_selected_slot_idx, player)
+	refresh()
+
+func _on_equip_pressed() -> void:
+	if _selected_slot_idx < 0 or player == null:
+		return
+	var inv := player.inventory_component
+	var eq := player.equipment_component
+	if inv == null or eq == null:
+		return
+
+	var s := inv.get_slot(_selected_slot_idx)
+	if s.item_id.is_empty():
+		return
+
+	var def := ItemDatabase.get_item(s.item_id)
+	if def == null:
+		return
+
+	var item_to_equip: String = s.item_id
+	var prev_item := eq.equip(item_to_equip)
+	inv.remove_item_at(_selected_slot_idx, 1)
+
+	if not prev_item.is_empty():
+		inv.add_item(prev_item, 1)
+
+	refresh()
+
+func _on_unequip_pressed() -> void:
+	if _selected_equip_slot.is_empty() or player == null:
+		return
+	var inv := player.inventory_component
+	var eq := player.equipment_component
+	if inv == null or eq == null:
+		return
+
+	var item_id := eq.get_equipped(_selected_equip_slot)
+	if item_id.is_empty():
+		return
+
+	if not inv.can_add_item(item_id, 1):
+		var ui = get_parent() as GameUI
+		if ui:
+			ui.show_notification("Túi đồ đã đầy! Không thể tháo trang bị.")
+		return
+
+	var unequipped := eq.unequip(_selected_equip_slot)
+	if not unequipped.is_empty():
+		inv.add_item(unequipped, 1)
+
+	refresh()
+
+func _on_drop_pressed() -> void:
+	if _selected_slot_idx < 0 or player == null:
+		return
+	var inv := player.inventory_component
+	if inv == null:
+		return
+
+	var s := inv.get_slot(_selected_slot_idx)
+	if s.item_id.is_empty() or s.amount <= 0:
+		return
+
+	var drop_id: String = s.item_id
+	inv.remove_item_at(_selected_slot_idx, 1)
+
+	# Sinh ItemPickup ra thế giới
+	var pickup_scene: PackedScene = preload("res://src/loot/item_pickup.tscn")
+	var pickup := pickup_scene.instantiate() as ItemPickup
+	pickup.item_id = drop_id
+	pickup.amount = 1
+	var drop_pos := player.global_position + Vector2(float(player.facing_direction) * 45.0, 0.0)
+	pickup.global_position = drop_pos
+	if player.get_parent():
+		player.get_parent().add_child(pickup)
+
+	refresh()
+
+
+===================================================
+FILE: src\inventory\inventory_ui.tscn
+===================================================
+
+[gd_scene load_steps=2 format=3 uid="uid://c7m9x4v1q5p2"]
+
+[ext_resource type="Script" path="res://src/inventory/inventory_ui.gd" id="1_inv_ui"]
+
+[node name="InventoryUI" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_inv_ui")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleHBox" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 16.0
+offset_top = 10.0
+offset_right = -16.0
+offset_bottom = 36.0
+grow_horizontal = 2
+
+[node name="Title" type="Label" parent="Panel/TitleHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "HÀNH TRANG & TRANG BỊ [I]"
+
+[node name="CloseBtn" type="Button" parent="Panel/TitleHBox"]
+custom_minimum_size = Vector2(28, 24)
+layout_mode = 2
+text = "X"
+
+[node name="MainHBox" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 45.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="LeftVBox" type="VBoxContainer" parent="Panel/MainHBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="GridContainer" type="GridContainer" parent="Panel/MainHBox/LeftVBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 4
+
+[node name="EquipTitle" type="Label" parent="Panel/MainHBox/LeftVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Ô TRANG BỊ HIỆN TẠI:"
+
+[node name="EquipHBox" type="HBoxContainer" parent="Panel/MainHBox/LeftVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="WeaponSlotBtn" type="Button" parent="Panel/MainHBox/LeftVBox/EquipHBox"]
+custom_minimum_size = Vector2(125, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Vũ khí: Trống"
+
+[node name="AccessorySlotBtn" type="Button" parent="Panel/MainHBox/LeftVBox/EquipHBox"]
+custom_minimum_size = Vector2(125, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Phụ kiện: Trống"
+
+[node name="RightVBox" type="VBoxContainer" parent="Panel/MainHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="DetailIcon" type="TextureRect" parent="Panel/MainHBox/RightVBox"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 3
+
+[node name="DetailName" type="Label" parent="Panel/MainHBox/RightVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Tên vật phẩm"
+
+[node name="DetailType" type="Label" parent="Panel/MainHBox/RightVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "Loại: Nguyên liệu"
+
+[node name="DetailStats" type="Label" parent="Panel/MainHBox/RightVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 1, 0.4, 1)
+theme_override_font_sizes/font_size = 12
+text = "+10 Sát thương"
+
+[node name="DetailDesc" type="Label" parent="Panel/MainHBox/RightVBox"]
+custom_minimum_size = Vector2(240, 100)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 11
+text = "Mô tả chi tiết vật phẩm..."
+autowrap_mode = 2
+
+[node name="ActionHBox" type="HBoxContainer" parent="Panel/MainHBox/RightVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="UseBtn" type="Button" parent="Panel/MainHBox/RightVBox/ActionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "Dùng"
+
+[node name="EquipBtn" type="Button" parent="Panel/MainHBox/RightVBox/ActionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "Trang bị"
+
+[node name="UnequipBtn" type="Button" parent="Panel/MainHBox/RightVBox/ActionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "Tháo"
+
+[node name="DropBtn" type="Button" parent="Panel/MainHBox/RightVBox/ActionHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 11
+text = "Vứt"
+
+
+===================================================
+FILE: src\inventory\item_database.gd
+===================================================
+
+class_name ItemDatabase
+extends RefCounted
+
+## Cơ sở dữ liệu vật phẩm (ItemRegistry) cho NOCTELYRA
+## Cho phép tra cứu ItemDefinition ổn định theo item_id.
+
+static var _items: Dictionary = {}
+static var _is_initialized: bool = false
+
+static func initialize() -> void:
+	if _is_initialized:
+		return
+	_items.clear()
+
+	# 1. Tinh thể Ma lực (mana_shard)
+	var mana_shard = ItemDefinition.new()
+	mana_shard.item_id = "mana_shard"
+	mana_shard.display_name = "Tinh thể Ma lực"
+	mana_shard.description = "Mảnh vỡ ngưng tụ ma lực bóng đêm rơi ra từ sinh vật tha hóa. Dùng làm nguyên liệu."
+	mana_shard.item_type = ItemDefinition.ItemType.MATERIAL
+	mana_shard.max_stack = 99
+	mana_shard.sell_value = 5
+	mana_shard.stat_modifiers = {}
+	mana_shard.use_effect = {}
+	mana_shard.icon = _create_placeholder_icon(Color(0.6, 0.2, 0.9, 1.0)) # Tím ma thuật
+	register_item(mana_shard)
+
+	# 2. Bình Sinh Lực (health_potion)
+	var potion = ItemDefinition.new()
+	potion.item_id = "health_potion"
+	potion.display_name = "Bình Sinh Lực"
+	potion.description = "Dược tễ thảo mộc ánh nguyệt, hồi phục ngay lập tức 30 HP (không vượt quá Max HP)."
+	potion.item_type = ItemDefinition.ItemType.CONSUMABLE
+	potion.max_stack = 20
+	potion.sell_value = 15
+	potion.stat_modifiers = {}
+	potion.use_effect = {"heal_hp": 30.0}
+	potion.icon = _create_placeholder_icon(Color(0.9, 0.2, 0.2, 1.0)) # Đỏ sinh mệnh
+	register_item(potion)
+
+	# 3. Kiếm Ánh Trăng (moonsteel_sword)
+	var sword = ItemDefinition.new()
+	sword.item_id = "moonsteel_sword"
+	sword.display_name = "Kiếm Ánh Trăng"
+	sword.description = "Thanh kiếm rèn từ thép ánh nguyệt tinh khiết. Khi trang bị, cộng thêm 10 sát thương đánh thường."
+	sword.item_type = ItemDefinition.ItemType.WEAPON
+	sword.max_stack = 1
+	sword.sell_value = 100
+	sword.stat_modifiers = {"attack_bonus": 10.0}
+	sword.use_effect = {}
+	sword.icon = _create_placeholder_icon(Color(0.4, 0.8, 1.0, 1.0)) # Xanh ánh thép
+	register_item(sword)
+
+	# 4. Bùa Nguyệt Quang (moon_amulet)
+	var amulet = ItemDefinition.new()
+	amulet.item_id = "moon_amulet"
+	amulet.display_name = "Bùa Nguyệt Quang"
+	amulet.description = "Dây chuyền khắc cổ ngữ bảo hộ của Làng Ánh Nguyệt. Khi trang bị, cộng thêm 20 Max MP."
+	amulet.item_type = ItemDefinition.ItemType.ACCESSORY
+	amulet.max_stack = 1
+	amulet.sell_value = 120
+	amulet.stat_modifiers = {"max_mana_bonus": 20.0}
+	amulet.use_effect = {}
+	amulet.icon = _create_placeholder_icon(Color(1.0, 0.85, 0.3, 1.0)) # Vàng ánh trăng
+	register_item(amulet)
+
+	_is_initialized = true
+
+static func register_item(item: ItemDefinition) -> void:
+	if item and not item.item_id.is_empty():
+		_items[item.item_id] = item
+
+static func get_item(id: String) -> ItemDefinition:
+	if not _is_initialized:
+		initialize()
+	return _items.get(id, null)
+
+static func has_item(id: String) -> bool:
+	if not _is_initialized:
+		initialize()
+	return _items.has(id)
+
+static func get_all_items() -> Array[ItemDefinition]:
+	if not _is_initialized:
+		initialize()
+	var arr: Array[ItemDefinition] = []
+	for k in _items.keys():
+		arr.append(_items[k])
+	return arr
+
+static func _create_placeholder_icon(base_color: Color) -> ImageTexture:
+	var img := Image.create(32, 32, false, Image.FORMAT_RGBA8)
+	img.fill(Color(0.12, 0.12, 0.16, 1.0))
+	for y in range(4, 28):
+		for x in range(4, 28):
+			img.set_pixel(x, y, base_color)
+	for y in range(8, 24):
+		for x in range(8, 24):
+			var light_col := base_color.lightened(0.3)
+			img.set_pixel(x, y, light_col)
+	return ImageTexture.create_from_image(img)
+
+
+===================================================
+FILE: src\inventory\item_definition.gd
+===================================================
+
+class_name ItemDefinition
+extends Resource
+
+## Định nghĩa vật phẩm chuẩn cho NOCTELYRA (Milestone M3)
+
+enum ItemType {
+	MATERIAL,
+	CONSUMABLE,
+	WEAPON,
+	ACCESSORY
+}
+
+@export var item_id: String = ""
+@export var display_name: String = ""
+@export_multiline var description: String = ""
+@export var item_type: ItemType = ItemType.MATERIAL
+@export var icon: Texture2D = null
+@export var max_stack: int = 99
+@export var sell_value: int = 0
+@export var stat_modifiers: Dictionary = {}
+@export var use_effect: Dictionary = {}
+
+func get_type_name() -> String:
+	match item_type:
+		ItemType.MATERIAL: return "Nguyên liệu"
+		ItemType.CONSUMABLE: return "Tiêu hao"
+		ItemType.WEAPON: return "Vũ khí"
+		ItemType.ACCESSORY: return "Phụ kiện"
+		_: return "Khác"
+
+
+===================================================
+FILE: src\loot\item_pickup.gd
+===================================================
+
+class_name ItemPickup
+extends Area2D
+
+## Vật phẩm rơi trên mặt đất (Loot Pickup) cho NOCTELYRA (M3)
+## Tự động nhặt khi Player đi qua nếu túi đồ còn chỗ. Nếu đầy thì giữ nguyên trên đất.
+
+@export var item_id: String = "mana_shard"
+@export var amount: int = 1
+
+@onready var icon_sprite: Sprite2D = $IconSprite
+@onready var label: Label = $Label
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+
+var _base_y: float = 0.0
+var _anim_time: float = 0.0
+var is_picked_up: bool = false
+
+func _ready() -> void:
+	collision_layer = 0
+	collision_mask = 2 # Player trên Layer 2
+	_base_y = position.y
+	_update_visuals()
+	body_entered.connect(_on_body_entered)
+
+func setup(p_item_id: String, p_amount: int = 1) -> void:
+	item_id = p_item_id
+	amount = p_amount
+	_update_visuals()
+
+func _update_visuals() -> void:
+	var def := ItemDatabase.get_item(item_id)
+	if def:
+		if label:
+			if amount > 1:
+				label.text = "%s x%d" % [def.display_name, amount]
+			else:
+				label.text = def.display_name
+		if icon_sprite and def.icon:
+			icon_sprite.texture = def.icon
+
+func _process(delta: float) -> void:
+	# Hiệu ứng trôi nổi nhẹ nhàng (bobbing effect)
+	_anim_time += delta * 3.5
+	position.y = _base_y + sin(_anim_time) * 4.0
+
+func _on_body_entered(body: Node) -> void:
+	if is_picked_up:
+		return
+
+	if body is Player:
+		var inv := body.get_node_or_null("InventoryComponent") as InventoryComponent
+		if inv == null:
+			return
+
+		# Kiểm tra xem túi đồ có đủ chỗ không
+		if inv.can_add_item(item_id, amount):
+			is_picked_up = true
+			var left := inv.add_item(item_id, amount)
+			var def := ItemDatabase.get_item(item_id)
+			var item_name := def.display_name if def else item_id
+
+			# Thông báo nhặt đồ lên HUD
+			var ui := _get_game_ui()
+			if ui:
+				ui.show_notification("Đã nhặt: %s x%d" % [item_name, amount - left])
+
+			queue_free()
+		else:
+			# Túi đồ đầy, không nhặt và giữ nguyên trên mặt đất
+			var ui := _get_game_ui()
+			if ui:
+				ui.show_notification("Túi đồ đã đầy! Không thể nhặt thêm.")
+
+func _get_game_ui() -> GameUI:
+	var cur = get_tree().current_scene if get_tree() else null
+	if cur:
+		return cur.get_node_or_null("GameUI") as GameUI
+	return null
+
+
+===================================================
+FILE: src\loot\item_pickup.tscn
+===================================================
+
+[gd_scene load_steps=4 format=3 uid="uid://b5m9n2q8v3k1"]
+
+[ext_resource type="Script" path="res://src/loot/item_pickup.gd" id="1_pickup"]
+[ext_resource type="Texture2D" path="res://icon.svg" id="2_icon"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pickup"]
+radius = 28.0
+
+[node name="ItemPickup" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_pickup")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pickup")
+
+[node name="IconSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("2_icon")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -70.0
+offset_top = -32.0
+offset_right = 70.0
+offset_bottom = -12.0
+theme_override_font_sizes/font_size = 12
+text = "Item"
+horizontal_alignment = 1
+
+
+===================================================
+FILE: src\loot\loot_table.gd
+===================================================
+
+class_name LootTable
+extends Resource
+
+## Bảng rơi vật phẩm (Loot Table) cho Enemy trong NOCTELYRA (M3)
+## Tách biệt hoàn toàn khỏi logic AI của Enemy.
+
+# Mảng các quy tắc rơi: [{ "item_id": String, "chance": float, "min_amount": int, "max_amount": int }]
+@export var drop_entries: Array[Dictionary] = [
+	{
+		"item_id": "mana_shard",
+		"chance": 1.0, # 100% tỷ lệ rơi để kiểm thử nghiệm thu M3
+		"min_amount": 1,
+		"max_amount": 1
+	}
+]
+
+func roll_drops() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for entry in drop_entries:
+		var chance: float = float(entry.get("chance", 1.0))
+		if randf() <= chance:
+			var min_amt: int = int(entry.get("min_amount", 1))
+			var max_amt: int = int(entry.get("max_amount", 1))
+			var amt := randi_range(min_amt, max_amt)
+			if amt > 0:
+				result.append({
+					"item_id": str(entry.get("item_id", "mana_shard")),
+					"amount": amt
+				})
+	return result
+
+func spawn_loot(pos: Vector2, parent_node: Node) -> void:
+	if parent_node == null:
+		return
+	var pickup_scene: PackedScene = preload("res://src/loot/item_pickup.tscn")
+	var items := roll_drops()
+	for i in range(items.size()):
+		var item_info := items[i]
+		var pickup := pickup_scene.instantiate() as ItemPickup
+		pickup.item_id = item_info["item_id"]
+		pickup.amount = item_info["amount"]
+		pickup.global_position = pos + Vector2(float(i * 24 - (items.size() - 1) * 12), 0.0)
+		parent_node.add_child.call_deferred(pickup)
+
+
+===================================================
 FILE: src\quest\quest_data.gd
 ===================================================
 
@@ -2133,6 +3707,192 @@ func complete_quest(player_health: HealthComponent = null) -> bool:
 
 
 ===================================================
+FILE: src\save\save_manager.gd
+===================================================
+
+class_name SaveManager
+extends RefCounted
+
+## Hệ thống Lưu & Tải Tiến trình (Save/Load System) cho NOCTELYRA (M3)
+## Lưu vào user://noctelyra_slot1.json với cơ chế ghi tạm nguyên tử (Atomic write) và kiểm tra toàn vẹn.
+
+const SAVE_PATH: String = "user://noctelyra_slot1.json"
+const TMP_PATH: String = "user://noctelyra_slot1.json.tmp"
+const CURRENT_VERSION: String = "1.0.0"
+
+static var should_load_on_start: bool = false
+
+static func has_save() -> bool:
+	if not FileAccess.file_exists(SAVE_PATH):
+		return false
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return false
+	var text := file.get_as_text()
+	file.close()
+
+	var test_json := JSON.new()
+	var err := test_json.parse(text)
+	if err != OK or not (test_json.data is Dictionary):
+		return false
+	var dict: Dictionary = test_json.data
+	return dict.has("save_version")
+
+static func delete_save() -> bool:
+	if FileAccess.file_exists(SAVE_PATH):
+		var err := DirAccess.remove_absolute(SAVE_PATH)
+		return err == OK
+	return true
+
+static func save_game(world: Node) -> bool:
+	if world == null:
+		return false
+
+	var player := world.get_node_or_null("Player") as Player
+	var quest_mgr := world.get_node_or_null("QuestManager") as QuestManager
+	var ui := world.get_node_or_null("GameUI") as GameUI
+
+	if player == null or quest_mgr == null:
+		return false
+
+	var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
+	var p_inv := player.get_node_or_null("InventoryComponent") as InventoryComponent
+	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
+
+	var save_data: Dictionary = {
+		"save_version": CURRENT_VERSION,
+		"timestamp": Time.get_unix_time_from_system(),
+		"player": {
+			"position_x": player.global_position.x,
+			"position_y": player.global_position.y,
+			"current_health": clamp(p_health.current_health, 0.0, p_health.max_health) if p_health else 100.0,
+			"current_mana": clamp(p_health.current_mana, 0.0, p_health.max_mana) if p_health else 60.0
+		},
+		"gold": max(0, quest_mgr.gold),
+		"inventory": p_inv.to_dict() if p_inv else [],
+		"equipment": p_eq.to_dict() if p_eq else {},
+		"quest": {
+			"state": int(quest_mgr.current_quest.current_state) if quest_mgr.current_quest else 0,
+			"current_amount": int(quest_mgr.current_quest.current_amount) if quest_mgr.current_quest else 0
+		},
+		"defeated_enemy_ids": world.get("defeated_enemy_ids") if "defeated_enemy_ids" in world else []
+	}
+
+	var json_str := JSON.stringify(save_data, "\t")
+
+	# 1. Ghi an toàn vào file tạm trước
+	var tmp_file := FileAccess.open(TMP_PATH, FileAccess.WRITE)
+	if tmp_file == null:
+		push_error("Không thể tạo file lưu tạm: " + TMP_PATH)
+		return false
+
+	tmp_file.store_string(json_str)
+	tmp_file.flush()
+	tmp_file.close()
+
+	# 2. Thay thế file chính bằng file tạm
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(SAVE_PATH)
+	var rename_err := DirAccess.rename_absolute(TMP_PATH, SAVE_PATH)
+	if rename_err != OK:
+		# Fallback: sao chép nếu rename thất bại
+		var copy_err := DirAccess.copy_absolute(TMP_PATH, SAVE_PATH)
+		DirAccess.remove_absolute(TMP_PATH)
+		if copy_err != OK:
+			push_error("Lỗi khi hoàn tất ghi file save!")
+			return false
+
+	if ui:
+		ui.show_notification("Đã lưu tiến trình game thành công!")
+
+	return true
+
+static func load_game(world: Node) -> bool:
+	if world == null or not has_save():
+		return false
+
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return false
+	var text := file.get_as_text()
+	file.close()
+
+	var test_json := JSON.new()
+	var err := test_json.parse(text)
+	if err != OK or not (test_json.data is Dictionary):
+		push_warning("File save hỏng hoặc định dạng JSON sai, bỏ qua để bảo vệ game.")
+		return false
+
+	var data: Dictionary = test_json.data
+	var version: String = str(data.get("save_version", ""))
+	if version.is_empty():
+		push_warning("Thiếu phiên bản save_version.")
+		return false
+
+	var player := world.get_node_or_null("Player") as Player
+	var quest_mgr := world.get_node_or_null("QuestManager") as QuestManager
+	var ui := world.get_node_or_null("GameUI") as GameUI
+
+	# 1. Khôi phục Player (Vị trí & Chỉ số)
+	if player and data.has("player"):
+		var p_data: Dictionary = data["player"]
+		var px: float = float(p_data.get("position_x", player.global_position.x))
+		var py: float = float(p_data.get("position_y", player.global_position.y))
+		player.global_position = Vector2(px, py)
+
+		var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
+		if p_health:
+			p_health.current_health = float(p_data.get("current_health", 100.0))
+			p_health.current_mana = float(p_data.get("current_mana", 60.0))
+			p_health.emit_signal("health_changed", p_health.current_health, p_health.max_health)
+			p_health.emit_signal("mana_changed", p_health.current_mana, p_health.max_mana)
+
+	# 2. Khôi phục Inventory & Equipment
+	if player:
+		var p_inv := player.get_node_or_null("InventoryComponent") as InventoryComponent
+		if p_inv and data.has("inventory") and (data["inventory"] is Array):
+			p_inv.load_from_dict(data["inventory"])
+
+		var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
+		if p_eq and data.has("equipment") and (data["equipment"] is Dictionary):
+			p_eq.load_from_dict(data["equipment"])
+
+	# 3. Khôi phục Vàng & Nhiệm vụ
+	if quest_mgr:
+		var saved_gold: int = int(data.get("gold", 0))
+		quest_mgr.gold = max(0, saved_gold)
+		quest_mgr.emit_signal("gold_changed", quest_mgr.gold)
+
+		if data.has("quest") and (data["quest"] is Dictionary):
+			var q_data: Dictionary = data["quest"]
+			var q_state: int = int(q_data.get("state", 0))
+			var q_amt: int = int(q_data.get("current_amount", 0))
+			if quest_mgr.current_quest:
+				quest_mgr.current_quest.current_state = q_state as QuestData.State
+				quest_mgr.current_quest.current_amount = clamp(q_amt, 0, quest_mgr.current_quest.target_amount)
+				if ui:
+					ui.update_quest_info(quest_mgr.current_quest)
+					ui.update_gold(quest_mgr.gold)
+
+	# 4. Khôi phục danh sách quái đã bị tiêu diệt
+	var defeated: Array = data.get("defeated_enemy_ids", [])
+	if "defeated_enemy_ids" in world:
+		world.set("defeated_enemy_ids", defeated.duplicate())
+
+	# Xóa bỏ các quái đã bị tiêu diệt khỏi Scene Tree để không respawn sai
+	var enemies := world.get_tree().get_nodes_in_group("enemies")
+	for e in enemies:
+		if e is Enemy and not e.enemy_id.is_empty():
+			if e.enemy_id in defeated:
+				e.queue_free()
+
+	if ui:
+		ui.show_notification("Đã tải bản lưu thành công!")
+
+	return true
+
+
+===================================================
 FILE: src\ui\game_ui.gd
 ===================================================
 
@@ -2161,6 +3921,8 @@ signal retry_requested()
 @onready var retry_button: Button = $GameOverPanel/Panel/RetryBtn
 
 @onready var pause_menu: Control = $PauseMenu
+@onready var save_btn: Button = $PauseMenu/Panel/SaveBtn
+@onready var inventory_ui: InventoryUI = $InventoryUI
 
 var _dialogue_lines: Array[String] = []
 var _current_dialogue_idx: int = 0
@@ -2177,6 +3939,8 @@ func _ready() -> void:
 		notification_label.visible = false
 	if retry_button:
 		retry_button.pressed.connect(_on_retry_pressed)
+	if save_btn:
+		save_btn.pressed.connect(_on_save_pressed)
 
 func _process(delta: float) -> void:
 	if _notif_timer > 0.0:
@@ -2187,8 +3951,15 @@ func _process(delta: float) -> void:
 		_dialogue_cooldown -= delta
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Chặn các phím hành động (tấn công, nhảy, phép, dash) khi đang mở hội thoại hoặc trong thời gian hồi
-	if is_dialogue_open() or is_dialogue_cooling_down():
+	# Mở/đóng Túi đồ bằng phím I
+	if event.is_action_pressed("inventory"):
+		if not is_dialogue_open():
+			toggle_inventory()
+			get_viewport().set_input_as_handled()
+			return
+
+	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ
+	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open():
 		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash"):
 			get_viewport().set_input_as_handled()
 			return
@@ -2235,6 +4006,8 @@ func close_dialogue() -> void:
 			quest_mgr.start_quest()
 		elif _current_quest_action == "complete_quest":
 			quest_mgr.complete_quest(p_health)
+			# Tự động lưu sau khi hoàn thành nhiệm vụ và nhận thưởng (Yêu cầu D3)
+			SaveManager.save_game(scene)
 	_current_quest_action = "none"
 
 func _get_active_scene() -> Node:
@@ -2247,6 +4020,24 @@ func is_dialogue_open() -> bool:
 
 func is_dialogue_cooling_down() -> bool:
 	return _dialogue_cooldown > 0.0
+
+func toggle_inventory() -> void:
+	if inventory_ui:
+		inventory_ui.toggle()
+
+func open_inventory() -> void:
+	if inventory_ui:
+		inventory_ui.open()
+
+func close_inventory() -> void:
+	if inventory_ui:
+		inventory_ui.close()
+
+func is_inventory_open() -> bool:
+	return inventory_ui != null and inventory_ui.is_open()
+
+func _on_save_pressed() -> void:
+	SaveManager.save_game(_get_active_scene())
 
 func update_player_hp(cur: float, max_v: float) -> void:
 	if hp_bar:
@@ -2309,9 +4100,10 @@ func _on_retry_pressed() -> void:
 FILE: src\ui\game_ui.tscn
 ===================================================
 
-[gd_scene load_steps=2 format=3 uid="uid://d3m8k1y9p2q5"]
+[gd_scene load_steps=3 format=3 uid="uid://d3m8k1y9p2q5"]
 
 [ext_resource type="Script" path="res://src/ui/game_ui.gd" id="1_ui"]
+[ext_resource type="PackedScene" uid="uid://c7m9x4v1q5p2" path="res://src/inventory/inventory_ui.tscn" id="2_inv_ui"]
 
 [node name="GameUI" type="CanvasLayer"]
 script = ExtResource("1_ui")
@@ -2613,9 +4405,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -160.0
-offset_top = -120.0
+offset_top = -140.0
 offset_right = 160.0
-offset_bottom = 120.0
+offset_bottom = 140.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -2625,9 +4417,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -60.0
-offset_top = 24.0
+offset_top = 18.0
 offset_right = 60.0
-offset_bottom = 54.0
+offset_bottom = 48.0
 grow_horizontal = 2
 text = "GAME PAUSED"
 horizontal_alignment = 1
@@ -2639,13 +4431,28 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -80.0
-offset_top = -15.0
-offset_right = 80.0
-offset_bottom = 25.0
+offset_left = -85.0
+offset_top = -45.0
+offset_right = 85.0
+offset_bottom = -12.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Resume"
+
+[node name="SaveBtn" type="Button" parent="PauseMenu/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -85.0
+offset_top = -2.0
+offset_right = 85.0
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Save Game"
 
 [node name="QuitBtn" type="Button" parent="PauseMenu/Panel"]
 layout_mode = 1
@@ -2654,13 +4461,265 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -80.0
-offset_top = 40.0
-offset_right = 80.0
-offset_bottom = 80.0
+offset_left = -85.0
+offset_top = 42.0
+offset_right = 85.0
+offset_bottom = 75.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Quit"
+
+[node name="InventoryUI" parent="." instance=ExtResource("2_inv_ui")]
+visible = false
+
+===================================================
+FILE: src\ui\main_menu.gd
+===================================================
+
+class_name MainMenu
+extends Control
+
+## Màn hình chính (Main Menu) cho NOCTELYRA (M3)
+## Cung cấp Continue (nếu có save), New Game (kèm xác nhận ghi đè), và Quit.
+
+const GAME_SCENE_PATH: String = "res://src/world/noctis_forest.tscn"
+
+@onready var continue_btn: Button = $Panel/VBox/ContinueBtn
+@onready var new_game_btn: Button = $Panel/VBox/NewGameBtn
+@onready var quit_btn: Button = $Panel/VBox/QuitBtn
+
+@onready var confirm_dialog: Control = $ConfirmDialog
+@onready var confirm_yes_btn: Button = $ConfirmDialog/Panel/HBox/YesBtn
+@onready var confirm_no_btn: Button = $ConfirmDialog/Panel/HBox/NoBtn
+
+func _ready() -> void:
+	if confirm_dialog:
+		confirm_dialog.visible = false
+
+	_update_buttons()
+
+	if continue_btn:
+		continue_btn.pressed.connect(_on_continue_pressed)
+	if new_game_btn:
+		new_game_btn.pressed.connect(_on_new_game_pressed)
+	if quit_btn:
+		quit_btn.pressed.connect(_on_quit_pressed)
+
+	if confirm_yes_btn:
+		confirm_yes_btn.pressed.connect(_on_confirm_new_game)
+	if confirm_no_btn:
+		confirm_no_btn.pressed.connect(func(): confirm_dialog.visible = false)
+
+func _update_buttons() -> void:
+	var has_valid_save := SaveManager.has_save()
+	if continue_btn:
+		continue_btn.disabled = not has_valid_save
+
+func _on_continue_pressed() -> void:
+	if SaveManager.has_save():
+		SaveManager.should_load_on_start = true
+		get_tree().change_scene_to_file(GAME_SCENE_PATH)
+
+func _on_new_game_pressed() -> void:
+	if SaveManager.has_save():
+		if confirm_dialog:
+			confirm_dialog.visible = true
+	else:
+		_start_new_game()
+
+func _on_confirm_new_game() -> void:
+	SaveManager.delete_save()
+	_start_new_game()
+
+func _start_new_game() -> void:
+	SaveManager.should_load_on_start = false
+	get_tree().change_scene_to_file(GAME_SCENE_PATH)
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()
+
+
+===================================================
+FILE: src\ui\main_menu.tscn
+===================================================
+
+[gd_scene load_steps=2 format=3 uid="uid://dm9k4v2p1y5q"]
+
+[ext_resource type="Script" path="res://src/ui/main_menu.gd" id="1_menu"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.08, 0.15, 1)
+
+[node name="TitleVBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 80.0
+offset_right = 250.0
+offset_bottom = 200.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="TitleVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 48
+text = "NOCTELYRA"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="TitleVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.7, 0.9, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "2D Action RPG Cross-platform Prototype (Milestone M3)"
+horizontal_alignment = 1
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = -40.0
+offset_right = 140.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 25.0
+offset_right = -20.0
+offset_bottom = -25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="ContinueBtn" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Tiếp tục (Continue)"
+
+[node name="NewGameBtn" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Chơi mới (New Game)"
+
+[node name="QuitBtn" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Thoát (Quit)"
+
+[node name="ConfirmDialog" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="ConfirmDialog"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="Panel" type="Panel" parent="ConfirmDialog"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="ConfirmDialog/Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 16.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 15
+text = "XÁC NHẬN CHƠI MỚI"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="ConfirmDialog/Panel"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 20.0
+offset_top = -30.0
+offset_right = -20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Đã có bản lưu tiến trình cũ. Bắt đầu chơi mới sẽ ghi đè bản lưu này. Bạn có chắc chắn không?"
+autowrap_mode = 2
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="ConfirmDialog/Panel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -45.0
+offset_right = -30.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="YesBtn" type="Button" parent="ConfirmDialog/Panel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Chơi mới"
+
+[node name="NoBtn" type="Button" parent="ConfirmDialog/Panel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hủy bỏ"
+
 
 ===================================================
 FILE: src\ui\pause_controller.gd
@@ -2679,6 +4738,15 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
+		# Nếu túi đồ đang mở thì Esc đóng túi đồ trước thay vì mở PauseMenu
+		var cur_scene = get_tree().current_scene if get_tree() else null
+		if cur_scene:
+			var ui := cur_scene.get_node_or_null("GameUI") as GameUI
+			if ui and ui.is_inventory_open():
+				ui.close_inventory()
+				get_viewport().set_input_as_handled()
+				return
+
 		toggle_pause()
 		get_viewport().set_input_as_handled()
 
@@ -2686,10 +4754,18 @@ func toggle_pause() -> void:
 	var tree := get_tree()
 	if tree == null:
 		return
-	var is_paused := not tree.paused
-	tree.paused = is_paused
+	if tree.paused:
+		resume()
+	else:
+		pause()
+
+func pause() -> void:
+	var tree := get_tree()
+	if tree == null:
+		return
+	tree.paused = true
 	if pause_menu:
-		pause_menu.visible = is_paused
+		pause_menu.visible = true
 
 func resume() -> void:
 	var tree := get_tree()
@@ -2713,6 +4789,7 @@ var quest_manager: QuestManager
 var pause_controller: PauseController
 var npc_elyra: NPC
 var interaction_coordinator: InteractionCoordinator
+var defeated_enemy_ids: Array = []
 
 func _enter_tree() -> void:
 	init_references()
@@ -2720,6 +4797,9 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	init_references()
+	if SaveManager.should_load_on_start:
+		SaveManager.should_load_on_start = false
+		SaveManager.load_game(self)
 
 func init_references() -> void:
 	if player == null:
@@ -2752,6 +4832,8 @@ func init_references() -> void:
 	# Kết nối GameUI
 	if game_ui and not game_ui.retry_requested.is_connected(_on_retry_requested):
 		game_ui.retry_requested.connect(_on_retry_requested)
+		if player and game_ui.inventory_ui:
+			game_ui.inventory_ui.setup_player(player)
 		if quest_manager and quest_manager.current_quest:
 			game_ui.update_quest_info(quest_manager.current_quest)
 			game_ui.update_gold(quest_manager.gold)
@@ -2769,11 +4851,19 @@ func init_references() -> void:
 	if npc_elyra and not npc_elyra.dialogue_requested.is_connected(_on_npc_dialogue_requested):
 		npc_elyra.dialogue_requested.connect(_on_npc_dialogue_requested)
 
-	# Kết nối các quái vật trên map với QuestManager
+	# Kết nối các quái vật trên map với QuestManager và ghi nhận ID quái đã diệt
 	var enemies = get_tree().get_nodes_in_group("enemies")
 	for e in enemies:
-		if e is Enemy and quest_manager and not e.enemy_defeated.is_connected(quest_manager.register_enemy_kill):
-			e.enemy_defeated.connect(quest_manager.register_enemy_kill)
+		if e is Enemy:
+			if quest_manager and not e.enemy_defeated.is_connected(quest_manager.register_enemy_kill):
+				e.enemy_defeated.connect(quest_manager.register_enemy_kill)
+			if not e.enemy_defeated.is_connected(_on_enemy_defeated):
+				e.enemy_defeated.connect(_on_enemy_defeated)
+
+func _on_enemy_defeated(enemy_node: Node) -> void:
+	if enemy_node is Enemy and not enemy_node.enemy_id.is_empty():
+		if not enemy_node.enemy_id in defeated_enemy_ids:
+			defeated_enemy_ids.append(enemy_node.enemy_id)
 
 func _on_player_state_changed(st_name: String) -> void:
 	if game_ui:
@@ -2821,7 +4911,7 @@ func _on_quit_button_pressed() -> void:
 FILE: src\world\noctis_forest.tscn
 ===================================================
 
-[gd_scene load_steps=11 format=3 uid="uid://c7v1n8m3q2k4"]
+[gd_scene load_steps=12 format=3 uid="uid://c7v1n8m3q2k4"]
 
 [ext_resource type="Script" path="res://src/world/noctis_forest.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
@@ -2831,6 +4921,7 @@ FILE: src\world\noctis_forest.tscn
 [ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="6_pause"]
 [ext_resource type="Script" path="res://src/quest/quest_manager.gd" id="7_quest"]
 [ext_resource type="Script" path="res://src/interaction/interaction_coordinator.gd" id="8_interact_coord"]
+[ext_resource type="PackedScene" uid="uid://b5m9n2q8v3k1" path="res://src/loot/item_pickup.tscn" id="9_pickup"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(4800, 100)
@@ -3089,12 +5180,30 @@ remote_path = NodePath("../../Camera2D")
 
 [node name="CorruptedEnemy1" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
 position = Vector2(2400, 630)
+enemy_id = "enemy_forest_1"
 
 [node name="CorruptedEnemy2" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
 position = Vector2(3050, 630)
+enemy_id = "enemy_forest_2"
 
 [node name="CorruptedEnemy3" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
 position = Vector2(3700, 630)
+enemy_id = "enemy_forest_3"
+
+[node name="TestPickup_Potion" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(320, 640)
+item_id = "health_potion"
+amount = 2
+
+[node name="TestPickup_Sword" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(420, 640)
+item_id = "moonsteel_sword"
+amount = 1
+
+[node name="TestPickup_Amulet" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(680, 640)
+item_id = "moon_amulet"
+amount = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(180, 630)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://c7v1n8m3q2k4"]
+[gd_scene load_steps=12 format=3 uid="uid://c7v1n8m3q2k4"]
 
 [ext_resource type="Script" path="res://src/world/noctis_forest.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="6_pause"]
 [ext_resource type="Script" path="res://src/quest/quest_manager.gd" id="7_quest"]
 [ext_resource type="Script" path="res://src/interaction/interaction_coordinator.gd" id="8_interact_coord"]
+[ext_resource type="PackedScene" uid="uid://b5m9n2q8v3k1" path="res://src/loot/item_pickup.tscn" id="9_pickup"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(4800, 100)
@@ -266,12 +267,30 @@ remote_path = NodePath("../../Camera2D")
 
 [node name="CorruptedEnemy1" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
 position = Vector2(2400, 630)
+enemy_id = "enemy_forest_1"
 
 [node name="CorruptedEnemy2" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
 position = Vector2(3050, 630)
+enemy_id = "enemy_forest_2"
 
 [node name="CorruptedEnemy3" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
 position = Vector2(3700, 630)
+enemy_id = "enemy_forest_3"
+
+[node name="TestPickup_Potion" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(320, 640)
+item_id = "health_potion"
+amount = 2
+
+[node name="TestPickup_Sword" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(420, 640)
+item_id = "moonsteel_sword"
+amount = 1
+
+[node name="TestPickup_Amulet" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(680, 640)
+item_id = "moon_amulet"
+amount = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(180, 630)

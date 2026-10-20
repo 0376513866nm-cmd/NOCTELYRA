@@ -23,6 +23,8 @@ enum State {
 @onready var combat_component: CombatComponent = $CombatComponent
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var melee_hitbox: Hitbox = $MeleeHitbox
+@onready var inventory_component: InventoryComponent = $InventoryComponent
+@onready var equipment_component: EquipmentComponent = $EquipmentComponent
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -56,9 +58,9 @@ func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
 
-	# Kiểm tra nếu đang mở hội thoại NPC hoặc vừa đóng (grace cooldown) thì tạm ngừng nhận input
+	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, hoặc đang mở túi đồ thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open()):
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
 		move_and_slide()
 		return

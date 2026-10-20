@@ -23,6 +23,8 @@ signal retry_requested()
 @onready var retry_button: Button = $GameOverPanel/Panel/RetryBtn
 
 @onready var pause_menu: Control = $PauseMenu
+@onready var save_btn: Button = $PauseMenu/Panel/SaveBtn
+@onready var inventory_ui: InventoryUI = $InventoryUI
 
 var _dialogue_lines: Array[String] = []
 var _current_dialogue_idx: int = 0
@@ -39,6 +41,8 @@ func _ready() -> void:
 		notification_label.visible = false
 	if retry_button:
 		retry_button.pressed.connect(_on_retry_pressed)
+	if save_btn:
+		save_btn.pressed.connect(_on_save_pressed)
 
 func _process(delta: float) -> void:
 	if _notif_timer > 0.0:
@@ -49,8 +53,15 @@ func _process(delta: float) -> void:
 		_dialogue_cooldown -= delta
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Chặn các phím hành động (tấn công, nhảy, phép, dash) khi đang mở hội thoại hoặc trong thời gian hồi
-	if is_dialogue_open() or is_dialogue_cooling_down():
+	# Mở/đóng Túi đồ bằng phím I
+	if event.is_action_pressed("inventory"):
+		if not is_dialogue_open():
+			toggle_inventory()
+			get_viewport().set_input_as_handled()
+			return
+
+	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ
+	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open():
 		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash"):
 			get_viewport().set_input_as_handled()
 			return
@@ -97,6 +108,8 @@ func close_dialogue() -> void:
 			quest_mgr.start_quest()
 		elif _current_quest_action == "complete_quest":
 			quest_mgr.complete_quest(p_health)
+			# Tự động lưu sau khi hoàn thành nhiệm vụ và nhận thưởng (Yêu cầu D3)
+			SaveManager.save_game(scene)
 	_current_quest_action = "none"
 
 func _get_active_scene() -> Node:
@@ -109,6 +122,24 @@ func is_dialogue_open() -> bool:
 
 func is_dialogue_cooling_down() -> bool:
 	return _dialogue_cooldown > 0.0
+
+func toggle_inventory() -> void:
+	if inventory_ui:
+		inventory_ui.toggle()
+
+func open_inventory() -> void:
+	if inventory_ui:
+		inventory_ui.open()
+
+func close_inventory() -> void:
+	if inventory_ui:
+		inventory_ui.close()
+
+func is_inventory_open() -> bool:
+	return inventory_ui != null and inventory_ui.is_open()
+
+func _on_save_pressed() -> void:
+	SaveManager.save_game(_get_active_scene())
 
 func update_player_hp(cur: float, max_v: float) -> void:
 	if hp_bar:

@@ -1,0 +1,78 @@
+class_name ItemPickup
+extends Area2D
+
+## Vật phẩm rơi trên mặt đất (Loot Pickup) cho NOCTELYRA (M3)
+## Tự động nhặt khi Player đi qua nếu túi đồ còn chỗ. Nếu đầy thì giữ nguyên trên đất.
+
+@export var item_id: String = "mana_shard"
+@export var amount: int = 1
+
+@onready var icon_sprite: Sprite2D = $IconSprite
+@onready var label: Label = $Label
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+
+var _base_y: float = 0.0
+var _anim_time: float = 0.0
+var is_picked_up: bool = false
+
+func _ready() -> void:
+	collision_layer = 0
+	collision_mask = 2 # Player trên Layer 2
+	_base_y = position.y
+	_update_visuals()
+	body_entered.connect(_on_body_entered)
+
+func setup(p_item_id: String, p_amount: int = 1) -> void:
+	item_id = p_item_id
+	amount = p_amount
+	_update_visuals()
+
+func _update_visuals() -> void:
+	var def := ItemDatabase.get_item(item_id)
+	if def:
+		if label:
+			if amount > 1:
+				label.text = "%s x%d" % [def.display_name, amount]
+			else:
+				label.text = def.display_name
+		if icon_sprite and def.icon:
+			icon_sprite.texture = def.icon
+
+func _process(delta: float) -> void:
+	# Hiệu ứng trôi nổi nhẹ nhàng (bobbing effect)
+	_anim_time += delta * 3.5
+	position.y = _base_y + sin(_anim_time) * 4.0
+
+func _on_body_entered(body: Node) -> void:
+	if is_picked_up:
+		return
+
+	if body is Player:
+		var inv := body.get_node_or_null("InventoryComponent") as InventoryComponent
+		if inv == null:
+			return
+
+		# Kiểm tra xem túi đồ có đủ chỗ không
+		if inv.can_add_item(item_id, amount):
+			is_picked_up = true
+			var left := inv.add_item(item_id, amount)
+			var def := ItemDatabase.get_item(item_id)
+			var item_name := def.display_name if def else item_id
+
+			# Thông báo nhặt đồ lên HUD
+			var ui := _get_game_ui()
+			if ui:
+				ui.show_notification("Đã nhặt: %s x%d" % [item_name, amount - left])
+
+			queue_free()
+		else:
+			# Túi đồ đầy, không nhặt và giữ nguyên trên mặt đất
+			var ui := _get_game_ui()
+			if ui:
+				ui.show_notification("Túi đồ đã đầy! Không thể nhặt thêm.")
+
+func _get_game_ui() -> GameUI:
+	var cur = get_tree().current_scene if get_tree() else null
+	if cur:
+		return cur.get_node_or_null("GameUI") as GameUI
+	return null
