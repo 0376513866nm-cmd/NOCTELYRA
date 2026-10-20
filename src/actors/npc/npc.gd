@@ -10,19 +10,30 @@ signal dialogue_requested(npc: NPC, dialogue_lines: Array[String], quest_action:
 @onready var prompt_label: Label = $PromptLabel
 
 func _ready() -> void:
+	add_to_group("npcs")
 	if prompt_label:
 		prompt_label.visible = false
 	if interaction_component:
 		interaction_component.interaction_available.connect(_on_interaction_available)
 		interaction_component.interaction_unavailable.connect(_on_interaction_unavailable)
 
+func is_interactable() -> bool:
+	return interaction_component != null and interaction_component.is_player_nearby
+
 func _unhandled_input(event: InputEvent) -> void:
-	if interaction_component and interaction_component.is_player_nearby:
-		if event.is_action_pressed("interact"):
-			trigger_interaction()
-			get_viewport().set_input_as_handled()
+	# Nếu có InteractionCoordinator điều phối trung tâm thì để coordinator xử lý
+	if get_tree() and get_tree().get_nodes_in_group("interaction_coordinator").size() > 0:
+		return
+	if is_interactable() and event.is_action_pressed("interact"):
+		trigger_interaction()
+		get_viewport().set_input_as_handled()
 
 func trigger_interaction() -> void:
+	# Không cho phép kích hoạt nếu hội thoại đang mở hoặc đang trong grace cooldown
+	var cur_ui: GameUI = _get_game_ui()
+	if cur_ui and (cur_ui.is_dialogue_open() or cur_ui.is_dialogue_cooling_down()):
+		return
+
 	var quest_mgr: QuestManager = _get_quest_manager()
 	var lines: Array[String] = []
 	var action: String = "none"
@@ -71,6 +82,19 @@ func _get_quest_manager() -> QuestManager:
 		var mgr = p.get_node_or_null("QuestManager") as QuestManager
 		if mgr:
 			return mgr
+	return null
+
+func _get_game_ui() -> GameUI:
+	var cur_scene = get_tree().current_scene if get_tree() else null
+	if cur_scene:
+		var ui = cur_scene.get_node_or_null("GameUI") as GameUI
+		if ui:
+			return ui
+	var p = get_parent()
+	if p:
+		var ui = p.get_node_or_null("GameUI") as GameUI
+		if ui:
+			return ui
 	return null
 
 func _on_interaction_available(_node: Node) -> void:

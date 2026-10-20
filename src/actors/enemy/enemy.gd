@@ -167,22 +167,6 @@ func _notify_kill_once() -> void:
 	if not _has_reported_death:
 		_has_reported_death = true
 		emit_signal("enemy_defeated", self)
-		var quest_mgr: QuestManager = _get_quest_manager()
-		if quest_mgr:
-			quest_mgr.register_enemy_kill(self)
-
-func _get_quest_manager() -> QuestManager:
-	var cur_scene = get_tree().current_scene if get_tree() else null
-	if cur_scene:
-		var mgr = cur_scene.get_node_or_null("QuestManager") as QuestManager
-		if mgr:
-			return mgr
-	var p = get_parent()
-	if p:
-		var mgr = p.get_node_or_null("QuestManager") as QuestManager
-		if mgr:
-			return mgr
-	return null
 
 func _finish_attack() -> void:
 	if attack_hitbox:

@@ -1,36 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
-title Export Code for ChatGPT
+title Export Code for AI Review
 cd /d "%~dp0"
 
-set "OUTFILE=%~dp0CODE_EXPORT.txt"
-if exist "%OUTFILE%" del "%OUTFILE%"
+powershell -ExecutionPolicy Bypass -Command "$outFile = 'CODE_EXPORT.txt'; if (Test-Path $outFile) { Remove-Item $outFile -Force }; Set-Content -Path $outFile -Value ('===================================================' + [Environment]::NewLine + '  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M2.1 FINAL)' + [Environment]::NewLine + '  EXPORTED AT: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm:ss') + [Environment]::NewLine + '===================================================' + [Environment]::NewLine) -Encoding UTF8; $files = @('project.godot', 'README.md', 'test_m2_1_flow.gd'); $srcFiles = Get-ChildItem -Path 'src' -Recurse -Include *.gd,*.tscn | ForEach-Object { $_.FullName.Replace((Get-Location).Path + '\', '') }; foreach ($f in ($files + $srcFiles)) { if (Test-Path $f) { Add-Content -Path $outFile -Value ([Environment]::NewLine + '===================================================' + [Environment]::NewLine + 'FILE: ' + $f + [Environment]::NewLine + '===================================================' + [Environment]::NewLine) -Encoding UTF8; Get-Content -Path $f -Raw -Encoding UTF8 | Add-Content -Path $outFile -Encoding UTF8 } }; Write-Host 'Da xuat toan bo ma nguon ra file: CODE_EXPORT.txt'"
 
-echo =================================================== >> "%OUTFILE%"
-echo   PROJECT: NOCTELYRA (Godot 4 - Milestone M0)       >> "%OUTFILE%"
-echo   EXPORTED AT: %DATE% %TIME%                        >> "%OUTFILE%"
-echo =================================================== >> "%OUTFILE%"
-echo. >> "%OUTFILE%"
-
-for %%F in (
-    "project.godot"
-    "src\actors\player\player_movement_data.gd"
-    "src\actors\player\player.gd"
-    "src\actors\player\player.tscn"
-    "src\world\test_level.gd"
-    "src\world\test_level.tscn"
-    "README.md"
-) do (
-    if exist "%~dp0%%F" (
-        echo =================================================== >> "%OUTFILE%"
-        echo FILE: %%F >> "%OUTFILE%"
-        echo =================================================== >> "%OUTFILE%"
-        type "%~dp0%%F" >> "%OUTFILE%"
-        echo. >> "%OUTFILE%"
-        echo. >> "%OUTFILE%"
-    )
-)
-
-echo Da xuat toan bo ma nguon ra file: %OUTFILE%
-echo Ban chi can mo file CODE_EXPORT.txt, copy toan bo va gui cho ChatGPT!
+echo.
 pause

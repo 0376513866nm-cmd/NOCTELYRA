@@ -56,9 +56,9 @@ func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
 
-	# Kiểm tra nếu đang mở hội thoại NPC thì tạm ngừng nhận input chiến đấu
+	# Kiểm tra nếu đang mở hội thoại NPC hoặc vừa đóng (grace cooldown) thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
-	if ui and ui.is_dialogue_open():
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down()):
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
 		move_and_slide()
 		return

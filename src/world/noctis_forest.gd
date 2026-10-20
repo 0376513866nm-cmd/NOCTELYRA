@@ -6,6 +6,7 @@ var game_ui: GameUI
 var quest_manager: QuestManager
 var pause_controller: PauseController
 var npc_elyra: NPC
+var interaction_coordinator: InteractionCoordinator
 
 func _enter_tree() -> void:
 	init_references()
@@ -25,6 +26,8 @@ func init_references() -> void:
 		pause_controller = get_node_or_null("PauseController") as PauseController
 	if npc_elyra == null:
 		npc_elyra = get_node_or_null("NPC_Elyra") as NPC
+	if interaction_coordinator == null:
+		interaction_coordinator = get_node_or_null("InteractionCoordinator") as InteractionCoordinator
 
 	# Kết nối Player
 	if player and not player.state_changed.is_connected(_on_player_state_changed):

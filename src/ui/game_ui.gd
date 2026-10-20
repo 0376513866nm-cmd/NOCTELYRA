@@ -28,6 +28,7 @@ var _dialogue_lines: Array[String] = []
 var _current_dialogue_idx: int = 0
 var _current_quest_action: String = "none"
 var _notif_timer: float = 0.0
+var _dialogue_cooldown: float = 0.0
 
 func _ready() -> void:
 	if dialogue_box:
@@ -44,10 +45,19 @@ func _process(delta: float) -> void:
 		_notif_timer -= delta
 		if _notif_timer <= 0.0 and notification_label:
 			notification_label.visible = false
+	if _dialogue_cooldown > 0.0:
+		_dialogue_cooldown -= delta
 
 func _unhandled_input(event: InputEvent) -> void:
-	if dialogue_box and dialogue_box.visible:
-		if event.is_action_pressed("interact") or event.is_action_pressed("attack") or event.is_action_pressed("jump"):
+	# Chặn các phím hành động (tấn công, nhảy, phép, dash) khi đang mở hội thoại hoặc trong thời gian hồi
+	if is_dialogue_open() or is_dialogue_cooling_down():
+		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash"):
+			get_viewport().set_input_as_handled()
+			return
+
+	# Dự phòng nếu không có InteractionCoordinator trong scene
+	if is_dialogue_open() and event.is_action_pressed("interact"):
+		if get_tree() and get_tree().get_nodes_in_group("interaction_coordinator").size() == 0:
 			advance_dialogue()
 			get_viewport().set_input_as_handled()
 
@@ -63,9 +73,9 @@ func _display_current_line() -> void:
 	if _current_dialogue_idx < _dialogue_lines.size():
 		dialogue_text.text = _dialogue_lines[_current_dialogue_idx]
 		if _current_dialogue_idx == _dialogue_lines.size() - 1:
-			dialogue_hint.text = "[E / Phím bất kỳ để đóng]"
+			dialogue_hint.text = "[E để đóng]"
 		else:
-			dialogue_hint.text = "[E / Phím bất kỳ để tiếp tục]"
+			dialogue_hint.text = "[E để tiếp tục]"
 
 func advance_dialogue() -> void:
 	_current_dialogue_idx += 1
@@ -76,6 +86,7 @@ func advance_dialogue() -> void:
 
 func close_dialogue() -> void:
 	dialogue_box.visible = false
+	_dialogue_cooldown = 0.25 # Grace cooldown 0.25s
 	var scene: Node = _get_active_scene()
 	var quest_mgr: QuestManager = scene.get_node_or_null("QuestManager") as QuestManager if scene else null
 	var player: Player = scene.get_node_or_null("Player") as Player if scene else null
@@ -95,6 +106,9 @@ func _get_active_scene() -> Node:
 
 func is_dialogue_open() -> bool:
 	return dialogue_box and dialogue_box.visible
+
+func is_dialogue_cooling_down() -> bool:
+	return _dialogue_cooldown > 0.0
 
 func update_player_hp(cur: float, max_v: float) -> void:
 	if hp_bar:
