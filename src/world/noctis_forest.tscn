@@ -1,0 +1,282 @@
+[gd_scene load_steps=10 format=3 uid="uid://c7v1n8m3q2k4"]
+
+[ext_resource type="Script" path="res://src/world/noctis_forest.gd" id="1_world"]
+[ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://d2k4m8n1p5q7" path="res://src/actors/npc/npc.tscn" id="3_npc"]
+[ext_resource type="PackedScene" uid="uid://b7y2n4m8q1v9" path="res://src/actors/enemy/enemy.tscn" id="4_enemy"]
+[ext_resource type="PackedScene" uid="uid://d3m8k1y9p2q5" path="res://src/ui/game_ui.tscn" id="5_ui"]
+[ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="6_pause"]
+[ext_resource type="Script" path="res://src/quest/quest_manager.gd" id="7_quest"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(4800, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(80, 1000)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(240, 24)
+
+[node name="NoctisForest" type="Node2D"]
+process_mode = 1
+script = ExtResource("1_world")
+
+[node name="PauseController" type="Node" parent="." node_paths=PackedStringArray("pause_menu")]
+process_mode = 3
+script = ExtResource("6_pause")
+pause_menu = NodePath("../GameUI/PauseMenu")
+
+[node name="QuestManager" type="Node" parent="."]
+script = ExtResource("7_quest")
+
+[node name="GameUI" parent="." instance=ExtResource("5_ui")]
+
+[node name="Background_Zone1_Village" type="ColorRect" parent="."]
+offset_left = -200.0
+offset_top = -400.0
+offset_right = 1800.0
+offset_bottom = 800.0
+color = Color(0.08, 0.12, 0.22, 1)
+
+[node name="Moon" type="ColorRect" parent="Background_Zone1_Village"]
+offset_left = 350.0
+offset_top = 100.0
+offset_right = 430.0
+offset_bottom = 180.0
+color = Color(0.9, 0.95, 1, 0.85)
+
+[node name="VillageHouse1" type="ColorRect" parent="Background_Zone1_Village"]
+offset_left = 120.0
+offset_top = 800.0
+offset_right = 320.0
+offset_bottom = 1040.0
+color = Color(0.18, 0.24, 0.35, 1)
+
+[node name="VillageHouseRoof1" type="ColorRect" parent="Background_Zone1_Village"]
+offset_left = 100.0
+offset_top = 760.0
+offset_right = 340.0
+offset_bottom = 800.0
+color = Color(0.28, 0.38, 0.55, 1)
+
+[node name="GlowingFlower1" type="ColorRect" parent="Background_Zone1_Village"]
+offset_left = 480.0
+offset_top = 1020.0
+offset_right = 495.0
+offset_bottom = 1040.0
+color = Color(0.3, 0.9, 0.8, 1)
+
+[node name="GlowingFlower2" type="ColorRect" parent="Background_Zone1_Village"]
+offset_left = 540.0
+offset_top = 1025.0
+offset_right = 555.0
+offset_bottom = 1040.0
+color = Color(0.4, 0.8, 1, 1)
+
+[node name="CrystalShrine" type="ColorRect" parent="Background_Zone1_Village"]
+offset_left = 720.0
+offset_top = 960.0
+offset_right = 750.0
+offset_bottom = 1040.0
+color = Color(0.5, 0.85, 1, 0.9)
+
+[node name="Background_Zone2_Forest" type="ColorRect" parent="."]
+offset_left = 1800.0
+offset_top = -400.0
+offset_right = 4600.0
+offset_bottom = 800.0
+color = Color(0.04, 0.05, 0.1, 1)
+
+[node name="FogLayer" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 0.0
+offset_top = 700.0
+offset_right = 2800.0
+offset_bottom = 1050.0
+color = Color(0.2, 0.1, 0.3, 0.35)
+
+[node name="DarkTree1" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 400.0
+offset_top = 600.0
+offset_right = 480.0
+offset_bottom = 1040.0
+color = Color(0.09, 0.08, 0.15, 1)
+
+[node name="DarkTree2" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 1200.0
+offset_top = 580.0
+offset_right = 1300.0
+offset_bottom = 1040.0
+color = Color(0.09, 0.08, 0.15, 1)
+
+[node name="DarkTree3" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 2000.0
+offset_top = 560.0
+offset_right = 2100.0
+offset_bottom = 1040.0
+color = Color(0.09, 0.08, 0.15, 1)
+
+[node name="PurpleCrystal1" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 650.0
+offset_top = 970.0
+offset_right = 675.0
+offset_bottom = 1040.0
+color = Color(0.7, 0.2, 0.9, 0.85)
+
+[node name="PurpleCrystal2" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 1500.0
+offset_top = 960.0
+offset_right = 1530.0
+offset_bottom = 1040.0
+color = Color(0.65, 0.15, 0.85, 0.85)
+
+[node name="PurpleCrystal3" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 2300.0
+offset_top = 950.0
+offset_right = 2335.0
+offset_bottom = 1040.0
+color = Color(0.8, 0.3, 1, 0.9)
+
+[node name="SignBoard" type="Label" parent="."]
+offset_left = 250.0
+offset_top = 570.0
+offset_right = 470.0
+offset_bottom = 635.0
+text = "[BẢNG LÀNG ÁNH NGUYỆT]
+Đi về bên phải để tiến vào
+Rừng Hắc Nguyệt nguy hiểm!"
+
+[node name="BorderMarker" type="Label" parent="."]
+offset_left = 1750.0
+offset_top = 560.0
+offset_right = 1980.0
+offset_bottom = 610.0
+text = "[RANH GIỚI BÌA RỪNG NOCTIS]
+Khu vực ma lực bị tha hóa!"
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2200, 680)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="VisualGround" type="ColorRect" parent="Geometry/Ground"]
+offset_left = -2400.0
+offset_top = -50.0
+offset_right = 2400.0
+offset_bottom = 50.0
+color = Color(0.14, 0.17, 0.24, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-40, 320)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="RightWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(4440, 320)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Platform1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(850, 500)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform1"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform1"]
+offset_left = -120.0
+offset_top = -12.0
+offset_right = 120.0
+offset_bottom = 12.0
+color = Color(0.28, 0.42, 0.58, 1)
+
+[node name="Platform2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2300, 480)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform2"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform2"]
+offset_left = -120.0
+offset_top = -12.0
+offset_right = 120.0
+offset_bottom = 12.0
+color = Color(0.35, 0.25, 0.45, 1)
+
+[node name="Platform3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2800, 380)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform3"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform3"]
+offset_left = -120.0
+offset_top = -12.0
+offset_right = 120.0
+offset_bottom = 12.0
+color = Color(0.35, 0.25, 0.45, 1)
+
+[node name="Platform4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3400, 470)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform4"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/Platform4"]
+offset_left = -120.0
+offset_top = -12.0
+offset_right = 120.0
+offset_bottom = 12.0
+color = Color(0.35, 0.25, 0.45, 1)
+
+[node name="NPC_Elyra" parent="." instance=ExtResource("3_npc")]
+position = Vector2(520, 630)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(180, 630)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
+remote_path = NodePath("../../Camera2D")
+
+[node name="CorruptedEnemy1" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
+position = Vector2(2400, 630)
+
+[node name="CorruptedEnemy2" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
+position = Vector2(3050, 630)
+
+[node name="CorruptedEnemy3" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
+position = Vector2(3700, 630)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(180, 630)
+limit_left = 0
+limit_top = -300
+limit_right = 4400
+limit_bottom = 720
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[connection signal="pressed" from="GameUI/PauseMenu/Panel/ResumeBtn" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="GameUI/PauseMenu/Panel/QuitBtn" to="." method="_on_quit_button_pressed"]

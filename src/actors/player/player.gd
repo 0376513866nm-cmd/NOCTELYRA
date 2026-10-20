@@ -2,13 +2,16 @@ class_name Player
 extends CharacterBody2D
 
 signal state_changed(new_state_name: String)
+signal player_died()
+signal player_respawned()
 
 enum State {
 	IDLE,
 	RUN,
 	JUMP,
 	FALL,
-	DASH
+	DASH,
+	DEAD
 }
 
 @export var movement_data: PlayerMovementData
@@ -19,6 +22,7 @@ enum State {
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var combat_component: CombatComponent = $CombatComponent
 @onready var hurtbox: Hurtbox = $Hurtbox
+@onready var melee_hitbox: Hitbox = $MeleeHitbox
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -26,8 +30,10 @@ var jumps_left: int = 2
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var dash_direction: int = 1
+var spawn_position: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
+	spawn_position = global_position
 	if movement_data == null:
 		movement_data = PlayerMovementData.new()
 	_change_state(State.IDLE)
@@ -35,11 +41,27 @@ func _ready() -> void:
 	if health_component:
 		health_component.invulnerability_started.connect(_on_invuln_started)
 		health_component.invulnerability_ended.connect(_on_invuln_ended)
+		health_component.died.connect(_on_player_died)
 
 func _physics_process(delta: float) -> void:
+	# Khi chết: Vô hiệu hóa toàn bộ di chuyển, rơi và input
+	if current_state == State.DEAD:
+		velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
+		if not is_on_floor():
+			velocity.y += movement_data.gravity * delta
+		move_and_slide()
+		return
+
 	# Luôn giảm thời gian hồi chiêu Dash độc lập
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
+
+	# Kiểm tra nếu đang mở hội thoại NPC thì tạm ngừng nhận input chiến đấu
+	var ui: GameUI = _get_game_ui()
+	if ui and ui.is_dialogue_open():
+		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
+		move_and_slide()
+		return
 
 	# Xử lý input tấn công & ma pháp (J & K)
 	_handle_combat_inputs()
@@ -124,7 +146,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	# Khôi phục số lần nhảy khi đang chạm đất
-	if is_on_floor() and current_state != State.JUMP:
+	if is_on_floor() and current_state != State.JUMP and current_state != State.DEAD:
 		_restore_jumps()
 
 func _handle_combat_inputs() -> void:
@@ -136,12 +158,56 @@ func _handle_combat_inputs() -> void:
 		combat_component.cast_spell(self, facing_direction, health_component)
 
 func _on_invuln_started() -> void:
-	if sprite_root:
+	if sprite_root and current_state != State.DEAD:
 		sprite_root.modulate = Color(1.0, 0.4, 0.4, 0.7)
 
 func _on_invuln_ended() -> void:
+	if sprite_root and current_state != State.DEAD:
+		sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
+
+func _on_player_died() -> void:
+	_change_state(State.DEAD)
+	velocity = Vector2.ZERO
+	# Tắt hitbox tấn công
+	if melee_hitbox:
+		melee_hitbox.monitoring = false
+		melee_hitbox.visible = false
+	if combat_component:
+		combat_component.end_attack()
+	# Tắt nhận đòn
+	if hurtbox:
+		hurtbox.set_deferred("monitoring", false)
+		hurtbox.set_deferred("monitorable", false)
+	# Hiệu ứng mờ dần
+	if sprite_root:
+		sprite_root.modulate = Color(0.6, 0.2, 0.2, 0.6)
+
+	emit_signal("player_died")
+
+	var ui := _get_game_ui()
+	if ui:
+		ui.show_game_over()
+
+func respawn() -> void:
+	global_position = spawn_position
+	velocity = Vector2.ZERO
+	if health_component:
+		health_component.current_health = health_component.max_health
+		health_component.current_mana = health_component.max_mana
+		health_component.is_invulnerable = false
+		health_component.emit_signal("health_changed", health_component.current_health, health_component.max_health)
+		health_component.emit_signal("mana_changed", health_component.current_mana, health_component.max_mana)
+	if hurtbox:
+		hurtbox.set_deferred("monitoring", true)
+		hurtbox.set_deferred("monitorable", true)
 	if sprite_root:
 		sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	
+	_restore_jumps()
+	dash_timer = 0.0
+	dash_cooldown_timer = 0.0
+	_change_state(State.IDLE)
+	emit_signal("player_respawned")
 
 func _restore_jumps() -> void:
 	jumps_left = movement_data.max_jumps
@@ -184,6 +250,9 @@ func _change_state(new_state: State) -> void:
 				_set_facing(dash_direction)
 			else:
 				dash_direction = facing_direction
+		State.DEAD:
+			if anim_player:
+				anim_player.pause()
 
 func _play_fallback_air_visual() -> void:
 	if anim_player and anim_player.has_animation("run"):
@@ -249,6 +318,12 @@ func _set_facing(dir: int) -> void:
 	if sprite_root:
 		sprite_root.scale.x = float(facing_direction)
 
+func _get_game_ui() -> GameUI:
+	var scene = get_tree().current_scene
+	if scene:
+		return scene.get_node_or_null("GameUI") as GameUI
+	return null
+
 func _get_state_name(state: State) -> String:
 	match state:
 		State.IDLE: return "IDLE"
@@ -256,4 +331,5 @@ func _get_state_name(state: State) -> String:
 		State.JUMP: return "JUMP"
 		State.FALL: return "FALL"
 		State.DASH: return "DASH"
+		State.DEAD: return "DEAD"
 		_: return "UNKNOWN"
