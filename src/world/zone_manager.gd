@@ -137,6 +137,8 @@ static func apply_player_state(world: Node, data: Dictionary) -> void:
 				ui.update_quest_info(quest_mgr.current_quest)
 		if p_sb and ui.spell_hotbar:
 			ui.spell_hotbar.set_spellbook(p_sb)
+		if player and ui.inventory_ui:
+			ui.inventory_ui.setup_player(player)
 
 static func save_zone_state(zone_id: String, world: Node) -> void:
 	if world == null or zone_id.is_empty():
@@ -279,3 +281,9 @@ static func _place_player_at_spawn(world: Node, spawn_id: String) -> void:
 		player.facing_direction = facing
 		if player.sprite_root:
 			player.sprite_root.scale.x = float(facing)
+
+		# Cập nhật camera ngay lập tức tới vị trí spawn mới (chống trượt hoặc nhìn ngoài biên)
+		var cam: Camera2D = world.get_node_or_null("Camera2D") as Camera2D
+		if cam:
+			cam.global_position = target_pos
+			cam.reset_smoothing()

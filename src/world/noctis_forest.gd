@@ -1,7 +1,7 @@
 class_name NoctisForest
 extends BaseZone
 
-## Thế giới Bìa Rừng Noctis & Đấu trường Boss Lunareth (M4, M6)
+## Thế giới Bìa Rừng Noctis & Đấu trường Boss Lunareth (M4, M6, M6.1)
 ## Quản lý vòng lặp nhiệm vụ, quái vật, cổng ma pháp, đấu trường và Boss Lunareth.
 
 var npc_elyra: NPC
@@ -30,26 +30,23 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	init_references()
+	setup_signals()
+	setup_camera()
+	setup_ui()
+
 	if SaveManager.should_load_on_start:
 		SaveManager.should_load_on_start = false
 		SaveManager.load_game(self)
+
 	ZoneManager.on_zone_entered(self)
 
+	setup_ui()
+	snap_camera_to_player()
+
 func init_references() -> void:
-	if player == null:
-		player = get_node_or_null("Player") as Player
-	if game_ui == null:
-		game_ui = get_node_or_null("GameUI") as GameUI
-	if quest_manager == null:
-		quest_manager = get_node_or_null("QuestManager") as QuestManager
-	if pause_controller == null:
-		pause_controller = get_node_or_null("PauseController") as PauseController
+	init_base_references()
 	if npc_elyra == null:
 		npc_elyra = get_node_or_null("NPC_Elyra") as NPC
-	if interaction_coordinator == null:
-		interaction_coordinator = get_node_or_null("InteractionCoordinator") as InteractionCoordinator
-
-	# Các thực thể Boss M4
 	if magic_gate == null:
 		magic_gate = get_node_or_null("MagicGate") as StaticBody2D
 	if boss_lunareth == null:
@@ -66,46 +63,15 @@ func init_references() -> void:
 		if b_col:
 			b_col.disabled = true
 
-	# Kết nối Player
-	if player and not player.state_changed.is_connected(_on_player_state_changed):
-		player.add_to_group("players")
-		player.state_changed.connect(_on_player_state_changed)
-		_on_player_state_changed("IDLE")
-
-		var p_health: HealthComponent = player.get_node_or_null("HealthComponent")
-		if p_health and not p_health.health_changed.is_connected(_on_player_health_changed):
-			p_health.health_changed.connect(_on_player_health_changed)
-			p_health.mana_changed.connect(_on_player_mana_changed)
-			if game_ui:
-				game_ui.update_player_hp(p_health.current_health, p_health.max_health)
-				game_ui.update_player_mp(p_health.current_mana, p_health.max_mana)
-
-	# Kết nối GameUI
-	if game_ui and not game_ui.retry_requested.is_connected(_on_retry_requested):
-		game_ui.retry_requested.connect(_on_retry_requested)
-		if player and game_ui.inventory_ui:
-			game_ui.inventory_ui.setup_player(player)
-		if player and game_ui.spell_hotbar and player.spellbook_component:
-			game_ui.spell_hotbar.set_spellbook(player.spellbook_component)
-		if quest_manager and quest_manager.current_quest:
-			game_ui.update_quest_info(quest_manager.current_quest)
-			game_ui.update_gold(quest_manager.gold)
-
-	# Kết nối QuestManager
-	if quest_manager and not quest_manager.quest_started.is_connected(_on_quest_updated):
-		quest_manager.quest_started.connect(_on_quest_updated)
-		quest_manager.quest_progress_updated.connect(_on_quest_updated)
-		quest_manager.quest_ready_to_turn_in.connect(_on_quest_updated)
-		quest_manager.quest_completed.connect(_on_quest_updated)
-		quest_manager.gold_changed.connect(_on_gold_changed)
-		quest_manager.notification_posted.connect(_on_notification_posted)
+func setup_signals() -> void:
+	super.setup_signals()
 
 	# Kết nối NPC Elyra
 	if npc_elyra and not npc_elyra.dialogue_requested.is_connected(_on_npc_dialogue_requested):
 		npc_elyra.dialogue_requested.connect(_on_npc_dialogue_requested)
 
 	# Kết nối các quái vật trên map
-	var enemies = get_tree().get_nodes_in_group("enemies")
+	var enemies = get_tree().get_nodes_in_group("enemies") if get_tree() else []
 	for e in enemies:
 		if e is Enemy:
 			if quest_manager and not e.enemy_defeated.is_connected(quest_manager.register_enemy_kill):
@@ -124,6 +90,8 @@ func init_references() -> void:
 	if arena_trigger and not arena_trigger.body_entered.is_connected(_on_arena_trigger_entered):
 		arena_trigger.body_entered.connect(_on_arena_trigger_entered)
 
+func setup_ui() -> void:
+	super.setup_ui()
 	# Đồng bộ trạng thái mở cổng theo nhiệm vụ
 	if magic_gate and quest_manager and quest_manager.current_quest:
 		magic_gate.update_quest_status(quest_manager.current_quest)
@@ -231,72 +199,6 @@ func _spawn_boss_reward_pickup() -> void:
 	p.global_position = Vector2(drop_x, 630.0)
 	add_child(p)
 
-func _on_enemy_defeated(enemy_node: Node) -> void:
-	if enemy_node is Enemy and not enemy_node.enemy_id.is_empty():
-		if not enemy_node.enemy_id in defeated_enemy_ids:
-			defeated_enemy_ids.append(enemy_node.enemy_id)
-
-func register_collected_pickup(p_id: String) -> void:
-	if not p_id.is_empty() and not p_id in collected_pickup_ids:
-		collected_pickup_ids.append(p_id)
-
-func get_dropped_pickups_data() -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-	var dyn_pickups = get_tree().get_nodes_in_group("dynamic_pickups")
-	for p in dyn_pickups:
-		if p is ItemPickup and is_instance_valid(p) and not p.is_picked_up and not p.is_queued_for_deletion():
-			result.append({
-				"pickup_id": p.pickup_id,
-				"item_id": p.item_id,
-				"amount": p.amount,
-				"x": p.global_position.x,
-				"y": p.global_position.y
-			})
-	return result
-
-func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_defeated_ids: Array) -> void:
-	collected_pickup_ids.clear()
-	for id in p_collected_ids:
-		collected_pickup_ids.append(str(id))
-
-	defeated_enemy_ids.clear()
-	for id in p_defeated_ids:
-		defeated_enemy_ids.append(str(id))
-
-	# 1. Dọn các vật phẩm đặt sẵn đã từng nhặt
-	var preplaced = get_tree().get_nodes_in_group("preplaced_pickups")
-	for p in preplaced:
-		if p is ItemPickup and not p.pickup_id.is_empty():
-			if p.pickup_id in collected_pickup_ids:
-				p.queue_free()
-
-	# 2. Xóa các dynamic pickup cũ trước khi phục hồi danh sách lưu (tránh nhân bản)
-	var existing_dyn = get_tree().get_nodes_in_group("dynamic_pickups")
-	for p in existing_dyn:
-		if is_instance_valid(p):
-			p.queue_free()
-
-	# 3. Phục hồi các vật phẩm quái rơi chưa nhặt
-	var pickup_scene: PackedScene = preload("res://src/loot/item_pickup.tscn")
-	for dp in p_dropped_pickups:
-		if dp is Dictionary:
-			var p := pickup_scene.instantiate() as ItemPickup
-			p.pickup_id = str(dp.get("pickup_id", ""))
-			p.item_id = str(dp.get("item_id", "mana_shard"))
-			p.amount = max(1, int(dp.get("amount", 1)))
-			p.is_dynamic = true
-			var px: float = float(dp.get("x", 0.0))
-			var py: float = float(dp.get("y", 0.0))
-			p.global_position = Vector2(px, py)
-			add_child(p)
-
-	# 4. Xóa các quái đã chết
-	var enemies = get_tree().get_nodes_in_group("enemies")
-	for e in enemies:
-		if e is Enemy and not e.enemy_id.is_empty():
-			if e.enemy_id in defeated_enemy_ids:
-				e.queue_free()
-
 func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> void:
 	boss_defeated = p_defeated
 	boss_reward_claimed = p_reward
@@ -328,62 +230,29 @@ func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> 
 			magic_gate.update_quest_status(quest_manager.current_quest)
 
 func clear_boss_projectiles() -> void:
-	var projectiles := get_tree().get_nodes_in_group("boss_projectiles")
-	for p in projectiles:
-		if is_instance_valid(p) and not p.is_queued_for_deletion():
-			p.queue_free()
-
-func clear_player_projectiles() -> void:
-	var projectiles := get_tree().get_nodes_in_group("player_projectiles")
-	for p in projectiles:
-		if is_instance_valid(p) and not p.is_queued_for_deletion():
-			p.queue_free()
+	if get_tree():
+		var projectiles := get_tree().get_nodes_in_group("boss_projectiles")
+		for p in projectiles:
+			if is_instance_valid(p) and not p.is_queued_for_deletion():
+				p.queue_free()
 
 func clear_all_projectiles() -> void:
 	clear_boss_projectiles()
 	clear_player_projectiles()
 
-func _on_player_state_changed(st_name: String) -> void:
-	if game_ui:
-		game_ui.update_player_state(st_name)
-
-func _on_player_health_changed(cur: float, max_v: float) -> void:
-	if game_ui:
-		game_ui.update_player_hp(cur, max_v)
-
-func _on_player_mana_changed(cur: float, max_v: float) -> void:
-	if game_ui:
-		game_ui.update_player_mp(cur, max_v)
-
 func _on_quest_updated(quest: QuestData) -> void:
-	if game_ui:
-		game_ui.update_quest_info(quest)
+	super._on_quest_updated(quest)
 	# Mở cổng đấu trường ngay khi nhiệm vụ hoàn thành
 	if magic_gate:
 		magic_gate.update_quest_status(quest)
 
-func _on_gold_changed(new_gold: int) -> void:
-	if game_ui:
-		game_ui.update_gold(new_gold)
-
-func _on_notification_posted(msg: String) -> void:
-	if game_ui:
-		game_ui.show_notification(msg)
-
-func _on_npc_dialogue_requested(npc: NPC, lines: Array[String], action: String) -> void:
-	if game_ui:
-		game_ui.show_dialogue(npc.npc_name, lines, action)
-
 func _on_retry_requested() -> void:
-	if player == null:
-		player = get_node_or_null("Player") as Player
-	if player:
-		player.respawn()
+	super._on_retry_requested()
 
 	# Xóa toàn bộ projectile của Boss và Player khi Retry
 	clear_all_projectiles()
 
-	# Xử lý Retry khi tử trận trong trận Boss (Yêu cầu F)
+	# Xử lý Retry khi tử trận trong trận Boss
 	if boss_battle_started and not boss_defeated:
 		boss_battle_started = false
 		if arena_barrier:
@@ -395,10 +264,3 @@ func _on_retry_requested() -> void:
 			boss_lunareth.reset_boss()
 		if game_ui:
 			game_ui.hide_boss_hud()
-
-func _on_resume_button_pressed() -> void:
-	if pause_controller:
-		pause_controller.resume()
-
-func _on_quit_button_pressed() -> void:
-	get_tree().quit()

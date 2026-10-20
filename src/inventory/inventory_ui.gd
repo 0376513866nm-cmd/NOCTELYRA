@@ -58,8 +58,11 @@ func setup_player(p: Player) -> void:
 		if inv and not inv.inventory_updated.is_connected(refresh):
 			inv.inventory_updated.connect(refresh)
 		var eq := player.equipment_component
-		if eq and not eq.equipment_changed.is_connected(func(_st, _id): refresh()):
-			eq.equipment_changed.connect(func(_st, _id): refresh())
+		if eq and not eq.equipment_changed.is_connected(_on_equipment_changed):
+			eq.equipment_changed.connect(_on_equipment_changed)
+	refresh()
+
+func _on_equipment_changed(_slot_type: String, _item_id: String) -> void:
 	refresh()
 
 func _ensure_player() -> void:

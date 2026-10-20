@@ -1,9 +1,10 @@
 class_name BaseZone
 extends Node2D
 
-## Lớp cơ sở (Base Zone) cho tất cả các vùng đất trong NOCTELYRA (Milestone M6)
+## Lớp cơ sở (Base Zone) cho tất cả các vùng đất trong NOCTELYRA (Milestone M6, M6.1)
 ## Cung cấp kiến trúc mở rộng thế giới, vòng lặp tham chiếu chung,
-## đồng bộ trạng thái người chơi, và lưu trữ vật phẩm/quái vật theo từng khu vực.
+## đồng bộ trạng thái người chơi, camera bám sát player,
+## và khởi tạo UI ổn định (tách biệt setup_signals và setup_ui).
 
 @export var zone_id: String = "noctis_forest"
 @export var zone_display_name: String = "Rừng Noctis"
@@ -23,6 +24,9 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_PAUSABLE
 	init_base_references()
+	setup_signals()
+	setup_camera()
+	setup_ui()
 
 	# 1. Tải Save nếu người chơi nhấn Continue từ Main Menu
 	if SaveManager.should_load_on_start:
@@ -31,6 +35,10 @@ func _ready() -> void:
 
 	# 2. Xử lý chuyển cảnh hoặc áp dụng trạng thái từ ZoneManager
 	ZoneManager.on_zone_entered(self)
+
+	# 3. Đồng bộ lại UI & Camera ngay sau khi nạp Save hoặc chuyển vùng
+	setup_ui()
+	snap_camera_to_player()
 
 func _process(delta: float) -> void:
 	ZoneManager.update_cooldown(delta)
@@ -47,41 +55,110 @@ func init_base_references() -> void:
 	if interaction_coordinator == null:
 		interaction_coordinator = get_node_or_null("InteractionCoordinator") as InteractionCoordinator
 
+func setup_signals() -> void:
 	# Kết nối Player
-	if player and not player.state_changed.is_connected(_on_player_state_changed):
-		player.add_to_group("players")
-		player.state_changed.connect(_on_player_state_changed)
-		_on_player_state_changed("IDLE")
+	if player:
+		if not player.is_in_group("players"):
+			player.add_to_group("players")
+		if not player.state_changed.is_connected(_on_player_state_changed):
+			player.state_changed.connect(_on_player_state_changed)
 
 		var p_health: HealthComponent = player.get_node_or_null("HealthComponent")
-		if p_health and not p_health.health_changed.is_connected(_on_player_health_changed):
-			p_health.health_changed.connect(_on_player_health_changed)
-			p_health.mana_changed.connect(_on_player_mana_changed)
-			if game_ui:
-				game_ui.update_player_hp(p_health.current_health, p_health.max_health)
-				game_ui.update_player_mp(p_health.current_mana, p_health.max_mana)
+		if p_health:
+			if not p_health.health_changed.is_connected(_on_player_health_changed):
+				p_health.health_changed.connect(_on_player_health_changed)
+			if not p_health.mana_changed.is_connected(_on_player_mana_changed):
+				p_health.mana_changed.connect(_on_player_mana_changed)
 
 	# Kết nối GameUI
-	if game_ui and not game_ui.retry_requested.is_connected(_on_retry_requested):
-		game_ui.retry_requested.connect(_on_retry_requested)
-		if player and game_ui.inventory_ui:
-			game_ui.inventory_ui.setup_player(player)
-		if player and game_ui.spell_hotbar and player.spellbook_component:
-			game_ui.spell_hotbar.set_spellbook(player.spellbook_component)
-		if quest_manager and quest_manager.current_quest:
-			game_ui.update_quest_info(quest_manager.current_quest)
-			game_ui.update_gold(quest_manager.gold)
+	if game_ui:
+		if not game_ui.retry_requested.is_connected(_on_retry_requested):
+			game_ui.retry_requested.connect(_on_retry_requested)
 
 	# Kết nối QuestManager
-	if quest_manager and not quest_manager.quest_started.is_connected(_on_quest_updated):
-		quest_manager.quest_started.connect(_on_quest_updated)
-		quest_manager.quest_progress_updated.connect(_on_quest_updated)
+	if quest_manager:
+		if not quest_manager.quest_started.is_connected(_on_quest_updated):
+			quest_manager.quest_started.connect(_on_quest_updated)
+		if not quest_manager.quest_progress_updated.is_connected(_on_quest_updated):
+			quest_manager.quest_progress_updated.connect(_on_quest_updated)
+		if not quest_manager.quest_ready_to_turn_in.is_connected(_on_quest_updated):
+			quest_manager.quest_ready_to_turn_in.connect(_on_quest_updated)
+		if not quest_manager.quest_completed.is_connected(_on_quest_updated):
+			quest_manager.quest_completed.connect(_on_quest_updated)
+		if not quest_manager.gold_changed.is_connected(_on_gold_changed):
+			quest_manager.gold_changed.connect(_on_gold_changed)
+		if not quest_manager.notification_posted.is_connected(_on_notification_posted):
+			quest_manager.notification_posted.connect(_on_notification_posted)
 
 	# Kết nối tất cả NPC trong khu vực
 	if get_tree():
 		for n in get_tree().get_nodes_in_group("npcs"):
 			if n is NPC and not n.dialogue_requested.is_connected(_on_npc_dialogue_requested):
 				n.dialogue_requested.connect(_on_npc_dialogue_requested)
+
+func setup_camera() -> void:
+	if player == null:
+		player = get_node_or_null("Player") as Player
+	if player == null:
+		return
+
+	var cam: Camera2D = get_node_or_null("Camera2D") as Camera2D
+	if cam:
+		var remote: RemoteTransform2D = player.get_node_or_null("RemoteTransform2D") as RemoteTransform2D
+		if remote == null:
+			remote = RemoteTransform2D.new()
+			remote.name = "RemoteTransform2D"
+			remote.update_scale = false
+			player.add_child(remote)
+		remote.remote_path = cam.get_path()
+
+func snap_camera_to_player() -> void:
+	if player == null:
+		player = get_node_or_null("Player") as Player
+	if player == null:
+		return
+
+	var cam: Camera2D = get_node_or_null("Camera2D") as Camera2D
+	if cam:
+		cam.global_position = player.global_position
+		cam.reset_smoothing()
+
+func setup_ui() -> void:
+	if game_ui == null:
+		game_ui = get_node_or_null("GameUI") as GameUI
+	if game_ui == null:
+		return
+
+	if player == null:
+		player = get_node_or_null("Player") as Player
+
+	if player:
+		# 1. Gắn Player vào InventoryUI
+		if game_ui.inventory_ui:
+			game_ui.inventory_ui.setup_player(player)
+
+		# 2. Gắn SpellbookComponent vào SpellHotbar
+		if game_ui.spell_hotbar and player.spellbook_component:
+			game_ui.spell_hotbar.set_spellbook(player.spellbook_component)
+
+		# 3. Cập nhật thanh HP và MP
+		var p_health: HealthComponent = player.get_node_or_null("HealthComponent")
+		if p_health:
+			game_ui.update_player_hp(p_health.current_health, p_health.max_health)
+			game_ui.update_player_mp(p_health.current_mana, p_health.max_mana)
+
+		# 4. Cập nhật trạng thái Player
+		_on_player_state_changed("IDLE")
+
+	# 5. Cập nhật Vàng và Nhiệm vụ
+	if quest_manager:
+		game_ui.update_gold(quest_manager.gold)
+		if quest_manager.current_quest:
+			game_ui.update_quest_info(quest_manager.current_quest)
+
+	# 6. Cập nhật thông tin vùng đất (HUD zone label)
+	if game_ui.has_method("set_current_zone"):
+		game_ui.set_current_zone(zone_id)
 
 func _on_npc_dialogue_requested(npc: NPC, lines: Array[String], action: String) -> void:
 	if game_ui:
@@ -166,6 +243,8 @@ func _on_retry_requested() -> void:
 	clear_player_projectiles()
 	if player:
 		player.respawn()
+	setup_ui()
+	snap_camera_to_player()
 
 func _on_player_state_changed(new_state_name: String) -> void:
 	if game_ui:
@@ -183,6 +262,14 @@ func _on_quest_updated(_q: QuestData) -> void:
 	if game_ui and quest_manager and quest_manager.current_quest:
 		game_ui.update_quest_info(quest_manager.current_quest)
 		game_ui.update_gold(quest_manager.gold)
+
+func _on_gold_changed(new_gold: int) -> void:
+	if game_ui:
+		game_ui.update_gold(new_gold)
+
+func _on_notification_posted(msg: String) -> void:
+	if game_ui:
+		game_ui.show_notification(msg)
 
 func _on_resume_button_pressed() -> void:
 	if pause_controller:

@@ -1,17 +1,17 @@
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M6: World Expansion & Zone Travel)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M6.1 STABILIZATION: World Expansion & Camera/UI Fixes)
 
 Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M6 WORLD EXPANSION)
+## 1. Cấu trúc thư mục & Module dự án (Bản M6.1 STABILIZATION)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu hướng dẫn, kiến trúc thế giới mở & kết quả kiểm thử M6
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M6 Final)
-├── test_m6_flow.gd                 # [M6] Kịch bản kiểm thử 18 nhóm tính năng dịch chuyển thế giới (81/81 tests PASS 100%)
+├── README.md                       # Tài liệu kiến trúc, bản vá M6.1 & kết quả kiểm thử
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M6.1 Final)
+├── test_m6_flow.gd                 # [M6.1] Kịch bản kiểm thử 19 nhóm tính năng (117/117 tests PASS 100%)
 ├── test_m5_flow.gd                 # Kịch bản kiểm thử 26 nhóm tính năng ma pháp (100/100 tests PASS 100%)
 ├── test_m4_flow.gd                 # Kịch bản kiểm thử 17 hạng mục Boss M4 (87/87 tests PASS 100%)
 ├── test_m3_2_flow.gd               # Kịch bản kiểm thử M3.2 (50/50 tests PASS 100%)
@@ -19,7 +19,7 @@ D:\project\game\NOCTELYRA\
 ├── test_m3_flow.gd                 # Kịch bản kiểm thử M3 (67/67 tests PASS 100%)
 ├── test_m2_1_flow.gd               # Kịch bản kiểm thử M2.1 (42/42 tests PASS 100%)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
-├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus, autoload ZoneManager M6)
+├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus, autoload ZoneManager)
 ├── run_game.bat                    # 1-Click chạy game test ngay lập tức
 ├── open_editor.bat                 # 1-Click mở Godot Editor
 ├── export_code_for_ai.bat          # 1-Click gom toàn bộ source code thành file CODE_EXPORT.txt
@@ -84,7 +84,7 @@ D:\project\game\NOCTELYRA\
     │   ├── item_database.gd                 # Đăng ký mana_shard, health_potion, moonsteel_sword, moon_amulet, eclipse_fragment
     │   ├── inventory_component.gd           # Quản lý 16 ô túi đồ, clear(), remove_item_by_id()
     │   ├── equipment_component.gd           # Quản lý 2 ô trang bị & tính toán lại chỉ số
-    │   ├── inventory_ui.gd                  # Controller giao diện túi đồ, lưới 16 ô
+    │   ├── inventory_ui.gd                  # Controller giao diện túi đồ, fix lambda connect đa trùng lặp
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ
     ├── loot\                                # HỆ THỐNG RƠI ĐỒ VÀ NHẶT VẬT PHẨM
     │   ├── loot_table.gd                    # Resource định nghĩa bảng tỷ lệ rơi đồ
@@ -103,126 +103,82 @@ D:\project\game\NOCTELYRA\
     │   ├── pause_controller.gd              # Quản lý Pause/Resume độc lập
     │   ├── main_menu.gd                     # Màn hình chính (Continue nạp trực tiếp scene khu vực đã lưu)
     │   └── main_menu.tscn
-    └── world\                               # [M6] HỆ THỐNG MỞ RỘNG THẾ GIỚI & DỊCH CHUYỂN KHU VỰC
+    └── world\                               # HỆ THỐNG MỞ RỘNG THẾ GIỚI & DỊCH CHUYỂN KHU VỰC
         ├── zone_definition.gd               # Resource metadata khu vực (zone_id, name, subtitle, scene_path, default_spawn)
         ├── zone_spawn_point.gd              # Điểm xuất hiện an toàn trong khu vực (spawn_point_id, facing_direction)
-        ├── zone_portal.gd                   # Cổng dịch chuyển liên khu vực, điều kiện mở khóa, hiệu ứng xoáy ma pháp
+        ├── zone_portal.gd                   # Cổng dịch chuyển liên khu vực, điều kiện mở khóa, kiểm tra tương tác
         ├── zone_portal.tscn                 # Scene Area2D Cổng dịch chuyển với prompt nhấp nháy
         ├── ancient_crystal.gd               # Cổ Tinh Thạch tương tác đọc truyền thuyết (Lore object)
         ├── ancient_crystal.tscn             # Scene Cổ Tinh Thạch với visual tinh thể phát sáng
-        ├── base_zone.gd                     # Lớp cha BaseZone quản lý vòng đời khu vực, camera, retry và đăng ký ZoneManager
-        ├── zone_manager.gd                  # Autoload Singleton điều phối dịch chuyển, bảo toàn chỉ số & lưu trạng thái vùng
+        ├── base_zone.gd                     # [M6.1] Tách biệt setup_signals, setup_camera, setup_ui độc lập
+        ├── zone_manager.gd                  # [M6.1] Snap camera tức thì khi spawn, gắn Player vào inventory_ui
         ├── magic_gate.gd                    # Cổng Ma Pháp tại X=4200 (khóa arena Boss Lunareth)
         ├── magic_gate.tscn                  # Scene Cổng Ma Pháp rào chắn vật lý
-        ├── noctis_forest.gd                 # [Zone 1] Rừng Noctis (0-6000px), Moonveil Portal sau Boss Arena
+        ├── noctis_forest.gd                 # [M6.1] Rừng Noctis kế thừa BaseZone, setup_ui độc lập
         ├── noctis_forest.tscn
-        ├── elyndra_glade.gd                 # [Zone 2] Thánh Lâm Elyndra (0-2400px), NPC Kaelis, Cổ Tinh Thạch, 2 Cổng
-        ├── elyndra_glade.tscn
-        ├── vharok_outpost.gd                # [Zone 3] Tiền Đồn Vharok (0-2400px), NPC Rhaek (Quỷ tộc bán thú), 1 Cổng
-        └── vharok_outpost.tscn
+        ├── elyndra_glade.gd                 # [Zone 2] Thánh Lâm Elyndra (0-2400px), NPC Kaelis, Cổ Tinh Thạch
+        ├── elyndra_glade.tscn               # [M6.1] Bổ sung RemoteTransform2D bám sát Camera2D
+        ├── vharok_outpost.gd                # [Zone 3] Tiền Đồn Vharok (0-2400px), NPC Rhaek
+        └── vharok_outpost.tscn              # [M6.1] Bổ sung RemoteTransform2D bám sát Camera2D
 ```
 
 ---
 
-## 2. Thiết kế 3 Vùng Đất Thế Giới Mở Rộng (M6 World Design)
+## 2. Các Bản Vá Chính trong Milestone M6.1
 
-### 2.1. Rừng Noctis (`noctis_forest`)
-- **Tên hiển thị:** Rừng Noctis — Nơi Khởi Đầu Của Bóng Tối
-- **Kích thước:** Chiều dài 6000 px, camera giới hạn $0 \rightarrow 6000$ px.
-- **Thực thể & Sự kiện:**
-  - NPC Elyra (X=400): Giao nhiệm vụ tiêu diệt 3 Thú Tha Hóa.
-  - Cổng Ma Pháp MagicGate (X=4200): Tự động mở khi hoàn thành nhiệm vụ.
-  - Boss Arena & Đấu trường Lunareth (X=4400 - 5800): Trận chiến Boss Linh Lộc Nguyệt Thực.
-  - **Cổng Nguyệt Mạc (Moonveil Portal - X=5850):** Nằm phía sau đấu trường Boss. Khóa ma thuật vững chắc cho đến khi thanh tẩy Lunareth (`boss_defeated == true`). Khi tương tác thành công sẽ dịch chuyển tới Thánh Lâm Elyndra.
-  - **Điểm xuất hiện trở về (`SpawnFromElyndra`):** Tọa độ X=5700, quay mặt hướng trái (-1) hướng vào phía trung tâm rừng.
+### 2.1. Sửa Cơ Chế Camera Bám Player tại Elyndra & Vharok
+- **Nguyên nhân trước M6.1:** Scene `elyndra_glade.tscn` và `vharok_outpost.tscn` có node `Camera2D` nằm ở gốc scene nhưng thiếu node `RemoteTransform2D` dưới `Player`, khiến camera đứng yên tại $(300, 630)$ khi Player chạy, nhảy hoặc di chuyển khắp bản đồ.
+- **Giải pháp:**
+  1. Thêm `RemoteTransform2D` vào node `Player` trong cả 2 scene, cấu hình `remote_path = NodePath("../../Camera2D")` và `update_scale = false`.
+  2. Bổ sung hàm `setup_camera()` và `snap_camera_to_player()` trong [`base_zone.gd`](file:///d:/project/game/NOCTELYRA/src/world/base_zone.gd).
+  3. Trong [`zone_manager.gd`](file:///d:/project/game/NOCTELYRA/src/world/zone_manager.gd), khi đặt Player tại điểm spawn (`_place_player_at_spawn`), camera lập tức được cập nhật tọa độ trùng với điểm spawn và gọi `cam.reset_smoothing()`.
+  4. Đảm bảo khi dịch chuyển từ Vharok sang Elyndra tại $X = 2120$, camera cập nhật ngay tức thì tại $X = 2120$, loại bỏ hoàn toàn hiện tượng camera đứng yên ở $X=300$ hoặc trượt chậm trên màn hình.
 
-### 2.2. Thánh Lâm Elyndra (`elyndra_glade`)
-- **Tên hiển thị:** Thánh Lâm Elyndra — Tinh Mạch Của Tinh Linh
-- **Kích thước:** Chiều dài 2400 px, camera giới hạn $0 \rightarrow 2400$ px.
-- **Phong cách thị giác:** Tông màu xanh ngọc bích (emerald), bạc (silver) và tím nhạt huyền ảo. Cây cổ thụ phát sáng và các platform lơ lửng.
-- **Thực thể & Sự kiện:**
-  - **NPC Kaelis — Người Canh Giữ Tinh Mạch (X=1150):** Tinh linh dẫn chuyện giải thích về dòng chảy ma lực và sự tha hóa.
-  - **Cổ Tinh Thạch — Ancient Crystal (X=1350):** Tảng pha lê cổ xưa chứa đựng mảnh vỡ ký ức về thảm họa nguyệt thực.
-  - **Cổng dịch chuyển về Noctis (`PortalToNoctis` - X=140):** Dịch chuyển về `noctis_forest` tại `spawn_from_elyndra`.
-  - **Cổng dịch chuyển sang Vharok (`PortalToVharok` - X=2260):** Dịch chuyển tới `vharok_outpost` tại `spawn_from_elyndra`.
-  - **Điểm xuất hiện an toàn:** `SpawnFromNoctis` (X=280, facing +1) và `SpawnFromVharok` (X=2120, facing -1).
+### 2.2. Ổn Định Vòng Đời Khởi Tạo UI (Decoupled UI Initialization)
+- **Nguyên nhân trước M6.1:** Logic kết nối `game_ui.retry_requested` đi kèm khối khởi tạo `inventory_ui.setup_player()` và `spell_hotbar.set_spellbook()`. Khi được gọi trong `_enter_tree()`, các node `@onready` của `GameUI` chưa sẵn sàng; đến khi `_ready()` chạy thì cờ `is_connected` đã là `true` khiến toàn bộ khối khởi tạo UI bị bỏ qua.
+- **Giải pháp:**
+  1. Tách biệt hoàn toàn `setup_signals()` (kết nối tín hiệu an toàn với `is_connected`) và `setup_ui()` (gắn đối tượng Player, Spellbook, cập nhật thanh HP/MP/Gold/Quest/Zone).
+  2. `setup_ui()` được gọi sau khi các node con đã hoàn tất `_ready()`, cho phép gọi nhiều lần an toàn sau khi dịch chuyển portal, Save/Continue hoặc Retry.
+  3. Sửa lỗi kết nối lambda không tên trong `inventory_ui.gd` bằng phương thức có tên `_on_equipment_changed`, ngăn ngừa tạo nhiều kết nối trùng lặp.
 
-### 2.3. Tiền Đồn Vharok (`vharok_outpost`)
-- **Tên hiển thị:** Tiền Đồn Vharok — Ranh Giới Quỷ Tộc Bán Thú
-- **Kích thước:** Chiều dài 2400 px, camera giới hạn $0 \rightarrow 2400$ px.
-- **Phong cách thị giác:** Tông màu đá sẫm, tím thẫm và đỏ thẫm kiên cố. Kiến trúc công sự phòng thủ với các ngọn đuốc rực cháy.
-- **Thực thể & Sự kiện:**
-  - **NPC Rhaek — Vệ Binh Gia Tộc (X=1200):** Đại diện cho nền văn minh Quỷ tộc bán thú (văn minh, kỷ luật, tự trọng, không mặc định là phản diện).
-  - **Cổng dịch chuyển về Elyndra (`PortalToElyndra` - X=140):** Dịch chuyển về `elyndra_glade` tại `spawn_from_vharok`.
-  - **Điểm xuất hiện an toàn:** `SpawnFromElyndra` (X=280, facing +1).
+### 2.3. Bổ Sung Kiểm Thử M6.1 & Phân Biệt Test Rõ Ràng
+- Nâng cấp [`test_m6_flow.gd`](file:///d:/project/game/NOCTELYRA/test_m6_flow.gd) lên **117 bài kiểm tra (100% PASS)**:
+  + Kiểm tra Camera Elyndra bám sát Player khi chạy và nhảy lên platform cao.
+  + Kiểm tra Camera Vharok bám sát Player.
+  + Kiểm tra Camera snap tức thì tại $X=2120$ khi đi từ Vharok về Elyndra.
+  + Kiểm tra `inventory_ui.player` và `spell_hotbar._spellbook` được trỏ chính xác vào instance Player của từng scene sau khi đổi màn, nạp save và bấm Retry.
+  + Kiểm tra vùng tương tác Portal (ngoài vùng tương tác -> từ chối, đang cooldown -> từ chối, trong vùng và hết cooldown -> cho phép).
+  + **Phân biệt rõ ràng:**
+    * **Group 18:** `Integration Test: Simulated State Portal Chain` (kiểm thử chuỗi dịch chuyển mô phỏng trạng thái).
+    * **Group 19:** `Genuine End-to-End Gameplay Loop` (chơi thực tế từ nhận quest NPC Elyra $\rightarrow$ diệt 3 quái $\rightarrow$ trả quest $\rightarrow$ mở cổng MagicGate $\rightarrow$ kích hoạt Boss Lunareth $\rightarrow$ đánh qua Phase 2 $\rightarrow$ hạ gục Boss $\rightarrow$ bước qua Moonveil Portal sang Elyndra $\rightarrow$ qua Vharok $\rightarrow$ lưu game).
 
 ---
 
-## 3. Kiến Trúc Dịch Chuyển & Bảo Toàn Trạng Thái
+## 3. Báo Cáo Kiểm Thử Tự Động Toàn Diện trên Godot 4.3 Engine
 
-```mermaid
-flowchart LR
-    A["Rừng Noctis (Zone 1)"] <-->|"Cổng Nguyệt Mạc (Sau Boss)"| B["Thánh Lâm Elyndra (Zone 2)"]
-    B <-->|"Cổng Tiền Đồn"| C["Tiền Đồn Vharok (Zone 3)"]
-```
-
-### 3.1. Bảo toàn Thông số Player (Player State Extraction & Injection)
-Khi dịch chuyển qua `ZoneManager.travel_to_zone()`, toàn bộ dữ liệu người chơi được trích xuất và áp dụng nguyên vẹn sang instance Player mới:
-- **Máu & Ma lực:** Giữ nguyên giá trị thực tế không bị hồi đầy ngoài ý muốn (MP tiếp tục hồi phục thụ động tự nhiên theo `mana_regen_rate`).
-- **Túi đồ (16 ô) & Trang bị:** Nguyên vẹn mọi vật phẩm, vũ khí và phụ kiện.
-- **Ma pháp & Spellbook:** Phép đang chọn, cấp độ nâng cấp phép, thời gian hồi chiêu độc lập.
-- **Vàng & Tiến độ Nhiệm vụ:** Bảo toàn số dư ví vàng và trạng thái nhiệm vụ hiện hành.
-
-### 3.2. Lưu trữ Trạng thái Thế giới Riêng Từng Vùng (`zone_states`)
-Mỗi khu vực được theo dõi trạng thái độc lập:
-- `collected_pickup_ids`: Danh sách ID vật phẩm đã nhặt — **không bao giờ hồi sinh lại**.
-- `defeated_enemy_ids`: Danh sách quái vật đã hạ gục — giữ nguyên trạng thái bị tiêu diệt.
-- `dropped_pickups`: Vật phẩm quái rơi chưa kịp nhặt được bảo toàn chính xác.
-- `boss_defeated` & `boss_reward_claimed`: Trạng thái thanh tẩy Boss Lunareth được duy trì vĩnh viễn, không xảy ra lỗi nhận thưởng đúp hay sinh thêm Boss thứ hai.
-
-### 3.3. Cơ Chế Chống Ping-Pong & An Toàn Vị Trí
-- **Hồi chiêu dịch chuyển (Anti-pingpong Cooldown):** Đặt thời gian hồi $1.5$ giây ngay sau khi đặt chân tới khu vực mới, ngăn chặn việc kích hoạt ngược trở lại ngay lập tức.
-- **Khoảng cách an toàn (Safe Distance Offset):** Điểm spawn luôn cách cổng dịch chuyển $\ge 100$ px (thực tế 140 px), nằm ngoài bán kính tương tác của Area2D (35 px).
-
----
-
-## 4. Nâng Cấp Hệ Thống Lưu / Tải Dữ Liệu v1.3.0
-
-- **Phiên bản bản lưu:** `1.3.0`.
-- **Khối dữ liệu mở rộng:**
-  - `current_zone_id`: Ghi nhận khu vực hiện tại người chơi đang đứng (`noctis_forest`, `elyndra_glade`, `vharok_outpost`).
-  - `zone_states`: Lưu trữ toàn bộ dữ liệu nhặt đồ, tiêu diệt quái, phần thưởng Boss của từng vùng đất.
-- **Tương thích ngược 100%:** Nạp hoàn hảo các bản lưu cũ `1.0.0` (M3.2), `1.1.0` (M4), và `1.2.0` (M5.1). Tự động gán `current_zone_id = "noctis_forest"` đối với các bản lưu cũ chưa có trường này.
-- **Cơ chế Continue từ Main Menu:** Khi bấm "Tiếp tục" tại Main Menu, `SaveManager.get_save_zone_scene_path()` sẽ tải trực tiếp scene khu vực mà người chơi đã lưu trước đó, đưa người chơi xuất hiện chính xác tại đúng vùng đất đó.
-- **An toàn giao dịch File:** Sử dụng cơ chế ghi file tạm `.tmp` $\rightarrow$ kiểm tra JSON $\rightarrow$ backup `.bak` $\rightarrow$ đổi tên an toàn. Từ chối lưu khi đang diễn ra trận đánh Boss hoặc trong lúc đang chuyển cảnh khu vực.
-
----
-
-## 5. Báo cáo Kiểm thử Tự động Tổng hợp trên Godot 4.3 Engine
-
-Tất cả các bộ test đều chạy trong môi trường Engine thực tế (`Godot_v4.3-stable_win64_console.exe --headless`):
+Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-stable_win64_console.exe --headless`):
 
 ```text
 ========================================================================================
  BỘ KIỂM THỬ                         | SỐ TEST    | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
 ----------------------------------------------------------------------------------------
- test_m6_flow.gd (Thế giới & Portal) |  81 tests  | PASS 100%    | 0
+ test_m6_flow.gd (Thế giới & M6.1)   | 117 tests  | PASS 100%    | 0
  test_m5_flow.gd (Ma pháp M5.1)      | 100 tests  | PASS 100%    | 0
  test_m4_flow.gd (Boss Lunareth M4)  |  87 tests  | PASS 100%    | 0
  test_m3_2_flow.gd (Save/Load M3.2)  |  50 tests  | PASS 100%    | 0
  test_m2_1_flow.gd (NPC & Quest M2)  |  42 tests  | PASS 100%    | 0
 ========================================================================================
- TỔNG CỘNG                           | 360 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
+ TỔNG CỘNG                           | 396 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
 ========================================================================================
 ```
 
 ---
 
-## 6. Hướng dẫn Điều khiển & Trải nghiệm
+## 4. Hướng dẫn Điều khiển & Trải nghiệm
 
 | Phím bấm | Hành động |
 | :--- | :--- |
-| **A / D** | Di chuyển trái / phải |
+| **A / D** | Di chuyển trái / phải (Camera bám sát mượt mà) |
 | **Space** | Nhảy đơn / Nhảy đôi (Double Jump) |
 | **Shift** | Lướt nhanh (Dash) |
 | **J** | Tấn công cận chiến (Chém kiếm) |
