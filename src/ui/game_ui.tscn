@@ -115,16 +115,118 @@ text = "Nhiệm vụ: Ánh Sáng Bị Nuốt Chửng"
 layout_mode = 2
 text = "Tiến độ: Chưa nhận (Gặp Elyra)"
 
+[node name="BossBarPanel" type="Control" parent="HUD"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -320.0
+offset_top = 20.0
+offset_right = 320.0
+offset_bottom = 85.0
+grow_horizontal = 2
+
+[node name="BossNameLabel" type="Label" parent="HUD/BossBarPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 0.0
+offset_right = 200.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 15
+text = "Lunareth — Linh Lộc Nguyệt Thực"
+horizontal_alignment = 1
+
+[node name="BossPhaseLabel" type="Label" parent="HUD/BossBarPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 24.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 13
+text = "[GIAI ĐOẠN 1]"
+horizontal_alignment = 2
+
+[node name="BossHPBar" type="ProgressBar" parent="HUD/BossBarPanel"]
+custom_minimum_size = Vector2(640, 24)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -24.0
+offset_right = 320.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 320.0
+value = 320.0
+show_percentage = false
+
+[node name="BossHPLabel" type="Label" parent="HUD/BossBarPanel/BossHPBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 13
+text = "HP: 320/320"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BossWarningBanner" type="Label" parent="HUD"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 100.0
+offset_right = 300.0
+offset_bottom = 135.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.25, 0.25, 1)
+theme_override_font_sizes/font_size = 18
+text = "⚠️ CẢNH BÁO: NGUYỆT GIÁC XUNG KÍCH!"
+horizontal_alignment = 1
+
+[node name="BossAnnouncementBanner" type="Label" parent="HUD"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -350.0
+offset_top = 140.0
+offset_right = 350.0
+offset_bottom = 175.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.4, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "LUNARETH GIẢI PHÓNG HẮC NGUYỆT MA LỰC!"
+horizontal_alignment = 1
+
 [node name="NotificationLabel" type="Label" parent="HUD"]
 visible = false
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -280.0
-offset_top = 110.0
-offset_right = 280.0
-offset_bottom = 145.0
+offset_left = -300.0
+offset_top = 180.0
+offset_right = 300.0
+offset_bottom = 215.0
 grow_horizontal = 2
 text = "Thông báo hệ thống"
 horizontal_alignment = 1
@@ -143,7 +245,7 @@ text = "Controls:
 - A / D: Di chuyển | Space: Nhảy / Nhảy đôi | Shift: Lướt
 - J: Tấn công cận chiến | K: Bắn Ma pháp (Tiêu hao MP)
 - E: Tương tác với NPC (Elyra)
-- Esc: Tạm dừng (Pause)"
+- I: Mở Túi đồ & Trang bị | Esc: Tạm dừng"
 
 [node name="DialogueBox" type="Control" parent="."]
 visible = false
@@ -275,6 +377,84 @@ offset_bottom = 55.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Hồi sinh (Retry)"
+
+[node name="VictoryPanel" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="VictoryPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.08, 0.16, 0.8)
+
+[node name="Panel" type="Panel" parent="VictoryPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -140.0
+offset_right = 260.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="VictoryPanel/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 25.0
+offset_right = 200.0
+offset_bottom = 60.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.4, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "THANH TẨY THÀNH CÔNG!"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="VictoryPanel/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -230.0
+offset_top = 70.0
+offset_right = 230.0
+offset_bottom = 150.0
+grow_horizontal = 2
+text = "Linh Lộc Lunareth đã hồi phục tâm trí!
+Rừng Noctis tìm lại sự bình yên của ánh trăng.
+Nhận thưởng: 100 Vàng & Mảnh Nguyệt Thực."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ContinueBtn" type="Button" parent="VictoryPanel/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -110.0
+offset_top = -55.0
+offset_right = 110.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Tiếp tục khám phá"
 
 [node name="PauseMenu" type="Control" parent="."]
 process_mode = 2

@@ -64,6 +64,19 @@ static func initialize() -> void:
 	amulet.icon = _create_placeholder_icon(Color(1.0, 0.85, 0.3, 1.0)) # Vàng ánh trăng
 	register_item(amulet)
 
+	# 5. Mảnh Nguyệt Thực (eclipse_fragment) - [MỚI M4: Phần thưởng Boss Lunareth]
+	var fragment = ItemDefinition.new()
+	fragment.item_id = "eclipse_fragment"
+	fragment.display_name = "Mảnh Nguyệt Thực"
+	fragment.description = "Mảnh tinh thể ngưng tụ từ ma lực hắc nguyệt đã được thanh tẩy của linh thú Lunareth. Cổ vật ma đạo quý hiếm."
+	fragment.item_type = ItemDefinition.ItemType.MATERIAL
+	fragment.max_stack = 99
+	fragment.sell_value = 250
+	fragment.stat_modifiers = {}
+	fragment.use_effect = {}
+	fragment.icon = _create_placeholder_icon(Color(0.85, 0.35, 0.95, 1.0)) # Tím nguyệt thực rực rỡ
+	register_item(fragment)
+
 	_is_initialized = true
 
 static func register_item(item: ItemDefinition) -> void:

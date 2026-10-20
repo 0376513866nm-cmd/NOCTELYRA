@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c7v1n8m3q2k4"]
+[gd_scene load_steps=16 format=3 uid="uid://c7v1n8m3q2k4"]
 
 [ext_resource type="Script" path="res://src/world/noctis_forest.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
@@ -9,15 +9,23 @@
 [ext_resource type="Script" path="res://src/quest/quest_manager.gd" id="7_quest"]
 [ext_resource type="Script" path="res://src/interaction/interaction_coordinator.gd" id="8_interact_coord"]
 [ext_resource type="PackedScene" uid="uid://b5m9n2q8v3k1" path="res://src/loot/item_pickup.tscn" id="9_pickup"]
+[ext_resource type="PackedScene" uid="uid://m1g8k4p2q7v9" path="res://src/world/magic_gate.tscn" id="10_gate"]
+[ext_resource type="PackedScene" uid="uid://c4k2m8p1q7v5" path="res://src/boss/boss_lunareth.tscn" id="11_boss"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
-size = Vector2(4800, 100)
+size = Vector2(6800, 100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
 size = Vector2(80, 1000)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
 size = Vector2(240, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arena_barrier"]
+size = Vector2(40, 400)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arena_trigger"]
+size = Vector2(60, 300)
 
 [node name="NoctisForest" type="Node2D"]
 process_mode = 1
@@ -89,14 +97,14 @@ color = Color(0.5, 0.85, 1, 0.9)
 [node name="Background_Zone2_Forest" type="ColorRect" parent="."]
 offset_left = 1800.0
 offset_top = -400.0
-offset_right = 4600.0
+offset_right = 4200.0
 offset_bottom = 800.0
 color = Color(0.04, 0.05, 0.1, 1)
 
 [node name="FogLayer" type="ColorRect" parent="Background_Zone2_Forest"]
 offset_left = 0.0
 offset_top = 700.0
-offset_right = 2800.0
+offset_right = 2400.0
 offset_bottom = 1050.0
 color = Color(0.2, 0.1, 0.3, 0.35)
 
@@ -115,9 +123,9 @@ offset_bottom = 1040.0
 color = Color(0.09, 0.08, 0.15, 1)
 
 [node name="DarkTree3" type="ColorRect" parent="Background_Zone2_Forest"]
-offset_left = 2000.0
+offset_left = 1900.0
 offset_top = 560.0
-offset_right = 2100.0
+offset_right = 2000.0
 offset_bottom = 1040.0
 color = Color(0.09, 0.08, 0.15, 1)
 
@@ -135,12 +143,47 @@ offset_right = 1530.0
 offset_bottom = 1040.0
 color = Color(0.65, 0.15, 0.85, 0.85)
 
-[node name="PurpleCrystal3" type="ColorRect" parent="Background_Zone2_Forest"]
-offset_left = 2300.0
-offset_top = 950.0
-offset_right = 2335.0
+[node name="Background_Zone3_Arena" type="ColorRect" parent="."]
+offset_left = 4200.0
+offset_top = -400.0
+offset_right = 6500.0
+offset_bottom = 800.0
+color = Color(0.05, 0.03, 0.1, 1)
+
+[node name="EclipseMoon" type="ColorRect" parent="Background_Zone3_Arena"]
+offset_left = 1000.0
+offset_top = 70.0
+offset_right = 1120.0
+offset_bottom = 190.0
+color = Color(0.95, 0.3, 0.8, 0.85)
+
+[node name="EclipseRing" type="ColorRect" parent="Background_Zone3_Arena/EclipseMoon"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 110.0
+offset_bottom = 110.0
+color = Color(0.05, 0.03, 0.1, 1)
+
+[node name="ArenaPillarLeft" type="ColorRect" parent="Background_Zone3_Arena"]
+offset_left = 150.0
+offset_top = 450.0
+offset_right = 210.0
 offset_bottom = 1040.0
-color = Color(0.8, 0.3, 1, 0.9)
+color = Color(0.12, 0.08, 0.22, 1)
+
+[node name="ArenaPillarRight" type="ColorRect" parent="Background_Zone3_Arena"]
+offset_left = 1850.0
+offset_top = 450.0
+offset_right = 1910.0
+offset_bottom = 1040.0
+color = Color(0.12, 0.08, 0.22, 1)
+
+[node name="ArenaAltar" type="ColorRect" parent="Background_Zone3_Arena"]
+offset_left = 950.0
+offset_top = 980.0
+offset_right = 1150.0
+offset_bottom = 1040.0
+color = Color(0.2, 0.12, 0.35, 1)
 
 [node name="SignBoard" type="Label" parent="."]
 offset_left = 250.0
@@ -159,10 +202,18 @@ offset_bottom = 610.0
 text = "[RANH GIỚI BÌA RỪNG NOCTIS]
 Khu vực ma lực bị tha hóa!"
 
+[node name="ArenaMarker" type="Label" parent="."]
+offset_left = 4120.0
+offset_top = 550.0
+offset_right = 4360.0
+offset_bottom = 610.0
+text = "[ĐẤU TRƯỜNG LINH THÚ]
+Khu vực phong ấn Lunareth!"
+
 [node name="Geometry" type="Node2D" parent="."]
 
 [node name="Ground" type="StaticBody2D" parent="Geometry"]
-position = Vector2(2200, 680)
+position = Vector2(3100, 680)
 collision_layer = 1
 collision_mask = 0
 
@@ -170,9 +221,9 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_ground")
 
 [node name="VisualGround" type="ColorRect" parent="Geometry/Ground"]
-offset_left = -2400.0
+offset_left = -3400.0
 offset_top = -50.0
-offset_right = 2400.0
+offset_right = 3400.0
 offset_bottom = 50.0
 color = Color(0.14, 0.17, 0.24, 1)
 
@@ -185,7 +236,7 @@ collision_mask = 0
 shape = SubResource("RectangleShape2D_wall")
 
 [node name="RightWall" type="StaticBody2D" parent="Geometry"]
-position = Vector2(4440, 320)
+position = Vector2(6350, 320)
 collision_layer = 1
 collision_mask = 0
 
@@ -256,6 +307,68 @@ offset_right = 120.0
 offset_bottom = 12.0
 color = Color(0.35, 0.25, 0.45, 1)
 
+[node name="ArenaPlatform1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(4800, 480)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ArenaPlatform1"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/ArenaPlatform1"]
+offset_left = -120.0
+offset_top = -12.0
+offset_right = 120.0
+offset_bottom = 12.0
+color = Color(0.4, 0.25, 0.55, 1)
+
+[node name="ArenaPlatform2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(5500, 480)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ArenaPlatform2"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="ColorRect" type="ColorRect" parent="Geometry/ArenaPlatform2"]
+offset_left = -120.0
+offset_top = -12.0
+offset_right = 120.0
+offset_bottom = 12.0
+color = Color(0.4, 0.25, 0.55, 1)
+
+[node name="ArenaBarrier" type="StaticBody2D" parent="Geometry"]
+visible = false
+position = Vector2(4300, 630)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ArenaBarrier"]
+position = Vector2(0, -200)
+shape = SubResource("RectangleShape2D_arena_barrier")
+disabled = true
+
+[node name="VisualFog" type="ColorRect" parent="Geometry/ArenaBarrier"]
+offset_left = -20.0
+offset_top = -400.0
+offset_right = 20.0
+offset_bottom = 0.0
+color = Color(0.85, 0.2, 0.7, 0.8)
+
+[node name="MagicGate" parent="." instance=ExtResource("10_gate")]
+position = Vector2(4200, 630)
+
+[node name="ArenaTrigger" type="Area2D" parent="."]
+position = Vector2(4400, 630)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ArenaTrigger"]
+position = Vector2(0, -150)
+shape = SubResource("RectangleShape2D_arena_trigger")
+
 [node name="NPC_Elyra" parent="." instance=ExtResource("3_npc")]
 position = Vector2(520, 630)
 
@@ -276,6 +389,9 @@ enemy_id = "enemy_forest_2"
 [node name="CorruptedEnemy3" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
 position = Vector2(3700, 630)
 enemy_id = "enemy_forest_3"
+
+[node name="BossLunareth" parent="." instance=ExtResource("11_boss")]
+position = Vector2(5300, 630)
 
 [node name="TestPickup_Potion" parent="." instance=ExtResource("9_pickup")]
 position = Vector2(320, 640)
@@ -299,7 +415,7 @@ pickup_id = "pickup_village_amulet_1"
 position = Vector2(180, 630)
 limit_left = 0
 limit_top = -300
-limit_right = 4400
+limit_right = 6300
 limit_bottom = 720
 limit_smoothed = true
 position_smoothing_enabled = true

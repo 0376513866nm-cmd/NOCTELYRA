@@ -1,20 +1,21 @@
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M3.2 FINAL)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M4 FINAL)
 
 Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M3.2 FINAL)
+## 1. Cấu trúc thư mục & Module dự án (Bản M4 FINAL)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu hướng dẫn, kiến trúc, sơ đồ & kết quả kiểm thử M3.2
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review
-├── test_m3_2_flow.gd               # [MỚI M3.2] Kịch bản kiểm thử 12 hạng mục M3.2 (50/50 tests PASS)
-├── test_m3_1_flow.gd               # Kịch bản kiểm thử M3.1 (Đã fix an toàn 100%, 40/40 tests PASS)
-├── test_m3_flow.gd                 # Kịch bản kiểm thử hồi quy 15 giai đoạn M3 (67/67 tests PASS)
-├── test_m2_1_flow.gd               # Kịch bản kiểm thử hồi quy M2.1 (42/42 tests PASS)
+├── README.md                       # Tài liệu hướng dẫn, kiến trúc, boss guide & kết quả kiểm thử M4
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M4)
+├── test_m4_flow.gd                 # [MỚI M4] Kịch bản kiểm thử 15 hạng mục Boss M4 (63/63 tests PASS 100%)
+├── test_m3_2_flow.gd               # Kịch bản kiểm thử M3.2 (50/50 tests PASS)
+├── test_m3_1_flow.gd               # Kịch bản kiểm thử M3.1 (41/41 tests PASS)
+├── test_m3_flow.gd                 # Kịch bản kiểm thử M3 (67/67 tests PASS)
+├── test_m2_1_flow.gd               # Kịch bản kiểm thử M2.1 (42/42 tests PASS)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
 ├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus)
 ├── run_game.bat                    # 1-Click chạy game test ngay lập tức
@@ -39,20 +40,26 @@ D:\project\game\NOCTELYRA\
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player, tích hợp InventoryComponent & EquipmentComponent
+    │   │   ├── player.gd                    # FSM Player, tích hợp Inventory, Equipment, Combat
     │   │   ├── player.tscn                  # Scene Player hoàn chỉnh
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy, dash
     │   ├── npc\
-    │   │   ├── npc.gd                       # Logic NPC Elyra, đối thoại đa phân đoạn & trigger nhiệm vụ
+    │   │   ├── npc.gd                       # Logic NPC Elyra, mở khóa Cổng Ma Pháp sau khi trả nhiệm vụ
     │   │   └── npc.tscn                     # Scene NPC Elyra (collision_layer = 0: xuyên người mượt mà)
     │   └── enemy\
     │       ├── enemy.gd                     # Enemy AI, gán enemy_id ổn định, tích hợp rơi đồ LootTable
     │       └── enemy.tscn                   # Scene Enemy với thanh máu HPBar mini, hitbox & hurtbox
+    ├── boss\                                # [MỚI M4] MODULE BOSS LUNARETH — LINH LỘC NGUYỆT THỰC
+    │   ├── boss_lunareth.gd                 # FSM Boss 8 trạng thái, 2 giai đoạn chiến đấu, 2 chiêu thức
+    │   ├── boss_lunareth.tscn               # Scene Boss với HealthComponent (320 HP), Hurtbox, Hitbox, Detection
+    │   ├── boss_visual.gd                   # Render hình dáng linh thú 4 chân, sừng ma pháp, bảng màu theo phase
+    │   ├── boss_shockwave.gd                # Sóng chấn ba Hắc Nguyệt Chấn Ba (25 DMG, bay sát mặt đất, né bằng nhảy)
+    │   └── boss_shockwave.tscn              # Scene projectile sóng xung kích
     ├── combat\
     │   ├── damage_info.gd                   # Struct dữ liệu sát thương & knockback
     │   ├── health_component.gd              # Quản lý HP, MP, hồi mana & I-frames miễn nhiễm
     │   ├── hurtbox.gd                       # Vùng nhận đòn chuyển tiếp tới HealthComponent
-    │   ├── hitbox.gd                        # Vùng gây sát thương chém cận chiến / đòn cắn
+    │   ├── hitbox.gd                        # Vùng gây sát thương chém cận chiến / đòn húc / chấn ba
     │   ├── combat_component.gd              # Quản lý cooldown chém thường và bắn ma pháp
     │   ├── magic_projectile.gd              # Quả cầu ma pháp bay thẳng gây nổ sát thương
     │   └── magic_projectile.tscn            # Scene đạn phép ma pháp
@@ -61,8 +68,8 @@ D:\project\game\NOCTELYRA\
     │   └── interaction_component.gd         # Area2D tương tác nhận diện Player phạm vi gần
     ├── inventory\                           # HỆ THỐNG VẬT PHẨM & TRANG BỊ
     │   ├── item_definition.gd               # Resource định nghĩa vật phẩm chuẩn (ID, tên, loại, chỉ số, công dụng)
-    │   ├── item_database.gd                 # Registry tra cứu vật phẩm ổn định theo ID
-    │   ├── inventory_component.gd           # [CẬP NHẬT M3.2] Kiểm tra an toàn truy xuất slot amount, chống crash
+    │   ├── item_database.gd                 # [CẬP NHẬT M4] Đăng ký vật phẩm ID 5: eclipse_fragment (Mảnh Nguyệt Thực)
+    │   ├── inventory_component.gd           # Quản lý 16 ô túi đồ, kiểm tra tràn túi khi nhận thưởng Boss
     │   ├── equipment_component.gd           # Quản lý 2 ô trang bị & tính toán lại chỉ số
     │   ├── inventory_ui.gd                  # Controller giao diện túi đồ, lưới 16 ô, xem chi tiết & nút bấm
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ đẹp mắt, hỗ trợ chuột và cảm ứng
@@ -74,61 +81,83 @@ D:\project\game\NOCTELYRA\
     │   ├── quest_data.gd                    # Resource dữ liệu nhiệm vụ (4 trạng thái FSM)
     │   └── quest_manager.gd                 # Quản lý quest, lưu enemy_id chuỗi ổn định xuyên suốt
     ├── save\                                # HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
-    │   └── save_manager.gd                  # [VIẾT LẠI M3.2] Nạp trang bị trước để tính đúng Max MP, fault injection rollback, validation nghiêm ngặt
+    │   └── save_manager.gd                  # [CẬP NHẬT M4] Hỗ trợ version 1.1.0 & tương thích ngược 1.0.0, lưu boss_state, mở rộng tọa độ tới 6200.0
     ├── ui\
-    │   ├── game_ui.gd                       # HUD, thanh máu, phím I mở túi đồ, PauseMenu tích hợp Save Game
+    │   ├── game_ui.gd                       # [CẬP NHẬT M4] Boss HUD (HP Bar 320, Phase 1/2), Warning, Announcement, Victory Screen, chặn Lưu khi đấu Boss
     │   ├── game_ui.tscn                     # CanvasLayer giao diện in-game
     │   ├── pause_controller.gd              # Quản lý Pause/Resume độc lập, Esc đóng túi đồ trước
     │   ├── main_menu.gd                     # Màn hình chính: Chơi mới (xác nhận ghi đè), Tiếp tục, Thoát
     │   └── main_menu.tscn                   # Scene Main Menu
     └── world\
-        ├── noctis_forest.gd                 # Quản lý pickup nhặt/rơi, khôi phục trạng thái thế giới
-        ├── noctis_forest.tscn               # Màn chơi Bìa Rừng Noctis với ID pickup ổn định cho làng
+        ├── magic_gate.gd                    # [MỚI M4] Cổng Ma Pháp chặn lối vào đấu trường, chỉ mở khi Quest COMPLETED
+        ├── magic_gate.tscn                  # Scene Cổng Ma Pháp rào chắn vật lý cao 400px
+        ├── noctis_forest.gd                 # [CẬP NHẬT M4] Mở rộng sàn tới X=6400, trigger đấu trường, rào chắn arena, retry checkpoint (4120, 630), thưởng Boss
+        ├── noctis_forest.tscn               # Màn chơi hoàn chỉnh kết hợp Làng Elyra, Bìa Rừng, Quái vật và Đấu trường Boss
         ├── test_level.gd                    # Màn test M1 cũ
         └── test_level.tscn
 ```
 
 ---
 
-## 2. Các điểm sửa đổi trọng tâm trong phiên bản M3.2 FINAL
+## 2. Thiết kế Boss Lunareth — Linh Lộc Nguyệt Thực
 
-### 2.1. Bảo vệ tuyệt đối file save thật của người chơi trong toàn bộ kịch bản kiểm thử
-- Loại bỏ 100% mọi thao tác `WRITE`, `REMOVE`, `RENAME` trên file save thật (`user://noctelyra_slot1.json`) trong toàn bộ các file test (`test_m3_1_flow.gd`, `test_m3_2_flow.gd`, `test_m3_flow.gd`).
-- Toàn bộ dữ liệu kiểm thử được định tuyến độc lập vào `user://noctelyra_m3_2_test.json` hoặc `user://noctelyra_m3_1_test.json`.
-- Kịch bản kiểm tra cách ly chỉ đọc (`read-only`) trạng thái và checksum MD5 của file save thật trước/sau test:
-  - Nếu file thật đã tồn tại: xác minh sau toàn bộ bài test file vẫn nguyên vẹn 100% với checksum MD5 không đổi.
-  - Nếu file thật chưa tồn tại: xác minh hệ thống test không tự ý tạo file giả định trên đường dẫn thật.
+### 2.1. Cốt truyện & Định danh Chủng tộc
+- **Tên:** Lunareth — Linh Lộc Nguyệt Thực (*Eclipse Stag*).
+- **Xuất thân:** Lunareth là linh thú bảo hộ Rừng Noctis từ ngàn xưa, mang đôi sừng kết tinh ma pháp ánh trăng cổ xưa. Do ma lực bóng tối tha hóa, linh thú mất đi lý trí và tấn công kẻ lạc lối.
+- **Quan trọng:** Lunareth **không phải Quỷ tộc**. Quỷ tộc bán thú trong thế giới NOCTELYRA là một chủng tộc văn minh, không mặc định phản diện. Khi bị đánh bại, Lunareth **được thanh tẩy ma lực**, lấy lại ánh sáng thuần khiết, cúi đầu tạ ơn và tan biến trong thanh thản (không chết thê thảm).
 
-### 2.2. Khôi phục Current MP chính xác theo Max MP sau trang bị
-- **Vấn đề trước đây:** Trong `SaveManager.load_game()`, Player HP/MP được nạp trước khi nạp Trang bị (Equipment). Khi đó `max_mana` của nhân vật vẫn là giá trị cơ bản (60.0). Nếu người chơi lưu game khi đang đeo `moon_amulet` (Max MP = 80.0) với `current_mana` = 75.0, giá trị này bị clamp sai về 60.0.
-- **Giải pháp M3.2:**
-  - Khôi phục `EquipmentComponent` và `InventoryComponent` **TRƯỚC**.
-  - `EquipmentComponent` kích hoạt `_recalculate_stats()`, cập nhật tức thì `p_health.max_mana` thành 80.0 (nếu đeo `moon_amulet`) hoặc 60.0 (nếu không đeo).
-  - Tiếp theo, nạp `current_mana` và clamp theo `p_health.max_mana` mới: Giá trị 75.0 được giữ nguyên vẹn 75.0 / 80.0.
-  - Đã bổ sung bộ test kiểm tra nạp MP cho cả 2 trường hợp: có trang bị bùa và không có trang bị bùa.
+### 2.2. Trạng thái & Cơ chế chiến đấu (FSM 8 trạng thái)
+- **Máu cơ bản:** 320 HP.
+- **Trạng thái FSM:**
+  1. `DORMANT`: Đứng yên, đợi Player bước vào kích hoạt.
+  2. `INTRO`: Hú gầm ma pháp, rung chuyển màn hình, hiện thanh máu Boss và biểu ngữ cảnh báo.
+  3. `APPROACH`: Tiếp cận Player giữ cự ly giao tranh.
+  4. `TELEGRAPH`: Báo hiệu trước đòn đánh (sáng sừng, hiển thị chỉ báo cảnh báo).
+  5. `ATTACK`: Thi triển một trong 2 chiêu thức.
+  6. `RECOVERY`: Nghỉ ngắn sau đòn đánh (Phase 1: 1.2s; Phase 2: 0.6s).
+  7. `PHASE_TRANSITION`: Kích hoạt khi HP <= 160 (50%). Boss bất tử tạm thời, gầm chấn động, sừng chuyển màu tím sẫm, tốc độ tăng gấp rưỡi.
+  8. `DEFEATED`: Thanh tẩy, sừng chuyển màu trắng vàng linh thánh, mở rào đấu trường, trao thưởng.
 
-### 2.3. Kiểm thử an toàn ghi file thực chất (Fault Injection & Rollback Testing)
-- Bổ sung các cờ kiểm thử tiêm lỗi (fault injection) an toàn trong `SaveManager`:
-  - `simulate_tmp_write_error`: Mô phỏng lỗi khi ghi file tạm `.tmp`.
-  - `simulate_backup_error`: Mô phỏng lỗi khi tạo bản sao lưu `.bak`.
-  - `simulate_replace_error`: Mô phỏng lỗi khi đổi tên thay thế file save chính.
-- Kiểm thử xác minh:
-  - Khi có lỗi xảy ra ở bất kỳ giai đoạn nào, `save_game()` ngay lập tức trả về `false`.
-  - Bản lưu cũ trước đó được bảo toàn nguyên vẹn 100% (so sánh nội dung và MD5 checksum).
-  - Cơ chế tự động khôi phục từ `.bak` và dọn dẹp các file rác `.tmp`, `.bak` hoạt động hoàn hảo.
-
-### 2.4. Thẩm định (Validation) nghiêm ngặt file save
-- `has_save()`:
-  - Từ chối file JSON sai cú pháp hoặc rỗng.
-  - Từ chối các phiên bản `save_version` không được hỗ trợ (chỉ chấp nhận các phiên bản trong `SUPPORTED_VERSIONS = ["1.0.0"]`).
-  - Từ chối file save thiếu các khối dữ liệu cốt lõi bắt buộc (`player`, `quest`).
-- `load_game()`:
-  - Từ chối tải và trả về `false` khi thế giới thiếu `Player` hoặc `QuestManager`.
-  - Xử lý an toàn khi các trường con bên trong `player` hoặc `quest` bị thiếu hoặc sai kiểu (tọa độ rác, chuỗi thay vì số, số âm), tự động clamp về ngưỡng an toàn của game mà không gây crash.
+### 2.3. Hai Chiêu thức của Boss
+1. **Nguyệt Giác Xung Kích (Crescent Horn Charge):**
+   - *Báo hiệu (Telegraph):* Dừng lại 0.7s (Phase 1) hoặc 0.4s (Phase 2), sừng phát sáng rực rỡ, hiển thị đường tấn công màu đỏ/vàng.
+   - *Hành vi:* Lao nhanh về phía Player (tốc độ 420 px/s), húc trúng gây **30 sát thương** + văng xa (knockback).
+   - *Khắc chế:* Nhảy đôi vượt qua thân Boss hoặc Dash lướt ngược chiều khi Boss bắt đầu lao.
+2. **Hắc Nguyệt Chấn Ba (Dark Moon Shockwave):**
+   - *Báo hiệu:* Nâng hai chân trước lên cao trong 0.8s.
+   - *Hành vi:* Dậm mạnh xuống đất tạo sóng chấn ba ma pháp lan sát mặt đất với vận tốc 280 px/s, gây **25 sát thương**.
+   - *Khắc chế:* Nhảy qua sóng chấn ba.
 
 ---
 
-## 3. Các phím điều khiển (Controls)
+## 3. Đấu trường & Vòng lặp Gameplay Hoàn chỉnh
+
+```text
+[Làng Tân Thủ: X=0..1200]
+       │
+       ▼ (Gặp Elyra, nhận nhiệm vụ tiêu diệt 3 quái)
+[Bìa Rừng Noctis: X=1200..3800]
+       │
+       ▼ (Diệt 3 quái, nhặt Mana Shard / Kiếm / Bùa, trả Quest nhận 50 Vàng)
+[Cổng Ma Pháp: X=4000] ──[Bị khóa nếu chưa xong Quest]──> (Mở khi Quest COMPLETED)
+       │
+       ▼ (Bước qua X=4200: Arena Barrier khóa lại tại X=4180 và X=6350)
+[Đấu trường Lunareth: X=4200..6350]
+       │
+   ┌───┴───────────────────────────────┐
+   ▼                                   ▼
+[Player chết]                  [Lunareth Defeated]
+   │                                   │
+   ▼                                   ▼
+Màn hình Game Over             Thanh tẩy linh thú, mở rào đấu trường
+Nút Retry đưa về               Thưởng: 100 Vàng + Mảnh Nguyệt Thực
+Checkpoint (X=4120, Y=630)     (Nếu đầy túi đồ: rơi trên đất)
+Reset Boss về đầy máu          Tự do khám phá tiếp hoặc Lưu game!
+```
+
+---
+
+## 4. Các phím điều khiển (Controls)
 
 | Phím | Chức năng | Chi tiết |
 | :--- | :--- | :--- |
@@ -141,168 +170,145 @@ D:\project\game\NOCTELYRA\
 | **I** | **Túi đồ (Inventory)** | Mở/đóng Túi đồ & Trang bị (không pause thế giới) |
 | **Esc** | Pause / Thoát | Đóng túi đồ nếu đang mở; hoặc Tạm dừng / Tiếp tục game |
 
----
-
-## 4. Chi tiết 4 vật phẩm ban đầu
-
-1. **Tinh thể Ma lực (`mana_shard`)**:
-   - Loại: *Nguyên liệu (Material)*. Xếp chồng tối đa 99. Giá trị: 5 Vàng.
-   - Rơi 100% từ sinh vật ma nhiễm trong Rừng Hắc Nguyệt.
-2. **Bình Sinh Lực (`health_potion`)**:
-   - Loại: *Tiêu hao (Consumable)*. Xếp chồng tối đa 20. Giá trị: 15 Vàng.
-   - Hồi ngay lập tức 30 HP (giới hạn theo Max HP, không tràn máu). Giảm 1 bình sau khi dùng. Không thể uống khi Player đã chết (HP = 0).
-3. **Kiếm Ánh Trăng (`moonsteel_sword`)**:
-   - Loại: *Vũ khí (Weapon)*. Không xếp chồng (max_stack = 1). Giá trị: 100 Vàng.
-   - Khi trang bị: Sát thương đánh thường tăng từ **25 lên 35**. Tháo ra hoàn trả chính xác về **25**.
-4. **Bùa Nguyệt Quang (`moon_amulet`)**:
-   - Loại: *Phụ kiện (Accessory)*. Không xếp chồng (max_stack = 1). Giá trị: 120 Vàng.
-   - Khi trang bị: Max MP tăng từ **60 lên 80**. Tháo ra hoàn trả chính xác về **60** và tự động giới hạn Current MP về 60 (không tràn).
+> **Lưu ý trong trận đấu Boss:** Nút "Lưu Game" trong Pause Menu bị vô hiệu hóa an toàn nhằm ngăn chặn tình trạng lưu giữa combat gây kẹt logic. Khi Boss bị đánh bại hoặc người chơi ở ngoài đấu trường, chức năng Lưu Game hoạt động bình thường.
 
 ---
 
 ## 5. Báo cáo kiểm thử tự động thực tế trên Godot 4.3 Engine
 
-### 5.1. Kết quả kiểm thử chuyên sâu M3.2 FINAL (`test_m3_2_flow.gd`) — 50/50 Tests PASS (100%)
+### 5.1. Bộ test Boss M4 (`test_m4_flow.gd`) — 63/63 Tests PASS (100%)
 
 Chạy thực tế qua lệnh:
-`& "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "d:\project\game\NOCTELYRA" -s "test_m3_2_flow.gd"`
+`& "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "d:\project\game\NOCTELYRA" -s "test_m4_flow.gd"`
 
 ```text
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 ==================================================
- [NOCTELYRA M3.2] INTEGRATION TEST SUITE STARTING 
+ [NOCTELYRA M4] INTEGRATION TEST SUITE STARTING 
 ==================================================
 
---- TEST 1: Khôi phục MP khi CÓ trang bị Bùa Nguyệt Quang (moon_amulet) ---
-  [PASS] Đã trang bị Bùa Nguyệt Quang, Max MP đạt 80.0
-  [PASS] Lưu game với MP = 75.0 / 80.0 thành công
-  [PASS] Tải bản lưu thành công
-  [PASS] Trang bị Bùa Nguyệt Quang đã được khôi phục
-  [PASS] Max MP được tính toán chính xác là 80.0
-  [PASS] Current MP được áp dụng chính xác tuyệt đối là 75.0 / 80.0 (không bị clamp về 60)
+--- CATEGORY 1: Khởi tạo Boss Lunareth và Thông số ban đầu ---
+  [PASS] Boss Lunareth tồn tại trong scene
+  [PASS] Boss bắt đầu ở trạng thái DORMANT
+  [PASS] Boss có đúng 320 HP khởi đầu
+  [PASS] Boss Max HP là 320
+  [PASS] Boss Visual controller tồn tại
+  [PASS] Boss Phase ban đầu là 1
 
---- TEST 2: Khôi phục MP khi KHÔNG có trang bị Bùa Nguyệt Quang ---
-  [PASS] Đã tháo Bùa, Max MP trở lại 60.0
-  [PASS] Lưu game với MP = 45.0 / 60.0 thành công
-  [PASS] Tải bản lưu không có phụ kiện thành công
-  [PASS] Ô phụ kiện trống đúng thực tế
-  [PASS] Max MP giữ đúng 60.0
-  [PASS] Current MP được nạp chính xác 45.0 / 60.0
+--- CATEGORY 2: Cổng Ma Pháp (Magic Gate) chặn trước khi hoàn thành Quest ---
+  [PASS] Cổng Ma Pháp tồn tại trong scene
+  [PASS] Nhiệm vụ chưa hoàn thành, cổng ma pháp đang ĐÓNG
+  [PASS] Va chạm của cổng ma pháp đang BẬT (chặn người chơi)
 
---- TEST 3: Kiểm thử Fault Injection - Lỗi ghi file tạm (.tmp) ---
-  [PASS] Đã thiết lập bản lưu gốc chuẩn
-ERROR: [Mô phỏng lỗi]: Thất bại khi ghi file tạm!
-   at: push_error (core/variant/variant_utility.cpp:1092)
-  [PASS] Hàm save_game từ chối và trả về false khi ghi file tạm lỗi
-  [PASS] Bản lưu trước đó vẫn giữ nguyên vẹn nội dung
-  [PASS] MD5 checksum bản lưu trước đó không hề thay đổi
+--- CATEGORY 3: Cổng Ma Pháp MỞ sau khi hoàn thành Quest của Elyra ---
+  [PASS] Cổng ma pháp đã MỞ sau khi Quest hoàn thành
+  [PASS] Va chạm cổng ma pháp đã TẮT (cho phép đi qua)
 
---- TEST 4: Kiểm thử Fault Injection - Lỗi ở bước tạo Backup (.bak) ---
-ERROR: [Mô phỏng lỗi]: Thất bại ở bước tạo bản sao lưu .bak!
-   at: push_error (core/variant/variant_utility.cpp:1092)
-  [PASS] Hàm save_game từ chối và trả về false khi tạo backup lỗi
-  [PASS] Bản lưu trước đó không bị ảnh hưởng khi backup thất bại
-  [PASS] File tạm .tmp đã được dọn dẹp sạch sẽ
+--- CATEGORY 4: Kích hoạt Đấu trường Boss & Khóa Rào Chắn ---
+  [PASS] Rào chắn đấu trường tồn tại
+  [PASS] Boss chuyển từ DORMANT sang INTRO khi người chơi bước vào
+  [PASS] Rào chắn đấu trường đã ĐÓNG để nhốt người chơi
+  [PASS] Va chạm rào chắn đấu trường đã BẬT
 
---- TEST 5: Kiểm thử Fault Injection - Lỗi khi Thay thế (Replace) & Phục hồi tự động ---
-ERROR: Failed to open C:/Users/ngoma/AppData/Roaming/Godot/app_userdata/NOCTELYRA/noctelyra_m3_2_test.json.tmp
-   at: (core/io/dir_access.cpp:348)
-ERROR: Lỗi khi thay thế file save! Phục hồi bản lưu cũ từ backup.
-   at: push_error (core/variant/variant_utility.cpp:1092)
-  [PASS] Hàm save_game báo false khi quá trình thay thế file bị gián đoạn
-  [PASS] File save chính vẫn tồn tại sau cơ chế rollback
-  [PASS] Nội dung bản lưu cũ được phục hồi chính xác 100% từ backup
-  [PASS] MD5 checksum bản lưu khớp tuyệt đối sau phục hồi
-  [PASS] File .bak đã được hoàn tất dọn dẹp
-  [PASS] File .tmp đã được dọn dẹp
-  [PASS] Tải lại bản lưu sau sự cố rollback thành công hoàn hảo
+--- CATEGORY 5: Giao diện Boss (Boss UI HUD) & Cảnh báo Telegraph ---
+  [PASS] Boss Bar Panel hiển thị khi bắt đầu trận đấu
+  [PASS] Giá trị hiển thị trên thanh máu Boss là 320 / 320
+  [PASS] Nhãn Giai đoạn 1 hiển thị chính xác
 
---- TEST 6: has_save() từ chối JSON sai cú pháp hoặc hỏng ---
-  [PASS] has_save() từ chối file JSON sai cú pháp
-  [PASS] load_game() từ chối tải file JSON sai cú pháp
+--- CATEGORY 6: Chiêu thức 1 - Nguyệt Giác Xung Kích (Crescent Horn Charge) ---
+  [PASS] Boss có thể chuyển sang TELEGRAPH
+  [PASS] Telegraph đang hoạt động
+  [PASS] Boss chuyển sang ATTACK
+  [PASS] Hitbox của Boss đã BẬT trong đòn đánh
+  [PASS] Sát thương của chiêu húc là 30.0
 
---- TEST 7: has_save() từ chối phiên bản không hỗ trợ (Unsupported Version) ---
-  [PASS] has_save() từ chối phiên bản không hỗ trợ ('99.0.0')
-  [PASS] load_game() từ chối tải phiên bản không hỗ trợ
+--- CATEGORY 7: Chiêu thức 2 - Hắc Nguyệt Chấn Ba (Dark Moon Shockwave) ---
+  [PASS] Boss có thể tạo sóng chấn ba
+  [PASS] Sóng chấn ba tồn tại trong scene
+  [PASS] Sát thương của sóng chấn ba là 25.0
+  [PASS] Tốc độ sóng chấn ba lớn hơn 0
+  [PASS] Sóng chấn ba bay sát mặt đất (Y gần mặt sàn)
 
---- TEST 8: has_save() từ chối JSON thiếu cấu trúc dữ liệu bắt buộc ---
-  [PASS] has_save() từ chối khi thiếu khối 'player' hoặc 'quest'
-  [PASS] load_game() từ chối khi cấu trúc không hợp lệ
+--- CATEGORY 8: Chuyển Giai đoạn 2 (Phase Transition tại HP <= 160) ---
+  [PASS] Boss nhận sát thương còn 160 HP
+  [PASS] Boss tự động kích hoạt PHASE_TRANSITION
+  [PASS] Giai đoạn chuyển thành Phase 2
+  [PASS] Trong chuyển phase Boss được miễn nhiễm (invulnerable)
+  [PASS] Nhãn HUD hiển thị đúng Phase 2
 
---- TEST 9: load_game() an toàn khi thiếu trường con hoặc sai kiểu dữ liệu ---
-  [PASS] has_save() chấp nhận vì có đủ khối dữ liệu gốc
-  [PASS] load_game() xử lý an toàn không crash khi gặp trường con sai kiểu
-  [PASS] HP được clamp >= 0.0 an toàn
-  [PASS] MP không vượt quá Max MP
-  [PASS] Vàng được clamp >= 0
-  [PASS] Tọa độ được clamp trong giới hạn an toàn
+--- CATEGORY 9: Tăng tốc độ và tần suất chiêu thức trong Giai đoạn 2 ---
+  [PASS] Thời gian telegraph Phase 2 (0.4s) nhanh hơn Phase 1 (0.7s)
+  [PASS] Thời gian hồi chiêu Phase 2 (0.6s) ngắn hơn Phase 1 (1.2s)
+  [PASS] Tốc độ lao Phase 2 (500 px/s) nhanh hơn Phase 1 (420 px/s)
 
---- TEST 10: load_game() từ chối khi World thiếu Player hoặc QuestManager ---
-  [PASS] load_game(null) trả về false
-ERROR: load_game thất bại: World thiếu Player hoặc QuestManager.
-   at: push_error (core/variant/variant_utility.cpp:1092)
-  [PASS] load_game() trả về false khi node không có Player/QuestManager
+--- CATEGORY 10: Lunareth bị đánh bại, Thanh Tẩy & Mở rào đấu trường ---
+  [PASS] Boss nhận sát thương chí mạng về 0 HP
+  [PASS] Boss chuyển sang trạng thái DEFEATED
+  [PASS] Boss visual chuyển sang trạng thái DEFEATED (thanh tẩy)
+  [PASS] Rào chắn đấu trường MỞ RA sau khi Boss bị đánh bại
+  [PASS] Boss Bar Panel ẩn sau khi kết thúc trận đấu
+  [PASS] Bảng thông báo chiến thắng (Victory Panel) hiển thị
 
---- TEST 11: Kiểm tra cách ly 100% đối với file save thật ---
-  [PASS] File save thật vẫn tồn tại nguyên vẹn
-  [PASS] Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI
+--- CATEGORY 11: Phần thưởng Boss - Vàng và Mảnh Nguyệt Thực ---
+  [PASS] Người chơi nhận được 100 Vàng sau chiến thắng
+  [PASS] Vật phẩm Mảnh Nguyệt Thực (eclipse_fragment) tồn tại trong Database
+  [PASS] Người chơi nhận được Mảnh Nguyệt Thực trong túi đồ
 
---- TEST 12: Kiểm tra hồi quy toàn diện M0 -> M3 ---
-  [PASS] M2.1: NPC Elyra collision_layer = 0 (xuyên người mượt mà)
-  [PASS] M0: Hệ thống Double Jump nguyên vẹn
-  [PASS] M0: PauseController tồn tại
-  [PASS] M0: Pause game thành công
-  [PASS] M0: Resume game thành công
-  [PASS] M1: Melee Hitbox tồn tại
-  [PASS] M1: Combat Component tồn tại
-  [PASS] M3: Inventory 16 ô tồn tại
+--- CATEGORY 12: Xử lý an toàn khi Túi Đồ ĐẦY lúc nhận thưởng Boss ---
+  [PASS] Đã làm đầy 16 ô túi đồ của Player
+  [PASS] Nhận thưởng Boss khi túi đồ đầy không gây lỗi
+  [PASS] Túi đồ vẫn chứa đúng 16 ô
+  [PASS] Mảnh Nguyệt Thực rơi trên mặt đất dưới dạng ItemPickup
+
+--- CATEGORY 13: Retry sau khi chết trong Đấu Trường Boss ---
+  [PASS] Người chơi chết trong đấu trường
+  [PASS] Rào chắn đấu trường mở khi người chơi chết
+  [PASS] Sau khi retry, Player hồi sinh tại Checkpoint trước đấu trường (X=4120)
+  [PASS] Sau khi retry, Boss Lunareth được hồi phục đầy đủ 320 HP
+  [PASS] Boss quay về trạng thái sẵn sàng chiến đấu lại
+
+--- CATEGORY 14: Hệ thống Lưu/Tải M4 & Chặn Lưu trong Combat Boss ---
+  [PASS] Nút Lưu game bị vô hiệu hóa an toàn trong trận đấu Boss
+  [PASS] Nút Lưu game được mở lại sau khi Boss bị đánh bại
+  [PASS] Dữ liệu Boss đã lưu trữ vào cấu trúc save (Version 1.1.0)
+  [PASS] Tải lại bản lưu thành công
+  [PASS] Trạng thái Boss đã bị đánh bại được phục hồi chính xác
+  [PASS] Giới hạn tọa độ mở rộng an toàn hỗ trợ đến khu vực đấu trường (> 4000)
+
+--- CATEGORY 15: Tương thích ngược phiên bản Save 1.0.0 (M3.2) ---
+  [PASS] has_save chấp nhận bản lưu phiên bản cũ 1.0.0
+  [PASS] load_game nạp thành công bản lưu phiên bản cũ 1.0.0
+  [PASS] Boss mặc định chưa bị đánh bại khi nâng cấp từ bản lưu cũ
 
 ==================================================
- [NOCTELYRA M3.2] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
- Tổng số test: 50 | Đạt: 50 | Thất bại: 0
+ [NOCTELYRA M4] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
+ Tổng số test: 63 | Đạt: 63 | Thất bại: 0
 ==================================================
->>> ALL M3.2 TEST SCENARIOS PASSED 100%! <<<
+>>> ALL M4 TEST SCENARIOS PASSED 100%! <<<
 ```
 
-### 5.2. Kết quả kiểm thử an toàn M3.1 (`test_m3_1_flow.gd`) — 40/40 Tests PASS (100%)
-Kịch bản kiểm thử M3.1 đã được sửa đổi loại bỏ hoàn toàn các thao tác ghi/xóa/sửa trên file thật, đạt 40/40 tests PASS.
-
-### 5.3. Kết quả kiểm thử hồi quy M3 (`test_m3_flow.gd`) — 67/67 Tests PASS (100%)
-Toàn bộ 15 giai đoạn kiểm thử M3 đạt 67/67 tests PASS.
-
-### 5.4. Kết quả kiểm thử hồi quy M2.1 (`test_m2_1_flow.gd`) — 42/42 Tests PASS (100%)
-Toàn bộ tính năng hội thoại, nhiệm vụ, di chuyển xuyên NPC đạt 42/42 tests PASS.
+### 5.2. Kết quả kiểm thử hồi quy toàn bộ hệ thống
+- **M3.2 FINAL (`test_m3_2_flow.gd`):** 50/50 Tests PASS (100%)
+- **M3.1 FINAL (`test_m3_1_flow.gd`):** 41/41 Tests PASS (100%)
+- **M3 FINAL (`test_m3_flow.gd`):** 67/67 Tests PASS (100%)
+- **M2.1 FINAL (`test_m2_1_flow.gd`):** 42/42 Tests PASS (100%)
+- **TỔNG CỘNG:** **263 / 263 Tests PASS (100%)** không một lỗi lầm trên Godot 4.3 Engine!
 
 ---
 
-## 6. Bảng tổng hợp sửa lỗi trong Milestone M3.2 FINAL
-
-| STT | Vấn đề phát hiện | Giải pháp kiến trúc trong M3.2 FINAL | Kết quả kiểm thử |
-| :--- | :--- | :--- | :--- |
-| 1 | `test_m3_1_flow.gd` ghi và xóa trực tiếp file save thật `user://noctelyra_slot1.json` | Loại bỏ hoàn toàn ghi/xóa/sửa; chuyển 100% sang đường dẫn test riêng biệt; chỉ đọc MD5 kiểm tra tính nguyên vẹn | Test 11 PASS (100% cách ly) |
-| 2 | Nạp Current MP trước Trang bị làm MP bị clamp sai về 60 thay vì 75 khi đeo `moon_amulet` | Đảo thứ tự nạp: Trang bị & Túi đồ nạp trước -> tính lại Max MP (80) -> nạp Current MP (75/80) | Test 1 & Test 2 PASS |
-| 3 | Chưa có kiểm thử mô phỏng lỗi thực chất trong quá trình ghi file tạm và thay thế file save | Bổ sung hệ thống Fault Injection an toàn cho `save_game()`: kiểm thử lỗi ghi `.tmp`, lỗi `.bak`, lỗi thay thế và kiểm chứng rollback | Test 3, 4, 5 PASS (Zero data loss) |
-| 4 | `has_save()` chưa kiểm tra phiên bản hỗ trợ và cấu trúc dữ liệu cốt lõi | Thẩm định cú pháp JSON, đối chiếu `save_version` trong `SUPPORTED_VERSIONS`, kiểm tra bắt buộc khối `player` và `quest` | Test 6, 7, 8 PASS |
-| 5 | `load_game()` có nguy cơ crash hoặc nạp thành công sai khi dữ liệu không hợp lệ | Kiểm tra an toàn `world`, `Player`, `QuestManager`, xử lý an toàn dữ liệu sai kiểu, từ chối nạp khi dữ liệu rác | Test 9, 10 PASS |
-
----
-
-## 7. Hướng dẫn chạy và kiểm thử
+## 6. Hướng dẫn chạy và kiểm thử
 
 - **Chạy game chơi thử:** Click đúp vào file `run_game.bat`.
 - **Mở Godot Editor:** Click đúp vào file `open_editor.bat`.
+- **Xuất toàn bộ mã nguồn cho AI review:** Click đúp vào file `export_code_for_ai.bat`.
+- **Chạy bộ test M4 (Boss Lunareth):**
+  ```powershell
+  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m4_flow.gd
+  ```
 - **Chạy bộ test M3.2:**
   ```powershell
   & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m3_2_flow.gd
-  ```
-- **Chạy bộ test M3.1:**
-  ```powershell
-  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m3_1_flow.gd
-  ```
-- **Chạy bộ test M3:**
-  ```powershell
-  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m3_flow.gd
   ```
 - **Chạy bộ test M2.1:**
   ```powershell

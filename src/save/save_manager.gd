@@ -7,8 +7,8 @@ extends RefCounted
 ## thẩm định (validation) chặt chẽ và cách ly dữ liệu kiểm thử an toàn 100%.
 
 const DEFAULT_SAVE_PATH: String = "user://noctelyra_slot1.json"
-const CURRENT_VERSION: String = "1.0.0"
-const SUPPORTED_VERSIONS: Array[String] = ["1.0.0"]
+const CURRENT_VERSION: String = "1.1.0"
+const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0"]
 
 static var custom_save_path: String = ""
 static var should_load_on_start: bool = false
@@ -115,7 +115,12 @@ static func save_game(world: Node) -> bool:
 		},
 		"defeated_enemy_ids": world.get("defeated_enemy_ids") if "defeated_enemy_ids" in world else [],
 		"collected_pickup_ids": world.get("collected_pickup_ids") if "collected_pickup_ids" in world else [],
-		"dropped_pickups": world.get_dropped_pickups_data() if world.has_method("get_dropped_pickups_data") else []
+		"dropped_pickups": world.get_dropped_pickups_data() if world.has_method("get_dropped_pickups_data") else [],
+		"boss": {
+			"activated": world.get("boss_battle_started") if "boss_battle_started" in world else false,
+			"defeated": world.get("boss_defeated") if "boss_defeated" in world else false,
+			"reward_claimed": world.get("boss_reward_claimed") if "boss_reward_claimed" in world else false
+		}
 	}
 
 	var json_str := JSON.stringify(save_data, "\t")
@@ -258,8 +263,8 @@ static func load_game(world: Node) -> bool:
 	if not is_finite(px): px = 180.0
 	if not is_finite(py): py = 630.0
 
-	# Giới hạn tọa độ trong thế giới an toàn (clamp)
-	px = clamp(px, 50.0, 4300.0)
+	# Giới hạn tọa độ trong thế giới an toàn (clamp mở rộng cho Đấu trường Boss M4)
+	px = clamp(px, 50.0, 6200.0)
 	py = clamp(py, 100.0, 700.0)
 	player.global_position = Vector2(px, py)
 
@@ -312,6 +317,16 @@ static func load_game(world: Node) -> bool:
 
 	if world.has_method("restore_world_state"):
 		world.restore_world_state(collected_ids, dropped_pickups, defeated_ids)
+
+	# BƯỚC 5: Khôi phục trạng thái Boss Lunareth (M4)
+	var raw_boss = data.get("boss", {})
+	var boss_dict: Dictionary = raw_boss if raw_boss is Dictionary else {}
+	var b_activated: bool = bool(boss_dict.get("activated", false))
+	var b_defeated: bool = bool(boss_dict.get("defeated", false))
+	var b_reward: bool = bool(boss_dict.get("reward_claimed", false))
+
+	if world.has_method("restore_boss_state"):
+		world.restore_boss_state(b_activated, b_defeated, b_reward)
 
 	# Đồng bộ danh sách quái đã chết vào QuestManager để chống đếm trùng
 	for did in defeated_ids:

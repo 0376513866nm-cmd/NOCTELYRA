@@ -1,7 +1,10 @@
 class_name GameUI
 extends CanvasLayer
 
+## Giao diện người dùng chính (HUD, Dialogue, GameOver, PauseMenu, BossHUD, Victory) cho NOCTELYRA (M4)
+
 signal retry_requested()
+signal victory_dismissed()
 
 @onready var hud: Control = $HUD
 @onready var hp_bar: ProgressBar = $HUD/TopLeftBars/HPBar
@@ -13,6 +16,19 @@ signal retry_requested()
 @onready var quest_title_label: Label = $HUD/QuestPanel/VBox/QuestTitle
 @onready var quest_progress_label: Label = $HUD/QuestPanel/VBox/QuestProgress
 @onready var notification_label: Label = $HUD/NotificationLabel
+
+# Boss UI (M4)
+@onready var boss_hud: Control = $HUD/BossBarPanel
+@onready var boss_name_label: Label = $HUD/BossBarPanel/BossNameLabel
+@onready var boss_phase_label: Label = $HUD/BossBarPanel/BossPhaseLabel
+@onready var boss_hp_bar: ProgressBar = $HUD/BossBarPanel/BossHPBar
+@onready var boss_hp_label: Label = $HUD/BossBarPanel/BossHPBar/BossHPLabel
+@onready var boss_warning_label: Label = $HUD/BossWarningBanner
+@onready var boss_announcement_label: Label = $HUD/BossAnnouncementBanner
+@onready var victory_panel: Control = $VictoryPanel
+@onready var victory_title: Label = $VictoryPanel/Panel/Title
+@onready var victory_subtitle: Label = $VictoryPanel/Panel/Subtitle
+@onready var victory_continue_btn: Button = $VictoryPanel/Panel/ContinueBtn
 
 @onready var dialogue_box: Control = $DialogueBox
 @onready var dialogue_speaker: Label = $DialogueBox/Panel/SpeakerLabel
@@ -31,6 +47,8 @@ var _current_dialogue_idx: int = 0
 var _current_quest_action: String = "none"
 var _notif_timer: float = 0.0
 var _dialogue_cooldown: float = 0.0
+var _warning_timer: float = 0.0
+var _announcement_timer: float = 0.0
 
 func _ready() -> void:
 	if dialogue_box:
@@ -39,18 +57,39 @@ func _ready() -> void:
 		game_over_panel.visible = false
 	if notification_label:
 		notification_label.visible = false
+	if boss_hud:
+		boss_hud.visible = false
+	if boss_warning_label:
+		boss_warning_label.visible = false
+	if boss_announcement_label:
+		boss_announcement_label.visible = false
+	if victory_panel:
+		victory_panel.visible = false
 	if retry_button:
 		retry_button.pressed.connect(_on_retry_pressed)
 	if save_btn:
 		save_btn.pressed.connect(_on_save_pressed)
+	if victory_continue_btn:
+		victory_continue_btn.pressed.connect(_on_victory_continue_pressed)
 
 func _process(delta: float) -> void:
 	if _notif_timer > 0.0:
 		_notif_timer -= delta
 		if _notif_timer <= 0.0 and notification_label:
 			notification_label.visible = false
+
 	if _dialogue_cooldown > 0.0:
 		_dialogue_cooldown -= delta
+
+	if _warning_timer > 0.0:
+		_warning_timer -= delta
+		if _warning_timer <= 0.0 and boss_warning_label:
+			boss_warning_label.visible = false
+
+	if _announcement_timer > 0.0:
+		_announcement_timer -= delta
+		if _announcement_timer <= 0.0 and boss_announcement_label:
+			boss_announcement_label.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Mở/đóng Túi đồ bằng phím I
@@ -108,7 +147,7 @@ func close_dialogue() -> void:
 			quest_mgr.start_quest()
 		elif _current_quest_action == "complete_quest":
 			quest_mgr.complete_quest(p_health)
-			# Tự động lưu sau khi hoàn thành nhiệm vụ và nhận thưởng (Yêu cầu D3)
+			# Tự động lưu sau khi hoàn thành nhiệm vụ và nhận thưởng
 			SaveManager.save_game(scene)
 	_current_quest_action = "none"
 
@@ -139,7 +178,12 @@ func is_inventory_open() -> bool:
 	return inventory_ui != null and inventory_ui.is_open()
 
 func _on_save_pressed() -> void:
-	SaveManager.save_game(_get_active_scene())
+	var scene := _get_active_scene()
+	# Chặn lưu game thủ công khi Boss đang giao chiến (Yêu cầu F)
+	if scene and scene.has_method("is_boss_battle_active") and scene.is_boss_battle_active():
+		show_notification("Không thể lưu game trong khi đang giao tranh với Boss!")
+		return
+	SaveManager.save_game(scene)
 
 func update_player_hp(cur: float, max_v: float) -> void:
 	if hp_bar:
@@ -177,7 +221,7 @@ func update_quest_info(quest: QuestData) -> void:
 			QuestData.State.READY_TO_TURN_IN:
 				quest_progress_label.text = "Tiến độ: 3/3 (Về gặp Elyra nhận thưởng!)"
 			QuestData.State.COMPLETED:
-				quest_progress_label.text = "Trạng thái: Đã hoàn thành (+50 Vàng)"
+				quest_progress_label.text = "Trạng thái: Hoàn thành! (Cổng Đấu trường đã mở)"
 
 func show_notification(msg: String) -> void:
 	if notification_label:
@@ -196,3 +240,61 @@ func hide_game_over() -> void:
 func _on_retry_pressed() -> void:
 	hide_game_over()
 	emit_signal("retry_requested")
+
+# --- HỆ THỐNG GIAO DIỆN BOSS (M4) ---
+
+func show_boss_hud() -> void:
+	if boss_hud:
+		boss_hud.visible = true
+
+func hide_boss_hud() -> void:
+	if boss_hud:
+		boss_hud.visible = false
+	if boss_warning_label:
+		boss_warning_label.visible = false
+	if boss_announcement_label:
+		boss_announcement_label.visible = false
+
+func update_boss_hp(cur: float, max_v: float) -> void:
+	if boss_hp_bar:
+		boss_hp_bar.max_value = max_v
+		boss_hp_bar.value = cur
+	if boss_hp_label:
+		boss_hp_label.text = "HP: %d/%d" % [int(max(0, cur)), int(max_v)]
+
+func update_boss_phase(phase: int) -> void:
+	if boss_phase_label:
+		if phase == 2:
+			boss_phase_label.text = "[GIAI ĐOẠN 2 - HẮC NGUYỆT]"
+			boss_phase_label.modulate = Color(1.0, 0.4, 0.9, 1.0)
+			show_boss_announcement("LUNARETH GIẢI PHÓNG HẮC NGUYỆT MA LỰC!")
+		else:
+			boss_phase_label.text = "[GIAI ĐOẠN 1]"
+			boss_phase_label.modulate = Color(0.4, 0.9, 1.0, 1.0)
+
+func show_boss_warning(skill_name: String, duration: float) -> void:
+	if boss_warning_label:
+		boss_warning_label.text = "⚠️ CẢNH BÁO: %s!" % skill_name.to_upper()
+		boss_warning_label.visible = true
+		_warning_timer = max(0.6, duration)
+
+func show_boss_announcement(msg: String, duration: float = 2.5) -> void:
+	if boss_announcement_label:
+		boss_announcement_label.text = msg
+		boss_announcement_label.visible = true
+		_announcement_timer = duration
+
+func show_victory_banner(title: String, subtitle: String) -> void:
+	hide_boss_hud()
+	if victory_panel:
+		if victory_title: victory_title.text = title
+		if victory_subtitle: victory_subtitle.text = subtitle
+		victory_panel.visible = true
+
+func hide_victory_banner() -> void:
+	if victory_panel:
+		victory_panel.visible = false
+
+func _on_victory_continue_pressed() -> void:
+	hide_victory_banner()
+	emit_signal("victory_dismissed")
