@@ -38,7 +38,25 @@ func trigger_interaction() -> void:
 	var lines: Array[String] = []
 	var action: String = "none"
 
-	if quest_mgr and quest_mgr.current_quest:
+	if npc_name == "Kaelis":
+		lines = [
+			"Chào lữ khách từ Rừng Hắc Nguyệt. Ta là Kaelis, Người Canh Giữ Tinh Mạch của Thánh Lâm Elyndra.",
+			"Ngươi mang theo ma lực thanh tẩy thuần khiết... Lunareth cuối cùng đã được giải thoát khỏi sự tha hóa bóng tối.",
+			"Thánh Lâm này là nơi Tinh Mạch cổ xưa của NOCTELYRA hội tụ, nuôi dưỡng vạn vật bằng ma năng nguyên sơ.",
+			"Cổ Tinh Thạch gần đây còn lưu giữ những ghi chép về nguồn gốc ma pháp thuở sơ khai, ngươi hãy thử chiêm nghiệm.",
+			"Phía đông là Tiền Đồn Vharok của Quỷ tộc bán thú. Hãy giữ thái độ hòa hảo, họ là những chiến binh trọng danh dự."
+		]
+		action = "none"
+	elif npc_name == "Rhaek":
+		lines = [
+			"Đứng lại, lữ khách! Ngươi đang diện kiến Tiền Đồn Vharok của Gia tộc Hắc Nham Quỷ tộc.",
+			"Ta ngửi thấy mùi hương thảo mộc của Tinh Linh và ánh trăng của Rừng Noctis trên người ngươi.",
+			"Nhân tộc và Tinh Linh thường nghĩ Quỷ tộc chúng ta là lũ dã thú cuồng sát... Đó là định kiến của kẻ yếu đuối!",
+			"Quỷ tộc bán thú chúng ta sống theo luật danh dự, tôn thờ gia tộc và sức mạnh rèn giũa từ lửa dung nham.",
+			"Miễn là ngươi không rút vũ khí gây hấn, Tiền Đồn Vharok luôn tôn trọng và tiếp đón những vị khách có thực lực."
+		]
+		action = "none"
+	elif quest_mgr and quest_mgr.current_quest and npc_name == "Elyra":
 		var q_state = quest_mgr.current_quest.current_state
 		match q_state:
 			QuestData.State.NOT_STARTED:
@@ -70,6 +88,8 @@ func trigger_interaction() -> void:
 		lines = ["Xin chào dũng sĩ! Chúc ngươi một ngày bình an dưới ánh sáng mặt trăng."]
 
 	emit_signal("dialogue_requested", self, lines, action)
+	if cur_ui and not dialogue_requested.get_connections():
+		cur_ui.show_dialogue(npc_name, lines, action)
 
 func _get_quest_manager() -> QuestManager:
 	var cur_scene = get_tree().current_scene if get_tree() else null

@@ -1,15 +1,10 @@
 class_name NoctisForest
-extends Node2D
+extends BaseZone
 
-## Thế giới Bìa Rừng Noctis & Đấu trường Boss Lunareth (M4)
+## Thế giới Bìa Rừng Noctis & Đấu trường Boss Lunareth (M4, M6)
 ## Quản lý vòng lặp nhiệm vụ, quái vật, cổng ma pháp, đấu trường và Boss Lunareth.
 
-var player: Player
-var game_ui: GameUI
-var quest_manager: QuestManager
-var pause_controller: PauseController
 var npc_elyra: NPC
-var interaction_coordinator: InteractionCoordinator
 
 # Boss & Đấu trường (M4)
 const BossLunarethScript = preload("res://src/boss/boss_lunareth.gd")
@@ -21,12 +16,13 @@ var arena_barrier: StaticBody2D
 var arena_trigger: Area2D
 var arena_checkpoint: Vector2 = Vector2(4120.0, 630.0)
 
-var defeated_enemy_ids: Array = []
-var collected_pickup_ids: Array = []
-
 var boss_battle_started: bool = false
 var boss_defeated: bool = false
 var boss_reward_claimed: bool = false
+
+func _init() -> void:
+	zone_id = "noctis_forest"
+	zone_display_name = "Rừng Noctis"
 
 func _enter_tree() -> void:
 	init_references()
@@ -37,6 +33,7 @@ func _ready() -> void:
 	if SaveManager.should_load_on_start:
 		SaveManager.should_load_on_start = false
 		SaveManager.load_game(self)
+	ZoneManager.on_zone_entered(self)
 
 func init_references() -> void:
 	if player == null:

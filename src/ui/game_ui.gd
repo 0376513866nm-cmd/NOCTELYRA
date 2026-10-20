@@ -43,6 +43,11 @@ signal victory_dismissed()
 @onready var inventory_ui: InventoryUI = $InventoryUI
 @onready var spell_hotbar: SpellHotbar = $HUD/SpellHotbar
 
+@onready var zone_label: Label = $HUD/ZoneLabel
+@onready var zone_banner: Control = $ZoneBanner
+@onready var zone_banner_title: Label = $ZoneBanner/Panel/TitleLabel
+@onready var zone_banner_subtitle: Label = $ZoneBanner/Panel/SubtitleLabel
+
 var _dialogue_lines: Array[String] = []
 var _current_dialogue_idx: int = 0
 var _current_quest_action: String = "none"
@@ -50,6 +55,7 @@ var _notif_timer: float = 0.0
 var _dialogue_cooldown: float = 0.0
 var _warning_timer: float = 0.0
 var _announcement_timer: float = 0.0
+var _zone_banner_timer: float = 0.0
 
 func _ready() -> void:
 	if dialogue_box:
@@ -66,6 +72,8 @@ func _ready() -> void:
 		boss_announcement_label.visible = false
 	if victory_panel:
 		victory_panel.visible = false
+	if zone_banner:
+		zone_banner.visible = false
 	if retry_button:
 		retry_button.pressed.connect(_on_retry_pressed)
 	if save_btn:
@@ -91,6 +99,11 @@ func _process(delta: float) -> void:
 		_announcement_timer -= delta
 		if _announcement_timer <= 0.0 and boss_announcement_label:
 			boss_announcement_label.visible = false
+
+	if _zone_banner_timer > 0.0:
+		_zone_banner_timer -= delta
+		if _zone_banner_timer <= 0.0 and zone_banner:
+			zone_banner.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Mở/đóng Túi đồ bằng phím I
@@ -306,3 +319,29 @@ func hide_victory_banner() -> void:
 func _on_victory_continue_pressed() -> void:
 	hide_victory_banner()
 	emit_signal("victory_dismissed")
+
+# --- HỆ THỐNG GIAO DIỆN KHU VỰC & THẾ GIỚI (M6) ---
+
+func set_current_zone(zone_id: String) -> void:
+	if zone_label == null:
+		zone_label = get_node_or_null("HUD/ZoneLabel") as Label
+	if zone_label:
+		zone_label.text = "📍 %s" % ZoneDefinition.get_zone_display_name(zone_id)
+
+func show_zone_banner(zone_name: String, subtitle: String = "") -> void:
+	if zone_banner == null:
+		zone_banner = get_node_or_null("ZoneBanner") as Control
+	if zone_banner_title == null:
+		zone_banner_title = get_node_or_null("ZoneBanner/Panel/TitleLabel") as Label
+	if zone_banner_subtitle == null:
+		zone_banner_subtitle = get_node_or_null("ZoneBanner/Panel/SubtitleLabel") as Label
+
+	if zone_banner:
+		if zone_banner_title:
+			zone_banner_title.text = zone_name
+		if zone_banner_subtitle:
+			if subtitle.is_empty():
+				subtitle = ZoneDefinition.get_zone_sub_title(ZoneManager.current_zone_id)
+			zone_banner_subtitle.text = subtitle
+		zone_banner.visible = true
+		_zone_banner_timer = 2.0

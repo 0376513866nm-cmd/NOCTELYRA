@@ -40,7 +40,8 @@ func _update_buttons() -> void:
 func _on_continue_pressed() -> void:
 	if SaveManager.has_save():
 		SaveManager.should_load_on_start = true
-		get_tree().change_scene_to_file(GAME_SCENE_PATH)
+		var target_scene := SaveManager.get_save_zone_scene_path()
+		get_tree().change_scene_to_file(target_scene)
 
 func _on_new_game_pressed() -> void:
 	if SaveManager.has_save():
@@ -55,6 +56,7 @@ func _on_confirm_new_game() -> void:
 
 func _start_new_game() -> void:
 	SaveManager.should_load_on_start = false
+	ZoneManager.reset_session()
 	get_tree().change_scene_to_file(GAME_SCENE_PATH)
 
 func _on_quit_pressed() -> void:

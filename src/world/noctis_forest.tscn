@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://b5m9n2q8v3k1" path="res://src/loot/item_pickup.tscn" id="9_pickup"]
 [ext_resource type="PackedScene" uid="uid://m1g8k4p2q7v9" path="res://src/world/magic_gate.tscn" id="10_gate"]
 [ext_resource type="PackedScene" uid="uid://c4k2m8p1q7v5" path="res://src/boss/boss_lunareth.tscn" id="11_boss"]
+[ext_resource type="PackedScene" uid="uid://c6zp01y4k8v2" path="res://src/world/zone_portal.tscn" id="12_portal"]
+[ext_resource type="Script" path="res://src/world/zone_spawn_point.gd" id="13_spawn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(6800, 100)
@@ -452,6 +454,25 @@ position = Vector2(3950, 640)
 item_id = "mana_shard"
 amount = 1
 pickup_id = "pickup_forest_shard_7"
+
+[node name="SpawnDefault" type="Node2D" parent="."]
+position = Vector2(180, 630)
+script = ExtResource("13_spawn")
+spawn_point_id = "spawn_default"
+
+[node name="SpawnFromElyndra" type="Node2D" parent="."]
+position = Vector2(5700, 630)
+script = ExtResource("13_spawn")
+spawn_point_id = "spawn_from_elyndra"
+facing_direction = -1
+
+[node name="MoonveilPortal" parent="." instance=ExtResource("12_portal")]
+position = Vector2(5850, 640)
+portal_id = "moonveil_portal"
+portal_name = "Moonveil Portal"
+target_zone_id = "elyndra_glade"
+target_spawn_id = "spawn_from_noctis"
+lock_reason = "Cổng ma pháp chưa được khai mở. Hãy thanh tẩy Linh Lộc Lunareth trước!"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(180, 630)

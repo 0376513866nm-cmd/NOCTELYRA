@@ -40,9 +40,37 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 
+	# 4. Khi đứng gần Portal: kích hoạt dịch chuyển khu vực
+	var target_portal := _find_nearby_portal()
+	if target_portal:
+		target_portal.trigger_interaction()
+		get_viewport().set_input_as_handled()
+		return
+
+	# 5. Khi đứng gần vật thể tương tác khác (Tinh thạch cổ, bia đá,...):
+	var target_interactable := _find_nearby_interactable()
+	if target_interactable:
+		target_interactable.trigger_interaction()
+		get_viewport().set_input_as_handled()
+		return
+
 func _find_nearby_interactable_npc() -> NPC:
 	var npcs = get_tree().get_nodes_in_group("npcs")
 	for n in npcs:
 		if n is NPC and n.is_interactable():
 			return n
+	return null
+
+func _find_nearby_portal() -> ZonePortal:
+	var portals = get_tree().get_nodes_in_group("zone_portals")
+	for p in portals:
+		if p is ZonePortal and p.is_interactable():
+			return p
+	return null
+
+func _find_nearby_interactable() -> Node:
+	var objs = get_tree().get_nodes_in_group("interactables")
+	for obj in objs:
+		if obj.has_method("is_interactable") and obj.is_interactable() and obj.has_method("trigger_interaction"):
+			return obj
 	return null

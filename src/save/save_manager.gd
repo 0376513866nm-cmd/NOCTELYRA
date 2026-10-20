@@ -7,8 +7,8 @@ extends RefCounted
 ## thẩm định (validation) chặt chẽ và cách ly dữ liệu kiểm thử an toàn 100%.
 
 const DEFAULT_SAVE_PATH: String = "user://noctelyra_slot1.json"
-const CURRENT_VERSION: String = "1.2.0"
-const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0"]
+const CURRENT_VERSION: String = "1.3.0"
+const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0", "1.3.0"]
 
 static var custom_save_path: String = ""
 static var should_load_on_start: bool = false
@@ -96,6 +96,11 @@ static func save_game(world: Node) -> bool:
 	if world == null:
 		return false
 
+	# Kiểm tra bảo vệ: Không cho phép lưu khi đang chuyển khu vực (M6)
+	if ZoneManager.is_transitioning:
+		push_warning("SaveManager: Không thể lưu game trong khi đang chuyển khu vực!")
+		return false
+
 	# Kiểm tra bảo vệ: Không cho phép lưu khi đang giao tranh Boss
 	if is_boss_combat_active(world):
 		push_warning("SaveManager: Không thể lưu game trong khi trận đánh Boss đang diễn ra!")
@@ -117,9 +122,13 @@ static func save_game(world: Node) -> bool:
 	var tmp_path := get_tmp_path()
 	var bak_path := get_bak_path()
 
+	var cur_zone: String = ZoneManager.get_current_zone_id(world)
+	ZoneManager.save_zone_state(cur_zone, world)
+
 	var save_data: Dictionary = {
 		"save_version": CURRENT_VERSION,
 		"timestamp": Time.get_unix_time_from_system(),
+		"current_zone_id": cur_zone,
 		"player": {
 			"position_x": player.global_position.x,
 			"position_y": player.global_position.y,
@@ -138,6 +147,7 @@ static func save_game(world: Node) -> bool:
 			"state": int(quest_mgr.current_quest.current_state) if quest_mgr.current_quest else 0,
 			"current_amount": int(quest_mgr.current_quest.current_amount) if quest_mgr.current_quest else 0
 		},
+		"zone_states": ZoneManager.zone_states.duplicate(true),
 		"defeated_enemy_ids": world.get("defeated_enemy_ids") if "defeated_enemy_ids" in world else [],
 		"collected_pickup_ids": world.get("collected_pickup_ids") if "collected_pickup_ids" in world else [],
 		"dropped_pickups": world.get_dropped_pickups_data() if world.has_method("get_dropped_pickups_data") else [],
@@ -262,6 +272,25 @@ static func load_game(world: Node) -> bool:
 		push_warning("Thiếu dữ liệu quest hợp lệ trong bản lưu.")
 		return false
 
+	# Xác định khu vực hiện tại & Nạp zone_states (M6)
+	var z_id: String = str(data.get("current_zone_id", "noctis_forest"))
+	if not ZoneDefinition.is_valid_zone(z_id):
+		z_id = "noctis_forest"
+	ZoneManager.current_zone_id = z_id
+
+	if data.has("zone_states") and data["zone_states"] is Dictionary:
+		ZoneManager.zone_states = data["zone_states"].duplicate(true)
+	else:
+		# Tương thích ngược v1.0.0 - v1.2.0: map dữ liệu cũ vào noctis_forest
+		var legacy_state: Dictionary = {
+			"collected_pickup_ids": data.get("collected_pickup_ids", []),
+			"dropped_pickups": data.get("dropped_pickups", []),
+			"defeated_enemy_ids": data.get("defeated_enemy_ids", [])
+		}
+		if data.has("boss") and data["boss"] is Dictionary:
+			legacy_state["boss"] = data["boss"]
+		ZoneManager.zone_states["noctis_forest"] = legacy_state
+
 	# BƯỚC 1 (QUAN TRỌNG): Khôi phục Trang bị & Túi đồ TRƯỚC để tính toán lại Max Stats (Max MP / Sát thương)
 	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
 	if p_eq:
@@ -347,22 +376,27 @@ static func load_game(world: Node) -> bool:
 			ui.update_quest_info(quest_mgr.current_quest)
 			ui.update_gold(quest_mgr.gold)
 
-	# BƯỚC 4: Khôi phục trạng thái vật phẩm thế giới và quái vật
-	var raw_collected = data.get("collected_pickup_ids", [])
+	# BƯỚC 4: Khôi phục trạng thái vật phẩm thế giới và quái vật cho khu vực hiện tại
+	var cur_zone_state: Dictionary = ZoneManager.zone_states.get(z_id, {})
+	var raw_collected = cur_zone_state.get("collected_pickup_ids", data.get("collected_pickup_ids", []))
 	var collected_ids: Array = raw_collected if raw_collected is Array else []
 
-	var raw_dropped = data.get("dropped_pickups", [])
+	var raw_dropped = cur_zone_state.get("dropped_pickups", data.get("dropped_pickups", []))
 	var dropped_pickups: Array = raw_dropped if raw_dropped is Array else []
 
-	var raw_defeated = data.get("defeated_enemy_ids", [])
+	var raw_defeated = cur_zone_state.get("defeated_enemy_ids", data.get("defeated_enemy_ids", []))
 	var defeated_ids: Array = raw_defeated if raw_defeated is Array else []
 
 	if world.has_method("restore_world_state"):
 		world.restore_world_state(collected_ids, dropped_pickups, defeated_ids)
 
-	# BƯỚC 5: Khôi phục trạng thái Boss Lunareth (M4)
-	var raw_boss = data.get("boss", {})
-	var boss_dict: Dictionary = raw_boss if raw_boss is Dictionary else {}
+	# BƯỚC 5: Khôi phục trạng thái Boss Lunareth (M4) nếu ở Rừng Noctis
+	var boss_dict: Dictionary = {}
+	if cur_zone_state.has("boss") and cur_zone_state["boss"] is Dictionary:
+		boss_dict = cur_zone_state["boss"]
+	elif data.has("boss") and data["boss"] is Dictionary:
+		boss_dict = data["boss"]
+
 	var b_activated: bool = bool(boss_dict.get("activated", false))
 	var b_defeated: bool = bool(boss_dict.get("defeated", false))
 	var b_reward: bool = bool(boss_dict.get("reward_claimed", false))
@@ -377,6 +411,28 @@ static func load_game(world: Node) -> bool:
 			quest_mgr._killed_enemy_ids.append(sid)
 
 	if ui:
+		if ui.has_method("set_current_zone"):
+			ui.set_current_zone(z_id)
 		ui.show_notification("Đã tải bản lưu thành công!")
 
 	return true
+
+static func get_save_zone_id() -> String:
+	if not has_save():
+		return "noctis_forest"
+	var path := get_save_path()
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		return "noctis_forest"
+	var text := file.get_as_text()
+	file.close()
+	var test_json := JSON.new()
+	if test_json.parse(text) == OK and test_json.data is Dictionary:
+		var d: Dictionary = test_json.data
+		var z: String = str(d.get("current_zone_id", "noctis_forest"))
+		if ZoneDefinition.is_valid_zone(z):
+			return z
+	return "noctis_forest"
+
+static func get_save_zone_scene_path() -> String:
+	return ZoneDefinition.get_zone_scene_path(get_save_zone_id())

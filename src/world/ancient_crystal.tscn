@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8ac01y5m2v1"]
+
+[ext_resource type="Script" path="res://src/world/ancient_crystal.gd" id="1_crystal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crystal"]
+size = Vector2(60, 80)
+
+[node name="AncientCrystal" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_crystal")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -40)
+shape = SubResource("RectangleShape2D_crystal")
+
+[node name="Pedestal" type="ColorRect" parent="."]
+offset_left = -25.0
+offset_top = -12.0
+offset_right = 25.0
+offset_bottom = 0.0
+color = Color(0.2, 0.28, 0.25, 1)
+
+[node name="VisualCrystal" type="Node2D" parent="."]
+position = Vector2(0, -40)
+
+[node name="CrystalBody" type="ColorRect" parent="VisualCrystal"]
+offset_left = -12.0
+offset_top = -24.0
+offset_right = 12.0
+offset_bottom = 24.0
+color = Color(0.3, 0.9, 0.75, 0.85)
+
+[node name="CrystalInner" type="ColorRect" parent="VisualCrystal"]
+offset_left = -6.0
+offset_top = -16.0
+offset_right = 6.0
+offset_bottom = 16.0
+color = Color(0.8, 1.0, 0.95, 0.9)
+
+[node name="RuneGlow" type="ColorRect" parent="VisualCrystal"]
+offset_left = -2.0
+offset_top = -8.0
+offset_right = 2.0
+offset_bottom = 8.0
+color = Color(1, 1, 1, 1)
+
+[node name="PromptLabel" type="Label" parent="."]
+offset_left = -140.0
+offset_top = -105.0
+offset_right = 140.0
+offset_bottom = -80.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
+text = "[E] Đọc văn tự Cổ Tinh Thạch"
+horizontal_alignment = 1
+vertical_alignment = 1

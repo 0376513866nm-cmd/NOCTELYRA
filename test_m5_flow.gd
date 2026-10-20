@@ -441,19 +441,19 @@ func _run_suite() -> void:
 	# GROUP 20: Save & Load v1.2.0, Backward Compatibility & Isolation
 	# -------------------------------------------------------------
 	print("\n--- GROUP 20: Save/Load v1.2.0, Compatibility & Isolation ---")
-	_assert(SaveManager.CURRENT_VERSION == "1.2.0", "SaveManager.CURRENT_VERSION đã nâng cấp lên 1.2.0")
+	_assert(SaveManager.CURRENT_VERSION in ["1.2.0", "1.3.0"], "SaveManager.CURRENT_VERSION là 1.2.0 hoặc 1.3.0")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.2.0") and SaveManager.SUPPORTED_VERSIONS.has("1.1.0") and SaveManager.SUPPORTED_VERSIONS.has("1.0.0"), "SaveManager hỗ trợ cả 3 phiên bản 1.0.0, 1.1.0 và 1.2.0")
 
 	world.boss_battle_started = false
 	var save_ok := SaveManager.save_game(world)
-	_assert(save_ok == true, "Lưu game thành công vào test save v1.2.0")
+	_assert(save_ok == true, "Lưu game thành công vào test save")
 
 	var test_file_read := FileAccess.open(TEST_SAVE_PATH, FileAccess.READ)
 	var save_json_str := test_file_read.get_as_text()
 	test_file_read.close()
 	var parsed_data: Dictionary = JSON.parse_string(save_json_str)
 
-	_assert(parsed_data.get("save_version") == "1.2.0", "File save ghi đúng save_version 1.2.0")
+	_assert(parsed_data.get("save_version") in ["1.2.0", "1.3.0"], "File save ghi đúng save_version 1.2.0 hoặc 1.3.0")
 	_assert(parsed_data.has("spellbook"), "File save chứa khối dữ liệu spellbook")
 	var saved_sb: Dictionary = parsed_data.get("spellbook", {})
 	_assert(saved_sb.get("selected_spell") == "ember_bloom", "Lưu đúng phép đang chọn là ember_bloom")

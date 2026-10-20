@@ -400,9 +400,23 @@ func reset_boss() -> void:
 func purify_boss() -> void:
 	_is_defeated = true
 	_phase_2_triggered = true
+	current_state = State.DEFEATED
+	velocity = Vector2.ZERO
 	if health_component:
 		health_component.current_health = 0.0
-	_change_state(State.DEFEATED)
+		health_component.is_invulnerable = true
+	if charge_hitbox:
+		charge_hitbox.monitoring = false
+		charge_hitbox.visible = false
+	if hurtbox:
+		hurtbox.monitoring = false
+		hurtbox.monitorable = false
+		var h_col := hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if h_col:
+			h_col.disabled = true
+	if boss_visual and boss_visual.has_method("set_state"):
+		boss_visual.set_state(BossVisualScript.VisualState.DEFEATED)
+	emit_signal("boss_state_changed", "DEFEATED")
 
 func _get_state_name(st: State) -> String:
 	match st:
