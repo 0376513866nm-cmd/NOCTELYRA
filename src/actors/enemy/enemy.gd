@@ -48,6 +48,7 @@ var _has_reported_death: bool = false
 var _spawn_position: Vector2 = Vector2.ZERO
 var _patrol_target_x: float = 0.0
 var _patrol_wait_timer: float = 0.0
+var _is_returning: bool = false
 
 var _base_move_speed: float = 120.0
 var _is_slowed: bool = false
@@ -140,6 +141,7 @@ func _physics_process(delta: float) -> void:
 		var p_health: HealthComponent = target_player.get_node_or_null("HealthComponent")
 		if p_health and not p_health.is_alive():
 			target_player = null
+			_is_returning = false
 			if attack_hitbox:
 				attack_hitbox.monitoring = false
 				attack_hitbox.visible = false
@@ -148,26 +150,48 @@ func _physics_process(delta: float) -> void:
 	match current_state:
 		State.IDLE:
 			velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
-			_find_target()
-			if target_player and _is_target_in_range(detection_range):
-				_change_state(State.CHASE)
+			var dist_to_spawn: float = abs(global_position.x - _spawn_position.x)
+			var max_leash: float = definition.leash_distance if definition else 500.0
+			if dist_to_spawn > max_leash:
+				# Vượt quá phạm vi giới hạn -> Rút lui về điểm xuất phát
+				_is_returning = true
+				_patrol_target_x = _spawn_position.x
+				_change_state(State.PATROL)
 			else:
-				_patrol_wait_timer -= delta
-				if _patrol_wait_timer <= 0.0:
-					_start_patrol_step()
+				_find_target()
+				if target_player and _is_target_in_range(detection_range) and not _is_returning:
+					_change_state(State.CHASE)
+				else:
+					_patrol_wait_timer -= delta
+					if _patrol_wait_timer <= 0.0:
+						_start_patrol_step()
 
 		State.PATROL:
-			_find_target()
-			if target_player and _is_target_in_range(detection_range):
-				_change_state(State.CHASE)
-			else:
+			var dist_to_spawn: float = abs(global_position.x - _spawn_position.x)
+			var max_leash: float = definition.leash_distance if definition else 500.0
+			var patrol_rad: float = definition.patrol_radius if definition else 150.0
+
+			if _is_returning:
 				var dist_to_pt := _patrol_target_x - global_position.x
-				if abs(dist_to_pt) <= 8.0:
+				if abs(dist_to_pt) <= 16.0 or dist_to_spawn <= patrol_rad:
+					_is_returning = false
 					_change_state(State.IDLE)
 				else:
 					var pdir: float = sign(dist_to_pt)
 					_set_facing(int(pdir))
-					velocity.x = pdir * (move_speed * 0.6)
+					velocity.x = pdir * (move_speed * 0.7)
+			else:
+				_find_target()
+				if target_player and _is_target_in_range(detection_range) and dist_to_spawn < max_leash:
+					_change_state(State.CHASE)
+				else:
+					var dist_to_pt := _patrol_target_x - global_position.x
+					if abs(dist_to_pt) <= 8.0:
+						_change_state(State.IDLE)
+					else:
+						var pdir: float = sign(dist_to_pt)
+						_set_facing(int(pdir))
+						velocity.x = pdir * (move_speed * 0.6)
 
 		State.CHASE:
 			if target_player == null or not is_instance_valid(target_player):
@@ -181,17 +205,30 @@ func _physics_process(delta: float) -> void:
 			# Chống truy đuổi vô hạn ra khỏi khu vực hoạt động (Leash protection)
 			if dist_to_spawn > max_leash or dist_to_player > detection_range * 1.5:
 				target_player = null
-				_change_state(State.IDLE)
+				_is_returning = true
+				_patrol_target_x = _spawn_position.x
+				_change_state(State.PATROL)
 			elif dist_to_player <= attack_range:
+				velocity.x = move_toward(velocity.x, 0.0, 1000.0 * delta)
+				var dx: float = target_player.global_position.x - global_position.x
+				if abs(dx) > 12.0:
+					_set_facing(int(sign(dx)))
+				if visual_root and attack_timer > 0.0:
+					visual_root.set_visual_state("idle")
 				if attack_timer <= 0.0:
 					_change_state(State.TELEGRAPH)
-				else:
-					velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
 			else:
-				var dir: float = sign(target_player.global_position.x - global_position.x)
-				if dir != 0.0:
+				var dx: float = target_player.global_position.x - global_position.x
+				if abs(dx) > 12.0:
+					var dir: float = sign(dx)
 					_set_facing(int(dir))
 					velocity.x = dir * move_speed
+					if visual_root:
+						visual_root.set_visual_state("move")
+				else:
+					velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
+					if visual_root:
+						visual_root.set_visual_state("idle")
 
 		State.TELEGRAPH:
 			# Dừng lại để báo trước đòn đánh (cho Player cơ hội phản ứng né/chắn)
@@ -298,7 +335,7 @@ func _change_state(new_state: State) -> void:
 				state_timer = 0.15
 				_fire_projectile()
 			else:
-				state_timer = definition.attack_duration if definition else 0.25
+				state_timer = definition.attack_duration if definition else 0.65
 				if attack_hitbox:
 					attack_hitbox.damage = definition.attack_damage if definition else 15.0
 					attack_hitbox.reset_hits() # Đảm bảo không gây sát thương lặp vô hạn trong 1 đòn
@@ -407,6 +444,7 @@ func _on_health_changed(cur: float, _max_v: float) -> void:
 func _on_hit_received(dmg: DamageInfo) -> void:
 	if current_state == State.DEAD:
 		return
+	_is_returning = false
 	velocity.x = dmg.knockback_dir.x * dmg.knockback_force
 	velocity.y = -120.0
 	_change_state(State.HURT)

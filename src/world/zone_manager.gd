@@ -310,6 +310,7 @@ static func _place_player_at_spawn(world: Node, spawn_id: String) -> void:
 
 	if found:
 		player.global_position = target_pos
+		player.reset_physics_interpolation()
 		player.spawn_position = target_pos
 		player.facing_direction = facing
 		if player.sprite_root:

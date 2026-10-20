@@ -37,6 +37,9 @@ var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var dash_direction: int = 1
 var spawn_position: Vector2 = Vector2.ZERO
+var cast_anim_timer: float = 0.0
+var attack_anim_timer: float = 0.0
+var hurt_recoil_timer: float = 0.0
 
 var race_id: String:
 	get:
@@ -55,11 +58,27 @@ var hurtbox_collision: CollisionShape2D:
 			return hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		return null
 
-func _ready() -> void:
-	spawn_position = global_position
-	if movement_data == null:
-		movement_data = PlayerMovementData.new()
+var _movement_data_isolated: bool = false
 
+func _enter_tree() -> void:
+	_ensure_isolated_movement_data()
+
+func _ensure_isolated_movement_data() -> void:
+	if _movement_data_isolated:
+		return
+	if movement_data != null:
+		movement_data = movement_data.duplicate()
+	else:
+		movement_data = PlayerMovementData.new()
+	_movement_data_isolated = true
+
+func get_race_base_modulate() -> Color:
+	# Tạm thời để màu sắc cả 3 tộc nguyên bản đồng nhất không đổi màu
+	return Color(1.0, 1.0, 1.0, 1.0)
+
+func _ready() -> void:
+	_ensure_isolated_movement_data()
+	spawn_position = global_position
 	_ensure_m8_components()
 	_change_state(State.IDLE)
 
@@ -67,6 +86,13 @@ func _ready() -> void:
 		health_component.invulnerability_started.connect(_on_invuln_started)
 		health_component.invulnerability_ended.connect(_on_invuln_ended)
 		health_component.died.connect(_on_player_died)
+
+	if hurtbox:
+		hurtbox.hit_received.connect(_on_hit_received)
+
+	if combat_component:
+		combat_component.attack_started.connect(_on_attack_started)
+		combat_component.spell_cast.connect(_on_spell_cast)
 
 func _ensure_m8_components() -> void:
 	if progression_component == null:
@@ -87,6 +113,9 @@ func _ensure_m8_components() -> void:
 func apply_race_visual(r_id: String) -> void:
 	if sprite_root == null:
 		return
+	# Ngoại hình cả 3 tộc tạm thời để nguyên bản giống nhau, không đổi màu sắc
+	sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
+
 	var visual_badge := sprite_root.get_node_or_null("RaceVisualBadge") as Node2D
 	if visual_badge == null:
 		visual_badge = Node2D.new()
@@ -96,53 +125,48 @@ func apply_race_visual(r_id: String) -> void:
 	for c in visual_badge.get_children():
 		c.queue_free()
 
+	# Ẩn hoàn toàn để không vẽ thêm nét thừa đè lên nhân vật
+	visual_badge.visible = false
+
 	match r_id:
 		"elf":
-			sprite_root.modulate = Color(0.88, 1.05, 0.95, 1.0)
 			var ear_left := Polygon2D.new()
-			ear_left.polygon = PackedVector2Array([Vector2(-12, -45), Vector2(-22, -55), Vector2(-12, -50)])
+			ear_left.polygon = PackedVector2Array([Vector2(-6, -98), Vector2(-15, -105), Vector2(-6, -101)])
 			ear_left.color = Color(0.4, 0.95, 0.7, 0.9)
 			visual_badge.add_child(ear_left)
 
 			var ear_right := Polygon2D.new()
-			ear_right.polygon = PackedVector2Array([Vector2(12, -45), Vector2(22, -55), Vector2(12, -50)])
+			ear_right.polygon = PackedVector2Array([Vector2(6, -98), Vector2(15, -105), Vector2(6, -101)])
 			ear_right.color = Color(0.4, 0.95, 0.7, 0.9)
 			visual_badge.add_child(ear_right)
 
 			var aura := Line2D.new()
 			aura.width = 2.0
 			aura.default_color = Color(0.3, 1.0, 0.7, 0.5)
-			var pts := PackedVector2Array()
-			for i in range(13):
-				var ang: float = float(i) * TAU / 12.0
-				pts.append(Vector2(cos(ang) * 26.0, sin(ang) * 12.0 - 5.0))
-			aura.points = pts
 			visual_badge.add_child(aura)
 
 		"demon_beast":
-			sprite_root.modulate = Color(1.05, 0.88, 0.95, 1.0)
 			var horn_left := Polygon2D.new()
-			horn_left.polygon = PackedVector2Array([Vector2(-8, -50), Vector2(-15, -68), Vector2(-4, -55)])
+			horn_left.polygon = PackedVector2Array([Vector2(-6, -106), Vector2(-12, -118), Vector2(-3, -110)])
 			horn_left.color = Color(0.85, 0.2, 0.35, 0.95)
 			visual_badge.add_child(horn_left)
 
 			var horn_right := Polygon2D.new()
-			horn_right.polygon = PackedVector2Array([Vector2(8, -50), Vector2(15, -68), Vector2(4, -55)])
+			horn_right.polygon = PackedVector2Array([Vector2(6, -106), Vector2(12, -118), Vector2(3, -110)])
 			horn_right.color = Color(0.85, 0.2, 0.35, 0.95)
 			visual_badge.add_child(horn_right)
 
 			var tail := Line2D.new()
-			tail.width = 4.0
+			tail.width = 3.0
 			tail.default_color = Color(0.8, 0.25, 0.4, 0.9)
-			tail.points = PackedVector2Array([Vector2(-10, 0), Vector2(-22, -5), Vector2(-30, -18), Vector2(-26, -26)])
 			visual_badge.add_child(tail)
 
 		_: # "human"
-			sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
 			var scarf := Line2D.new()
+			scarf.name = "ScarfBadge"
 			scarf.width = 3.0
 			scarf.default_color = Color(0.3, 0.6, 1.0, 0.8)
-			scarf.points = PackedVector2Array([Vector2(-8, -32), Vector2(0, -30), Vector2(8, -32), Vector2(12, -22)])
+			scarf.points = PackedVector2Array([Vector2(-8, -86), Vector2(0, -84), Vector2(8, -86), Vector2(10, -74)])
 			visual_badge.add_child(scarf)
 
 func _physics_process(delta: float) -> void:
@@ -157,6 +181,25 @@ func _physics_process(delta: float) -> void:
 	# Luôn giảm thời gian hồi chiêu Dash độc lập
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
+
+	if hurt_recoil_timer > 0.0:
+		hurt_recoil_timer -= delta
+
+	# Giảm thời gian hoạt ảnh đánh thường nếu đang phát
+	if attack_anim_timer > 0.0:
+		attack_anim_timer -= delta
+		if attack_anim_timer <= 0.0:
+			attack_anim_timer = 0.0
+			if cast_anim_timer <= 0.0:
+				_refresh_current_animation()
+
+	# Giảm thời gian hoạt ảnh cast bắn đạn nếu đang phát
+	if cast_anim_timer > 0.0:
+		cast_anim_timer -= delta
+		if cast_anim_timer <= 0.0:
+			cast_anim_timer = 0.0
+			if attack_anim_timer <= 0.0:
+				_refresh_current_animation()
 
 	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ, sổ nhiệm vụ hoặc thông tin nhân vật thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
@@ -303,7 +346,18 @@ func _on_invuln_started() -> void:
 
 func _on_invuln_ended() -> void:
 	if sprite_root and current_state != State.DEAD:
-		sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		sprite_root.modulate = get_race_base_modulate()
+
+func _on_hit_received(dmg: DamageInfo) -> void:
+	if current_state == State.DEAD:
+		return
+	var force: float = dmg.knockback_force if dmg.knockback_force > 0.0 else 240.0
+	var k_dir_x: float = signf(dmg.knockback_dir.x)
+	if is_zero_approx(k_dir_x):
+		k_dir_x = -float(facing_direction)
+	velocity.x = k_dir_x * maxf(force, 240.0)
+	velocity.y = -150.0
+	hurt_recoil_timer = 0.22
 
 func _on_player_died() -> void:
 	_change_state(State.DEAD)
@@ -328,6 +382,8 @@ func _on_player_died() -> void:
 			if is_instance_valid(p) and not p.is_queued_for_deletion():
 				p.queue_free()
 
+	attack_anim_timer = 0.0
+	cast_anim_timer = 0.0
 	emit_signal("player_died")
 
 	var ui := _get_game_ui()
@@ -336,6 +392,7 @@ func _on_player_died() -> void:
 
 func respawn() -> void:
 	global_position = spawn_position
+	reset_physics_interpolation()
 	velocity = Vector2.ZERO
 	if health_component:
 		health_component.current_health = health_component.max_health
@@ -347,7 +404,7 @@ func respawn() -> void:
 		hurtbox.set_deferred("monitoring", true)
 		hurtbox.set_deferred("monitorable", true)
 	if sprite_root:
-		sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		sprite_root.modulate = get_race_base_modulate()
 
 	if get_tree():
 		for p in get_tree().get_nodes_in_group("player_projectiles"):
@@ -357,6 +414,8 @@ func respawn() -> void:
 	_restore_jumps()
 	dash_timer = 0.0
 	dash_cooldown_timer = 0.0
+	attack_anim_timer = 0.0
+	cast_anim_timer = 0.0
 	_change_state(State.IDLE)
 	emit_signal("player_respawned")
 
@@ -368,42 +427,96 @@ func _change_state(new_state: State) -> void:
 	var state_name := _get_state_name(current_state)
 	emit_signal("state_changed", state_name)
 
+	if new_state == State.DEAD:
+		attack_anim_timer = 0.0
+		cast_anim_timer = 0.0
+		if anim_player:
+			anim_player.pause()
+		return
+
+	if new_state == State.DASH:
+		attack_anim_timer = 0.0
+		cast_anim_timer = 0.0
+		dash_timer = movement_data.dash_duration
+		dash_cooldown_timer = movement_data.dash_cooldown
+		
+		var move_dir := int(sign(_get_input_direction()))
+		if move_dir != 0:
+			dash_direction = move_dir
+			_set_facing(dash_direction)
+		else:
+			dash_direction = facing_direction
+
+		if anim_player and anim_player.has_animation("dash"):
+			anim_player.play("dash")
+		else:
+			_play_fallback_dash_visual()
+		return
+
+	if attack_anim_timer > 0.0 or cast_anim_timer > 0.0:
+		return
+
+	_refresh_current_animation()
+
+func _refresh_current_animation() -> void:
 	var has_player := (anim_player != null)
+	if not has_player:
+		return
 
 	match current_state:
 		State.IDLE:
-			if has_player and anim_player.has_animation("idle"):
+			anim_player.speed_scale = 1.0
+			if anim_player.has_animation("idle"):
 				anim_player.play("idle")
+				anim_player.advance(0.0)
 		State.RUN:
-			if has_player and anim_player.has_animation("run"):
+			anim_player.speed_scale = 1.0
+			if anim_player.has_animation("run"):
 				anim_player.play("run")
+				anim_player.advance(0.0)
 		State.JUMP:
-			if has_player and anim_player.has_animation("jump"):
+			anim_player.speed_scale = 1.0
+			if anim_player.has_animation("jump"):
 				anim_player.play("jump")
 			else:
 				_play_fallback_air_visual()
 		State.FALL:
-			if has_player and anim_player.has_animation("fall"):
+			anim_player.speed_scale = 1.0
+			if anim_player.has_animation("fall"):
 				anim_player.play("fall")
 			else:
 				_play_fallback_air_visual()
 		State.DASH:
-			if has_player and anim_player.has_animation("dash"):
+			anim_player.speed_scale = 1.0
+			if anim_player.has_animation("dash"):
 				anim_player.play("dash")
 			else:
 				_play_fallback_dash_visual()
-			dash_timer = movement_data.dash_duration
-			dash_cooldown_timer = movement_data.dash_cooldown
-			
-			var move_dir := int(sign(_get_input_direction()))
-			if move_dir != 0:
-				dash_direction = move_dir
-				_set_facing(dash_direction)
-			else:
-				dash_direction = facing_direction
 		State.DEAD:
-			if anim_player:
-				anim_player.pause()
+			anim_player.pause()
+
+func _on_attack_started() -> void:
+	play_attack_animation()
+
+func play_attack_animation() -> void:
+	if current_state == State.DEAD:
+		return
+	attack_anim_timer = 0.25
+	cast_anim_timer = 0.0
+	if anim_player and anim_player.has_animation("attack"):
+		anim_player.play("attack")
+		anim_player.advance(0.0)
+
+func _on_spell_cast() -> void:
+	play_cast_animation()
+
+func play_cast_animation() -> void:
+	if current_state == State.DEAD:
+		return
+	cast_anim_timer = 0.36
+	if anim_player and anim_player.has_animation("cast"):
+		anim_player.play("cast")
+		anim_player.advance(0.0)
 
 func _play_fallback_air_visual() -> void:
 	if anim_player and anim_player.has_animation("run"):
@@ -421,6 +534,9 @@ func _get_input_direction() -> float:
 	return Input.get_axis("move_left", "move_right")
 
 func _process_ground_movement(delta: float) -> void:
+	if hurt_recoil_timer > 0.0:
+		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
+		return
 	var direction := _get_input_direction()
 	if direction != 0.0:
 		_set_facing(int(sign(direction)))
@@ -429,6 +545,9 @@ func _process_ground_movement(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
 
 func _process_air_movement(delta: float) -> void:
+	if hurt_recoil_timer > 0.0:
+		velocity.x = move_toward(velocity.x, 0.0, movement_data.air_friction * delta)
+		return
 	var direction := _get_input_direction()
 	if direction != 0.0:
 		_set_facing(int(sign(direction)))

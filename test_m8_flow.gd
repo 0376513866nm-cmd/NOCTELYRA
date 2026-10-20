@@ -27,6 +27,7 @@ const PlayerScript = preload("res://src/actors/player/player.gd")
 const PlayerScene = preload("res://src/actors/player/player.tscn")
 const NoctisForestScene = preload("res://src/world/noctis_forest.tscn")
 const ElyndraGladeScene = preload("res://src/world/elyndra_glade.tscn")
+const VharokOutpostScene = preload("res://src/world/vharok_outpost.tscn")
 const CharacterCreationUIScene = preload("res://src/ui/character_creation_ui.tscn")
 const CharacterSheetUIScene = preload("res://src/ui/character_sheet_ui.tscn")
 const ItemDatabaseScript = preload("res://src/inventory/item_database.gd")
@@ -554,6 +555,267 @@ func _run_suite() -> void:
 
 	elyndra_world.queue_free()
 	await _wait_seconds(0.2)
+
+	# -------------------------------------------------------------
+	# CATEGORY 19: Milestone M8.1 Stabilization Suite
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 19: Milestone M8.1 Stabilization Suite ---")
+
+	# Test 1: New Game -> Chọn Human -> Vào Scene Noctis Thật -> Đúng Human và chỉ số
+	ZoneManager.reset_session()
+	ZoneManager.initial_race_id = "human"
+	SaveManager.should_load_on_start = false
+
+	var noctis_human: NoctisForest = NoctisForestScene.instantiate()
+	root.add_child(noctis_human)
+	current_scene = noctis_human
+	await _wait_seconds(0.3)
+
+	var p_human: Player = noctis_human.get_node_or_null("Player") as Player
+	_assert(p_human != null, "Player tồn tại trong Scene Noctis Forest thật (Human)")
+	_assert(p_human.race_id == "human", "Player trong Scene Noctis thật nhận đúng tộc Human")
+	_assert(p_human.health_component.max_health == 100.0, "Human trong Noctis thật có HP: 100.0")
+	_assert(p_human.health_component.current_health == 100.0, "Human có Current HP đầy đủ: 100.0")
+	_assert(p_human.health_component.max_mana == 60.0, "Human có MP: 60.0")
+	_assert(p_human.melee_hitbox.damage == 25.0, "Human có ATK: 25.0")
+	_assert(p_human.movement_data.move_speed == 270.0, "Human có Speed: 270.0 px/s")
+	_assert(p_human.spellbook_component.magic_damage_multiplier == 1.0, "Human có Magic Multiplier: 1.0x")
+	var badge_h = p_human.sprite_root.get_node_or_null("RaceVisualBadge")
+	_assert(badge_h != null and badge_h.get_child_count() > 0, "Human có visual badge khăn choàng")
+
+	# Lưu và nạp lại Human
+	var save_h_ok := SaveManager.save_game(noctis_human)
+	_assert(save_h_ok == true, "Lưu game Human thành công")
+	noctis_human.queue_free()
+	await _wait_seconds(0.2)
+
+	SaveManager.should_load_on_start = true
+	var noctis_human_cont: NoctisForest = NoctisForestScene.instantiate()
+	root.add_child(noctis_human_cont)
+	current_scene = noctis_human_cont
+	await _wait_seconds(0.3)
+
+	var p_h_cont: Player = noctis_human_cont.get_node_or_null("Player") as Player
+	_assert(p_h_cont.race_id == "human", "Continue khôi phục chuẩn xác chủng tộc Human")
+	_assert(p_h_cont.health_component.max_health == 100.0, "Continue bảo toàn Max HP Human: 100.0")
+	noctis_human_cont.queue_free()
+	await _wait_seconds(0.2)
+
+	# Test 2: New Game -> Chọn Elf -> Vào Scene Noctis Thật -> Đúng Elf và chỉ số
+	ZoneManager.reset_session()
+	ZoneManager.initial_race_id = "elf"
+	SaveManager.should_load_on_start = false
+
+	var noctis_elf: NoctisForest = NoctisForestScene.instantiate()
+	root.add_child(noctis_elf)
+	current_scene = noctis_elf
+	await _wait_seconds(0.3)
+
+	var p_elf: Player = noctis_elf.get_node_or_null("Player") as Player
+	_assert(p_elf != null, "Player tồn tại trong Scene Noctis Forest thật (Elf)")
+	_assert(p_elf.race_id == "elf", "Player trong Scene Noctis thật nhận đúng tộc Elf")
+	_assert(p_elf.health_component.max_health == 90.0, "Elf trong Noctis thật có HP: 90.0")
+	_assert(p_elf.health_component.current_health == 90.0, "Elf có Current HP đầy đủ: 90.0")
+	_assert(p_elf.health_component.max_mana == 80.0, "Elf có MP: 80.0")
+	_assert(p_elf.melee_hitbox.damage == 23.0, "Elf có ATK: 23.0")
+	_assert(p_elf.movement_data.move_speed == 275.0, "Elf có Speed: 275.0 px/s")
+	_assert(p_elf.spellbook_component.magic_damage_multiplier == 1.1, "Elf có Magic Multiplier: 1.1x")
+	var badge_e = p_elf.sprite_root.get_node_or_null("RaceVisualBadge")
+	_assert(badge_e != null and badge_e.get_child_count() > 0, "Elf có visual badge tai nhọn")
+
+	# Lưu và nạp lại Elf
+	var save_e_ok := SaveManager.save_game(noctis_elf)
+	_assert(save_e_ok == true, "Lưu game Elf thành công")
+	noctis_elf.queue_free()
+	await _wait_seconds(0.2)
+
+	SaveManager.should_load_on_start = true
+	var noctis_elf_cont: NoctisForest = NoctisForestScene.instantiate()
+	root.add_child(noctis_elf_cont)
+	current_scene = noctis_elf_cont
+	await _wait_seconds(0.3)
+
+	var p_e_cont: Player = noctis_elf_cont.get_node_or_null("Player") as Player
+	_assert(p_e_cont.race_id == "elf", "Continue khôi phục chuẩn xác chủng tộc Elf")
+	_assert(p_e_cont.health_component.max_health == 90.0, "Continue bảo toàn Max HP Elf: 90.0")
+	_assert(p_e_cont.health_component.max_mana == 80.0, "Continue bảo toàn Max MP Elf: 80.0")
+	noctis_elf_cont.queue_free()
+	await _wait_seconds(0.2)
+
+	# Test 3: New Game -> Chọn Demon Beast -> Vào Scene Noctis Thật -> Đúng Demon Beast và chỉ số
+	ZoneManager.reset_session()
+	ZoneManager.initial_race_id = "demon_beast"
+	SaveManager.should_load_on_start = false
+
+	var noctis_beast: NoctisForest = NoctisForestScene.instantiate()
+	root.add_child(noctis_beast)
+	current_scene = noctis_beast
+	await _wait_seconds(0.3)
+
+	var p_beast: Player = noctis_beast.get_node_or_null("Player") as Player
+	_assert(p_beast != null, "Player tồn tại trong Scene Noctis Forest thật (Demon Beast)")
+	_assert(p_beast.race_id == "demon_beast", "Player trong Scene Noctis thật nhận đúng tộc Demon Beast")
+	_assert(p_beast.health_component.max_health == 125.0, "Demon Beast trong Noctis thật có HP: 125.0")
+	_assert(p_beast.health_component.current_health == 125.0, "Demon Beast có Current HP đầy đủ: 125.0")
+	_assert(p_beast.health_component.max_mana == 50.0, "Demon Beast có MP: 50.0")
+	_assert(p_beast.melee_hitbox.damage == 30.0, "Demon Beast có ATK: 30.0")
+	_assert(p_beast.movement_data.move_speed == 260.0, "Demon Beast có Speed: 260.0 px/s")
+	_assert(p_beast.spellbook_component.magic_damage_multiplier == 1.0, "Demon Beast có Magic Multiplier: 1.0x")
+	var badge_b = p_beast.sprite_root.get_node_or_null("RaceVisualBadge")
+	_assert(badge_b != null and badge_b.get_child_count() >= 2, "Demon Beast có visual badge sừng và đuôi")
+
+	# Lưu và nạp lại Demon Beast
+	var save_b_ok := SaveManager.save_game(noctis_beast)
+	_assert(save_b_ok == true, "Lưu game Demon Beast thành công")
+	noctis_beast.queue_free()
+	await _wait_seconds(0.2)
+
+	SaveManager.should_load_on_start = true
+	var noctis_beast_cont: NoctisForest = NoctisForestScene.instantiate()
+	root.add_child(noctis_beast_cont)
+	current_scene = noctis_beast_cont
+	await _wait_seconds(0.3)
+
+	var p_b_cont: Player = noctis_beast_cont.get_node_or_null("Player") as Player
+	_assert(p_b_cont.race_id == "demon_beast", "Continue khôi phục chuẩn xác chủng tộc Demon Beast")
+	_assert(p_b_cont.health_component.max_health == 125.0, "Continue bảo toàn Max HP Demon Beast: 125.0")
+	noctis_beast_cont.queue_free()
+	await _wait_seconds(0.2)
+
+	# Test 4: Chuyển Noctis -> Elyndra -> Vharok -> Noctis không mất Race/Level/EXP
+	ZoneManager.reset_session()
+	ZoneManager.initial_race_id = "elf"
+	SaveManager.should_load_on_start = false
+
+	var trip_noctis: NoctisForest = NoctisForestScene.instantiate()
+	root.add_child(trip_noctis)
+	current_scene = trip_noctis
+	await _wait_seconds(0.3)
+
+	var p_trip: Player = trip_noctis.get_node_or_null("Player") as Player
+	p_trip.progression_component.level = 4
+	p_trip.progression_component.current_exp = 95
+	p_trip.progression_component.claimed_exp_sources = ["trip_src_1"]
+	p_trip.player_stats_component.recalculate_stats(false)
+
+	# Dịch chuyển Noctis -> Elyndra
+	ZoneManager.travel_cooldown = 0.0
+	var travel_ok_1 = ZoneManager.travel_to_zone("elyndra_glade", "spawn_from_noctis", trip_noctis)
+	_assert(travel_ok_1 == true, "Dịch chuyển Noctis -> Elyndra thành công")
+	await _wait_seconds(0.4)
+
+	var trip_elyndra = current_scene
+	var p_elyndra: Player = trip_elyndra.get_node_or_null("Player") as Player
+	_assert(p_elyndra != null, "Player tồn tại trong Elyndra")
+	_assert(p_elyndra.race_id == "elf", "Sau khi dịch chuyển sang Elyndra: giữ nguyên tộc Elf")
+	_assert(p_elyndra.progression_component.level == 4, "Giữ nguyên Cấp 4 tại Elyndra")
+	_assert(p_elyndra.progression_component.current_exp == 95, "Giữ nguyên 95 EXP tại Elyndra")
+	_assert(p_elyndra.progression_component.claimed_exp_sources.has("trip_src_1"), "Bảo toàn claimed_exp_sources tại Elyndra")
+
+	# Dịch chuyển Elyndra -> Vharok
+	ZoneManager.travel_cooldown = 0.0
+	var travel_ok_2 = ZoneManager.travel_to_zone("vharok_outpost", "spawn_from_elyndra", trip_elyndra)
+	_assert(travel_ok_2 == true, "Dịch chuyển Elyndra -> Vharok thành công")
+	await _wait_seconds(0.4)
+
+	var trip_vharok = current_scene
+	var p_vharok: Player = trip_vharok.get_node_or_null("Player") as Player
+	_assert(p_vharok != null, "Player tồn tại trong Vharok")
+	_assert(p_vharok.race_id == "elf", "Sau khi dịch chuyển sang Vharok: giữ nguyên tộc Elf")
+	_assert(p_vharok.progression_component.level == 4, "Giữ nguyên Cấp 4 tại Vharok")
+	_assert(p_vharok.progression_component.current_exp == 95, "Giữ nguyên 95 EXP tại Vharok")
+
+	# Dịch chuyển Vharok -> Noctis
+	ZoneManager.travel_cooldown = 0.0
+	var travel_ok_3 = ZoneManager.travel_to_zone("noctis_forest", "spawn_from_elyndra", trip_vharok)
+	_assert(travel_ok_3 == true, "Dịch chuyển Vharok -> Noctis thành công")
+	await _wait_seconds(0.4)
+
+	var trip_noctis_return = current_scene
+	var p_return: Player = trip_noctis_return.get_node_or_null("Player") as Player
+	_assert(p_return != null, "Player tồn tại khi quay về Noctis")
+	_assert(p_return.race_id == "elf", "Sau khi quay về Noctis: giữ nguyên tộc Elf")
+	_assert(p_return.progression_component.level == 4, "Giữ nguyên Cấp 4 khi về Noctis")
+	_assert(p_return.progression_component.current_exp == 95, "Giữ nguyên 95 EXP khi về Noctis")
+	_assert(p_return.health_component.max_health == 90.0 + 3 * 10.0, "Max HP Elf Lv 4: 120.0")
+
+	trip_noctis_return.queue_free()
+	await _wait_seconds(0.2)
+
+	# Test 5: Hai Player instance khác tộc không dùng chung trạng thái tốc độ
+	var inst_p1: Player = PlayerScene.instantiate()
+	root.add_child(inst_p1)
+	inst_p1.race_id = "elf"
+	inst_p1.player_stats_component.recalculate_stats(false)
+
+	var inst_p2: Player = PlayerScene.instantiate()
+	root.add_child(inst_p2)
+	inst_p2.race_id = "demon_beast"
+	inst_p2.player_stats_component.recalculate_stats(false)
+
+	_assert(inst_p1.movement_data != inst_p2.movement_data, "Hai Player instance có bản Resource PlayerMovementData riêng biệt")
+	_assert(inst_p1.movement_data.move_speed == 275.0, "Player 1 (Elf) có tốc độ 275.0 px/s")
+	_assert(inst_p2.movement_data.move_speed == 260.0, "Player 2 (Demon Beast) có tốc độ 260.0 px/s")
+	_assert(inst_p1.movement_data.move_speed == 275.0, "Tốc độ Player 1 không bị Player 2 ghi đè!")
+
+	inst_p1.queue_free()
+	inst_p2.queue_free()
+	await _wait_seconds(0.1)
+
+	# Test 6: Trúng đòn rồi hết hiệu ứng không làm mất màu đặc trưng tộc
+	var p_visual_test: Player = PlayerScene.instantiate()
+	root.add_child(p_visual_test)
+	p_visual_test.race_id = "elf"
+
+	var elf_expected_color := p_visual_test.get_race_base_modulate()
+	_assert(p_visual_test.sprite_root.modulate == elf_expected_color, "Màu sắc ban đầu của Elf đồng bộ chuẩn")
+
+	# Nhận đòn: hiệu ứng bất tử kích hoạt
+	p_visual_test.health_component.invulnerability_started.emit()
+	_assert(p_visual_test.sprite_root.modulate == Color(1.0, 0.4, 0.4, 0.7), "Khi dính đòn: sprite chớp đỏ nhạt (hiệu ứng tạm thời)")
+
+	# Hết hiệu ứng bất tử: khôi phục chính xác màu tộc Elf
+	p_visual_test.health_component.invulnerability_ended.emit()
+	_assert(p_visual_test.sprite_root.modulate == elf_expected_color, "Hết bất tử: KHÔI PHỤC CHUẨN XÁC màu sắc của Elf")
+
+	# Đổi sang tộc Demon Beast và kiểm tra tương tự
+	p_visual_test.race_id = "demon_beast"
+	var beast_expected_color := p_visual_test.get_race_base_modulate()
+	_assert(p_visual_test.sprite_root.modulate == beast_expected_color, "Màu sắc ban đầu của Demon Beast đồng bộ chuẩn")
+
+	p_visual_test.health_component.invulnerability_started.emit()
+	_assert(p_visual_test.sprite_root.modulate == Color(1.0, 0.4, 0.4, 0.7), "Demon Beast chớp đỏ khi bị đánh")
+
+	p_visual_test.health_component.invulnerability_ended.emit()
+	_assert(p_visual_test.sprite_root.modulate == beast_expected_color, "Hết bất tử: KHÔI PHỤC CHUẨN XÁC màu sắc của Demon Beast")
+
+	p_visual_test.queue_free()
+	await _wait_seconds(0.1)
+
+	# Test 7: Khi đã có save hợp lệ, mở New Game rồi Cancel phải giữ nguyên file save
+	var valid_save_data := {
+		"save_version": "1.5.0",
+		"gold": 1234,
+		"player": {"race_id": "elf"}
+	}
+	var f_v := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f_v.store_string(JSON.stringify(valid_save_data))
+	f_v.close()
+	var valid_save_md5 := FileAccess.get_md5(TEST_SAVE_PATH)
+
+	var creation_cancel_test := CharacterCreationUIScene.instantiate()
+	creation_cancel_test.auto_change_scene = false
+	root.add_child(creation_cancel_test)
+	await _wait_seconds(0.1)
+
+	creation_cancel_test.select_race("demon_beast")
+	creation_cancel_test._on_cancel_pressed()
+	await _wait_seconds(0.1)
+
+	_assert(FileAccess.file_exists(TEST_SAVE_PATH) == true, "Save hợp lệ vẫn tồn tại sau khi mở New Game rồi Cancel")
+	_assert(FileAccess.get_md5(TEST_SAVE_PATH) == valid_save_md5, "MD5 save hợp lệ giữ nguyên vẹn 100% sau khi Cancel")
+	creation_cancel_test.queue_free()
+	await _wait_seconds(0.1)
 
 	# -------------------------------------------------------------
 	# CATEGORY 18: Isolation Verification

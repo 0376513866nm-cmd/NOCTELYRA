@@ -172,6 +172,8 @@ func recalculate_stats(is_level_up: bool = false) -> void:
 
 		# MovementData
 		if player.movement_data:
+			if player.has_method("_ensure_isolated_movement_data"):
+				player._ensure_isolated_movement_data()
 			player.movement_data.move_speed = final_move_speed
 
 	emit_signal("stats_updated")

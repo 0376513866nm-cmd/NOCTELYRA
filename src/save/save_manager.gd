@@ -384,6 +384,7 @@ static func load_game(world: Node) -> bool:
 	px = clamp(px, 50.0, 6200.0)
 	py = clamp(py, 100.0, 700.0)
 	player.global_position = Vector2(px, py)
+	player.reset_physics_interpolation()
 
 	var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
 	if p_health:

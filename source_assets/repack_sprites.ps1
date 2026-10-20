@@ -62,11 +62,11 @@ if (Test-Path $idleStrip) {
     Repack-Strip -StripPath $idleStrip -OutputPath $idleOut -FrameCount 48 -Cols 8 -Rows 6 -TargetFrameWidth 256 -TargetFrameHeight 340
 }
 
-# 2. Run Atlas: 14 frames, 4 cols x 4 rows, 256x340 per frame -> 1024x1360
+# 2. Run Atlas: 16 sequential frames, 4 cols x 4 rows, 256x340 per frame -> 1024x1360
 $runStrip = Join-Path $ScriptDir "player_run_strip.png"
 $runOut = Join-Path $TargetDir "player_run_atlas.png"
 if (Test-Path $runStrip) {
-    Repack-Strip -StripPath $runStrip -OutputPath $runOut -FrameCount 14 -Cols 4 -Rows 4 -TargetFrameWidth 256 -TargetFrameHeight 340
+    Repack-Strip -StripPath $runStrip -OutputPath $runOut -FrameCount 16 -Cols 4 -Rows 4 -TargetFrameWidth 256 -TargetFrameHeight 340
 }
 
 Write-Host "Repack complete!"

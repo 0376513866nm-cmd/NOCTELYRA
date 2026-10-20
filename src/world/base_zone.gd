@@ -1,6 +1,8 @@
 class_name BaseZone
 extends Node2D
 
+const SettingsManager = preload("res://src/ui/settings_manager.gd")
+
 ## Lớp cơ sở (Base Zone) cho tất cả các vùng đất trong NOCTELYRA (Milestone M6, M6.1)
 ## Cung cấp kiến trúc mở rộng thế giới, vòng lặp tham chiếu chung,
 ## đồng bộ trạng thái người chơi, camera bám sát player,
@@ -132,6 +134,7 @@ func setup_camera() -> void:
 			remote.update_scale = false
 			player.add_child(remote)
 		remote.remote_path = cam.get_path()
+		cam.zoom = Vector2(SettingsManager.camera_zoom, SettingsManager.camera_zoom)
 
 func snap_camera_to_player() -> void:
 	if player == null:

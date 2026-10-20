@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://c7v1n8m3q2k4"]
+[gd_scene load_steps=20 format=3 uid="uid://c7v1n8m3q2k4"]
 
 [ext_resource type="Script" path="res://src/world/noctis_forest.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
@@ -13,6 +13,10 @@
 [ext_resource type="PackedScene" uid="uid://c4k2m8p1q7v5" path="res://src/boss/boss_lunareth.tscn" id="11_boss"]
 [ext_resource type="PackedScene" uid="uid://c6zp01y4k8v2" path="res://src/world/zone_portal.tscn" id="12_portal"]
 [ext_resource type="Script" path="res://src/world/zone_spawn_point.gd" id="13_spawn"]
+[ext_resource type="Texture2D" path="res://assets/environment/noctis_sky.png" id="14_sky"]
+[ext_resource type="Texture2D" path="res://assets/environment/noctis_moon.png" id="15_moon"]
+[ext_resource type="Texture2D" path="res://assets/environment/noctis_mountains.png" id="16_mountains"]
+[ext_resource type="Texture2D" path="res://assets/environment/noctis_forest_far.png" id="17_forest"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(6800, 100)
@@ -46,6 +50,38 @@ game_ui = NodePath("../GameUI")
 script = ExtResource("7_quest")
 
 [node name="GameUI" parent="." instance=ExtResource("5_ui")]
+
+[node name="ParallaxBackdrop" type="Node2D" parent="."]
+z_index = -12
+
+[node name="Sky" type="TextureRect" parent="ParallaxBackdrop"]
+offset_left = -800.0
+offset_top = -500.0
+offset_right = 7200.0
+offset_bottom = 750.0
+texture = ExtResource("14_sky")
+stretch_mode = 1
+
+[node name="Moon" type="Sprite2D" parent="ParallaxBackdrop"]
+position = Vector2(500, 160)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("15_moon")
+
+[node name="Mountains" type="TextureRect" parent="ParallaxBackdrop"]
+offset_left = -800.0
+offset_top = 220.0
+offset_right = 7200.0
+offset_bottom = 720.0
+texture = ExtResource("16_mountains")
+stretch_mode = 1
+
+[node name="ForestFar" type="TextureRect" parent="ParallaxBackdrop"]
+offset_left = -800.0
+offset_top = 240.0
+offset_right = 7200.0
+offset_bottom = 740.0
+texture = ExtResource("17_forest")
+stretch_mode = 1
 
 [node name="Background_Zone1_Village" type="ColorRect" parent="."]
 offset_left = -200.0
@@ -228,6 +264,20 @@ offset_top = -50.0
 offset_right = 3400.0
 offset_bottom = 50.0
 color = Color(0.14, 0.17, 0.24, 1)
+
+[node name="GrassTrim" type="ColorRect" parent="Geometry/Ground"]
+offset_left = -3400.0
+offset_top = -50.0
+offset_right = 3400.0
+offset_bottom = -44.0
+color = Color(0.26, 0.52, 0.38, 1)
+
+[node name="SoilAccent" type="ColorRect" parent="Geometry/Ground"]
+offset_left = -3400.0
+offset_top = -44.0
+offset_right = 3400.0
+offset_bottom = -40.0
+color = Color(0.18, 0.28, 0.24, 1)
 
 [node name="LeftWall" type="StaticBody2D" parent="Geometry"]
 position = Vector2(-40, 320)

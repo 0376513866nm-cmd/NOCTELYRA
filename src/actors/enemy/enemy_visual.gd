@@ -22,13 +22,31 @@ func _ready() -> void:
 func apply_type_style(type_id: String) -> void:
 	enemy_type_id = type_id
 
+	var sprite_root = get_node_or_null("SpriteRoot")
+	var anim_player: AnimationPlayer = get_node_or_null("AnimationPlayer") as AnimationPlayer
+
 	# Xóa các chi tiết cũ nếu có
 	if detail_node:
 		for c in detail_node.get_children():
 			c.queue_free()
 
 	match type_id:
+		"corrupted_wolf":
+			# Sói Tha Hóa Rừng Noctis: Hoạt ảnh sprite hoàn chỉnh từ bản Thiên Khí
+			_base_color = Color(0.8, 0.2, 0.2)
+			if sprite_root:
+				sprite_root.visible = true
+			if main_body:
+				main_body.visible = false
+			if anim_player and anim_player.has_animation("idle"):
+				anim_player.play("idle")
+				anim_player.advance(0.0)
+
 		"corrupted_mooncap":
+			if sprite_root:
+				sprite_root.visible = false
+			if main_body:
+				main_body.visible = true
 			# Nấm Mộng Tha Hóa: Thân nấm màu tím xanh, mũ nấm có đốm sáng
 			_base_color = Color(0.55, 0.25, 0.85) # Tím ma thuật
 			if main_body:
@@ -128,10 +146,13 @@ func apply_type_style(type_id: String) -> void:
 		_:
 			# Mặc định: Sói tha hóa Rừng Noctis
 			_base_color = Color(0.8, 0.2, 0.2)
+			if sprite_root:
+				sprite_root.visible = true
 			if main_body:
-				main_body.size = Vector2(32, 32)
-				main_body.position = Vector2(-16, -32)
-				main_body.color = _base_color
+				main_body.visible = false
+			if anim_player and anim_player.has_animation("idle"):
+				anim_player.play("idle")
+				anim_player.advance(0.0)
 
 func _process(delta: float) -> void:
 	_anim_time += delta
@@ -142,16 +163,24 @@ func _process(delta: float) -> void:
 func set_visual_state(state_name: String) -> void:
 	current_state = state_name
 
-	# Nếu có AnimatedSprite2D trong tương lai, gọi:
-	var anim_sprite = get_node_or_null("AnimatedSprite2D")
-	if anim_sprite and anim_sprite.has_method("play") and anim_sprite.sprite_frames and anim_sprite.sprite_frames.has_animation(state_name):
-		anim_sprite.play(state_name)
+	var sprite_root = get_node_or_null("SpriteRoot")
+	var anim_player: AnimationPlayer = get_node_or_null("AnimationPlayer") as AnimationPlayer
+
+	if (enemy_type_id == "corrupted_wolf" or enemy_type_id == "") and sprite_root and anim_player:
+		if main_body:
+			main_body.visible = false
+		sprite_root.visible = true
+		if anim_player.has_animation(state_name):
+			anim_player.play(state_name)
+			anim_player.advance(0.0)
 		return
+
+	if sprite_root:
+		sprite_root.visible = false
+	if main_body:
+		main_body.visible = true
 
 	# Xử lý hiệu ứng màu / hình dạng placeholder
-	if main_body == null:
-		return
-
 	match state_name:
 		"idle":
 			main_body.color = _base_color

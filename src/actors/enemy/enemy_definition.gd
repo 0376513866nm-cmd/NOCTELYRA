@@ -123,11 +123,12 @@ static func create_default(type_id: String) -> EnemyDefinition:
 			def.detection_range = 380.0
 			def.attack_range = 55.0
 			def.attack_damage = 15.0
-			def.attack_cooldown = 1.2
+			def.attack_cooldown = 1.4
 			def.attack_type = AttackType.MELEE
 			def.patrol_radius = 150.0
-			def.leash_distance = 500.0
-			def.telegraph_duration = 0.35
+			def.leash_distance = 650.0
+			def.telegraph_duration = 0.4
+			def.attack_duration = 0.65
 			def.recovery_duration = 0.5
 			def.is_flying = false
 

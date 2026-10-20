@@ -28,20 +28,8 @@ func _enter_tree() -> void:
 	init_references()
 
 func _ready() -> void:
-	process_mode = Node.PROCESS_MODE_PAUSABLE
 	init_references()
-	setup_signals()
-	setup_camera()
-	setup_ui()
-
-	if SaveManager.should_load_on_start:
-		SaveManager.should_load_on_start = false
-		SaveManager.load_game(self)
-
-	ZoneManager.on_zone_entered(self)
-
-	setup_ui()
-	snap_camera_to_player()
+	super._ready()
 
 func init_references() -> void:
 	init_base_references()
