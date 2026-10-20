@@ -25,6 +25,10 @@ func _wait_seconds(seconds: float) -> void:
 	await create_timer(seconds).timeout
 
 func _run_suite() -> void:
+	# Cách ly dữ liệu kiểm thử M3.1: Sử dụng file save test riêng
+	SaveManager.custom_save_path = "user://noctelyra_test_slot.json"
+	SaveManager.delete_save()
+
 	# Khởi tạo ItemDatabase
 	ItemDatabase.initialize()
 
@@ -236,7 +240,7 @@ func _run_suite() -> void:
 
 	print("\n--- TEST 14: File save hỏng không làm game crash ---")
 	# Ghi chuỗi JSON hỏng vào file save
-	var bad_file := FileAccess.open(SaveManager.SAVE_PATH, FileAccess.WRITE)
+	var bad_file := FileAccess.open(SaveManager.get_save_path(), FileAccess.WRITE)
 	bad_file.store_string("CORRUPTED_JSON_DATA_!@#$%^&*()")
 	bad_file.close()
 
@@ -271,6 +275,10 @@ func _run_suite() -> void:
 	print(" [NOCTELYRA M3] KẾT QUẢ KIỂM THỬ TỔNG HỢP:")
 	print(" Tổng số test: %d | Đạt: %d | Thất bại: %d" % [tests_run, tests_run - failures, failures])
 	print("==================================================")
+
+	# Dọn dẹp an toàn file test sau khi kết thúc
+	SaveManager.delete_save()
+	SaveManager.custom_save_path = ""
 
 	if failures == 0:
 		print(">>> ALL 15 M3 REQUIREMENT PHASES PASSED 100%! <<<")

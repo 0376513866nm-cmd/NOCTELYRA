@@ -10,7 +10,7 @@ signal notification_posted(message: String)
 
 @export var current_quest: QuestData
 var gold: int = 0
-var _killed_enemy_ids: Array[int] = []
+var _killed_enemy_ids: Array[String] = []
 
 func _ready() -> void:
 	if current_quest == null:
@@ -30,11 +30,18 @@ func register_enemy_kill(enemy: Node) -> void:
 	if current_quest == null or current_quest.current_state != QuestData.State.ACTIVE:
 		return
 	
-	var enemy_id := enemy.get_instance_id()
-	if enemy_id in _killed_enemy_ids:
-		return # Đảm bảo mỗi quái chỉ tính 1 lần
+	var kill_id: String = ""
+	if enemy != null and "enemy_id" in enemy and not str(enemy.enemy_id).is_empty():
+		kill_id = str(enemy.enemy_id)
+	elif enemy != null:
+		kill_id = "inst_" + str(enemy.get_instance_id())
+	else:
+		return
+
+	if kill_id in _killed_enemy_ids:
+		return # Đảm bảo mỗi quái chỉ tính 1 lần theo ID ổn định
 	
-	_killed_enemy_ids.append(enemy_id)
+	_killed_enemy_ids.append(kill_id)
 	current_quest.current_amount += 1
 	emit_signal("quest_progress_updated", current_quest)
 	emit_signal("notification_posted", "Tiến độ: %d/%d sinh vật tha hóa" % [current_quest.current_amount, current_quest.target_amount])

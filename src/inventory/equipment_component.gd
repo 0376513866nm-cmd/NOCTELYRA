@@ -114,9 +114,10 @@ func load_from_dict(data: Dictionary) -> void:
 	equipped_weapon = str(data.get("weapon", ""))
 	equipped_accessory = str(data.get("accessory", ""))
 
-	if not ItemDatabase.has_item(equipped_weapon):
+	# Kiểm tra tồn tại trong DB và đúng loại trang bị (M3.1 validation)
+	if not ItemDatabase.has_item(equipped_weapon) or ItemDatabase.get_item(equipped_weapon).item_type != ItemDefinition.ItemType.WEAPON:
 		equipped_weapon = ""
-	if not ItemDatabase.has_item(equipped_accessory):
+	if not ItemDatabase.has_item(equipped_accessory) or ItemDatabase.get_item(equipped_accessory).item_type != ItemDefinition.ItemType.ACCESSORY:
 		equipped_accessory = ""
 
 	_recalculate_stats()

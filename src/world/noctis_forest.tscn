@@ -281,16 +281,19 @@ enemy_id = "enemy_forest_3"
 position = Vector2(320, 640)
 item_id = "health_potion"
 amount = 2
+pickup_id = "pickup_village_potion_1"
 
 [node name="TestPickup_Sword" parent="." instance=ExtResource("9_pickup")]
 position = Vector2(420, 640)
 item_id = "moonsteel_sword"
 amount = 1
+pickup_id = "pickup_village_sword_1"
 
 [node name="TestPickup_Amulet" parent="." instance=ExtResource("9_pickup")]
 position = Vector2(680, 640)
 item_id = "moon_amulet"
 amount = 1
+pickup_id = "pickup_village_amulet_1"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(180, 630)

@@ -181,6 +181,8 @@ func _spawn_loot() -> void:
 			var pickup := pickup_scene.instantiate() as ItemPickup
 			pickup.item_id = "mana_shard"
 			pickup.amount = 1
+			pickup.is_dynamic = true
+			pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
 			pickup.global_position = global_position
 			spawn_parent.add_child.call_deferred(pickup)
 

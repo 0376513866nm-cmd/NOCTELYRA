@@ -8,6 +8,7 @@ var pause_controller: PauseController
 var npc_elyra: NPC
 var interaction_coordinator: InteractionCoordinator
 var defeated_enemy_ids: Array = []
+var collected_pickup_ids: Array = []
 
 func _enter_tree() -> void:
 	init_references()
@@ -82,6 +83,67 @@ func _on_enemy_defeated(enemy_node: Node) -> void:
 	if enemy_node is Enemy and not enemy_node.enemy_id.is_empty():
 		if not enemy_node.enemy_id in defeated_enemy_ids:
 			defeated_enemy_ids.append(enemy_node.enemy_id)
+
+func register_collected_pickup(p_id: String) -> void:
+	if not p_id.is_empty() and not p_id in collected_pickup_ids:
+		collected_pickup_ids.append(p_id)
+
+func get_dropped_pickups_data() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var dyn_pickups = get_tree().get_nodes_in_group("dynamic_pickups")
+	for p in dyn_pickups:
+		if p is ItemPickup and is_instance_valid(p) and not p.is_picked_up and not p.is_queued_for_deletion():
+			result.append({
+				"pickup_id": p.pickup_id,
+				"item_id": p.item_id,
+				"amount": p.amount,
+				"x": p.global_position.x,
+				"y": p.global_position.y
+			})
+	return result
+
+func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_defeated_ids: Array) -> void:
+	collected_pickup_ids.clear()
+	for id in p_collected_ids:
+		collected_pickup_ids.append(str(id))
+
+	defeated_enemy_ids.clear()
+	for id in p_defeated_ids:
+		defeated_enemy_ids.append(str(id))
+
+	# 1. Dọn các vật phẩm đặt sẵn đã từng nhặt
+	var preplaced = get_tree().get_nodes_in_group("preplaced_pickups")
+	for p in preplaced:
+		if p is ItemPickup and not p.pickup_id.is_empty():
+			if p.pickup_id in collected_pickup_ids:
+				p.queue_free()
+
+	# 2. Xóa các dynamic pickup cũ trước khi phục hồi danh sách lưu (tránh nhân bản)
+	var existing_dyn = get_tree().get_nodes_in_group("dynamic_pickups")
+	for p in existing_dyn:
+		if is_instance_valid(p):
+			p.queue_free()
+
+	# 3. Phục hồi các vật phẩm quái rơi chưa nhặt
+	var pickup_scene: PackedScene = preload("res://src/loot/item_pickup.tscn")
+	for dp in p_dropped_pickups:
+		if dp is Dictionary:
+			var p := pickup_scene.instantiate() as ItemPickup
+			p.pickup_id = str(dp.get("pickup_id", ""))
+			p.item_id = str(dp.get("item_id", "mana_shard"))
+			p.amount = max(1, int(dp.get("amount", 1)))
+			p.is_dynamic = true
+			var px: float = float(dp.get("x", 0.0))
+			var py: float = float(dp.get("y", 0.0))
+			p.global_position = Vector2(px, py)
+			add_child(p)
+
+	# 4. Xóa các quái đã chết
+	var enemies = get_tree().get_nodes_in_group("enemies")
+	for e in enemies:
+		if e is Enemy and not e.enemy_id.is_empty():
+			if e.enemy_id in defeated_enemy_ids:
+				e.queue_free()
 
 func _on_player_state_changed(st_name: String) -> void:
 	if game_ui:

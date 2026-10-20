@@ -1,11 +1,13 @@
 class_name ItemPickup
 extends Area2D
 
-## Vật phẩm rơi trên mặt đất (Loot Pickup) cho NOCTELYRA (M3)
-## Tự động nhặt khi Player đi qua nếu túi đồ còn chỗ. Nếu đầy thì giữ nguyên trên đất.
+## Vật phẩm rơi trên mặt đất (Loot Pickup) cho NOCTELYRA (M3.1)
+## Hỗ trợ pickup_id ổn định cho vật phẩm đặt sẵn và khôi phục vật phẩm rơi động.
 
 @export var item_id: String = "mana_shard"
 @export var amount: int = 1
+@export var pickup_id: String = ""
+@export var is_dynamic: bool = false
 
 @onready var icon_sprite: Sprite2D = $IconSprite
 @onready var label: Label = $Label
@@ -21,6 +23,16 @@ func _ready() -> void:
 	_base_y = position.y
 	_update_visuals()
 	body_entered.connect(_on_body_entered)
+
+	if is_dynamic:
+		add_to_group("dynamic_pickups")
+	else:
+		add_to_group("preplaced_pickups")
+		# Nếu là vật phẩm đặt sẵn đã được lưu là đã nhặt thì tự hủy
+		var cur_scene = get_tree().current_scene if get_tree() else null
+		if cur_scene and "collected_pickup_ids" in cur_scene:
+			if pickup_id in cur_scene.collected_pickup_ids:
+				queue_free()
 
 func setup(p_item_id: String, p_amount: int = 1) -> void:
 	item_id = p_item_id
@@ -58,6 +70,12 @@ func _on_body_entered(body: Node) -> void:
 			var left := inv.add_item(item_id, amount)
 			var def := ItemDatabase.get_item(item_id)
 			var item_name := def.display_name if def else item_id
+
+			# Ghi nhận ID đã nhặt nếu là vật phẩm đặt sẵn
+			if not is_dynamic and not pickup_id.is_empty():
+				var cur_scene = get_tree().current_scene if get_tree() else null
+				if cur_scene and cur_scene.has_method("register_collected_pickup"):
+					cur_scene.register_collected_pickup(pickup_id)
 
 			# Thông báo nhặt đồ lên HUD
 			var ui := _get_game_ui()

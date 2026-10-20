@@ -1,17 +1,18 @@
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M3 FINAL)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M3.1 FINAL)
 
 Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M3)
+## 1. Cấu trúc thư mục & Module dự án (Bản M3.1)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu hướng dẫn, kiến trúc, sơ đồ & kết quả kiểm thử
-├── CODE_EXPORT.txt                 # Mã nguồn tổng hợp toàn dự án cho AI review
-├── test_m3_flow.gd                 # [MỚI M3] Kịch bản kiểm thử tự động 15 giai đoạn M3 (67/67 tests PASS)
+├── README.md                       # Tài liệu hướng dẫn, kiến trúc, sơ đồ & kết quả kiểm thử M3.1
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review
+├── test_m3_1_flow.gd               # [MỚI M3.1] Kịch bản kiểm thử tự động 10 danh mục M3.1 (41/41 tests PASS)
+├── test_m3_flow.gd                 # Kịch bản kiểm thử tự động 15 giai đoạn M3 (67/67 tests PASS)
 ├── test_m2_1_flow.gd               # Kịch bản kiểm thử hồi quy M2.1 (42/42 tests PASS)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
 ├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus)
@@ -57,22 +58,22 @@ D:\project\game\NOCTELYRA\
     ├── interaction\
     │   ├── interaction_coordinator.gd       # Bộ điều phối Input tập trung cho tương tác & hội thoại
     │   └── interaction_component.gd         # Area2D tương tác nhận diện Player phạm vi gần
-    ├── inventory\                           # [MỚI M3] HỆ THỐNG VẬT PHẨM & TRANG BỊ
+    ├── inventory\                           # HỆ THỐNG VẬT PHẨM & TRANG BỊ
     │   ├── item_definition.gd               # Resource định nghĩa vật phẩm chuẩn (ID, tên, loại, chỉ số, công dụng)
     │   ├── item_database.gd                 # Registry tra cứu vật phẩm ổn định theo ID
     │   ├── inventory_component.gd           # Component quản lý túi đồ 16 ô (thêm, xóa, stack, dùng)
-    │   ├── equipment_component.gd           # Component quản lý 2 ô trang bị (Weapon, Accessory) & tính chỉ số
+    │   ├── equipment_component.gd           # [CẬP NHẬT M3.1] Quản lý 2 ô trang bị & thẩm định type an toàn khi load
     │   ├── inventory_ui.gd                  # Controller giao diện túi đồ, lưới 16 ô, xem chi tiết & nút bấm
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ đẹp mắt, hỗ trợ chuột và cảm ứng
-    ├── loot\                                # [MỚI M3] HỆ THỐNG RƠI ĐỒ VÀ NHẶT VẬT PHẨM
+    ├── loot\                                # HỆ THỐNG RƠI ĐỒ VÀ NHẶT VẬT PHẨM
     │   ├── loot_table.gd                    # Resource định nghĩa bảng tỷ lệ rơi đồ của quái vật
-    │   ├── item_pickup.gd                   # Entity vật phẩm rơi trên mặt đất, tự nhặt khi chạm
+    │   ├── item_pickup.gd                   # [CẬP NHẬT M3.1] Gán pickup_id ổn định, tự hủy nếu đã nhặt trước đó
     │   └── item_pickup.tscn                 # Scene vật phẩm rơi với hiệu ứng nhấp nhô lơ lửng
     ├── quest\
     │   ├── quest_data.gd                    # Resource dữ liệu nhiệm vụ (4 trạng thái FSM)
-    │   └── quest_manager.gd                 # Quản lý vòng lặp nhiệm vụ, tiến độ 3/3 và trả thưởng Vàng
-    ├── save\                                # [MỚI M3] HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
-    │   └── save_manager.gd                  # Lưu file JSON user://noctelyra_slot1.json ghi tạm nguyên tử
+    │   └── quest_manager.gd                 # [CẬP NHẬT M3.1] Quản lý quest, lưu enemy_id chuỗi ổn định xuyên suốt
+    ├── save\                                # HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
+    │   └── save_manager.gd                  # [VIẾT LẠI M3.1] Ghi nguyên tử an toàn (atomic), backup .bak, validate & clamp toàn bộ
     ├── ui\
     │   ├── game_ui.gd                       # HUD, thanh máu, phím I mở túi đồ, PauseMenu tích hợp Save Game
     │   ├── game_ui.tscn                     # CanvasLayer giao diện in-game
@@ -80,51 +81,47 @@ D:\project\game\NOCTELYRA\
     │   ├── main_menu.gd                     # Màn hình chính: Chơi mới (xác nhận ghi đè), Tiếp tục, Thoát
     │   └── main_menu.tscn                   # Scene Main Menu
     └── world\
-        ├── noctis_forest.gd                 # Main Scene: kết nối rơi đồ, lưu danh sách quái đã diệt
-        ├── noctis_forest.tscn               # Màn chơi Bìa Rừng Noctis đặt sẵn các vật phẩm test
-        ├── test_level.gd                    # Màn test M1 cũ (vẫn được lưu giữ)
+        ├── noctis_forest.gd                 # [CẬP NHẬT M3.1] Quản lý pickup nhặt/rơi, khôi phục trạng thái thế giới
+        ├── noctis_forest.tscn               # Màn chơi Bìa Rừng Noctis với ID pickup ổn định cho làng
+        ├── test_level.gd                    # Màn test M1 cũ
         └── test_level.tscn
 ```
 
 ---
 
-## 2. Sơ đồ kiến trúc Module M3
+## 2. Nâng cấp cốt lõi trong phiên bản M3.1
 
-```text
-               ┌────────────────────────────────────────────────────────┐
-               │                       MainMenu                         │
-               │    [Continue (có save)]   [New Game]   [Quit]          │
-               └───────────────────────────┬────────────────────────────┘
-                                           │
-                                           ▼
-               ┌────────────────────────────────────────────────────────┐
-               │                  NoctisForest (World)                  │
-               │                                                        │
-               │   ┌──────────────┐   ┌──────────────┐   ┌───────────┐  │
-               │   │    Player    │   │  NPC Elyra   │   │  Enemies  │  │
-               │   │ ──────────── │   │ ──────────── │   │ ───────── │  │
-               │   │ Inventory    │   │ Dialogue [E] │   │ LootTable │  │
-               │   │ Equipment    │   │ Quest Loop   │   │ Drops [M] │  │
-               │   │ Combat / HP  │   └──────────────┘   └─────┬─────┘  │
-               │   └──────┬───────┘                            │        │
-               │          │ (nhặt đồ khi còn chỗ)              │ rơi đồ │
-               │          ▼                                    ▼        │
-               │   ┌─────────────────────────────────────────────────┐  │
-               │   │            ItemPickup (Vật phẩm rơi)            │  │
-               │   └─────────────────────────────────────────────────┘  │
-               └───────────────────────────┬────────────────────────────┘
-                                           │
-         ┌─────────────────────────────────┼─────────────────────────────────┐
-         ▼                                 ▼                                 ▼
-┌──────────────────┐             ┌──────────────────┐             ┌──────────────────┐
-│   GameUI (HUD)   │             │   SaveManager    │             │   ItemDatabase   │
-│ ──────────────── │             │ ──────────────── │             │ ──────────────── │
-│ HP/MP, Vàng, Q   │             │ user://slot1.json│             │ mana_shard       │
-│ Inventory UI [I] │ ◄────────── │ Atomic tmp write │             │ health_potion    │
-│ Pause Menu [Esc] │  (AutoSave  │ Defeated Enemies │             │ moonsteel_sword  │
-│ [Save Game Btn]  │   khi xong) │ Clamping & Safe  │             │ moon_amulet      │
-└──────────────────┘             └──────────────────┘             └──────────────────┘
-```
+### 2.1. Quản lý trạng thái vật phẩm trên thế giới (World Pickup Persistence)
+- **Vật phẩm đặt sẵn (Pre-placed Pickups):**
+  - Gán `pickup_id` cố định: `pickup_village_potion_1`, `pickup_village_sword_1`, `pickup_village_amulet_1`.
+  - Khi nhặt, ID được ghi vào `collected_pickup_ids` trong bản lưu. Khi tải game, nếu ID đã có trong danh sách đã nhặt, node tự động `queue_free()`, **không xuất hiện lần hai**.
+- **Vật phẩm quái rơi (Dynamic Drops):**
+  - Quái vật rơi đồ được gán cờ `is_dynamic = true` và `pickup_id` duy nhất dạng `drop_<item_id>_<timestamp>_<rand>`.
+  - Nếu quái chết và rơi đồ nhưng Player chưa nhặt trước khi Lưu: Vị trí và số lượng vật phẩm rơi được lưu vào mảng `dropped_pickups`. Khi Tải, thế giới tái tạo chính xác các vật phẩm này trên mặt đất.
+  - Khi nhặt đồ rơi thành công rồi Lưu/Tải: Vật phẩm KHÔNG bị nhân bản trên mặt đất.
+
+### 2.2. Kiến trúc SaveManager nguyên tử (Atomic & Safe Save System)
+- **Không bao giờ xóa file save cũ trước khi hoàn tất ghi:**
+  1. Dữ liệu được ghi ra file tạm `.tmp`.
+  2. Mở lại file tạm đọc và parse JSON để xác minh toàn vẹn cú pháp.
+  3. Tạo bản sao lưu dự phòng `.bak` từ file save hiện tại (nếu có).
+  4. Đổi tên file tạm `.tmp` đè lên file save chính thức.
+  5. Nếu bất kỳ bước nào thất bại, hệ thống khôi phục ngay từ `.bak`, đảm bảo người chơi **không bao giờ bị mất save** khi xảy ra lỗi đột ngột.
+- **Thẩm định dữ liệu sâu (Deep Validation & Clamping):**
+  - Tọa độ Player: Giới hạn trong kích thước bản đồ hợp lệ `(-1000..5000, -500..1500)`.
+  - HP / MP: Clamp trong khoảng `[0, Max]` (không bị âm hoặc vượt trần).
+  - Vàng (Gold): Clamp `>= 0`.
+  - Túi đồ: Bỏ qua slot rỗng, kiểm tra `ItemDatabase.has_item(id)` và clamp số lượng `[1, max_stack]`.
+  - Trang bị: Kiểm tra bắt buộc đúng phân loại item (`WEAPON` cho slot vũ khí, `ACCESSORY` cho slot bùa/phụ kiện). Nếu file JSON bị sửa đổi hoặc gắn sai loại, tự động loại bỏ để chống crash.
+  - Tiến độ nhiệm vụ: Validate `kill_count` trong khoảng `[0, required_kills]`.
+
+### 2.3. Định danh kẻ địch ổn định (Stable Enemy ID Tracking)
+- Kẻ địch trong thế giới có định danh chuỗi ổn định (`enemy_forest_1`, `enemy_forest_2`, `enemy_forest_3`).
+- `QuestManager` lưu danh sách tiêu diệt bằng mảng chuỗi `_killed_enemy_ids: Array[String]`, không dựa vào `get_instance_id()` tạm thời của engine. Nhờ đó, trạng thái nhiệm vụ và danh sách quái đã diệt được đồng bộ hoàn hảo sau khi Save/Load.
+
+### 2.4. Cách ly hoàn toàn dữ liệu kiểm thử (Test Isolation)
+- Hỗ trợ `SaveManager.custom_save_path`: Toàn bộ các script test (`test_m3_1_flow.gd`, `test_m3_flow.gd`) sử dụng file test riêng (`user://noctelyra_m3_1_test.json`), tự động dọn dẹp sau khi chạy.
+- File save thật của người chơi (`user://noctelyra_slot1.json`) được bảo toàn 100%, không bị ảnh hưởng hay ghi đè bởi bộ kiểm thử tự động.
 
 ---
 
@@ -138,7 +135,7 @@ D:\project\game\NOCTELYRA\
 | **J** | **Đánh thường (Melee)** | Chém cận chiến (cơ bản 25 DMG, trang bị Kiếm thành 35 DMG) |
 | **K** | **Ma pháp (Magic Spell)** | Bắn quả cầu ma pháp (30 DMG), tiêu hao 15 MP |
 | **E** | **Tương tác (Interact)** | Nói chuyện với Elyra; duyệt/đóng câu hội thoại |
-| **I** | **Túi đồ (Inventory)** | **[MỚI M3]** Mở/đóng Túi đồ & Trang bị (không pause thế giới) |
+| **I** | **Túi đồ (Inventory)** | Mở/đóng Túi đồ & Trang bị (không pause thế giới) |
 | **Esc** | Pause / Thoát | Đóng túi đồ nếu đang mở; hoặc Tạm dừng / Tiếp tục game |
 
 ---
@@ -147,7 +144,7 @@ D:\project\game\NOCTELYRA\
 
 1. **Tinh thể Ma lực (`mana_shard`)**:
    - Loại: *Nguyên liệu (Material)*. Xếp chồng tối đa 99. Giá trị: 5 Vàng.
-   - 100% rơi từ 3 sinh vật ma nhiễm trong Rừng Hắc Nguyệt.
+   - Rơi 100% từ sinh vật ma nhiễm trong Rừng Hắc Nguyệt.
 2. **Bình Sinh Lực (`health_potion`)**:
    - Loại: *Tiêu hao (Consumable)*. Xếp chồng tối đa 20. Giá trị: 15 Vàng.
    - Hồi ngay lập tức 30 HP (giới hạn theo Max HP, không tràn máu). Giảm 1 bình sau khi dùng. Không thể uống khi Player đã chết (HP = 0).
@@ -162,143 +159,129 @@ D:\project\game\NOCTELYRA\
 
 ## 5. Báo cáo kiểm thử tự động thực tế trên Godot 4.3 Engine
 
-File kiểm thử tích hợp đầy đủ [`test_m3_flow.gd`](file:///D:/project/game/NOCTELYRA/test_m3_flow.gd) được bàn giao trực tiếp trong project. Đã chạy thử nghiệm thực tế bằng Godot Console (`Godot_v4.3-stable_win64_console.exe --headless -s test_m3_flow.gd`):
+### 5.1. Kết quả kiểm thử M3.1 (`test_m3_1_flow.gd`) — 41/41 Tests PASS (100%)
+
+Chạy thực tế qua lệnh:
+`& "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "d:\project\game\NOCTELYRA" -s "test_m3_1_flow.gd"`
 
 ```text
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 ==================================================
- [NOCTELYRA M3] INTEGRATION TEST SUITE STARTING   
+ [NOCTELYRA M3.1] INTEGRATION TEST SUITE STARTING 
 ==================================================
-  [PASS] Player khởi tạo thành công
-  [PASS] InventoryComponent gắn vào Player thành công
-  [PASS] EquipmentComponent gắn vào Player thành công
-  [PASS] InventoryUI tích hợp trong GameUI thành công
 
---- TEST 1: Thêm vật phẩm vào Inventory ---
-  [PASS] add_item thêm đủ 5 mana_shard (không thừa)
-  [PASS] Tổng số lượng mana_shard trong túi là 5
-  [PASS] Ô số 0 lưu đúng ID và số lượng 5
+--- TEST 1: Nhặt vật phẩm đặt sẵn -> Save -> Tạo lại World -> Load -> Không xuất hiện lần 2 ---
+  [PASS] Vật phẩm Kiếm đặt sẵn có pickup_id ổn định ('pickup_village_sword_1')
+  [PASS] Player đã nhặt được Kiếm Ánh Trăng
+  [PASS] Đã trang bị Kiếm, sát thương đạt 35
+  [PASS] pickup_village_sword_1 đã được ghi vào collected_pickup_ids của world
+  [PASS] Lưu game thành công vào test save
+  [PASS] Nạp lại bản lưu vào World mới thành công
+  [PASS] Player vẫn giữ nguyên trang bị Kiếm Ánh Trăng
+  [PASS] Sát thương vẫn duy trì 35 sau khi tải
+  [PASS] Kiếm đặt sẵn tại làng ĐÃ BỊ LOẠI BỎ, không xuất hiện lần hai!
 
---- TEST 2: Stack vật phẩm đúng số lượng ---
-  [PASS] Ô 0 cộng dồn thành 95
-  [PASS] Thêm 10 mana_shard thành công
-  [PASS] Ô 0 đạt giới hạn max_stack 99
-  [PASS] Ô 1 tự động nhận 6 phần tử tràn stack
-  [PASS] Tổng số mana_shard trên 2 ô là 105
+--- TEST 2: Quái chết và rơi đồ -> Chưa nhặt -> Save -> Load -> Vật phẩm vẫn còn ---
+  [PASS] Thế giới ghi nhận ít nhất 1 vật phẩm rơi động chưa nhặt (thực tế: 1)
+  [PASS] Vật phẩm rơi từ quái chưa nhặt được khôi phục chính xác tại tọa độ (2500, 630)
 
---- TEST 3: Inventory đầy thì không làm mất vật phẩm trên đất ---
-  [PASS] Kiểm tra can_add_item trả về false khi túi đầy 16/16
-  [PASS] Pickup KHÔNG bị nhặt khi túi đồ đầy
-  [PASS] Pickup vẫn tồn tại nguyên vẹn trên mặt đất, không bị mất
-  [PASS] Túi đồ không có kiếm vì không nhặt được
+--- TEST 3: Nhặt đồ rơi -> Save -> Load -> Không bị nhân bản ---
+  [PASS] Đã nhặt 3 mana_shard vào túi
+  [PASS] Túi đồ giữ đúng số lượng mana_shard
+  [PASS] Vật phẩm rơi đã nhặt KHÔNG bị nhân bản trên mặt đất sau khi Load!
 
---- TEST 4: Nhặt một Pickup không bị cộng hai lần ---
-  [PASS] Đã có 1 ô trống, có thể nhặt kiếm
-  [PASS] Pickup1 đã được nhặt thành công
-  [PASS] Túi đồ nhận đúng 1 kiếm
-  [PASS] Cơ chế chống nhặt trùng: Không bị cộng lần thứ 2
+--- TEST 4: Inventory đầy -> Vật phẩm không bị mất trên đất ---
+  [PASS] Túi đầy 16/16: Pickup không bị nuốt mất
+  [PASS] Vật phẩm vẫn nằm nguyên vẹn trên mặt đất
 
---- TEST 5: Sử dụng bình máu hồi đúng 30 HP và giảm 1 bình ---
-  [PASS] HP ban đầu là 40/100
-  [PASS] Sử dụng bình máu thành công
-  [PASS] HP hồi đúng 30 đơn vị (40 -> 70)
-  [PASS] Số lượng bình giảm từ 3 xuống 2
-  [PASS] HP hồi đầy 100 (không vượt Max HP)
-  [PASS] Không thể sử dụng bình máu khi Player đã chết (HP = 0)
-  [PASS] Bình máu không bị trừ khi dùng thất bại
+--- TEST 5: Save lỗi -> Giữ nguyên bản lưu trước đó (Atomic Safety) ---
+  [PASS] Đã có bản lưu hợp lệ hiện hữu
+  [PASS] Hàm save_game trả về false khi gặp lỗi dữ liệu đầu vào
+  [PASS] Bản lưu hợp lệ trước đó vẫn nguyên vẹn 100%, không bị xóa hay ghi đè hỏng
 
---- TEST 6: Trang bị kiếm tăng sát thương từ 25 lên 35 ---
-  [PASS] Sát thương cơ bản ban đầu là 25
-  [PASS] Trước đó không có vũ khí
-  [PASS] Đã trang bị Kiếm Ánh Trăng
-  [PASS] Sát thương tăng chính xác lên 35 (25 + 10)
+--- TEST 6: JSON sai cấu trúc -> Continue không crash & Validate an toàn ---
+  [PASS] Hàm load_game xử lý an toàn không crash khi gặp kiểu dữ liệu sai
+  [PASS] HP được clamp về khoảng an toàn (0 - 100)
+  [PASS] MP được clamp không vượt quá Max MP
+  [PASS] Tọa độ Player được clamp trong giới hạn bản đồ hợp lệ
+  [PASS] Vàng được clamp >= 0, không bị âm
+  [PASS] Vũ khí không tồn tại tự động bị loại bỏ
+  [PASS] Trang bị sai loại tự động bị loại bỏ
 
---- TEST 7: Tháo kiếm trả sát thương về 25 ---
-  [PASS] Tháo ra đúng Kiếm Ánh Trăng
-  [PASS] Ô vũ khí hiện đang trống
-  [PASS] Sát thương được hoàn trả chính xác về 25
+--- TEST 7: Nhiệm vụ 2/3 -> Save -> Thoát World -> Continue -> Giữ đúng tiến độ ---
+  [PASS] Nhiệm vụ vẫn ở trạng thái ACTIVE
+  [PASS] Tiến độ nhiệm vụ giữ chính xác 2/3
+  [PASS] Số vàng giữ đúng 30 G
 
---- TEST 8: Trang bị/tháo bùa thay đổi Max MP đúng 20 ---
-  [PASS] Max MP cơ bản ban đầu là 60
-  [PASS] Đã trang bị Bùa Nguyệt Quang
-  [PASS] Max MP tăng chính xác lên 80 (60 + 20)
-  [PASS] Ô phụ kiện hiện đang trống
-  [PASS] Max MP hoàn trả chính xác về 60
-  [PASS] Current MP tự động giới hạn về 60, không bị tràn
+--- TEST 8: Quest COMPLETED -> Continue -> Không nhận lại 50 vàng ---
+  [PASS] Nhiệm vụ đã COMPLETED
+  [PASS] Nhận thưởng 50 Vàng lần đầu (30 + 50 = 80 G)
+  [PASS] Nhiệm vụ phục hồi trạng thái COMPLETED
+  [PASS] complete_quest từ chối trả thưởng lần 2
+  [PASS] Vàng vẫn giữ nguyên đúng 80 G, không nhận thêm thưởng lặp lại
 
---- TEST 9: Không cộng dồn chỉ số khi equip/unequip lặp lại ---
-  [PASS] Trang bị lặp lại 3 lần: Sát thương vẫn giữ nguyên 35, không bị cộng dồn
-  [PASS] Trang bị lặp lại bùa: Max MP vẫn giữ nguyên 80
-  [PASS] Sau khi tháo, cả hai chỉ số trở lại đúng giá trị gốc ban đầu
+--- TEST 9: Cách ly dữ liệu kiểm thử -> File save thật không bị ảnh hưởng ---
+  [PASS] File save thật vẫn tồn tại
+  [PASS] Nội dung file save thật hoàn toàn KHÔNG BỊ THAY ĐỔI hay ghi đè trong suốt bài test!
 
---- TEST 10: Lưu Inventory và Equipment rồi tải lại đúng ---
-  [PASS] Lưu game thành công vào file save slot 1
-  [PASS] RAM: Đã dọn sạch túi đồ
-  [PASS] RAM: Đã tháo sạch trang bị
-  [PASS] Tải game từ file save thành công
-  [PASS] Phục hồi đúng 18 mana_shard
-  [PASS] Phục hồi đúng 4 health_potion
-  [PASS] Phục hồi đúng trang bị Kiếm Ánh Trăng
-  [PASS] Phục hồi đúng trang bị Bùa Nguyệt Quang
-  [PASS] Chỉ số sát thương tính toán đúng 35 sau khi tải
-  [PASS] Chỉ số Max MP tính toán đúng 80 sau khi tải
-
---- TEST 11: Lưu và tải trạng thái nhiệm vụ 2/3 ---
-  [PASS] Phục hồi đúng trạng thái nhiệm vụ ACTIVE
-  [PASS] Phục hồi đúng tiến độ nhiệm vụ 2/3
-  [PASS] Phục hồi đúng số Vàng 75 G
-
---- TEST 12: Quái đã chết trước khi save không bị phục hồi sai sau khi load ---
-  [PASS] Quái enemy_forest_1 đã chết trước khi save không xuất hiện lại
-
---- TEST 13: Phần thưởng nhiệm vụ không nhận được lần hai ---
-  [PASS] complete_quest trả về false khi quest đã COMPLETED
-  [PASS] Vàng không bị cộng thêm lần 2
-
---- TEST 14: File save hỏng không làm game crash ---
-  [PASS] Hàm load_game trả về false khi file save hỏng JSON
-  [PASS] Game không bị crash khi load file hỏng, Player vẫn an toàn trong tree
-
---- TEST 15: Kiểm tra hồi quy các tính năng M0/M1/M2 ---
-  [PASS] NPC Elyra collision_layer = 0 (xuyên người)
-  [PASS] Hệ thống Double Jump M0 nguyên vẹn
-  [PASS] PauseController pause game thành công
-  [PASS] PauseController resume game thành công
-  [PASS] Mở InventoryUI thành công
-  [PASS] Đóng InventoryUI thành công
+--- TEST 10: Kiểm tra hồi quy các chức năng cốt lõi M0-M2.1 ---
+  [PASS] NPC Elyra collision_layer = 0 (Player xuyên người mượt mà)
+  [PASS] Hệ thống nhảy đôi M0 hoạt động
+  [PASS] PauseController hoạt động
+  [PASS] Pause game thành công
+  [PASS] Resume game thành công
 
 ==================================================
- [NOCTELYRA M3] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
- Tổng số test: 67 | Đạt: 67 | Thất bại: 0
+ [NOCTELYRA M3.1] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
+ Tổng số test: 41 | Đạt: 41 | Thất bại: 0
 ==================================================
->>> ALL 15 M3 REQUIREMENT PHASES PASSED 100%! <<<
+>>> ALL 10 M3.1 REQUIREMENT CATEGORIES PASSED 100%! <<<
 ```
 
+### 5.2. Kết quả kiểm thử hồi quy M3 (`test_m3_flow.gd`) — 67/67 Tests PASS (100%)
+Toàn bộ 15 giai đoạn kiểm thử M3 (thêm, stack, dùng bình máu, trang bị, tháo đồ, tính toán chỉ số, lưu tải cơ bản) đạt 67/67 tests PASS.
+
+### 5.3. Kết quả kiểm thử hồi quy M2.1 (`test_m2_1_flow.gd`) — 42/42 Tests PASS (100%)
+Toàn bộ vòng lặp nhiệm vụ, FSM hội thoại NPC Elyra, tiêu diệt quái, nhận thưởng đạt 42/42 tests PASS.
+
 ---
 
-## 6. Báo cáo lỗi còn tồn tại (Known Issues & Limitations)
+## 6. Danh sách lỗi đã xử lý triệt để trong M3.1
 
-- **Cơ chế lưu offline tạm thời:** Dữ liệu lưu tại `user://noctelyra_slot1.json` là bản lưu client-side cho chơi đơn. Khi tiến lên giai đoạn MMO-lite, toàn bộ dữ liệu vật phẩm, trang bị và kinh tế sẽ do Dedicated Server quản lý qua Authoritative RPC.
-- **Kéo - thả & chia stack:** UI M3 hiện tại sử dụng cơ chế Click chọn và nhấn nút thao tác (Use, Equip, Unequip, Drop) để tương thích tối đa cho cả chuột PC và màn hình cảm ứng Mobile; tính năng kéo thả slot (drag & drop) và chia stack số lượng sẽ được phát triển ở bản tối ưu UI tiếp theo.
+| STT | Vấn đề phát hiện | Giải pháp kiến trúc trong M3.1 | Kết quả xác minh |
+| :--- | :--- | :--- | :--- |
+| 1 | Vật phẩm đặt sẵn xuất hiện lại sau khi Load dù đã nhặt | Gán `pickup_id` ổn định, ghi vào `collected_pickup_ids`, tự `queue_free()` khi khởi tạo nếu đã nhặt | Test 1 PASS |
+| 2 | Vật phẩm rơi từ quái chưa nhặt bị biến mất sau khi Save/Load | Thu thập và nạp lại danh sách `dropped_pickups` với vị trí và số lượng đầy đủ | Test 2 PASS |
+| 3 | Vật phẩm rơi bị nhân bản nếu đã nhặt rồi Save/Load | Tái tạo có chọn lọc, đánh dấu `is_dynamic` và đồng bộ túi đồ chính xác | Test 3 PASS |
+| 4 | Lưu game thất bại có nguy cơ xóa trắng file save cũ | Triển khai Atomic Write với file `.tmp`, sao lưu `.bak`, hoàn tác khi lỗi | Test 5 PASS |
+| 5 | Dữ liệu save bị sửa hoặc sai kiểu gây crash game | Bổ sung hàm validation & clamping toàn diện (HP, MP, Pos, Gold, Inventory, Equipment) | Test 6 PASS |
+| 6 | Gắn nhầm Consumable/Material vào slot Weapon/Accessory | Kiểm tra đối chiếu `item_type` trong `EquipmentComponent.load_from_dict()` | Test 6 PASS |
+| 7 | Nhận lại phần thưởng nhiệm vụ 50 Vàng nhiều lần sau khi Continue | `QuestManager` ghi nhận trạng thái `COMPLETED` và cấm gọi lại trả thưởng | Test 8 PASS |
+| 8 | Test tự động ghi đè file save thật của người chơi | Thêm cơ chế `custom_save_path` cho test runner, bảo vệ `user://noctelyra_slot1.json` | Test 9 PASS |
 
 ---
 
-## 7. Hướng dẫn chạy và trải nghiệm trực tiếp
+## 7. Giới hạn đã biết (Known Limitations)
 
-- **Chạy game test ngay:** Click đúp vào file `run_game.bat`.
+1. **Phạm vi M3.1:** Phiên bản này tập trung hoàn thiện hệ thống dữ liệu, độ ổn định lưu/tải thế giới và bảo vệ tính toàn vẹn của game chơi đơn. Chưa triển khai Boss chiến, hệ thống Chế tạo (Crafting) hay chế độ Multiplayer (sẽ được thực hiện trong các Milestone tiếp theo).
+2. **Kéo thả slot (Drag & Drop):** Giao diện Túi đồ hiện tối ưu hóa cho tương tác Click chọn / Chạm nút trên màn hình cảm ứng; thao tác kéo thả tự do giữa các ô sẽ được bổ sung ở bản nâng cấp UI.
+
+---
+
+## 8. Hướng dẫn chạy và kiểm thử
+
+- **Chạy game chơi thử ngay:** Click đúp vào file `run_game.bat`.
 - **Mở Godot Editor:** Click đúp vào file `open_editor.bat`.
-- **Chạy kiểm thử tự động M3:**
+- **Chạy bộ test M3.1:**
   ```powershell
-  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --path "D:\project\game\NOCTELYRA" --headless -s test_m3_flow.gd
+  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m3_1_flow.gd
   ```
-- **Quy trình trải nghiệm vòng lặp gameplay hoàn chỉnh:**
-  1. Menu chính xuất hiện: Chọn **Chơi mới (New Game)** để bước vào Làng Ánh Nguyệt.
-  2. Tại làng, có sẵn các vật phẩm thử nghiệm rơi trên đất: 2 Bình máu, 1 Kiếm Ánh Trăng, 1 Bùa Nguyệt Quang. Đi qua để nhặt vào túi đồ.
-  3. Nhấn phím **I** để mở Túi đồ. Click vào Kiếm và bấm **Trang bị** (Sát thương tăng từ 25 -> 35). Click vào Bùa và bấm **Trang bị** (Max MP tăng từ 60 -> 80).
-  4. Gặp **NPC Elyra**, nhấn **E** nhận nhiệm vụ tiêu diệt 3 sinh vật ma hóa.
-  5. Tiến vào Rừng Hắc Nguyệt, chém kiếm (J) và bắn phép (K) hạ gục 3 quái vật. Mỗi quái vật rơi ra 1 Tinh thể Ma lực (`mana_shard`). Bước qua nhặt.
-  6. Nếu mất máu, nhấn **I** mở túi, click vào Bình Sinh Lực và bấm **Dùng** để hồi phục 30 HP.
-  7. Nhấn **Esc** mở Pause Menu, bấm **Save Game** để lưu lại tiến trình bất kỳ lúc nào.
-  8. Sau khi diệt đủ 3/3 quái, quay về gặp Elyra nhấn **E** trả nhiệm vụ: Nhận 50 Vàng, hồi đầy HP/MP và game tự động lưu tiến trình.
-  9. Thoát game ra Menu chính, chọn **Tiếp tục (Continue)**: Game phục hồi nguyên vẹn vị trí, HP/MP, túi đồ, trang bị và quái đã chết không bị hồi sinh sai!
+- **Chạy bộ test M3:**
+  ```powershell
+  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m3_flow.gd
+  ```
+- **Chạy bộ test M2.1:**
+  ```powershell
+  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m2_1_flow.gd
+  ```

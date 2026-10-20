@@ -39,5 +39,7 @@ func spawn_loot(pos: Vector2, parent_node: Node) -> void:
 		var pickup := pickup_scene.instantiate() as ItemPickup
 		pickup.item_id = item_info["item_id"]
 		pickup.amount = item_info["amount"]
+		pickup.is_dynamic = true
+		pickup.pickup_id = "drop_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
 		pickup.global_position = pos + Vector2(float(i * 24 - (items.size() - 1) * 12), 0.0)
 		parent_node.add_child.call_deferred(pickup)
