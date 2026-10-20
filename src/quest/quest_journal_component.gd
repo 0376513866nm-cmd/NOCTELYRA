@@ -272,6 +272,12 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 			if not i_id.is_empty():
 				inventory.add_item(i_id, amt)
 
+	# 5. Trao thưởng EXP (Milestone M8)
+	var exp_gained: int = def.reward_exp if def.reward_exp > 0 else ExpDatabase.get_quest_exp(quest_id)
+	var parent_player := get_parent() as Player
+	if parent_player and parent_player.progression_component:
+		parent_player.progression_component.add_exp(exp_gained, "quest:" + quest_id)
+
 	emit_signal("quest_completed", quest_id)
 	emit_signal("journal_changed")
 
@@ -279,6 +285,7 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 		"success": true,
 		"quest_id": quest_id,
 		"reward_gold": def.reward_gold,
+		"reward_exp": exp_gained,
 		"reward_items": def.reward_items
 	}
 

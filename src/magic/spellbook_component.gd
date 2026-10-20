@@ -17,6 +17,7 @@ var spell_levels: Dictionary = {
 	"frost_shard": 1
 }
 var selected_spell_id: String = "moon_bolt"
+var magic_damage_multiplier: float = 1.0
 var cooldown_timers: Dictionary = {
 	"moon_bolt": 0.0,
 	"ember_bloom": 0.0,
@@ -57,6 +58,13 @@ func get_selected_spell() -> SpellDefinition:
 
 func get_spell_level(spell_id: String) -> int:
 	return int(spell_levels.get(spell_id, 1))
+
+func get_spell_damage(spell_id: String) -> float:
+	if not SpellDatabase.has_spell(spell_id):
+		return 0.0
+	var spell := SpellDatabase.get_spell(spell_id)
+	var lvl := get_spell_level(spell_id)
+	return spell.get_damage_for_level(lvl) * magic_damage_multiplier
 
 func get_cooldown(spell_id: String) -> float:
 	return float(cooldown_timers.get(spell_id, 0.0))
@@ -100,9 +108,9 @@ func cast_selected_spell(player: Node2D, facing_dir: int, health_comp: HealthCom
 	# Kích hoạt cooldown độc lập cho phép này
 	cooldown_timers[spell.spell_id] = spell.cooldown
 
-	# Tính sát thương theo cấp hiện tại
+	# Tính sát thương theo cấp hiện tại và hệ số chủng tộc (M8)
 	var lvl := get_spell_level(spell.spell_id)
-	var final_dmg := spell.get_damage_for_level(lvl)
+	var final_dmg := spell.get_damage_for_level(lvl) * magic_damage_multiplier
 
 	# Sinh projectile
 	if spell.projectile_scene:

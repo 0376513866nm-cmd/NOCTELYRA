@@ -27,6 +27,8 @@ enum State {
 @onready var equipment_component: EquipmentComponent = $EquipmentComponent
 @onready var spellbook_component: SpellbookComponent = $SpellbookComponent
 @onready var quest_journal_component: QuestJournalComponent = $QuestJournalComponent
+@onready var progression_component: PlayerProgressionComponent = $PlayerProgressionComponent
+@onready var player_stats_component: PlayerStatsComponent = $PlayerStatsComponent
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -36,16 +38,112 @@ var dash_cooldown_timer: float = 0.0
 var dash_direction: int = 1
 var spawn_position: Vector2 = Vector2.ZERO
 
+var race_id: String:
+	get:
+		if player_stats_component:
+			return player_stats_component.race_id
+		return "human"
+	set(val):
+		_ensure_m8_components()
+		if player_stats_component:
+			player_stats_component.set_race(val)
+		apply_race_visual(val)
+
+var hurtbox_collision: CollisionShape2D:
+	get:
+		if hurtbox:
+			return hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		return null
+
 func _ready() -> void:
 	spawn_position = global_position
 	if movement_data == null:
 		movement_data = PlayerMovementData.new()
+
+	_ensure_m8_components()
 	_change_state(State.IDLE)
 
 	if health_component:
 		health_component.invulnerability_started.connect(_on_invuln_started)
 		health_component.invulnerability_ended.connect(_on_invuln_ended)
 		health_component.died.connect(_on_player_died)
+
+func _ensure_m8_components() -> void:
+	if progression_component == null:
+		progression_component = get_node_or_null("PlayerProgressionComponent") as PlayerProgressionComponent
+		if progression_component == null:
+			progression_component = PlayerProgressionComponent.new()
+			progression_component.name = "PlayerProgressionComponent"
+			add_child(progression_component)
+
+	if player_stats_component == null:
+		player_stats_component = get_node_or_null("PlayerStatsComponent") as PlayerStatsComponent
+		if player_stats_component == null:
+			player_stats_component = PlayerStatsComponent.new()
+			player_stats_component.name = "PlayerStatsComponent"
+			player_stats_component.player = self
+			add_child(player_stats_component)
+
+func apply_race_visual(r_id: String) -> void:
+	if sprite_root == null:
+		return
+	var visual_badge := sprite_root.get_node_or_null("RaceVisualBadge") as Node2D
+	if visual_badge == null:
+		visual_badge = Node2D.new()
+		visual_badge.name = "RaceVisualBadge"
+		sprite_root.add_child(visual_badge)
+
+	for c in visual_badge.get_children():
+		c.queue_free()
+
+	match r_id:
+		"elf":
+			sprite_root.modulate = Color(0.88, 1.05, 0.95, 1.0)
+			var ear_left := Polygon2D.new()
+			ear_left.polygon = PackedVector2Array([Vector2(-12, -45), Vector2(-22, -55), Vector2(-12, -50)])
+			ear_left.color = Color(0.4, 0.95, 0.7, 0.9)
+			visual_badge.add_child(ear_left)
+
+			var ear_right := Polygon2D.new()
+			ear_right.polygon = PackedVector2Array([Vector2(12, -45), Vector2(22, -55), Vector2(12, -50)])
+			ear_right.color = Color(0.4, 0.95, 0.7, 0.9)
+			visual_badge.add_child(ear_right)
+
+			var aura := Line2D.new()
+			aura.width = 2.0
+			aura.default_color = Color(0.3, 1.0, 0.7, 0.5)
+			var pts := PackedVector2Array()
+			for i in range(13):
+				var ang: float = float(i) * TAU / 12.0
+				pts.append(Vector2(cos(ang) * 26.0, sin(ang) * 12.0 - 5.0))
+			aura.points = pts
+			visual_badge.add_child(aura)
+
+		"demon_beast":
+			sprite_root.modulate = Color(1.05, 0.88, 0.95, 1.0)
+			var horn_left := Polygon2D.new()
+			horn_left.polygon = PackedVector2Array([Vector2(-8, -50), Vector2(-15, -68), Vector2(-4, -55)])
+			horn_left.color = Color(0.85, 0.2, 0.35, 0.95)
+			visual_badge.add_child(horn_left)
+
+			var horn_right := Polygon2D.new()
+			horn_right.polygon = PackedVector2Array([Vector2(8, -50), Vector2(15, -68), Vector2(4, -55)])
+			horn_right.color = Color(0.85, 0.2, 0.35, 0.95)
+			visual_badge.add_child(horn_right)
+
+			var tail := Line2D.new()
+			tail.width = 4.0
+			tail.default_color = Color(0.8, 0.25, 0.4, 0.9)
+			tail.points = PackedVector2Array([Vector2(-10, 0), Vector2(-22, -5), Vector2(-30, -18), Vector2(-26, -26)])
+			visual_badge.add_child(tail)
+
+		_: # "human"
+			sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
+			var scarf := Line2D.new()
+			scarf.width = 3.0
+			scarf.default_color = Color(0.3, 0.6, 1.0, 0.8)
+			scarf.points = PackedVector2Array([Vector2(-8, -32), Vector2(0, -30), Vector2(8, -32), Vector2(12, -22)])
+			visual_badge.add_child(scarf)
 
 func _physics_process(delta: float) -> void:
 	# Khi chết: Vô hiệu hóa toàn bộ di chuyển, rơi và input
@@ -60,9 +158,9 @@ func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
 
-	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ hoặc đang mở sổ nhiệm vụ thì tạm ngừng nhận input
+	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ, sổ nhiệm vụ hoặc thông tin nhân vật thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or (ui.has_method("is_ui_cooling_down") and ui.is_ui_cooling_down()) or ui.is_inventory_open() or ui.is_quest_journal_open() or (ui.has_method("is_character_sheet_open") and ui.is_character_sheet_open())):
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
 		if not is_on_floor():
 			velocity.y += movement_data.gravity * delta
@@ -192,7 +290,7 @@ func _upgrade_current_spell() -> void:
 	if get_tree().paused:
 		return
 	var ui := _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open() or (ui.has_method("is_character_sheet_open") and ui.is_character_sheet_open())):
 		return
 	var world := get_tree().current_scene
 	var res := sb.upgrade_spell(sb.selected_spell_id, inv, world)

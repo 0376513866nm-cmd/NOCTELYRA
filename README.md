@@ -1,17 +1,18 @@
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M7.1: Gameplay Stabilization)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M8: Character Origins & Progression)
 
 Dự án game Action RPG 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Milestone M7.1)
+## 1. Cấu trúc thư mục & Module dự án (Milestone M8 FINAL)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu kiến trúc Milestone M7.1 & kết quả kiểm thử
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M7.1 Final)
-├── test_m7_flow.gd                 # [M7.1] Kịch bản kiểm thử 14 nhóm tính năng và ổn định gameplay (156/156 tests PASS 100%)
+├── README.md                       # Tài liệu kiến trúc Milestone M8 & kết quả kiểm thử
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M8 Final)
+├── test_m8_flow.gd                 # [M8] Kịch bản kiểm thử 18 nhóm tính năng Chủng tộc & Tiến trình (158/158 tests PASS 100%)
+├── test_m7_flow.gd                 # Kịch bản kiểm thử vùng đất mở rộng & nhiệm vụ (156/156 tests PASS 100%)
 ├── test_m6_flow.gd                 # Kịch bản kiểm thử thế giới mở rộng & cổng dịch chuyển (117/117 tests PASS 100%)
 ├── test_m5_flow.gd                 # Kịch bản kiểm thử 26 nhóm tính năng ma pháp (100/100 tests PASS 100%)
 ├── test_m4_flow.gd                 # Kịch bản kiểm thử 17 hạng mục Boss M4 (87/87 tests PASS 100%)
@@ -20,7 +21,7 @@ D:\project\game\NOCTELYRA\
 ├── test_m3_flow.gd                 # Kịch bản kiểm thử M3 (67/67 tests PASS 100%)
 ├── test_m2_1_flow.gd               # Kịch bản kiểm thử M2.1 (42/42 tests PASS 100%)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
-├── project.godot                   # Cấu hình dự án, Input Map (thêm phím Q: quest_journal)
+├── project.godot                   # Cấu hình dự án, Input Map (thêm phím C: character_sheet)
 ├── run_game.bat                    # 1-Click chạy game test ngay lập tức
 ├── open_editor.bat                 # 1-Click mở Godot Editor
 ├── export_code_for_ai.bat          # 1-Click gom toàn bộ source code thành file CODE_EXPORT.txt
@@ -35,8 +36,8 @@ D:\project\game\NOCTELYRA\
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player, tích hợp QuestJournalComponent, khóa điều khiển khi mở Journal
-    │   │   ├── player.tscn                  # Scene Player có đủ các Component chiến đấu và dữ liệu
+    │   │   ├── player.gd                    # FSM Player, tích hợp Progression & Stats, Race Visuals, khóa điều khiển UI
+    │   │   ├── player.tscn                  # Scene Player chứa PlayerProgressionComponent & PlayerStatsComponent
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy đôi, dash
     │   ├── npc\
     │   │   ├── npc.gd                       # Logic NPC: Elyra (Noctis), Kaelis (Elyndra), Rhaek (Vharok)
@@ -64,74 +65,129 @@ D:\project\game\NOCTELYRA\
     │   ├── item_database.gd                 # Cơ sở dữ liệu vật phẩm (thêm ember_core Lõi Tàn Hỏa)
     │   ├── item_definition.gd               # Custom Resource ItemDefinition
     │   ├── inventory_component.gd           # Túi đồ 16 ô, stack item, kiểm tra can_receive_items an toàn
-    │   ├── equipment_component.gd           # Quản lý 2 ô trang bị (weapon, accessory)
+    │   ├── equipment_component.gd           # Quản lý 2 ô trang bị (weapon, accessory), đồng bộ qua PlayerStatsComponent
     │   ├── inventory_ui.gd                  # UI túi đồ 16 ô
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ
     ├── magic\
     │   ├── spell_database.gd                # Danh mục phép thuật: moon_bolt, ember_bloom, frost_shard
     │   ├── spell_definition.gd              # Resource cấu hình phép
-    │   ├── spellbook_component.gd           # Quản lý sách phép, cấp độ, nâng cấp
+    │   ├── spellbook_component.gd           # Quản lý sách phép, cấp độ, nâng cấp, hệ số magic_damage_multiplier
     │   └── projectiles\                     # Đạn phép thuật của Player
+    ├── progression\                         # [MỚI M8] MODULE TIẾN TRÌNH & KINH NGHIỆM
+    │   ├── exp_database.gd                  # Quản lý mức thưởng EXP tập trung (quái vật, Boss, nhiệm vụ)
+    │   └── player_progression_component.gd  # Quản lý Cấp độ (1..10), EXP curve, rollover, chống nhận trùng
     ├── quest\
     │   ├── quest_data.gd                    # Nhiệm vụ chính của Elyra (M0–M6)
-    │   ├── quest_definition.gd              # Resource nhiệm vụ phụ: KILL_ENEMY_TYPE & COLLECT_ITEMS
-    │   ├── quest_journal_component.gd       # Component quản lý nhật ký nhiệm vụ, chống kẹt diệt quái sớm, đồng bộ nhặt đồ
+    │   ├── quest_definition.gd              # Resource nhiệm vụ phụ: reward_exp, KILL_ENEMY_TYPE & COLLECT_ITEMS
+    │   ├── quest_journal_component.gd       # Nhật ký nhiệm vụ, cộng EXP thưởng khi hoàn thành
     │   └── quest_manager.gd                 # Quản lý nhiệm vụ chính và Vàng
+    ├── race\                                # [MỚI M8] MODULE CHỦNG TỘC (RACE SYSTEM)
+    │   ├── race_definition.gd               # Custom Resource RaceDefinition: lore, chỉ số cơ bản, pros/cons, colors
+    │   └── race_database.gd                 # Đăng ký 3 chủng tộc: Nhân tộc (human), Tinh Linh (elf), Quỷ thú (demon_beast)
     ├── save\
-    │   └── save_manager.gd                  # [M7 v1.4.0] Ghi nguyên tử, lưu Quest Journal & _kill_history, backward-compatible
+    │   └── save_manager.gd                  # [M8 v1.5.0] Lưu trữ race_id, level, current_exp, claimed_exp_sources, backward v1.0-v1.4
+    ├── stats\                               # [MỚI M8] MODULE CHỈ SỐ THỐNG NHẤT (UNIFIED STATS)
+    │   └── player_stats_component.gd        # Nguồn chân lý duy nhất (Single Source of Truth): Base + Growth + Gear
     ├── ui\
-    │   ├── game_ui.gd                       # HUD chính, kết nối phím Q/J đóng mở Sổ Nhiệm Vụ, thoại NPC Kaelis/Rhaek
-    │   ├── game_ui.tscn                     # CanvasLayer HUD, tích hợp QuestJournalUI
-    │   ├── quest_journal_ui.gd              # UI Sổ Nhiệm Vụ: hiển thị 3 nhiệm vụ, tiến độ, phần thưởng, badge
-    │   ├── quest_journal_ui.tscn            # Scene Sổ Nhiệm Vụ
+    │   ├── character_creation_ui.gd         # Giao diện chọn chủng tộc khi bắt đầu Game Mới (New Game Flow)
+    │   ├── character_creation_ui.tscn
+    │   ├── character_sheet_ui.gd            # Giao diện Thông Tin Nhân Vật (Phím C): Cấp, EXP, chỉ số, trang bị
+    │   ├── character_sheet_ui.tscn
+    │   ├── game_ui.gd                       # HUD chính: kết nối Q, I, C, Esc, xử lý Grace Cooldown chống chém vô ý
+    │   ├── game_ui.tscn
+    │   ├── main_menu.gd                     # Menu chính: New Game mở Character Creation, Continue nạp bản lưu
+    │   ├── main_menu.tscn
+    │   ├── quest_journal_ui.gd              # UI Sổ Nhiệm Vụ (Phím Q)
+    │   ├── quest_journal_ui.tscn
     │   ├── spell_hotbar.gd                  # Thanh kỹ năng ma pháp HUD
-    │   └── spell_hotbar.tscn                # Scene thanh kỹ năng ma pháp
+    │   └── spell_hotbar.tscn
     └── world\
-        ├── base_zone.gd                     # Quản lý thế giới cơ sở, kết nối tín hiệu quái, hồi phục thế giới
-        ├── zone_manager.gd                  # Chuyển cảnh, bảo toàn quest journal và dữ liệu người chơi
+        ├── base_zone.gd                     # Thế giới cơ sở: kết nối thăng cấp, cộng EXP quái, khởi tạo tộc
+        ├── zone_manager.gd                  # Chuyển cảnh, bảo toàn tiến trình tộc, cấp, EXP qua các vùng
         ├── zone_definition.gd               # Đăng ký thông tin và scene 3 khu vực
         ├── zone_portal.gd                   # Cổng ma pháp dịch chuyển giữa các vùng
         ├── zone_portal.tscn                 # Scene cổng dịch chuyển
         ├── ancient_crystal.gd               # Cổ Tinh Thạch tại Elyndra
-        ├── noctis_forest.gd                 # Vùng 1: Rừng Noctis & Đấu trường Boss
+        ├── noctis_forest.gd                 # Vùng 1: Rừng Noctis & Đấu trường Boss (Thưởng 150 EXP Lunareth)
         ├── noctis_forest.tscn
-        ├── elyndra_glade.gd                 # Vùng 2: Thánh Lâm Elyndra
-        ├── elyndra_glade.tscn               # (Chứa NPC Kaelis, 3 Corrupted Mooncap, 2 Corrupted Mana Wisp)
-        ├── vharok_outpost.gd                # Vùng 3: Tiền Đồn Vharok
-        └── vharok_outpost.tscn              # (Chứa NPC Rhaek, 3 Ashfang Wolf, 2 Ember Lizard)
+        ├── elyndra_glade.gd                 # Vùng 2: Thánh Lâm Elyndra (Kaelis, Mooncap, Mana Wisp)
+        ├── elyndra_glade.tscn
+        ├── vharok_outpost.gd                # Vùng 3: Tiền Đồn Vharok (Rhaek, Ashfang Wolf, Ember Lizard)
+        └── vharok_outpost.tscn
 ```
 
 ---
 
-## 2. Các điểm cải tiến và khắc phục lỗi trong M7.1 Stabilization
+## 2. Hệ Thống Chủng Tộc & Chỉ Số Cơ Bản (Milestone M8)
 
-1. **Khắc phục triệt để nguy cơ kẹt nhiệm vụ Kaelis (Softlock Prevention):**
-   - Bổ sung `_kill_history` trong `QuestJournalComponent` để tự động ghi nhận mọi quái vật bị hạ gục trước khi nhận quest.
-   - Khi nhận nhiệm vụ `quest_elyndra_cleansing`, hệ thống tự động đồng bộ số Mooncap đã diệt trước đó từ `_kill_history` và `defeated_enemy_ids` của bản đồ.
-   - Nếu đã diệt 1, 2 hoặc cả 3 Mooncap trước khi nói chuyện với Kaelis, tiến độ lập tức được ghi nhận chính xác (1/3, 2/3, 3/3 `READY_TO_TURN_IN`) mà không bị kẹt 0/3.
-   - Lịch sử diệt quái được serialize/deserialize nguyên vẹn trong Save v1.4.0.
-
-2. **Sửa rơi đồ của Ember Lizard (Lõi Tàn Hỏa - Ember Core):**
-   - Trong `Enemy._spawn_loot()`, tôn trọng thuộc tính `definition.drop_item_id` nếu có (đối với `ember_lizard` là `"ember_core"`), chỉ fallback về `"mana_shard"` nếu không cấu hình.
-   - Khi Ember Lizard bị tiêu diệt, luôn sinh ra `ItemPickup` hợp lệ chứa `"ember_core"`.
-
-3. **Xử lý túi đồ đầy khi trả quest (Atomic Turn-in):**
-   - Bổ sung hàm `can_receive_items(items_to_add, items_to_remove)` trong `InventoryComponent` để mô phỏng chính xác không gian túi đồ sau khi trừ vật phẩm quest và cộng phần thưởng.
-   - Cả `QuestJournalComponent.can_turn_in()`, `turn_in_quest()` và đối thoại NPC Kaelis/Rhaek đều kiểm tra điều kiện này.
-   - Nếu túi đồ không đủ chỗ, từ chối giao dịch an toàn: không mất quest items, không trao vàng/đồ dang dở, không autosave lỗi, giữ nguyên trạng thái `READY_TO_TURN_IN` và hướng dẫn người chơi dọn chỗ trống.
-
-4. **Khóa thao tác Player khi mở Quest Journal & Loại trừ lẫn nhau:**
-   - Trong `Player._physics_process()`, kiểm tra `ui.is_quest_journal_open()` để khóa toàn bộ input di chuyển, nhảy, dash, tấn công cận chiến và niệm phép.
-   - Khi đóng Journal (phím Q, phím J, ESC hoặc nút Close), Player phục hồi điều khiển bình thường.
-   - Thiết lập tính loại trừ lẫn nhau (mutual exclusivity) giữa Inventory (phím I) và Quest Journal (phím Q/J): mở cái này sẽ tự động đóng cái kia, không mở đè lên nhau.
-
-5. **Đồng bộ tiến độ thu thập khi nhặt đồ:**
-   - Kết nối tín hiệu `inventory_updated` của `InventoryComponent` vào `QuestJournalComponent`.
-   - Tiến độ thu thập Lõi Tàn Hỏa tự động cập nhật ngay khi nhặt từ mặt đất hoặc thay đổi số lượng trong túi đồ, có cơ chế chặn vòng lặp tín hiệu vô hạn (chỉ phát tín hiệu khi giá trị hoặc trạng thái thực sự thay đổi).
+| Thuộc tính | Nhân tộc (`human`) | Tinh Linh tộc (`elf`) | Quỷ tộc bán thú (`demon_beast`) |
+| :--- | :--- | :--- | :--- |
+| **Danh hiệu** | Người Bảo Vệ Làng Ánh Nguyệt | Người Gìn Giữ Tinh Mạch Elyndra | Chiến Binh Dãy Núi Tro Tàn |
+| **Sinh Lực (HP)** | 100 HP | 90 HP | **125 HP** |
+| **Ma Lực (MP)** | 60 MP | **80 MP** | 50 MP |
+| **Tấn Công (ATK)** | 25 ATK | 23 ATK | **30 ATK** |
+| **Hồi MP** | 5.0 MP/s | **7.0 MP/s** | 4.0 MP/s |
+| **Tốc độ chạy** | 270 px/s | **275 px/s** | 260 px/s |
+| **Hệ số Ma pháp** | 1.0x (100%) | **1.1x (+10% sát thương phép)** | 1.0x (100%) |
+| **Đặc trưng thị giác** | Khăn choàng lam/bạc | Tai nhọn ngọc bích | Cặp sừng đỏ thẫm & Đuôi thú |
 
 ---
 
-## 3. Báo Cáo Kiểm Thử Tự Động Toàn Diện trên Godot 4.3 Engine
+## 3. Hệ Thống Tăng Trưởng & Công Thức EXP
+
+1. **Công thức EXP chuẩn:**
+   $$\text{EXP Yêu Cầu}(\text{level}) = 60 + 40 \times (\text{level} - 1)$$
+   - Cấp 1 $\to$ 2: 60 EXP
+   - Cấp 2 $\to$ 3: 100 EXP
+   - Cấp 3 $\to$ 4: 140 EXP
+   - Cấp 4 $\to$ 5: 180 EXP
+   - Cấp 9 $\to$ 10: 380 EXP
+   - Cấp 10: **Tối đa (Max Level)**, không tăng lên cấp 11, xóa EXP dư thừa.
+
+2. **Tăng trưởng chỉ số mỗi cấp (Growth Per Level):**
+   - **Max HP:** +10 HP / cấp
+   - **Max MP:** +5 MP / cấp
+   - **Sát thương vật lý (ATK):** +2 ATK / cấp
+
+3. **Cơ chế Rollover & An Toàn Sinh Mệnh:**
+   - Khi nhận lượng lớn EXP vượt ngưỡng, hệ thống tự động tính toán thăng nhiều cấp liên tiếp và bảo lưu chính xác phần EXP dư thừa còn lại.
+   - Khi lên cấp, lượng Max HP/MP tăng thêm được cộng dồn tương ứng vào HP/MP hiện tại (Delta gain), tuyệt đối **không tự động hồi đầy máu (No full-heal exploit)** để giữ nguyên tính thử thách sinh tồn.
+
+4. **Nguồn Thưởng EXP Tập Trung (`ExpDatabase`) & Chống Nhận Trùng:**
+   - Quái thường: 20–30 EXP (Sói tha hóa 20, Nấm mộng 20, Tinh linh tha hóa 25, Sói nanh tro 25, Thằn lằn tro 30).
+   - Boss Lunareth: 150 EXP.
+   - Nhiệm vụ: Elyra 50 EXP, Kaelis 60 EXP, Rhaek 70 EXP.
+   - Mọi nguồn EXP đều được xác thực qua định danh nguồn (`claimed_exp_sources`), ngăn chặn tuyệt đối việc nhận lặp lại khi giao chiến lại hoặc nạp save.
+
+---
+
+## 4. Hệ Thống Giao Diện & Tương Tác (UI / UX)
+
+1. **Luồng Khởi Tạo Nhân Vật (New Game Flow):**
+   - Nhấn **New Game** tại Menu chính sẽ mở giao diện `CharacterCreationUI`.
+   - Người chơi xem chi tiết lore, ưu/nhược điểm và bảng chỉ số của 3 tộc trước khi quyết định.
+   - Nhấn **Quay Lại (Cancel):** Trở về Menu chính, **bảo toàn nguyên vẹn bản lưu hiện có**.
+   - Nhấn **Xác Nhận (Confirm):** Bắt đầu New Game tại Rừng Noctis với chủng tộc đã chọn.
+
+2. **Bảng Thông Tin Nhân Vật (`CharacterSheetUI` — Phím C):**
+   - Mở/đóng bằng phím **C**, hiển thị trực quan: Chủng tộc, Cấp độ, Thanh tiến trình EXP %, Chỉ số HP/MP, ATK, Sát thương phép thuật, Hồi MP, Tốc độ chạy và 2 ô trang bị hiện tại.
+   - Khóa toàn bộ input di chuyển và chiến đấu của Player khi bảng đang mở.
+
+3. **Loại Trừ Lẫn Nhau & Grace Cooldown (Khắc Phục Lỗi Phím J):**
+   - **Loại trừ lẫn nhau (Mutual Exclusivity):** Mở Bảng Nhân Vật (C) sẽ tự động đóng Túi Đồ (I) và Sổ Nhiệm Vụ (Q), và ngược lại.
+   - **Khắc phục lỗi phím J chém gió vô ý:** Khi đóng bất kỳ giao diện nào (Journal, Inventory, Character Sheet), hệ thống kích hoạt **Grace Cooldown ngắn (0.15s)** và tiêu thụ hoàn toàn event input, đảm bảo Player không tung đòn đánh vô ý thức trên frame đóng UI.
+
+---
+
+## 5. Định Dạng Bản Lưu v1.5.0 & Tương Thích Ngược
+
+- Schema Save v1.5.0 lưu đầy đủ: `race_id`, `progression` (`level`, `current_exp`, `claimed_exp_sources`).
+- **Thứ tự nạp an toàn:** (1) Khôi phục Race & Level $\to$ (2) Nạp Trang bị $\to$ (3) Tính lại Final Stats thống nhất $\to$ (4) Khôi phục HP/MP hiện tại giới hạn theo Max mới.
+- **Tương thích ngược hoàn hảo:** Bản lưu cũ v1.0.0 – v1.4.0 tự động gán chủng tộc Nhân tộc (`human`), Cấp 1, 0 EXP, danh sách nguồn rỗng (không hồi tố nhiệm vụ cũ), và giữ nguyên toàn bộ tiến trình trang bị, thế giới và Boss.
+
+---
+
+## 6. Báo Cáo Kiểm Thử Tự Động Toàn Diện trên Godot 4.3 Engine
 
 Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-stable_win64_console.exe --headless`):
 
@@ -139,31 +195,33 @@ Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-
 ========================================================================================
  BỘ KIỂM THỬ                         | SỐ TEST    | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
 ----------------------------------------------------------------------------------------
- test_m7_flow.gd (Mở rộng & M7.1)    | 156 tests  | PASS 100%    | 0
+ test_m8_flow.gd (Chủng tộc & Level) | 158 tests  | PASS 100%    | 0
+ test_m7_flow.gd (Khu vực & M7.1)    | 156 tests  | PASS 100%    | 0
  test_m6_flow.gd (Thế giới & M6.1)   | 117 tests  | PASS 100%    | 0
  test_m5_flow.gd (Ma pháp M5.1)      | 100 tests  | PASS 100%    | 0
  test_m4_flow.gd (Boss Lunareth M4)  |  87 tests  | PASS 100%    | 0
  test_m3_2_flow.gd (Save/Load M3.2)  |  50 tests  | PASS 100%    | 0
  test_m2_1_flow.gd (NPC & Quest M2)  |  42 tests  | PASS 100%    | 0
 ========================================================================================
- TỔNG CỘNG                           | 552 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
+ TỔNG CỘNG                           | 710 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
 ========================================================================================
 ```
 
 ---
 
-## 4. Hướng dẫn Điều khiển & Trải nghiệm
+## 7. Hướng dẫn Điều khiển
 
 | Phím bấm | Hành động |
 | :--- | :--- |
 | **A / D** | Di chuyển trái / phải (Camera bám sát mượt mà) |
 | **Space** | Nhảy đơn / Nhảy đôi (Double Jump) |
 | **Shift** | Lướt nhanh (Dash) |
-| **J** | Tấn công cận chiến (Chém kiếm) \| Đóng Quest Journal khi đang mở |
+| **J** | Tấn công cận chiến (Chém kiếm) \| Đóng UI khi đang mở |
 | **K** | Thi triển phép thuật đang chọn (Bắn ma pháp, tiêu hao MP) |
 | **1, 2, 3** | Chọn phép thuật: [1] Nguyệt Quang Đạn \| [2] Tinh Hỏa Bùng Nổ \| [3] Hàn Tinh Tiễn |
 | **U** | Nâng cấp phép thuật đang chọn (Tiêu hao Tinh thể Ma lực `mana_shard`) |
-| **E** | Tương tác NPC (Elyra, Kaelis, Rhaek) / Kích hoạt Cổng dịch chuyển / Đọc Cổ Tinh Thạch |
+| **E** | Tương tác NPC (Elyra, Kaelis, Rhaek) / Cổng dịch chuyển / Cổ Tinh Thạch |
+| **C** | **Mở / Đóng Bảng Thông Tin Nhân Vật (Character Sheet)** |
 | **Q** | **Mở / Đóng Sổ Nhiệm Vụ (Quest Journal)** |
 | **I** | Mở / Đóng túi đồ (Inventory) & Bảng trang bị |
-| **Esc** | Tạm dừng trò chơi (Pause Menu) / Đóng túi đồ / Đóng Sổ Nhiệm Vụ / Đóng hội thoại |
+| **Esc** | Tạm dừng (Pause Menu) / Đóng bảng đang mở / Đóng hội thoại |

@@ -7,8 +7,8 @@ extends RefCounted
 ## thẩm định (validation) chặt chẽ và cách ly dữ liệu kiểm thử an toàn 100%.
 
 const DEFAULT_SAVE_PATH: String = "user://noctelyra_slot1.json"
-const CURRENT_VERSION: String = "1.4.0"
-const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0", "1.3.0", "1.4.0"]
+const CURRENT_VERSION: String = "1.5.0"
+const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0", "1.3.0", "1.4.0", "1.5.0"]
 
 static var custom_save_path: String = ""
 static var should_load_on_start: bool = false
@@ -118,6 +118,8 @@ static func save_game(world: Node) -> bool:
 	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
 	var p_spellbook := player.get_node_or_null("SpellbookComponent") as SpellbookComponent
 	var p_journal := player.get_node_or_null("QuestJournalComponent") as QuestJournalComponent
+	var p_stats := player.get_node_or_null("PlayerStatsComponent") as PlayerStatsComponent
+	var p_prog := player.get_node_or_null("PlayerProgressionComponent") as PlayerProgressionComponent
 
 	var save_path := get_save_path()
 	var tmp_path := get_tmp_path()
@@ -130,7 +132,19 @@ static func save_game(world: Node) -> bool:
 		"save_version": CURRENT_VERSION,
 		"timestamp": Time.get_unix_time_from_system(),
 		"current_zone_id": cur_zone,
+		"progression": {
+			"race_id": p_stats.race_id if p_stats else "human",
+			"level": p_prog.level if p_prog else 1,
+			"current_exp": p_prog.current_exp if p_prog else 0,
+			"claimed_exp_sources": p_prog.claimed_exp_sources.duplicate() if p_prog else []
+		},
 		"player": {
+			"race_id": p_stats.race_id if p_stats else "human",
+			"progression": {
+				"level": p_prog.level if p_prog else 1,
+				"current_exp": p_prog.current_exp if p_prog else 0,
+				"claimed_exp_sources": p_prog.claimed_exp_sources.duplicate() if p_prog else []
+			},
 			"position_x": player.global_position.x,
 			"position_y": player.global_position.y,
 			"current_health": clamp(p_health.current_health, 0.0, p_health.max_health) if p_health else 100.0,
@@ -293,6 +307,32 @@ static func load_game(world: Node) -> bool:
 			legacy_state["boss"] = data["boss"]
 		ZoneManager.zone_states["noctis_forest"] = legacy_state
 
+	# BƯỚC 0 (Milestone M8): Khôi phục Chủng tộc & Cấp độ TRƯỚC TIÊN
+	var p_stats := player.get_node_or_null("PlayerStatsComponent") as PlayerStatsComponent
+	var p_prog := player.get_node_or_null("PlayerProgressionComponent") as PlayerProgressionComponent
+
+	var prog_data: Dictionary = {}
+	if data.has("progression") and data["progression"] is Dictionary:
+		prog_data = data["progression"]
+	elif data.has("player") and data["player"] is Dictionary and data["player"].has("progression") and data["player"]["progression"] is Dictionary:
+		prog_data = data["player"]["progression"]
+
+	var r_id: String = str(prog_data.get("race_id", ""))
+	if r_id.is_empty() and data.has("player") and data["player"] is Dictionary:
+		r_id = str(data["player"].get("race_id", "human"))
+	if not RaceDatabase.has_race(r_id):
+		r_id = "human"
+
+	if p_stats:
+		p_stats.set_race(r_id)
+
+	if p_prog:
+		p_prog.from_dict({
+			"level": int(prog_data.get("level", 1)),
+			"current_exp": int(prog_data.get("current_exp", 0)),
+			"claimed_exp_sources": prog_data.get("claimed_exp_sources", [])
+		})
+
 	# BƯỚC 1 (QUAN TRỌNG): Khôi phục Trang bị & Túi đồ TRƯỚC để tính toán lại Max Stats (Max MP / Sát thương)
 	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
 	if p_eq:
@@ -307,6 +347,10 @@ static func load_game(world: Node) -> bool:
 			p_inv.load_from_dict(data["inventory"])
 		else:
 			p_inv._initialize_slots()
+
+	# BƯỚC 1.2 (Milestone M8): Tính toán lại toàn bộ Max Stats thống nhất sau khi đã nạp Race + Level + Gear
+	if p_stats:
+		p_stats.recalculate_stats(false)
 
 	# BƯỚC 1.5: Khôi phục Sách Phép (SpellbookComponent - M5)
 	var p_spellbook := player.get_node_or_null("SpellbookComponent") as SpellbookComponent

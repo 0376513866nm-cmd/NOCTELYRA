@@ -1,0 +1,201 @@
+[gd_scene load_steps=2 format=3 uid="uid://d2k8charcreat4n"]
+
+[ext_resource type="Script" path="res://src/ui/character_creation_ui.gd" id="1_creation"]
+
+[node name="CharacterCreationUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_creation")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.05, 0.09, 0.95)
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(760, 560)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -280.0
+offset_right = 380.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 18.0
+offset_bottom = 48.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 22
+text = "KHỞI TẠO NHÂN VẬT — CHỌN CHỦNG TỘC"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RaceTabs" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 30.0
+offset_top = 60.0
+offset_right = -30.0
+offset_bottom = 105.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+
+[node name="HumanBtn" type="Button" parent="Panel/RaceTabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Nhân tộc"
+
+[node name="ElfBtn" type="Button" parent="Panel/RaceTabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Tinh Linh tộc"
+
+[node name="BeastBtn" type="Button" parent="Panel/RaceTabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Quỷ tộc bán thú"
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = 120.0
+offset_right = -36.0
+offset_bottom = -75.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="VBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="RaceTitleLabel" type="Label" parent="Panel/Content/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "NHÂN TỘC"
+
+[node name="RaceMottoLabel" type="Label" parent="Panel/Content/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Hậu Duệ Ánh Nguyệt"
+
+[node name="DescLabel" type="Label" parent="Panel/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "Mô tả chi tiết về nguồn gốc, văn hóa và bối cảnh chủng tộc..."
+autowrap_mode = 2
+
+[node name="ProsLabel" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.95, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "Ưu điểm: ..."
+autowrap_mode = 2
+
+[node name="ConsLabel" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "Nhược điểm: ..."
+autowrap_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="StatsHeader" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 15
+text = "CHỈ SỐ KHỞI ĐẦU CHỦNG TỘC (LEVEL 1)"
+
+[node name="StatsGrid" type="GridContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="HPLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sinh Lực: 100 HP"
+
+[node name="MPLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ma Lực: 60 MP"
+
+[node name="ATKLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tấn Công: 25 ATK"
+
+[node name="MagicLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hệ Số Phép: x1.0"
+
+[node name="RegenLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hồi MP: 5.0 MP/s"
+
+[node name="SpeedLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tốc Độ: 270 px/s"
+
+[node name="Actions" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = -60.0
+offset_right = -36.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 30
+
+[node name="BackBtn" type="Button" parent="Panel/Actions"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "QUAY LẠI"
+
+[node name="ConfirmBtn" type="Button" parent="Panel/Actions"]
+custom_minimum_size = Vector2(240, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.95, 0.7, 1)
+theme_override_font_sizes/font_size = 16
+text = "XÁC NHẬN & BẮT ĐẦU"

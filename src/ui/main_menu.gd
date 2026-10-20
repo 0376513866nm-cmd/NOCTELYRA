@@ -1,10 +1,11 @@
 class_name MainMenu
 extends Control
 
-## Màn hình chính (Main Menu) cho NOCTELYRA (M3)
-## Cung cấp Continue (nếu có save), New Game (kèm xác nhận ghi đè), và Quit.
+## Màn hình chính (Main Menu) cho NOCTELYRA (M3 - M8)
+## Cung cấp Continue (nếu có save), New Game -> Chọn Tộc (Character Creation), và Quit.
 
 const GAME_SCENE_PATH: String = "res://src/world/noctis_forest.tscn"
+const CharacterCreationUIScene = preload("res://src/ui/character_creation_ui.tscn")
 
 @onready var continue_btn: Button = $Panel/VBox/ContinueBtn
 @onready var new_game_btn: Button = $Panel/VBox/NewGameBtn
@@ -14,10 +15,13 @@ const GAME_SCENE_PATH: String = "res://src/world/noctis_forest.tscn"
 @onready var confirm_yes_btn: Button = $ConfirmDialog/Panel/HBox/YesBtn
 @onready var confirm_no_btn: Button = $ConfirmDialog/Panel/HBox/NoBtn
 
+var character_creation_ui: CharacterCreationUI = null
+
 func _ready() -> void:
 	if confirm_dialog:
 		confirm_dialog.visible = false
 
+	_ensure_character_creation_ui()
 	_update_buttons()
 
 	if continue_btn:
@@ -31,6 +35,20 @@ func _ready() -> void:
 		confirm_yes_btn.pressed.connect(_on_confirm_new_game)
 	if confirm_no_btn:
 		confirm_no_btn.pressed.connect(func(): confirm_dialog.visible = false)
+
+func _ensure_character_creation_ui() -> void:
+	if character_creation_ui == null:
+		character_creation_ui = get_node_or_null("CharacterCreationUI") as CharacterCreationUI
+	if character_creation_ui == null:
+		character_creation_ui = CharacterCreationUIScene.instantiate() as CharacterCreationUI
+		character_creation_ui.name = "CharacterCreationUI"
+		add_child(character_creation_ui)
+	character_creation_ui.visible = false
+	if not character_creation_ui.creation_cancelled.is_connected(_on_creation_cancelled):
+		character_creation_ui.creation_cancelled.connect(_on_creation_cancelled)
+
+func _on_creation_cancelled() -> void:
+	_update_buttons()
 
 func _update_buttons() -> void:
 	var has_valid_save := SaveManager.has_save()
@@ -48,16 +66,18 @@ func _on_new_game_pressed() -> void:
 		if confirm_dialog:
 			confirm_dialog.visible = true
 	else:
-		_start_new_game()
+		_open_character_creation()
 
 func _on_confirm_new_game() -> void:
-	SaveManager.delete_save()
-	_start_new_game()
+	if confirm_dialog:
+		confirm_dialog.visible = false
+	_open_character_creation()
 
-func _start_new_game() -> void:
-	SaveManager.should_load_on_start = false
-	ZoneManager.reset_session()
-	get_tree().change_scene_to_file(GAME_SCENE_PATH)
+func _open_character_creation() -> void:
+	_ensure_character_creation_ui()
+	if character_creation_ui:
+		character_creation_ui.select_race("human")
+		character_creation_ui.visible = true
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

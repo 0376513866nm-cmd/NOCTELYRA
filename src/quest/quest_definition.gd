@@ -28,6 +28,7 @@ const State = QuestState
 @export var target_id: String = "" # enemy_type_id hoặc item_id
 @export var target_amount: int = 3
 @export var reward_gold: int = 0
+@export var reward_exp: int = 0
 @export var reward_items: Array[Dictionary] = [] # [{"item_id": "health_potion", "amount": 2}]
 
 static func get_definition(q_id: String) -> QuestDefinition:
@@ -44,6 +45,7 @@ static func get_definition(q_id: String) -> QuestDefinition:
 			def.target_id = "corrupted_mooncap"
 			def.target_amount = 3
 			def.reward_gold = 80
+			def.reward_exp = 60
 			def.reward_items = [
 				{"item_id": "health_potion", "amount": 2}
 			]
@@ -57,6 +59,7 @@ static func get_definition(q_id: String) -> QuestDefinition:
 			def.target_id = "ember_core"
 			def.target_amount = 3
 			def.reward_gold = 100
+			def.reward_exp = 70
 			def.reward_items = [
 				{"item_id": "mana_shard", "amount": 3}
 			]

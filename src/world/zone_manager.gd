@@ -7,6 +7,7 @@ extends RefCounted
 
 static var current_zone_id: String = "noctis_forest"
 static var current_spawn_id: String = "spawn_default"
+static var initial_race_id: String = "human"
 static var is_transitioning: bool = false
 static var is_zone_traveling: bool = false
 static var travel_cooldown: float = 0.0
@@ -39,6 +40,7 @@ static func get_zone_display_name(zone_id: String) -> String:
 static func reset_session() -> void:
 	current_zone_id = "noctis_forest"
 	current_spawn_id = "spawn_default"
+	initial_race_id = "human"
 	is_transitioning = false
 	is_zone_traveling = false
 	travel_cooldown = 0.0
@@ -63,8 +65,14 @@ static func extract_player_state(world: Node) -> Dictionary:
 	var p_eq := player.equipment_component
 	var p_sb := player.spellbook_component
 	var p_journal := player.quest_journal_component
+	var p_stats := player.player_stats_component
+	var p_prog := player.progression_component
 
 	return {
+		"race_id": p_stats.race_id if p_stats else "human",
+		"level": p_prog.level if p_prog else 1,
+		"current_exp": p_prog.current_exp if p_prog else 0,
+		"claimed_exp_sources": p_prog.claimed_exp_sources.duplicate() if p_prog else [],
 		"current_health": p_health.current_health if p_health else 100.0,
 		"current_mana": p_health.current_mana if p_health else 60.0,
 		"max_health": p_health.max_health if p_health else 100.0,
@@ -91,7 +99,21 @@ static func apply_player_state(world: Node, data: Dictionary) -> void:
 	if player == null:
 		return
 
-	# 1. Nạp Trang bị & Túi đồ trước để tính lại Max MP/HP
+	# 0. Khôi phục Chủng tộc & Cấp độ / EXP TRƯỚC TIÊN (M8)
+	var p_stats := player.player_stats_component
+	var p_prog := player.progression_component
+
+	if p_stats and data.has("race_id"):
+		p_stats.set_race(str(data["race_id"]))
+
+	if p_prog:
+		p_prog.from_dict({
+			"level": int(data.get("level", 1)),
+			"current_exp": int(data.get("current_exp", 0)),
+			"claimed_exp_sources": data.get("claimed_exp_sources", [])
+		})
+
+	# 1. Nạp Trang bị & Túi đồ
 	var p_eq := player.equipment_component
 	if p_eq and data.has("equipment") and (data["equipment"] is Dictionary):
 		p_eq.load_from_dict(data["equipment"])
@@ -99,6 +121,10 @@ static func apply_player_state(world: Node, data: Dictionary) -> void:
 	var p_inv := player.inventory_component
 	if p_inv and data.has("inventory") and (data["inventory"] is Array):
 		p_inv.load_from_dict(data["inventory"])
+
+	# Tính lại Max Stats thống nhất sau khi nạp Race, Level và Gear
+	if p_stats:
+		p_stats.recalculate_stats(false)
 
 	# 2. Nạp Sách Phép
 	var p_sb := player.spellbook_component

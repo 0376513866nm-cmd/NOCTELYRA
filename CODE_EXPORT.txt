@@ -1,6 +1,6 @@
 ﻿===================================================
-  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M7.1 FINAL)
-  EXPORTED AT: 2026-10-20 19:04:45
+  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M8 FINAL)
+  EXPORTED AT: 2026-10-20 20:02:56
 ===================================================
 
 
@@ -112,6 +112,11 @@ quest_journal={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":81,"physical_keycode":0,"key_label":0,"unicode":113,"location":0,"echo":false,"script":null)
 ]
 }
+character_sheet={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":67,"physical_keycode":0,"key_label":0,"unicode":99,"location":0,"echo":false,"script":null)
+]
+}
 
 [rendering]
 
@@ -123,20 +128,21 @@ renderer/rendering_method="forward_plus"
 FILE: README.md
 ===================================================
 
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M7.1: Gameplay Stabilization)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M8: Character Origins & Progression)
 
 Dự án game Action RPG 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Milestone M7.1)
+## 1. Cấu trúc thư mục & Module dự án (Milestone M8 FINAL)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu kiến trúc Milestone M7.1 & kết quả kiểm thử
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M7.1 Final)
-├── test_m7_flow.gd                 # [M7.1] Kịch bản kiểm thử 14 nhóm tính năng và ổn định gameplay (156/156 tests PASS 100%)
+├── README.md                       # Tài liệu kiến trúc Milestone M8 & kết quả kiểm thử
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M8 Final)
+├── test_m8_flow.gd                 # [M8] Kịch bản kiểm thử 18 nhóm tính năng Chủng tộc & Tiến trình (158/158 tests PASS 100%)
+├── test_m7_flow.gd                 # Kịch bản kiểm thử vùng đất mở rộng & nhiệm vụ (156/156 tests PASS 100%)
 ├── test_m6_flow.gd                 # Kịch bản kiểm thử thế giới mở rộng & cổng dịch chuyển (117/117 tests PASS 100%)
 ├── test_m5_flow.gd                 # Kịch bản kiểm thử 26 nhóm tính năng ma pháp (100/100 tests PASS 100%)
 ├── test_m4_flow.gd                 # Kịch bản kiểm thử 17 hạng mục Boss M4 (87/87 tests PASS 100%)
@@ -145,7 +151,7 @@ D:\project\game\NOCTELYRA\
 ├── test_m3_flow.gd                 # Kịch bản kiểm thử M3 (67/67 tests PASS 100%)
 ├── test_m2_1_flow.gd               # Kịch bản kiểm thử M2.1 (42/42 tests PASS 100%)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
-├── project.godot                   # Cấu hình dự án, Input Map (thêm phím Q: quest_journal)
+├── project.godot                   # Cấu hình dự án, Input Map (thêm phím C: character_sheet)
 ├── run_game.bat                    # 1-Click chạy game test ngay lập tức
 ├── open_editor.bat                 # 1-Click mở Godot Editor
 ├── export_code_for_ai.bat          # 1-Click gom toàn bộ source code thành file CODE_EXPORT.txt
@@ -160,8 +166,8 @@ D:\project\game\NOCTELYRA\
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player, tích hợp QuestJournalComponent, khóa điều khiển khi mở Journal
-    │   │   ├── player.tscn                  # Scene Player có đủ các Component chiến đấu và dữ liệu
+    │   │   ├── player.gd                    # FSM Player, tích hợp Progression & Stats, Race Visuals, khóa điều khiển UI
+    │   │   ├── player.tscn                  # Scene Player chứa PlayerProgressionComponent & PlayerStatsComponent
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy đôi, dash
     │   ├── npc\
     │   │   ├── npc.gd                       # Logic NPC: Elyra (Noctis), Kaelis (Elyndra), Rhaek (Vharok)
@@ -189,74 +195,129 @@ D:\project\game\NOCTELYRA\
     │   ├── item_database.gd                 # Cơ sở dữ liệu vật phẩm (thêm ember_core Lõi Tàn Hỏa)
     │   ├── item_definition.gd               # Custom Resource ItemDefinition
     │   ├── inventory_component.gd           # Túi đồ 16 ô, stack item, kiểm tra can_receive_items an toàn
-    │   ├── equipment_component.gd           # Quản lý 2 ô trang bị (weapon, accessory)
+    │   ├── equipment_component.gd           # Quản lý 2 ô trang bị (weapon, accessory), đồng bộ qua PlayerStatsComponent
     │   ├── inventory_ui.gd                  # UI túi đồ 16 ô
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ
     ├── magic\
     │   ├── spell_database.gd                # Danh mục phép thuật: moon_bolt, ember_bloom, frost_shard
     │   ├── spell_definition.gd              # Resource cấu hình phép
-    │   ├── spellbook_component.gd           # Quản lý sách phép, cấp độ, nâng cấp
+    │   ├── spellbook_component.gd           # Quản lý sách phép, cấp độ, nâng cấp, hệ số magic_damage_multiplier
     │   └── projectiles\                     # Đạn phép thuật của Player
+    ├── progression\                         # [MỚI M8] MODULE TIẾN TRÌNH & KINH NGHIỆM
+    │   ├── exp_database.gd                  # Quản lý mức thưởng EXP tập trung (quái vật, Boss, nhiệm vụ)
+    │   └── player_progression_component.gd  # Quản lý Cấp độ (1..10), EXP curve, rollover, chống nhận trùng
     ├── quest\
     │   ├── quest_data.gd                    # Nhiệm vụ chính của Elyra (M0–M6)
-    │   ├── quest_definition.gd              # Resource nhiệm vụ phụ: KILL_ENEMY_TYPE & COLLECT_ITEMS
-    │   ├── quest_journal_component.gd       # Component quản lý nhật ký nhiệm vụ, chống kẹt diệt quái sớm, đồng bộ nhặt đồ
+    │   ├── quest_definition.gd              # Resource nhiệm vụ phụ: reward_exp, KILL_ENEMY_TYPE & COLLECT_ITEMS
+    │   ├── quest_journal_component.gd       # Nhật ký nhiệm vụ, cộng EXP thưởng khi hoàn thành
     │   └── quest_manager.gd                 # Quản lý nhiệm vụ chính và Vàng
+    ├── race\                                # [MỚI M8] MODULE CHỦNG TỘC (RACE SYSTEM)
+    │   ├── race_definition.gd               # Custom Resource RaceDefinition: lore, chỉ số cơ bản, pros/cons, colors
+    │   └── race_database.gd                 # Đăng ký 3 chủng tộc: Nhân tộc (human), Tinh Linh (elf), Quỷ thú (demon_beast)
     ├── save\
-    │   └── save_manager.gd                  # [M7 v1.4.0] Ghi nguyên tử, lưu Quest Journal & _kill_history, backward-compatible
+    │   └── save_manager.gd                  # [M8 v1.5.0] Lưu trữ race_id, level, current_exp, claimed_exp_sources, backward v1.0-v1.4
+    ├── stats\                               # [MỚI M8] MODULE CHỈ SỐ THỐNG NHẤT (UNIFIED STATS)
+    │   └── player_stats_component.gd        # Nguồn chân lý duy nhất (Single Source of Truth): Base + Growth + Gear
     ├── ui\
-    │   ├── game_ui.gd                       # HUD chính, kết nối phím Q/J đóng mở Sổ Nhiệm Vụ, thoại NPC Kaelis/Rhaek
-    │   ├── game_ui.tscn                     # CanvasLayer HUD, tích hợp QuestJournalUI
-    │   ├── quest_journal_ui.gd              # UI Sổ Nhiệm Vụ: hiển thị 3 nhiệm vụ, tiến độ, phần thưởng, badge
-    │   ├── quest_journal_ui.tscn            # Scene Sổ Nhiệm Vụ
+    │   ├── character_creation_ui.gd         # Giao diện chọn chủng tộc khi bắt đầu Game Mới (New Game Flow)
+    │   ├── character_creation_ui.tscn
+    │   ├── character_sheet_ui.gd            # Giao diện Thông Tin Nhân Vật (Phím C): Cấp, EXP, chỉ số, trang bị
+    │   ├── character_sheet_ui.tscn
+    │   ├── game_ui.gd                       # HUD chính: kết nối Q, I, C, Esc, xử lý Grace Cooldown chống chém vô ý
+    │   ├── game_ui.tscn
+    │   ├── main_menu.gd                     # Menu chính: New Game mở Character Creation, Continue nạp bản lưu
+    │   ├── main_menu.tscn
+    │   ├── quest_journal_ui.gd              # UI Sổ Nhiệm Vụ (Phím Q)
+    │   ├── quest_journal_ui.tscn
     │   ├── spell_hotbar.gd                  # Thanh kỹ năng ma pháp HUD
-    │   └── spell_hotbar.tscn                # Scene thanh kỹ năng ma pháp
+    │   └── spell_hotbar.tscn
     └── world\
-        ├── base_zone.gd                     # Quản lý thế giới cơ sở, kết nối tín hiệu quái, hồi phục thế giới
-        ├── zone_manager.gd                  # Chuyển cảnh, bảo toàn quest journal và dữ liệu người chơi
+        ├── base_zone.gd                     # Thế giới cơ sở: kết nối thăng cấp, cộng EXP quái, khởi tạo tộc
+        ├── zone_manager.gd                  # Chuyển cảnh, bảo toàn tiến trình tộc, cấp, EXP qua các vùng
         ├── zone_definition.gd               # Đăng ký thông tin và scene 3 khu vực
         ├── zone_portal.gd                   # Cổng ma pháp dịch chuyển giữa các vùng
         ├── zone_portal.tscn                 # Scene cổng dịch chuyển
         ├── ancient_crystal.gd               # Cổ Tinh Thạch tại Elyndra
-        ├── noctis_forest.gd                 # Vùng 1: Rừng Noctis & Đấu trường Boss
+        ├── noctis_forest.gd                 # Vùng 1: Rừng Noctis & Đấu trường Boss (Thưởng 150 EXP Lunareth)
         ├── noctis_forest.tscn
-        ├── elyndra_glade.gd                 # Vùng 2: Thánh Lâm Elyndra
-        ├── elyndra_glade.tscn               # (Chứa NPC Kaelis, 3 Corrupted Mooncap, 2 Corrupted Mana Wisp)
-        ├── vharok_outpost.gd                # Vùng 3: Tiền Đồn Vharok
-        └── vharok_outpost.tscn              # (Chứa NPC Rhaek, 3 Ashfang Wolf, 2 Ember Lizard)
+        ├── elyndra_glade.gd                 # Vùng 2: Thánh Lâm Elyndra (Kaelis, Mooncap, Mana Wisp)
+        ├── elyndra_glade.tscn
+        ├── vharok_outpost.gd                # Vùng 3: Tiền Đồn Vharok (Rhaek, Ashfang Wolf, Ember Lizard)
+        └── vharok_outpost.tscn
 ```
 
 ---
 
-## 2. Các điểm cải tiến và khắc phục lỗi trong M7.1 Stabilization
+## 2. Hệ Thống Chủng Tộc & Chỉ Số Cơ Bản (Milestone M8)
 
-1. **Khắc phục triệt để nguy cơ kẹt nhiệm vụ Kaelis (Softlock Prevention):**
-   - Bổ sung `_kill_history` trong `QuestJournalComponent` để tự động ghi nhận mọi quái vật bị hạ gục trước khi nhận quest.
-   - Khi nhận nhiệm vụ `quest_elyndra_cleansing`, hệ thống tự động đồng bộ số Mooncap đã diệt trước đó từ `_kill_history` và `defeated_enemy_ids` của bản đồ.
-   - Nếu đã diệt 1, 2 hoặc cả 3 Mooncap trước khi nói chuyện với Kaelis, tiến độ lập tức được ghi nhận chính xác (1/3, 2/3, 3/3 `READY_TO_TURN_IN`) mà không bị kẹt 0/3.
-   - Lịch sử diệt quái được serialize/deserialize nguyên vẹn trong Save v1.4.0.
-
-2. **Sửa rơi đồ của Ember Lizard (Lõi Tàn Hỏa - Ember Core):**
-   - Trong `Enemy._spawn_loot()`, tôn trọng thuộc tính `definition.drop_item_id` nếu có (đối với `ember_lizard` là `"ember_core"`), chỉ fallback về `"mana_shard"` nếu không cấu hình.
-   - Khi Ember Lizard bị tiêu diệt, luôn sinh ra `ItemPickup` hợp lệ chứa `"ember_core"`.
-
-3. **Xử lý túi đồ đầy khi trả quest (Atomic Turn-in):**
-   - Bổ sung hàm `can_receive_items(items_to_add, items_to_remove)` trong `InventoryComponent` để mô phỏng chính xác không gian túi đồ sau khi trừ vật phẩm quest và cộng phần thưởng.
-   - Cả `QuestJournalComponent.can_turn_in()`, `turn_in_quest()` và đối thoại NPC Kaelis/Rhaek đều kiểm tra điều kiện này.
-   - Nếu túi đồ không đủ chỗ, từ chối giao dịch an toàn: không mất quest items, không trao vàng/đồ dang dở, không autosave lỗi, giữ nguyên trạng thái `READY_TO_TURN_IN` và hướng dẫn người chơi dọn chỗ trống.
-
-4. **Khóa thao tác Player khi mở Quest Journal & Loại trừ lẫn nhau:**
-   - Trong `Player._physics_process()`, kiểm tra `ui.is_quest_journal_open()` để khóa toàn bộ input di chuyển, nhảy, dash, tấn công cận chiến và niệm phép.
-   - Khi đóng Journal (phím Q, phím J, ESC hoặc nút Close), Player phục hồi điều khiển bình thường.
-   - Thiết lập tính loại trừ lẫn nhau (mutual exclusivity) giữa Inventory (phím I) và Quest Journal (phím Q/J): mở cái này sẽ tự động đóng cái kia, không mở đè lên nhau.
-
-5. **Đồng bộ tiến độ thu thập khi nhặt đồ:**
-   - Kết nối tín hiệu `inventory_updated` của `InventoryComponent` vào `QuestJournalComponent`.
-   - Tiến độ thu thập Lõi Tàn Hỏa tự động cập nhật ngay khi nhặt từ mặt đất hoặc thay đổi số lượng trong túi đồ, có cơ chế chặn vòng lặp tín hiệu vô hạn (chỉ phát tín hiệu khi giá trị hoặc trạng thái thực sự thay đổi).
+| Thuộc tính | Nhân tộc (`human`) | Tinh Linh tộc (`elf`) | Quỷ tộc bán thú (`demon_beast`) |
+| :--- | :--- | :--- | :--- |
+| **Danh hiệu** | Người Bảo Vệ Làng Ánh Nguyệt | Người Gìn Giữ Tinh Mạch Elyndra | Chiến Binh Dãy Núi Tro Tàn |
+| **Sinh Lực (HP)** | 100 HP | 90 HP | **125 HP** |
+| **Ma Lực (MP)** | 60 MP | **80 MP** | 50 MP |
+| **Tấn Công (ATK)** | 25 ATK | 23 ATK | **30 ATK** |
+| **Hồi MP** | 5.0 MP/s | **7.0 MP/s** | 4.0 MP/s |
+| **Tốc độ chạy** | 270 px/s | **275 px/s** | 260 px/s |
+| **Hệ số Ma pháp** | 1.0x (100%) | **1.1x (+10% sát thương phép)** | 1.0x (100%) |
+| **Đặc trưng thị giác** | Khăn choàng lam/bạc | Tai nhọn ngọc bích | Cặp sừng đỏ thẫm & Đuôi thú |
 
 ---
 
-## 3. Báo Cáo Kiểm Thử Tự Động Toàn Diện trên Godot 4.3 Engine
+## 3. Hệ Thống Tăng Trưởng & Công Thức EXP
+
+1. **Công thức EXP chuẩn:**
+   $$\text{EXP Yêu Cầu}(\text{level}) = 60 + 40 \times (\text{level} - 1)$$
+   - Cấp 1 $\to$ 2: 60 EXP
+   - Cấp 2 $\to$ 3: 100 EXP
+   - Cấp 3 $\to$ 4: 140 EXP
+   - Cấp 4 $\to$ 5: 180 EXP
+   - Cấp 9 $\to$ 10: 380 EXP
+   - Cấp 10: **Tối đa (Max Level)**, không tăng lên cấp 11, xóa EXP dư thừa.
+
+2. **Tăng trưởng chỉ số mỗi cấp (Growth Per Level):**
+   - **Max HP:** +10 HP / cấp
+   - **Max MP:** +5 MP / cấp
+   - **Sát thương vật lý (ATK):** +2 ATK / cấp
+
+3. **Cơ chế Rollover & An Toàn Sinh Mệnh:**
+   - Khi nhận lượng lớn EXP vượt ngưỡng, hệ thống tự động tính toán thăng nhiều cấp liên tiếp và bảo lưu chính xác phần EXP dư thừa còn lại.
+   - Khi lên cấp, lượng Max HP/MP tăng thêm được cộng dồn tương ứng vào HP/MP hiện tại (Delta gain), tuyệt đối **không tự động hồi đầy máu (No full-heal exploit)** để giữ nguyên tính thử thách sinh tồn.
+
+4. **Nguồn Thưởng EXP Tập Trung (`ExpDatabase`) & Chống Nhận Trùng:**
+   - Quái thường: 20–30 EXP (Sói tha hóa 20, Nấm mộng 20, Tinh linh tha hóa 25, Sói nanh tro 25, Thằn lằn tro 30).
+   - Boss Lunareth: 150 EXP.
+   - Nhiệm vụ: Elyra 50 EXP, Kaelis 60 EXP, Rhaek 70 EXP.
+   - Mọi nguồn EXP đều được xác thực qua định danh nguồn (`claimed_exp_sources`), ngăn chặn tuyệt đối việc nhận lặp lại khi giao chiến lại hoặc nạp save.
+
+---
+
+## 4. Hệ Thống Giao Diện & Tương Tác (UI / UX)
+
+1. **Luồng Khởi Tạo Nhân Vật (New Game Flow):**
+   - Nhấn **New Game** tại Menu chính sẽ mở giao diện `CharacterCreationUI`.
+   - Người chơi xem chi tiết lore, ưu/nhược điểm và bảng chỉ số của 3 tộc trước khi quyết định.
+   - Nhấn **Quay Lại (Cancel):** Trở về Menu chính, **bảo toàn nguyên vẹn bản lưu hiện có**.
+   - Nhấn **Xác Nhận (Confirm):** Bắt đầu New Game tại Rừng Noctis với chủng tộc đã chọn.
+
+2. **Bảng Thông Tin Nhân Vật (`CharacterSheetUI` — Phím C):**
+   - Mở/đóng bằng phím **C**, hiển thị trực quan: Chủng tộc, Cấp độ, Thanh tiến trình EXP %, Chỉ số HP/MP, ATK, Sát thương phép thuật, Hồi MP, Tốc độ chạy và 2 ô trang bị hiện tại.
+   - Khóa toàn bộ input di chuyển và chiến đấu của Player khi bảng đang mở.
+
+3. **Loại Trừ Lẫn Nhau & Grace Cooldown (Khắc Phục Lỗi Phím J):**
+   - **Loại trừ lẫn nhau (Mutual Exclusivity):** Mở Bảng Nhân Vật (C) sẽ tự động đóng Túi Đồ (I) và Sổ Nhiệm Vụ (Q), và ngược lại.
+   - **Khắc phục lỗi phím J chém gió vô ý:** Khi đóng bất kỳ giao diện nào (Journal, Inventory, Character Sheet), hệ thống kích hoạt **Grace Cooldown ngắn (0.15s)** và tiêu thụ hoàn toàn event input, đảm bảo Player không tung đòn đánh vô ý thức trên frame đóng UI.
+
+---
+
+## 5. Định Dạng Bản Lưu v1.5.0 & Tương Thích Ngược
+
+- Schema Save v1.5.0 lưu đầy đủ: `race_id`, `progression` (`level`, `current_exp`, `claimed_exp_sources`).
+- **Thứ tự nạp an toàn:** (1) Khôi phục Race & Level $\to$ (2) Nạp Trang bị $\to$ (3) Tính lại Final Stats thống nhất $\to$ (4) Khôi phục HP/MP hiện tại giới hạn theo Max mới.
+- **Tương thích ngược hoàn hảo:** Bản lưu cũ v1.0.0 – v1.4.0 tự động gán chủng tộc Nhân tộc (`human`), Cấp 1, 0 EXP, danh sách nguồn rỗng (không hồi tố nhiệm vụ cũ), và giữ nguyên toàn bộ tiến trình trang bị, thế giới và Boss.
+
+---
+
+## 6. Báo Cáo Kiểm Thử Tự Động Toàn Diện trên Godot 4.3 Engine
 
 Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-stable_win64_console.exe --headless`):
 
@@ -264,34 +325,36 @@ Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-
 ========================================================================================
  BỘ KIỂM THỬ                         | SỐ TEST    | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
 ----------------------------------------------------------------------------------------
- test_m7_flow.gd (Mở rộng & M7.1)    | 156 tests  | PASS 100%    | 0
+ test_m8_flow.gd (Chủng tộc & Level) | 158 tests  | PASS 100%    | 0
+ test_m7_flow.gd (Khu vực & M7.1)    | 156 tests  | PASS 100%    | 0
  test_m6_flow.gd (Thế giới & M6.1)   | 117 tests  | PASS 100%    | 0
  test_m5_flow.gd (Ma pháp M5.1)      | 100 tests  | PASS 100%    | 0
  test_m4_flow.gd (Boss Lunareth M4)  |  87 tests  | PASS 100%    | 0
  test_m3_2_flow.gd (Save/Load M3.2)  |  50 tests  | PASS 100%    | 0
  test_m2_1_flow.gd (NPC & Quest M2)  |  42 tests  | PASS 100%    | 0
 ========================================================================================
- TỔNG CỘNG                           | 552 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
+ TỔNG CỘNG                           | 710 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
 ========================================================================================
 ```
 
 ---
 
-## 4. Hướng dẫn Điều khiển & Trải nghiệm
+## 7. Hướng dẫn Điều khiển
 
 | Phím bấm | Hành động |
 | :--- | :--- |
 | **A / D** | Di chuyển trái / phải (Camera bám sát mượt mà) |
 | **Space** | Nhảy đơn / Nhảy đôi (Double Jump) |
 | **Shift** | Lướt nhanh (Dash) |
-| **J** | Tấn công cận chiến (Chém kiếm) \| Đóng Quest Journal khi đang mở |
+| **J** | Tấn công cận chiến (Chém kiếm) \| Đóng UI khi đang mở |
 | **K** | Thi triển phép thuật đang chọn (Bắn ma pháp, tiêu hao MP) |
 | **1, 2, 3** | Chọn phép thuật: [1] Nguyệt Quang Đạn \| [2] Tinh Hỏa Bùng Nổ \| [3] Hàn Tinh Tiễn |
 | **U** | Nâng cấp phép thuật đang chọn (Tiêu hao Tinh thể Ma lực `mana_shard`) |
-| **E** | Tương tác NPC (Elyra, Kaelis, Rhaek) / Kích hoạt Cổng dịch chuyển / Đọc Cổ Tinh Thạch |
+| **E** | Tương tác NPC (Elyra, Kaelis, Rhaek) / Cổng dịch chuyển / Cổ Tinh Thạch |
+| **C** | **Mở / Đóng Bảng Thông Tin Nhân Vật (Character Sheet)** |
 | **Q** | **Mở / Đóng Sổ Nhiệm Vụ (Quest Journal)** |
 | **I** | Mở / Đóng túi đồ (Inventory) & Bảng trang bị |
-| **Esc** | Tạm dừng trò chơi (Pause Menu) / Đóng túi đồ / Đóng Sổ Nhiệm Vụ / Đóng hội thoại |
+| **Esc** | Tạm dừng (Pause Menu) / Đóng bảng đang mở / Đóng hội thoại |
 
 
 ===================================================
@@ -2279,7 +2342,7 @@ func _run_suite() -> void:
 	# GROUP 20: Save & Load v1.2.0, Backward Compatibility & Isolation
 	# -------------------------------------------------------------
 	print("\n--- GROUP 20: Save/Load v1.2.0, Compatibility & Isolation ---")
-	_assert(SaveManager.CURRENT_VERSION in ["1.2.0", "1.3.0", "1.4.0"], "SaveManager.CURRENT_VERSION là 1.2.0, 1.3.0 hoặc 1.4.0")
+	_assert(SaveManager.CURRENT_VERSION in ["1.2.0", "1.3.0", "1.4.0", "1.5.0"], "SaveManager.CURRENT_VERSION là 1.2.0 hoặc mới hơn")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.2.0") and SaveManager.SUPPORTED_VERSIONS.has("1.1.0") and SaveManager.SUPPORTED_VERSIONS.has("1.0.0"), "SaveManager hỗ trợ cả 3 phiên bản 1.0.0, 1.1.0 và 1.2.0")
 
 	world.boss_battle_started = false
@@ -2291,7 +2354,7 @@ func _run_suite() -> void:
 	test_file_read.close()
 	var parsed_data: Dictionary = JSON.parse_string(save_json_str)
 
-	_assert(parsed_data.get("save_version") in ["1.2.0", "1.3.0", "1.4.0"], "File save ghi đúng save_version 1.2.0, 1.3.0 hoặc 1.4.0")
+	_assert(parsed_data.get("save_version") in ["1.2.0", "1.3.0", "1.4.0", "1.5.0"], "File save ghi đúng save_version 1.2.0 hoặc mới hơn")
 	_assert(parsed_data.has("spellbook"), "File save chứa khối dữ liệu spellbook")
 	var saved_sb: Dictionary = parsed_data.get("spellbook", {})
 	_assert(saved_sb.get("selected_spell") == "ember_bloom", "Lưu đúng phép đang chọn là ember_bloom")
@@ -3694,7 +3757,7 @@ func _run_suite() -> void:
 	# CATEGORY 12: World State Persistence & Save/Load v1.4.0
 	# -------------------------------------------------------------
 	print("\n--- CATEGORY 12: World State Persistence & Save/Load v1.4.0 ---")
-	_assert(SaveManager.CURRENT_VERSION == "1.4.0", "SaveManager.CURRENT_VERSION là 1.4.0")
+	_assert(SaveManager.CURRENT_VERSION in ["1.4.0", "1.5.0"], "SaveManager.CURRENT_VERSION là 1.4.0 hoặc mới hơn (1.5.0)")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.4.0"), "SaveManager hỗ trợ phiên bản 1.4.0")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.3.0"), "SaveManager hỗ trợ phiên bản 1.3.0")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.2.0"), "SaveManager hỗ trợ phiên bản 1.2.0")
@@ -3720,7 +3783,7 @@ func _run_suite() -> void:
 	var s_text = s_file.get_as_text()
 	s_file.close()
 	var s_dict: Dictionary = JSON.parse_string(s_text)
-	_assert(s_dict.get("save_version") == "1.4.0", "Bản lưu ghi đúng save_version == 1.4.0")
+	_assert(s_dict.get("save_version") in ["1.4.0", "1.5.0"], "Bản lưu ghi đúng save_version == 1.4.0 hoặc 1.5.0")
 	_assert(s_dict.has("quest_journal"), "Bản lưu có trường dữ liệu quest_journal")
 	_assert(s_dict["quest_journal"].has("quest_elyndra_cleansing"), "quest_journal lưu tiến độ nhiệm vụ Kaelis")
 
@@ -3955,6 +4018,596 @@ func _run_suite() -> void:
 
 	if failures == 0:
 		print(">>> ALL M7 REGIONAL GAMEPLAY TESTS PASSED 100%! <<<")
+		quit(0)
+	else:
+		print(">>> SOME TESTS FAILED! <<<")
+		quit(1)
+
+
+===================================================
+FILE: test_m8_flow.gd
+===================================================
+
+extends SceneTree
+
+# test_m8_flow.gd
+# Specialized automated test suite for NOCTELYRA Milestone M8: Character Origins & Progression System.
+# Engine: Godot 4.3 + GDScript
+# Covers all required categories:
+# 1. RaceDefinition Registry & Base Stats (Human, Elf, Demon Beast)
+# 2. Character Creation UI & Cancel Save Preservation
+# 3. EXP Curve & ExpDatabase Centralized Definitions
+# 4. Single Level-Up & Stat Growth (+10 HP, +5 MP, +2 ATK)
+# 5. Multi-Level-Up Rollover (Surplus EXP carried forward)
+# 6. Max Level 10 Cap & Overflow Blocking
+# 7. Duplicate EXP Prevention (Monster, Boss, Quest)
+# 8. Unified Stats System with Equipment Bonuses
+# 9. Elf Magic Damage Multiplier (1.1x)
+# 10. Safe Current HP/MP on Level-Up (Delta Gain, No Full-Heal Exploit)
+# 11. Placeholder Race Visual Badges (Non-intrusive to Hitbox/Collision)
+# 12. Character Sheet UI Toggle & Content Display
+# 13. UI Mutual Exclusivity (CharacterSheet vs Inventory vs QuestJournal)
+# 14. UI Input Lock & Grace Cooldown (No Accidental Attack on Close)
+# 15. Save/Load v1.5.0 Progression & Race Persistence
+# 16. Backward Compatibility with Legacy Saves (v1.0.0 - v1.4.0)
+# 17. Zone Travel Persistence (Race, Level, EXP across zones)
+# 18. Isolation Verification (Real save file untouched)
+
+const PlayerScript = preload("res://src/actors/player/player.gd")
+const PlayerScene = preload("res://src/actors/player/player.tscn")
+const NoctisForestScene = preload("res://src/world/noctis_forest.tscn")
+const ElyndraGladeScene = preload("res://src/world/elyndra_glade.tscn")
+const CharacterCreationUIScene = preload("res://src/ui/character_creation_ui.tscn")
+const CharacterSheetUIScene = preload("res://src/ui/character_sheet_ui.tscn")
+const ItemDatabaseScript = preload("res://src/inventory/item_database.gd")
+const SpellDatabaseScript = preload("res://src/magic/spell_database.gd")
+
+var failures: int = 0
+var tests_run: int = 0
+
+const TEST_SAVE_PATH: String = "user://noctelyra_m8_test.json"
+const REAL_SAVE_PATH: String = "user://noctelyra_slot1.json"
+
+var real_file_existed_at_start: bool = false
+var real_file_hash_at_start: String = ""
+
+func _init() -> void:
+	print("==================================================")
+	print(" [NOCTELYRA M8] CHARACTER ORIGINS & PROGRESSION SUITE")
+	print("==================================================")
+	call_deferred("_run_suite")
+
+func _assert(condition: bool, test_name: String, details: String = "") -> void:
+	tests_run += 1
+	if condition:
+		print("  [PASS] %s" % test_name)
+	else:
+		failures += 1
+		print("  [FAIL] %s - Details: %s" % [test_name, details])
+
+func _wait_seconds(seconds: float) -> void:
+	await create_timer(seconds).timeout
+
+func _run_suite() -> void:
+	ItemDatabaseScript.initialize()
+	SpellDatabaseScript.initialize()
+	RaceDatabase.initialize()
+	ZoneManager.reset_session()
+
+	# GHI NHẬN CHỈ ĐỌC TRẠNG THÁI FILE SAVE THẬT - TUYỆT ĐỐI KHÔNG GHI/XÓA/SỬA
+	real_file_existed_at_start = FileAccess.file_exists(REAL_SAVE_PATH)
+	if real_file_existed_at_start:
+		real_file_hash_at_start = FileAccess.get_md5(REAL_SAVE_PATH)
+
+	SaveManager.custom_save_path = TEST_SAVE_PATH
+	SaveManager.delete_save()
+
+	# -------------------------------------------------------------
+	# CATEGORY 1: RaceDefinition Registry & Base Stats
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 1: RaceDefinition Registry & Base Stats ---")
+	var human_def := RaceDatabase.get_race("human")
+	_assert(human_def != null, "Định nghĩa chủng tộc Human tồn tại")
+	_assert(human_def.base_health == 100.0, "Human HP: 100.0")
+	_assert(human_def.base_mana == 60.0, "Human MP: 60.0")
+	_assert(human_def.base_attack == 25.0, "Human ATK: 25.0")
+	_assert(human_def.base_mana_regen == 5.0, "Human Regen: 5.0 MP/s")
+	_assert(human_def.base_move_speed == 270.0, "Human Speed: 270.0 px/s")
+	_assert(human_def.magic_damage_multiplier == 1.0, "Human Magic Multiplier: 1.0x")
+
+	var elf_def := RaceDatabase.get_race("elf")
+	_assert(elf_def != null, "Định nghĩa chủng tộc Elf tồn tại")
+	_assert(elf_def.base_health == 90.0, "Elf HP: 90.0")
+	_assert(elf_def.base_mana == 80.0, "Elf MP: 80.0")
+	_assert(elf_def.base_attack == 23.0, "Elf ATK: 23.0")
+	_assert(elf_def.base_mana_regen == 7.0, "Elf Regen: 7.0 MP/s")
+	_assert(elf_def.base_move_speed == 275.0, "Elf Speed: 275.0 px/s")
+	_assert(elf_def.magic_damage_multiplier == 1.1, "Elf Magic Multiplier: 1.1x")
+
+	var beast_def := RaceDatabase.get_race("demon_beast")
+	_assert(beast_def != null, "Định nghĩa chủng tộc Demon Beast tồn tại")
+	_assert(beast_def.base_health == 125.0, "Demon Beast HP: 125.0")
+	_assert(beast_def.base_mana == 50.0, "Demon Beast MP: 50.0")
+	_assert(beast_def.base_attack == 30.0, "Demon Beast ATK: 30.0")
+	_assert(beast_def.base_mana_regen == 4.0, "Demon Beast Regen: 4.0 MP/s")
+	_assert(beast_def.base_move_speed == 260.0, "Demon Beast Speed: 260.0 px/s")
+	_assert(beast_def.magic_damage_multiplier == 1.0, "Demon Beast Magic Multiplier: 1.0x")
+
+	# -------------------------------------------------------------
+	# CATEGORY 2: Character Creation UI & Cancel Save Preservation
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 2: Character Creation UI & Cancel Save Preservation ---")
+	var dummy_save_data := {"save_version": "1.5.0", "gold": 777}
+	var f := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(dummy_save_data))
+	f.close()
+	var pre_cancel_md5 := FileAccess.get_md5(TEST_SAVE_PATH)
+
+	var char_creation := CharacterCreationUIScene.instantiate()
+	char_creation.auto_change_scene = false
+	root.add_child(char_creation)
+	await _wait_seconds(0.1)
+
+	_assert(char_creation.has_node("Panel/RaceTabs"), "Giao diện tạo nhân vật có thanh chọn tộc RaceTabs")
+	_assert(char_creation.selected_race_id == "human", "Mặc định chọn tộc Nhân loại")
+
+	# Đổi sang tộc Elf
+	char_creation.select_race("elf")
+	_assert(char_creation.selected_race_id == "elf", "Chọn thành công tộc Elf")
+
+	# Nhấn Hủy (Cancel)
+	var cancel_state := {"emitted": false}
+	char_creation.cancelled.connect(func(): cancel_state["emitted"] = true)
+	char_creation._on_cancel_pressed()
+	_assert(cancel_state["emitted"] == true, "Tín hiệu cancelled phát ra khi bấm Hủy")
+
+	# Kiểm tra file save không bị xóa
+	_assert(FileAccess.file_exists(TEST_SAVE_PATH) == true, "Bấm Hủy KHÔNG xóa file save hiện có")
+	_assert(FileAccess.get_md5(TEST_SAVE_PATH) == pre_cancel_md5, "Nội dung file save được bảo toàn nguyên vẹn sau khi Hủy")
+
+	# Xác nhận chọn tộc Demon Beast
+	var confirmed_state := {"race": ""}
+	char_creation.select_race("demon_beast")
+	char_creation.creation_confirmed.connect(func(r_id: String): confirmed_state["race"] = r_id)
+	char_creation._on_confirm_pressed()
+	_assert(confirmed_state["race"] == "demon_beast", "Bấm Xác nhận chọn đúng tộc demon_beast")
+	_assert(ZoneManager.initial_race_id == "demon_beast", "ZoneManager.initial_race_id được gán là demon_beast")
+
+	char_creation.queue_free()
+	await _wait_seconds(0.1)
+
+	# -------------------------------------------------------------
+	# CATEGORY 3: EXP Curve & ExpDatabase Centralized Definitions
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 3: EXP Curve & ExpDatabase Centralized Definitions ---")
+	var prog := PlayerProgressionComponent.new()
+	_assert(prog.get_exp_required_for_level(1) == 60, "EXP Cấp 1 -> 2: 60 EXP")
+	_assert(prog.get_exp_required_for_level(2) == 100, "EXP Cấp 2 -> 3: 100 EXP")
+	_assert(prog.get_exp_required_for_level(3) == 140, "EXP Cấp 3 -> 4: 140 EXP")
+	_assert(prog.get_exp_required_for_level(4) == 180, "EXP Cấp 4 -> 5: 180 EXP")
+	_assert(prog.get_exp_required_for_level(9) == 380, "EXP Cấp 9 -> 10: 380 EXP")
+	_assert(prog.get_exp_required_for_level(10) == 0, "EXP Cấp 10 (Max Level): 0 EXP")
+
+	_assert(ExpDatabase.get_enemy_exp("corrupted_wolf") == 20, "Quái Sói Tha Hóa: 20 EXP")
+	_assert(ExpDatabase.get_enemy_exp("corrupted_mooncap") == 20, "Quái Nấm Tha Hóa: 20 EXP")
+	_assert(ExpDatabase.get_enemy_exp("corrupted_mana_wisp") == 25, "Quái Tinh Linh Tha Hóa: 25 EXP")
+	_assert(ExpDatabase.get_enemy_exp("ashfang_wolf") == 25, "Quái Sói Nanh Tro: 25 EXP")
+	_assert(ExpDatabase.get_enemy_exp("ember_lizard") == 30, "Quái Thằn Lằn Tro: 30 EXP")
+	_assert(ExpDatabase.get_boss_exp() == 150, "Boss Lunareth: 150 EXP")
+	_assert(ExpDatabase.get_quest_exp("quest_tutorial") == 50, "Nhiệm vụ Elyra: 50 EXP")
+	_assert(ExpDatabase.get_quest_exp("quest_elyndra_cleansing") == 60, "Nhiệm vụ Kaelis: 60 EXP")
+	_assert(ExpDatabase.get_quest_exp("quest_vharok_embers") == 70, "Nhiệm vụ Rhaek: 70 EXP")
+
+	# -------------------------------------------------------------
+	# CATEGORY 4: Single Level-Up & Stat Growth
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 4: Single Level-Up & Stat Growth ---")
+	var p_node: Player = PlayerScene.instantiate()
+	root.add_child(p_node)
+	await _wait_seconds(0.1)
+
+	p_node.race_id = "human"
+	p_node.player_stats_component.recalculate_stats(false)
+
+	_assert(p_node.health_component.max_health == 100.0, "Human Lv 1 HP: 100.0")
+	_assert(p_node.health_component.max_mana == 60.0, "Human Lv 1 MP: 60.0")
+	_assert(p_node.melee_hitbox.damage == 25.0, "Human Lv 1 ATK: 25.0")
+
+	var lvl_up_state := {"received": false, "lvl": 0}
+	p_node.progression_component.level_up.connect(func(lvl: int):
+		lvl_up_state["received"] = true
+		lvl_up_state["lvl"] = lvl
+	)
+
+	var add_res := p_node.progression_component.add_exp(60, "test_source_1")
+	_assert(add_res == true, "Thêm 60 EXP thành công")
+	_assert(p_node.progression_component.level == 2, "Player đạt Cấp 2")
+	_assert(p_node.progression_component.current_exp == 0, "EXP dư về 0")
+	_assert(lvl_up_state["received"] == true and lvl_up_state["lvl"] == 2, "Tín hiệu level_up phát ra với cấp 2")
+
+	_assert(p_node.health_component.max_health == 110.0, "Human Lv 2 HP (+10): 110.0")
+	_assert(p_node.health_component.max_mana == 65.0, "Human Lv 2 MP (+5): 65.0")
+	_assert(p_node.melee_hitbox.damage == 27.0, "Human Lv 2 ATK (+2): 27.0")
+
+	# -------------------------------------------------------------
+	# CATEGORY 5: Multi-Level-Up Rollover
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 5: Multi-Level-Up Rollover ---")
+	# Đang ở Lv 2 (cần 100 để lên Lv 3, Lv 3 cần 140 để lên Lv 4).
+	# Thêm 250 EXP:
+	# - 100 EXP đưa lên Lv 3 (còn 150)
+	# - 140 EXP đưa lên Lv 4 (còn 10)
+	# Kết quả mong đợi: Cấp 4, EXP dư = 10, target = 180.
+	var levels_emitted: Array[int] = []
+	p_node.progression_component.level_up.connect(func(lvl: int): levels_emitted.append(lvl))
+
+	p_node.progression_component.add_exp(250, "test_multi_rollover")
+	_assert(p_node.progression_component.level == 4, "Tăng liên tiếp lên Cấp 4 thành công")
+	_assert(p_node.progression_component.current_exp == 10, "Bảo lưu chuẩn xác 10 EXP dư")
+	_assert(p_node.progression_component.get_current_target_exp() == 180, "Mục tiêu lên cấp 5 là 180 EXP")
+	_assert(levels_emitted.has(3) and levels_emitted.has(4), "Phát đầy đủ tín hiệu thăng cấp qua từng cấp (3 và 4)")
+
+	# Kiểm tra chỉ số sau 3 cấp tăng (+30 HP, +15 MP, +6 ATK so với gốc)
+	_assert(p_node.health_component.max_health == 130.0, "Human Lv 4 Max HP: 130.0")
+	_assert(p_node.health_component.max_mana == 75.0, "Human Lv 4 Max MP: 75.0")
+	_assert(p_node.melee_hitbox.damage == 31.0, "Human Lv 4 ATK: 31.0")
+
+	# -------------------------------------------------------------
+	# CATEGORY 6: Max Level 10 Cap & Overflow Blocking
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 6: Max Level 10 Cap & Overflow Blocking ---")
+	p_node.progression_component.add_exp(10000, "massive_exp_grant")
+	_assert(p_node.progression_component.level == 10, "Cấp độ dừng lại chính xác tại Max Level 10")
+	_assert(p_node.progression_component.is_max_level() == true, "is_max_level() trả về true")
+	_assert(p_node.progression_component.current_exp == 0, "EXP dư bị dọn dẹp tại Cấp 10")
+
+	# Thêm tiếp EXP tại cấp tối đa không gây lỗi và không tăng lên cấp 11
+	var overflow_ok := p_node.progression_component.add_exp(500, "extra_at_max")
+	_assert(p_node.progression_component.level == 10, "Vẫn giữ nguyên Cấp 10 (không nhảy lên 11)")
+	_assert(p_node.health_component.max_health == 100.0 + 9 * 10.0, "Human Lv 10 HP: 190.0")
+	_assert(p_node.health_component.max_mana == 60.0 + 9 * 5.0, "Human Lv 10 MP: 105.0")
+	_assert(p_node.melee_hitbox.damage == 25.0 + 9 * 2.0, "Human Lv 10 ATK: 43.0")
+
+	# -------------------------------------------------------------
+	# CATEGORY 7: Duplicate EXP Prevention
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 7: Duplicate EXP Prevention ---")
+	var dup_prog := PlayerProgressionComponent.new()
+	var r1 := dup_prog.add_exp(20, "monster:noctis:corrupted_mooncap_1")
+	_assert(r1 == true, "Nhận EXP quái vật lần đầu: THÀNH CÔNG")
+	_assert(dup_prog.current_exp == 20, "EXP hiện tại: 20")
+
+	var r2 := dup_prog.add_exp(20, "monster:noctis:corrupted_mooncap_1")
+	_assert(r2 == false, "Nhận EXP cùng quái vật lần hai: BỊ CHẶN TUYỆT ĐỐI")
+	_assert(dup_prog.current_exp == 20, "EXP không bị cộng dồn lần 2")
+
+	var b1 := dup_prog.add_exp(150, "boss:lunareth")
+	_assert(b1 == true, "Nhận EXP Boss Lunareth lần đầu: THÀNH CÔNG")
+
+	var b2 := dup_prog.add_exp(150, "boss:lunareth")
+	_assert(b2 == false, "Nhận EXP Boss Lunareth lần hai: BỊ CHẶN")
+
+	var q1 := dup_prog.add_exp(50, "quest:quest_tutorial")
+	_assert(q1 == true, "Nhận EXP Quest lần đầu: THÀNH CÔNG")
+
+	var q2 := dup_prog.add_exp(50, "quest:quest_tutorial")
+	_assert(q2 == false, "Nhận EXP Quest cùng ID lần hai: BỊ CHẶN")
+
+	dup_prog.queue_free()
+
+	# -------------------------------------------------------------
+	# CATEGORY 8: Unified Stats System with Equipment Bonuses
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 8: Unified Stats System with Equipment Bonuses ---")
+	p_node.race_id = "elf"
+	p_node.progression_component.level = 1
+	p_node.progression_component.current_exp = 0
+	p_node.player_stats_component.recalculate_stats(false)
+
+	_assert(p_node.health_component.max_health == 90.0, "Elf Lv 1 Base HP: 90.0")
+	_assert(p_node.health_component.max_mana == 80.0, "Elf Lv 1 Base MP: 80.0")
+	_assert(p_node.melee_hitbox.damage == 23.0, "Elf Lv 1 Base ATK: 23.0")
+
+	# Trang bị Kiếm Ánh Trăng (+10 ATK)
+	p_node.inventory_component.add_item("moonsteel_sword", 1)
+	p_node.equipment_component.equip_item("moonsteel_sword")
+	_assert(p_node.melee_hitbox.damage == 33.0, "Trang bị Kiếm Ánh Trăng: ATK = 23 + 10 = 33.0")
+
+	# Trang bị Bùa Nguyệt Quang (+20 Max MP)
+	p_node.inventory_component.add_item("moon_amulet", 1)
+	p_node.equipment_component.equip_item("moon_amulet")
+	_assert(p_node.health_component.max_mana == 100.0, "Trang bị Bùa Nguyệt Quang: Max MP = 80 + 20 = 100.0")
+
+	# Lên cấp khi đang mặc đồ: Elf Cấp 2 (+10 HP, +5 MP, +2 ATK)
+	p_node.progression_component.add_exp(60, "test_gear_lvl")
+	_assert(p_node.health_component.max_health == 100.0, "Elf Lv 2 HP (+10): 100.0")
+	_assert(p_node.health_component.max_mana == 105.0, "Elf Lv 2 MP (+5 + 20 Bùa): 105.0")
+	_assert(p_node.melee_hitbox.damage == 35.0, "Elf Lv 2 ATK (+2 + 10 Kiếm): 35.0")
+
+	# Tháo đồ: chỉ số trừ đúng lượng bonus
+	p_node.equipment_component.unequip_item("weapon")
+	p_node.equipment_component.unequip_item("accessory")
+	_assert(p_node.melee_hitbox.damage == 25.0, "Tháo kiếm: ATK trở về 25.0 (Elf Lv 2)")
+	_assert(p_node.health_component.max_mana == 85.0, "Tháo bùa: Max MP trở về 85.0 (Elf Lv 2)")
+
+	# -------------------------------------------------------------
+	# CATEGORY 9: Elf Magic Damage Multiplier (1.1x)
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 9: Elf Magic Damage Multiplier (1.1x) ---")
+	_assert(p_node.spellbook_component.magic_damage_multiplier == 1.1, "Spellbook của Elf có magic_damage_multiplier == 1.1")
+	var elf_scaled_dmg: float = float(p_node.spellbook_component.get_spell_damage("moon_bolt"))
+	_assert(is_equal_approx(elf_scaled_dmg, 33.0), "Moon Bolt sát thương cơ bản 30 * 1.1 = 33.0 DMG cho Elf")
+
+	p_node.race_id = "human"
+	p_node.player_stats_component.recalculate_stats(false)
+	var human_scaled_dmg: float = float(p_node.spellbook_component.get_spell_damage("moon_bolt"))
+	_assert(is_equal_approx(human_scaled_dmg, 30.0), "Moon Bolt cho Human deals đúng 30.0 DMG")
+
+	# -------------------------------------------------------------
+	# CATEGORY 10: Safe Current HP/MP on Level-Up
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 10: Safe Current HP/MP on Level-Up ---")
+	p_node.race_id = "demon_beast"
+	p_node.progression_component.level = 1
+	p_node.progression_component.current_exp = 0
+	p_node.player_stats_component.recalculate_stats(false)
+
+	# Giả lập Player bị thương nặng: HP còn 25/125, MP còn 10/50
+	p_node.health_component.current_health = 25.0
+	p_node.health_component.current_mana = 10.0
+
+	# Lên cấp 2 (+10 Max HP, +5 Max MP)
+	p_node.progression_component.add_exp(60, "test_safe_heal")
+	_assert(p_node.health_component.max_health == 135.0, "Demon Beast Lv 2 Max HP: 135.0")
+	_assert(p_node.health_component.max_mana == 55.0, "Demon Beast Lv 2 Max MP: 55.0")
+	_assert(p_node.health_component.current_health == 35.0, "Current HP tăng thêm đúng 10 (25 -> 35), KHÔNG bị hồi đầy gian lận")
+	_assert(p_node.health_component.current_mana == 15.0, "Current MP tăng thêm đúng 5 (10 -> 15), KHÔNG bị hồi đầy gian lận")
+
+	# -------------------------------------------------------------
+	# CATEGORY 11: Placeholder Race Visual Badges
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 11: Placeholder Race Visual Badges ---")
+	p_node.apply_race_visual("elf")
+	var badge_elf: Node2D = p_node.sprite_root.get_node_or_null("RaceVisualBadge") as Node2D
+	_assert(badge_elf != null and badge_elf.get_child_count() > 0, "Chủng tộc Elf có hình hiệu trực quan (tai nhọn)")
+	_assert(p_node.hurtbox_collision.disabled == false, "Hurtbox vẫn bật bình thường sau khi gắn hiệu ứng tộc")
+	_assert(p_node.melee_hitbox != null, "Hitbox cận chiến vẫn tồn tại nguyên vẹn")
+
+	p_node.apply_race_visual("demon_beast")
+	var badge_beast: Node2D = p_node.sprite_root.get_node_or_null("RaceVisualBadge") as Node2D
+	_assert(badge_beast != null and badge_beast.get_child_count() >= 2, "Chủng tộc Quỷ thú có hình hiệu sừng và đuôi")
+
+	p_node.apply_race_visual("human")
+	var badge_human: Node2D = p_node.sprite_root.get_node_or_null("RaceVisualBadge") as Node2D
+	_assert(badge_human != null, "Chủng tộc Nhân loại có hình hiệu khăn choàng")
+
+	# -------------------------------------------------------------
+	# CATEGORY 12: Character Sheet UI Toggle & Content Display
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 12: Character Sheet UI Toggle & Content Display ---")
+	var sheet_ui: CharacterSheetUI = CharacterSheetUIScene.instantiate()
+	root.add_child(sheet_ui)
+	await _wait_seconds(0.1)
+
+	_assert(sheet_ui.visible == false, "Character Sheet UI ban đầu ở trạng thái ẩn")
+
+	p_node.race_id = "human"
+	p_node.player_stats_component.recalculate_stats(false)
+
+	sheet_ui.open(p_node)
+	_assert(sheet_ui.visible == true, "Mở Character Sheet thành công")
+	_assert(sheet_ui.is_open() == true, "is_open() trả về true")
+	_assert(sheet_ui.race_label.text.contains("Nhân"), "Hiển thị đúng tên chủng tộc Nhân tộc")
+	_assert(sheet_ui.level_label.text.contains("2"), "Hiển thị đúng Cấp độ 2")
+	_assert(sheet_ui.hp_stat_label.text.contains("HP"), "Có nhãn chỉ số HP")
+	_assert(sheet_ui.mp_stat_label.text.contains("MP"), "Có nhãn chỉ số MP")
+	_assert(sheet_ui.atk_stat_label.text.contains("ATK"), "Có nhãn chỉ số ATK")
+	_assert(sheet_ui.magic_stat_label.text.contains("Phép"), "Có nhãn chỉ số Ma pháp")
+
+	sheet_ui.close()
+	_assert(sheet_ui.visible == false, "Đóng Character Sheet thành công")
+	sheet_ui.queue_free()
+
+	# -------------------------------------------------------------
+	# CATEGORY 13: UI Mutual Exclusivity
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 13: UI Mutual Exclusivity ---")
+	var noctis_world = NoctisForestScene.instantiate()
+	root.add_child(noctis_world)
+	current_scene = noctis_world
+	await _wait_seconds(0.3)
+
+	var world_ui: GameUI = noctis_world.get_node_or_null("GameUI") as GameUI
+	_assert(world_ui != null, "GameUI tồn tại trong thế giới Noctis")
+	_assert(world_ui.character_sheet_ui != null, "CharacterSheetUI tồn tại trong GameUI")
+
+	world_ui.open_character_sheet()
+	_assert(world_ui.is_character_sheet_open() == true, "Character Sheet đã mở")
+	_assert(world_ui.is_inventory_open() == false, "Túi đồ không mở khi Character Sheet mở")
+	_assert(world_ui.is_quest_journal_open() == false, "Sổ nhiệm vụ không mở khi Character Sheet mở")
+
+	world_ui.open_inventory()
+	_assert(world_ui.is_inventory_open() == true, "Túi đồ mở")
+	_assert(world_ui.is_character_sheet_open() == false, "Character Sheet tự động đóng khi mở Túi đồ")
+
+	world_ui.open_quest_journal()
+	_assert(world_ui.is_quest_journal_open() == true, "Sổ nhiệm vụ mở")
+	_assert(world_ui.is_inventory_open() == false, "Túi đồ tự động đóng khi mở Sổ nhiệm vụ")
+
+	world_ui.open_character_sheet()
+	_assert(world_ui.is_character_sheet_open() == true, "Character Sheet mở lại")
+	_assert(world_ui.is_quest_journal_open() == false, "Sổ nhiệm vụ tự động đóng khi mở Character Sheet")
+
+	# -------------------------------------------------------------
+	# CATEGORY 14: UI Input Lock & Grace Cooldown (Anti-Accidental Attack)
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 14: UI Input Lock & Grace Cooldown (Anti-Accidental Attack) ---")
+	var w_player: Player = noctis_world.get_node_or_null("Player") as Player
+	_assert(w_player != null, "Player trong Noctis Forest tồn tại")
+
+	# Khi Character Sheet đang mở: input di chuyển và chiến đấu bị khóa
+	w_player.velocity.x = 200.0
+	w_player._physics_process(0.016)
+	_assert(w_player.velocity.x < 200.0, "Vận tốc di chuyển bị hãm dừng khi Character Sheet đang mở")
+
+	# Thử tấn công bằng event attack trong lúc mở: bị GameUI nuốt chửng
+	var mock_attack_evt := InputEventAction.new()
+	mock_attack_evt.action = "attack"
+	mock_attack_evt.pressed = true
+	world_ui._unhandled_input(mock_attack_evt)
+	_assert(world_ui.is_character_sheet_open() == false, "Nhấn phím J đóng Character Sheet an toàn")
+
+	# Ngay sau khi đóng: Grace Cooldown kích hoạt (0.15s)
+	_assert(world_ui.is_ui_cooling_down() == true, "Grace Cooldown kích hoạt ngay sau khi đóng giao diện")
+
+	# Thử tấn công ngay frame tiếp theo trong thời gian cooldown: bị chặn hoàn toàn!
+	w_player._physics_process(0.016)
+	_assert(w_player.combat_component.is_attacking() == false, "Player KHÔNG vung kiếm tấn công trong thời gian Grace Cooldown!")
+
+	await _wait_seconds(0.2)
+	_assert(world_ui.is_ui_cooling_down() == false, "Grace Cooldown kết thúc sau 0.15s")
+
+	# -------------------------------------------------------------
+	# CATEGORY 15: Save/Load v1.5.0 Progression & Race Persistence
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 15: Save/Load v1.5.0 Progression & Race Persistence ---")
+	_assert(SaveManager.CURRENT_VERSION == "1.5.0", "SaveManager.CURRENT_VERSION là 1.5.0")
+	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.5.0"), "SaveManager hỗ trợ bản 1.5.0")
+
+	w_player.race_id = "elf"
+	w_player.progression_component.level = 3
+	w_player.progression_component.current_exp = 45
+	w_player.progression_component.claimed_exp_sources = ["source_a", "source_b"]
+	w_player.player_stats_component.recalculate_stats(false)
+	w_player.health_component.current_health = 70.0 # Bị thương (70 / 110)
+
+	var s_ok := SaveManager.save_game(noctis_world)
+	_assert(s_ok == true, "Lưu game v1.5.0 thành công")
+
+	var save_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.READ)
+	var raw_save_json: Dictionary = JSON.parse_string(save_file.get_as_text())
+	save_file.close()
+
+	_assert(raw_save_json.get("save_version") == "1.5.0", "Bản lưu ghi save_version == 1.5.0")
+	var p_save: Dictionary = raw_save_json.get("player", {})
+	_assert(p_save.get("race_id") == "elf", "Bản lưu ghi race_id == 'elf'")
+	_assert(p_save.has("progression"), "Bản lưu có khối dữ liệu progression")
+	var prog_save: Dictionary = p_save.get("progression", {})
+	_assert(int(prog_save.get("level", 0)) == 3, "Lưu đúng level == 3")
+	_assert(int(prog_save.get("current_exp", 0)) == 45, "Lưu đúng current_exp == 45")
+	_assert(prog_save.get("claimed_exp_sources", []).size() == 2, "Lưu đúng danh sách nguồn EXP đã nhận")
+
+	# Tải bản lưu vào scene mới
+	noctis_world.queue_free()
+	await _wait_seconds(0.2)
+
+	var fresh_world = NoctisForestScene.instantiate()
+	root.add_child(fresh_world)
+	current_scene = fresh_world
+	await _wait_seconds(0.3)
+
+	var ld_ok := SaveManager.load_game(fresh_world)
+	_assert(ld_ok == true, "Nạp bản lưu v1.5.0 thành công")
+
+	var ld_player: Player = fresh_world.get_node_or_null("Player") as Player
+	_assert(ld_player.race_id == "elf", "Khôi phục chuẩn xác chủng tộc Elf")
+	_assert(ld_player.progression_component.level == 3, "Khôi phục chuẩn xác Cấp 3")
+	_assert(ld_player.progression_component.current_exp == 45, "Khôi phục chuẩn xác 45 EXP")
+	_assert(ld_player.progression_component.claimed_exp_sources.has("source_a"), "Khôi phục nguồn EXP đã nhận")
+	_assert(ld_player.health_component.max_health == 110.0, "Max HP chuẩn Elf Lv 3 (90 + 20 = 110)")
+	_assert(ld_player.health_component.current_health == 70.0, "Current HP khôi phục chính xác 70.0 (không bị reset)")
+
+	# -------------------------------------------------------------
+	# CATEGORY 16: Backward Compatibility with Legacy Saves (v1.0.0 - v1.4.0)
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 16: Backward Compatibility with Legacy Saves (v1.0.0 - v1.4.0) ---")
+	var legacy_save := raw_save_json.duplicate(true)
+	legacy_save["save_version"] = "1.4.0"
+	legacy_save.erase("progression")
+	var leg_player: Dictionary = legacy_save["player"]
+	leg_player.erase("race_id")
+	leg_player.erase("progression")
+
+	var leg_f := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	leg_f.store_string(JSON.stringify(legacy_save, "\t"))
+	leg_f.close()
+
+	fresh_world.queue_free()
+	await _wait_seconds(0.2)
+
+	var back_compat_world = NoctisForestScene.instantiate()
+	root.add_child(back_compat_world)
+	current_scene = back_compat_world
+	await _wait_seconds(0.3)
+
+	var leg_load_ok := SaveManager.load_game(back_compat_world)
+	_assert(leg_load_ok == true, "Nạp bản lưu cũ v1.4.0 thành công")
+
+	var leg_p: Player = back_compat_world.get_node_or_null("Player") as Player
+	_assert(leg_p.race_id == "human", "Bản lưu cũ tự động gán chủng tộc mặc định là Human")
+	_assert(leg_p.progression_component.level == 1, "Bản lưu cũ tự động gán Cấp 1")
+	_assert(leg_p.progression_component.current_exp == 0, "Bản lưu cũ có 0 EXP ban đầu")
+	_assert(leg_p.progression_component.claimed_exp_sources.is_empty(), "Không tự động cộng EXP nhiệm vụ hồi tố")
+	_assert(leg_p.health_component.max_health == 100.0, "Max HP chuẩn Human Lv 1 (100.0)")
+
+	# -------------------------------------------------------------
+	# CATEGORY 17: Zone Travel Persistence
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 17: Zone Travel Persistence ---")
+	leg_p.race_id = "demon_beast"
+	leg_p.progression_component.level = 5
+	leg_p.progression_component.current_exp = 75
+	leg_p.progression_component.claimed_exp_sources = ["source_zone_1"]
+
+	var recorded_state := ZoneManager.extract_player_state(back_compat_world)
+	_assert(recorded_state.get("race_id") == "demon_beast", "ZoneManager ghi nhận race_id là demon_beast")
+	_assert(recorded_state.get("level") == 5, "ZoneManager ghi nhận level là 5")
+	_assert(recorded_state.get("current_exp") == 75, "ZoneManager ghi nhận current_exp là 75")
+	_assert(recorded_state.get("claimed_exp_sources", []).has("source_zone_1"), "ZoneManager ghi nhận claimed_exp_sources")
+
+	back_compat_world.queue_free()
+	await _wait_seconds(0.2)
+
+	var elyndra_world = ElyndraGladeScene.instantiate()
+	root.add_child(elyndra_world)
+	current_scene = elyndra_world
+	await _wait_seconds(0.3)
+
+	ZoneManager.apply_player_state(elyndra_world, recorded_state)
+
+	var el_player: Player = elyndra_world.get_node_or_null("Player") as Player
+	_assert(el_player.race_id == "demon_beast", "Khu vực mới bảo toàn race_id là demon_beast")
+	_assert(el_player.progression_component.level == 5, "Khu vực mới bảo toàn level 5")
+	_assert(el_player.progression_component.current_exp == 75, "Khu vực mới bảo toàn 75 EXP")
+	_assert(el_player.health_component.max_health == 125.0 + 4 * 10.0, "Max HP Demon Beast Lv 5: 165.0")
+	_assert(el_player.melee_hitbox.damage == 30.0 + 4 * 2.0, "ATK Demon Beast Lv 5: 38.0")
+
+	elyndra_world.queue_free()
+	await _wait_seconds(0.2)
+
+	# -------------------------------------------------------------
+	# CATEGORY 18: Isolation Verification
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 18: Isolation Verification ---")
+	var real_file_existed_at_end = FileAccess.file_exists(REAL_SAVE_PATH)
+	if real_file_existed_at_start:
+		_assert(real_file_existed_at_end == true, "File save thật vẫn tồn tại nguyên vẹn")
+		var real_hash_at_end = FileAccess.get_md5(REAL_SAVE_PATH)
+		_assert(real_hash_at_end == real_file_hash_at_start, "Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI")
+	else:
+		_assert(real_file_existed_at_end == false, "File save thật không tồn tại từ đầu và không bị tạo giả định")
+
+	# Dọn dẹp DUY NHẤT file test M8
+	SaveManager.delete_save()
+	SaveManager.custom_save_path = ""
+
+	print("\n==================================================")
+	print(" [NOCTELYRA M8] KẾT QUẢ KIỂM THỬ TỔNG HỢP:        ")
+	print(" Tổng số test: %d | Đạt: %d | Thất bại: %d" % [tests_run, tests_run - failures, failures])
+	print("==================================================")
+
+	if failures == 0:
+		print(">>> ALL M8 CHARACTER ORIGINS & PROGRESSION TESTS PASSED 100%! <<<")
 		quit(0)
 	else:
 		print(">>> SOME TESTS FAILED! <<<")
@@ -5232,6 +5885,8 @@ enum State {
 @onready var equipment_component: EquipmentComponent = $EquipmentComponent
 @onready var spellbook_component: SpellbookComponent = $SpellbookComponent
 @onready var quest_journal_component: QuestJournalComponent = $QuestJournalComponent
+@onready var progression_component: PlayerProgressionComponent = $PlayerProgressionComponent
+@onready var player_stats_component: PlayerStatsComponent = $PlayerStatsComponent
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -5241,16 +5896,112 @@ var dash_cooldown_timer: float = 0.0
 var dash_direction: int = 1
 var spawn_position: Vector2 = Vector2.ZERO
 
+var race_id: String:
+	get:
+		if player_stats_component:
+			return player_stats_component.race_id
+		return "human"
+	set(val):
+		_ensure_m8_components()
+		if player_stats_component:
+			player_stats_component.set_race(val)
+		apply_race_visual(val)
+
+var hurtbox_collision: CollisionShape2D:
+	get:
+		if hurtbox:
+			return hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		return null
+
 func _ready() -> void:
 	spawn_position = global_position
 	if movement_data == null:
 		movement_data = PlayerMovementData.new()
+
+	_ensure_m8_components()
 	_change_state(State.IDLE)
 
 	if health_component:
 		health_component.invulnerability_started.connect(_on_invuln_started)
 		health_component.invulnerability_ended.connect(_on_invuln_ended)
 		health_component.died.connect(_on_player_died)
+
+func _ensure_m8_components() -> void:
+	if progression_component == null:
+		progression_component = get_node_or_null("PlayerProgressionComponent") as PlayerProgressionComponent
+		if progression_component == null:
+			progression_component = PlayerProgressionComponent.new()
+			progression_component.name = "PlayerProgressionComponent"
+			add_child(progression_component)
+
+	if player_stats_component == null:
+		player_stats_component = get_node_or_null("PlayerStatsComponent") as PlayerStatsComponent
+		if player_stats_component == null:
+			player_stats_component = PlayerStatsComponent.new()
+			player_stats_component.name = "PlayerStatsComponent"
+			player_stats_component.player = self
+			add_child(player_stats_component)
+
+func apply_race_visual(r_id: String) -> void:
+	if sprite_root == null:
+		return
+	var visual_badge := sprite_root.get_node_or_null("RaceVisualBadge") as Node2D
+	if visual_badge == null:
+		visual_badge = Node2D.new()
+		visual_badge.name = "RaceVisualBadge"
+		sprite_root.add_child(visual_badge)
+
+	for c in visual_badge.get_children():
+		c.queue_free()
+
+	match r_id:
+		"elf":
+			sprite_root.modulate = Color(0.88, 1.05, 0.95, 1.0)
+			var ear_left := Polygon2D.new()
+			ear_left.polygon = PackedVector2Array([Vector2(-12, -45), Vector2(-22, -55), Vector2(-12, -50)])
+			ear_left.color = Color(0.4, 0.95, 0.7, 0.9)
+			visual_badge.add_child(ear_left)
+
+			var ear_right := Polygon2D.new()
+			ear_right.polygon = PackedVector2Array([Vector2(12, -45), Vector2(22, -55), Vector2(12, -50)])
+			ear_right.color = Color(0.4, 0.95, 0.7, 0.9)
+			visual_badge.add_child(ear_right)
+
+			var aura := Line2D.new()
+			aura.width = 2.0
+			aura.default_color = Color(0.3, 1.0, 0.7, 0.5)
+			var pts := PackedVector2Array()
+			for i in range(13):
+				var ang: float = float(i) * TAU / 12.0
+				pts.append(Vector2(cos(ang) * 26.0, sin(ang) * 12.0 - 5.0))
+			aura.points = pts
+			visual_badge.add_child(aura)
+
+		"demon_beast":
+			sprite_root.modulate = Color(1.05, 0.88, 0.95, 1.0)
+			var horn_left := Polygon2D.new()
+			horn_left.polygon = PackedVector2Array([Vector2(-8, -50), Vector2(-15, -68), Vector2(-4, -55)])
+			horn_left.color = Color(0.85, 0.2, 0.35, 0.95)
+			visual_badge.add_child(horn_left)
+
+			var horn_right := Polygon2D.new()
+			horn_right.polygon = PackedVector2Array([Vector2(8, -50), Vector2(15, -68), Vector2(4, -55)])
+			horn_right.color = Color(0.85, 0.2, 0.35, 0.95)
+			visual_badge.add_child(horn_right)
+
+			var tail := Line2D.new()
+			tail.width = 4.0
+			tail.default_color = Color(0.8, 0.25, 0.4, 0.9)
+			tail.points = PackedVector2Array([Vector2(-10, 0), Vector2(-22, -5), Vector2(-30, -18), Vector2(-26, -26)])
+			visual_badge.add_child(tail)
+
+		_: # "human"
+			sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
+			var scarf := Line2D.new()
+			scarf.width = 3.0
+			scarf.default_color = Color(0.3, 0.6, 1.0, 0.8)
+			scarf.points = PackedVector2Array([Vector2(-8, -32), Vector2(0, -30), Vector2(8, -32), Vector2(12, -22)])
+			visual_badge.add_child(scarf)
 
 func _physics_process(delta: float) -> void:
 	# Khi chết: Vô hiệu hóa toàn bộ di chuyển, rơi và input
@@ -5265,9 +6016,9 @@ func _physics_process(delta: float) -> void:
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
 
-	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ hoặc đang mở sổ nhiệm vụ thì tạm ngừng nhận input
+	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ, sổ nhiệm vụ hoặc thông tin nhân vật thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or (ui.has_method("is_ui_cooling_down") and ui.is_ui_cooling_down()) or ui.is_inventory_open() or ui.is_quest_journal_open() or (ui.has_method("is_character_sheet_open") and ui.is_character_sheet_open())):
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
 		if not is_on_floor():
 			velocity.y += movement_data.gravity * delta
@@ -5397,7 +6148,7 @@ func _upgrade_current_spell() -> void:
 	if get_tree().paused:
 		return
 	var ui := _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open()):
+	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open() or (ui.has_method("is_character_sheet_open") and ui.is_character_sheet_open())):
 		return
 	var world := get_tree().current_scene
 	var res := sb.upgrade_spell(sb.selected_spell_id, inv, world)
@@ -5611,6 +6362,8 @@ FILE: src\actors\player\player.tscn
 [ext_resource type="Script" path="res://src/inventory/equipment_component.gd" id="10_equip"]
 [ext_resource type="Script" path="res://src/magic/spellbook_component.gd" id="11_spellbook"]
 [ext_resource type="Script" path="res://src/quest/quest_journal_component.gd" id="12_quest_journal"]
+[ext_resource type="Script" path="res://src/progression/player_progression_component.gd" id="13_prog"]
+[ext_resource type="Script" path="res://src/stats/player_stats_component.gd" id="14_stats"]
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
@@ -5816,6 +6569,13 @@ script = ExtResource("11_spellbook")
 
 [node name="QuestJournalComponent" type="Node" parent="."]
 script = ExtResource("12_quest_journal")
+
+[node name="PlayerProgressionComponent" type="Node" parent="."]
+script = ExtResource("13_prog")
+
+[node name="PlayerStatsComponent" type="Node" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("14_stats")
+player = NodePath("..")
 
 
 ===================================================
@@ -7348,6 +8108,9 @@ func equip(item_id: String) -> String:
 
 	return prev_item
 
+func equip_item(item_id: String) -> String:
+	return equip(item_id)
+
 func unequip(slot_type: String) -> String:
 	var old_item: String = ""
 	match slot_type:
@@ -7366,7 +8129,16 @@ func unequip(slot_type: String) -> String:
 
 	return old_item
 
+func unequip_item(slot_type: String) -> String:
+	return unequip(slot_type)
+
 func _recalculate_stats() -> void:
+	if player:
+		var p_stats := player.get_node_or_null("PlayerStatsComponent") as PlayerStatsComponent
+		if p_stats:
+			p_stats.recalculate_stats(false)
+			return
+
 	var total_attack := base_attack_damage
 	var total_max_mana := base_max_mana
 
@@ -9006,6 +9778,7 @@ var spell_levels: Dictionary = {
 	"frost_shard": 1
 }
 var selected_spell_id: String = "moon_bolt"
+var magic_damage_multiplier: float = 1.0
 var cooldown_timers: Dictionary = {
 	"moon_bolt": 0.0,
 	"ember_bloom": 0.0,
@@ -9046,6 +9819,13 @@ func get_selected_spell() -> SpellDefinition:
 
 func get_spell_level(spell_id: String) -> int:
 	return int(spell_levels.get(spell_id, 1))
+
+func get_spell_damage(spell_id: String) -> float:
+	if not SpellDatabase.has_spell(spell_id):
+		return 0.0
+	var spell := SpellDatabase.get_spell(spell_id)
+	var lvl := get_spell_level(spell_id)
+	return spell.get_damage_for_level(lvl) * magic_damage_multiplier
 
 func get_cooldown(spell_id: String) -> float:
 	return float(cooldown_timers.get(spell_id, 0.0))
@@ -9089,9 +9869,9 @@ func cast_selected_spell(player: Node2D, facing_dir: int, health_comp: HealthCom
 	# Kích hoạt cooldown độc lập cho phép này
 	cooldown_timers[spell.spell_id] = spell.cooldown
 
-	# Tính sát thương theo cấp hiện tại
+	# Tính sát thương theo cấp hiện tại và hệ số chủng tộc (M8)
 	var lvl := get_spell_level(spell.spell_id)
-	var final_dmg := spell.get_damage_for_level(lvl)
+	var final_dmg := spell.get_damage_for_level(lvl) * magic_damage_multiplier
 
 	# Sinh projectile
 	if spell.projectile_scene:
@@ -9358,6 +10138,143 @@ func get_upgrade_cost(current_level: int) -> int:
 
 
 ===================================================
+FILE: src\progression\exp_database.gd
+===================================================
+
+class_name ExpDatabase
+extends RefCounted
+
+## Định nghĩa Nguồn & Mức Thưởng EXP Tập Trung (Milestone M8)
+## Cung cấp mức EXP chuẩn cho từng loại quái vật, Boss và nhiệm vụ.
+
+const ENEMY_EXP_MAP: Dictionary = {
+	"corrupted_wolf": 20,
+	"corrupted_mooncap": 20,
+	"corrupted_mana_wisp": 25,
+	"ashfang_wolf": 25,
+	"ember_lizard": 30
+}
+
+const BOSS_EXP: int = 150
+
+const QUEST_EXP_MAP: Dictionary = {
+	"quest_tutorial": 50,
+	"quest_elyra": 50,
+	"quest_noctis_purification": 50,
+	"quest_elyndra_cleansing": 60,
+	"quest_vharok_embers": 70
+}
+
+static func get_enemy_exp(enemy_type_id: String) -> int:
+	return int(ENEMY_EXP_MAP.get(enemy_type_id, 20))
+
+static func get_boss_exp() -> int:
+	return BOSS_EXP
+
+static func get_quest_exp(quest_id: String) -> int:
+	return int(QUEST_EXP_MAP.get(quest_id, 50))
+
+
+===================================================
+FILE: src\progression\player_progression_component.gd
+===================================================
+
+class_name PlayerProgressionComponent
+extends Node
+
+## Quản lý Cấp độ & Tiến trình EXP (Player Progression Component) cho NOCTELYRA (M8)
+## Hỗ trợ EXP lũy tiến: 60 + 40 * (level - 1), cấp tối đa Lv.10,
+## bảo lưu EXP dư khi tăng nhiều cấp trong một lần, và chống nhận EXP trùng tuyệt đối.
+
+signal exp_gained(amount: int, current_exp: int, target_exp: int)
+signal level_up(new_level: int)
+signal progression_updated()
+
+const MAX_LEVEL: int = 10
+const BASE_EXP: int = 60
+const EXP_GROWTH: int = 40
+
+var level: int = 1
+var current_exp: int = 0
+var claimed_exp_sources: Array[String] = []
+
+func _ready() -> void:
+	pass
+
+func get_exp_required_for_level(lvl: int) -> int:
+	if lvl >= MAX_LEVEL:
+		return 0 # Đã đạt cấp tối đa
+	return BASE_EXP + EXP_GROWTH * (lvl - 1)
+
+func get_current_target_exp() -> int:
+	return get_exp_required_for_level(level)
+
+func is_max_level() -> bool:
+	return level >= MAX_LEVEL
+
+func has_claimed_source(source_id: String) -> bool:
+	if source_id.is_empty():
+		return false
+	return source_id in claimed_exp_sources
+
+func add_exp(amount: int, source_id: String = "") -> bool:
+	if amount <= 0:
+		return false
+
+	# Bắt buộc chống nhận EXP trùng lặp
+	if not source_id.is_empty():
+		if source_id in claimed_exp_sources:
+			return false
+		claimed_exp_sources.append(source_id)
+
+	if is_max_level():
+		emit_signal("exp_gained", 0, current_exp, 0)
+		emit_signal("progression_updated")
+		return true
+
+	current_exp += amount
+
+	# Vòng lặp xử lý lên nhiều cấp nếu lượng EXP dư thừa đủ lớn
+	while not is_max_level() and current_exp >= get_exp_required_for_level(level):
+		current_exp -= get_exp_required_for_level(level)
+		level += 1
+		emit_signal("level_up", level)
+
+	# Nếu đã đạt Max Level 10 thì không cho phép vượt cấp, xóa EXP dư thừa
+	if is_max_level():
+		current_exp = 0
+
+	emit_signal("exp_gained", amount, current_exp, get_current_target_exp())
+	emit_signal("progression_updated")
+	return true
+
+func to_dict() -> Dictionary:
+	return {
+		"level": level,
+		"current_exp": current_exp,
+		"claimed_exp_sources": claimed_exp_sources.duplicate()
+	}
+
+func from_dict(data: Dictionary) -> void:
+	if data == null or data.is_empty():
+		return
+	level = clampi(int(data.get("level", 1)), 1, MAX_LEVEL)
+	current_exp = maxi(0, int(data.get("current_exp", 0)))
+	if is_max_level():
+		current_exp = 0
+
+	claimed_exp_sources.clear()
+	var raw_sources = data.get("claimed_exp_sources", [])
+	if raw_sources is Array:
+		for s in raw_sources:
+			var s_str := str(s)
+			if not s_str in claimed_exp_sources:
+				claimed_exp_sources.append(s_str)
+
+	emit_signal("progression_updated")
+
+
+===================================================
 FILE: src\quest\quest_data.gd
 ===================================================
 
@@ -9414,6 +10331,7 @@ const State = QuestState
 @export var target_id: String = "" # enemy_type_id hoặc item_id
 @export var target_amount: int = 3
 @export var reward_gold: int = 0
+@export var reward_exp: int = 0
 @export var reward_items: Array[Dictionary] = [] # [{"item_id": "health_potion", "amount": 2}]
 
 static func get_definition(q_id: String) -> QuestDefinition:
@@ -9430,6 +10348,7 @@ static func get_definition(q_id: String) -> QuestDefinition:
 			def.target_id = "corrupted_mooncap"
 			def.target_amount = 3
 			def.reward_gold = 80
+			def.reward_exp = 60
 			def.reward_items = [
 				{"item_id": "health_potion", "amount": 2}
 			]
@@ -9443,6 +10362,7 @@ static func get_definition(q_id: String) -> QuestDefinition:
 			def.target_id = "ember_core"
 			def.target_amount = 3
 			def.reward_gold = 100
+			def.reward_exp = 70
 			def.reward_items = [
 				{"item_id": "mana_shard", "amount": 3}
 			]
@@ -9732,6 +10652,12 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 			if not i_id.is_empty():
 				inventory.add_item(i_id, amt)
 
+	# 5. Trao thưởng EXP (Milestone M8)
+	var exp_gained: int = def.reward_exp if def.reward_exp > 0 else ExpDatabase.get_quest_exp(quest_id)
+	var parent_player := get_parent() as Player
+	if parent_player and parent_player.progression_component:
+		parent_player.progression_component.add_exp(exp_gained, "quest:" + quest_id)
+
 	emit_signal("quest_completed", quest_id)
 	emit_signal("journal_changed")
 
@@ -9739,6 +10665,7 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 		"success": true,
 		"quest_id": quest_id,
 		"reward_gold": def.reward_gold,
+		"reward_exp": exp_gained,
 		"reward_items": def.reward_items
 	}
 
@@ -9847,6 +10774,137 @@ func complete_quest(player_health: HealthComponent = null) -> bool:
 
 
 ===================================================
+FILE: src\race\race_database.gd
+===================================================
+
+class_name RaceDatabase
+extends RefCounted
+
+## Cơ sở Dữ liệu Chủng tộc (Race Database) cho NOCTELYRA (Milestone M8)
+## Đăng ký và truy xuất định nghĩa 3 chủng tộc: Nhân tộc, Tinh Linh tộc, Quỷ tộc bán thú.
+
+static var _races: Dictionary = {}
+
+static func initialize() -> void:
+	_ensure_initialized()
+
+static func _ensure_initialized() -> void:
+	if not _races.is_empty():
+		return
+
+	# 1. Nhân tộc (human)
+	var human := RaceDefinition.new()
+	human.race_id = "human"
+	human.display_name = "Nhân tộc"
+	human.title = "Người Bảo Vệ Làng Ánh Nguyệt"
+	human.description = "Những chiến binh bền bỉ và kiên cường từ Rừng Noctis. Nhân tộc sở hữu khả năng thích nghi cao, thể chất và ma lực cân bằng, làm chủ mọi loại vũ khí và thuật pháp."
+	human.pros = "Chỉ số cân bằng, dễ làm quen, tốc độ hồi phục ổn định."
+	human.cons = "Không có chỉ số chuyên biệt vượt trội so với các tộc cổ xưa."
+	human.base_health = 100.0
+	human.base_mana = 60.0
+	human.base_attack = 25.0
+	human.base_mana_regen = 5.0
+	human.base_move_speed = 270.0
+	human.magic_damage_multiplier = 1.0
+	human.theme_color = Color(0.3, 0.6, 1.0, 1.0) # Xanh lam / Bạc
+	human.aura_color = Color(0.4, 0.7, 1.0, 0.3)
+	_races["human"] = human
+
+	# 2. Tinh Linh tộc (elf)
+	var elf := RaceDefinition.new()
+	elf.race_id = "elf"
+	elf.display_name = "Tinh Linh tộc"
+	elf.title = "Người Gìn Giữ Tinh Mạch Elyndra"
+	elf.description = "Hậu duệ cổ xưa của Thánh Lâm Elyndra, gắn liền với dòng chảy Tinh Mạch tự nhiên. Sở hữu trí tuệ ma pháp siêu phàm, lượng mana dồi dào và sát thương phép thuật uy lực."
+	elf.pros = "Nhiều MP (80), hồi MP nhanh (7/s), sát thương phép +10% (x1.1), di chuyển nhanh (275)."
+	elf.cons = "HP cơ bản thấp (90), sức chống chịu vật lý mỏng manh."
+	elf.base_health = 90.0
+	elf.base_mana = 80.0
+	elf.base_attack = 23.0
+	elf.base_mana_regen = 7.0
+	elf.base_move_speed = 275.0
+	elf.magic_damage_multiplier = 1.1
+	elf.theme_color = Color(0.2, 0.85, 0.55, 1.0) # Xanh ngọc bích / Tinh thể ma thuật
+	elf.aura_color = Color(0.2, 0.9, 0.6, 0.4)
+	_races["elf"] = elf
+
+	# 3. Quỷ tộc bán thú (demon_beast)
+	var beast := RaceDefinition.new()
+	beast.race_id = "demon_beast"
+	beast.display_name = "Quỷ tộc bán thú"
+	beast.title = "Chiến Binh Tiền Đồn Vharok"
+	beast.description = "Chủng tộc kiêu hãnh của Tiền Đồn Vharok, có nền văn minh rèn sắt và hiệp ước lâu đời. Họ tôn trọng danh dự, lời thề và sở hữu thể lực cuồn cuộn cùng sức tấn công cận chiến khủng khiếp."
+	beast.pros = "Sinh mệnh dồi dào (125 HP), sức tấn công cận chiến vượt trội (30 ATK)."
+	beast.cons = "Trữ lượng MP thấp (50), hồi MP chậm hơn (4/s), tốc độ di chuyển chậm hơn (260)."
+	beast.base_health = 125.0
+	beast.base_mana = 50.0
+	beast.base_attack = 30.0
+	beast.base_mana_regen = 4.0
+	beast.base_move_speed = 260.0
+	beast.magic_damage_multiplier = 1.0
+	beast.theme_color = Color(0.85, 0.25, 0.45, 1.0) # Đỏ thẫm / Tím Hắc Nham
+	beast.aura_color = Color(0.9, 0.3, 0.4, 0.4)
+	_races["demon_beast"] = beast
+
+static func get_race(race_id: String) -> RaceDefinition:
+	_ensure_initialized()
+	if _races.has(race_id):
+		return _races[race_id]
+	return _races.get("human", null)
+
+static func has_race(race_id: String) -> bool:
+	_ensure_initialized()
+	return _races.has(race_id)
+
+static func get_all_races() -> Array[RaceDefinition]:
+	_ensure_initialized()
+	var list: Array[RaceDefinition] = []
+	list.append(_races["human"])
+	list.append(_races["elf"])
+	list.append(_races["demon_beast"])
+	return list
+
+static func get_all_race_ids() -> Array[String]:
+	return ["human", "elf", "demon_beast"]
+
+
+===================================================
+FILE: src\race\race_definition.gd
+===================================================
+
+class_name RaceDefinition
+extends Resource
+
+## Định nghĩa Thuộc tính Chủng tộc (Race Definition) cho NOCTELYRA (Milestone M8)
+## Chứa chỉ số cơ bản, tên hiển thị, mô tả lore, ưu/nhược điểm và màu sắc nhận diện.
+
+@export var race_id: String = "human"
+@export var display_name: String = "Nhân tộc"
+@export var title: String = "Hậu Duệ Ánh Nguyệt"
+@export var description: String = ""
+@export var pros: String = ""
+@export var cons: String = ""
+
+# Chỉ số cơ bản cấp 1
+@export var base_health: float = 100.0
+@export var base_mana: float = 60.0
+@export var base_attack: float = 25.0
+@export var base_mana_regen: float = 5.0
+@export var base_move_speed: float = 270.0
+@export var magic_damage_multiplier: float = 1.0
+
+# Thuộc tính tiện ích tương thích
+var max_health: float:
+	get: return base_health
+var max_mana: float:
+	get: return base_mana
+
+# Nhận diện ngoại hình placeholder
+@export var theme_color: Color = Color(0.35, 0.65, 1.0, 1.0) # Xanh lam ánh bạc
+@export var aura_color: Color = Color(0.5, 0.8, 1.0, 0.4)
+
+
+===================================================
 FILE: src\save\save_manager.gd
 ===================================================
 
@@ -9859,8 +10917,8 @@ extends RefCounted
 ## thẩm định (validation) chặt chẽ và cách ly dữ liệu kiểm thử an toàn 100%.
 
 const DEFAULT_SAVE_PATH: String = "user://noctelyra_slot1.json"
-const CURRENT_VERSION: String = "1.4.0"
-const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0", "1.3.0", "1.4.0"]
+const CURRENT_VERSION: String = "1.5.0"
+const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0", "1.3.0", "1.4.0", "1.5.0"]
 
 static var custom_save_path: String = ""
 static var should_load_on_start: bool = false
@@ -9970,6 +11028,8 @@ static func save_game(world: Node) -> bool:
 	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
 	var p_spellbook := player.get_node_or_null("SpellbookComponent") as SpellbookComponent
 	var p_journal := player.get_node_or_null("QuestJournalComponent") as QuestJournalComponent
+	var p_stats := player.get_node_or_null("PlayerStatsComponent") as PlayerStatsComponent
+	var p_prog := player.get_node_or_null("PlayerProgressionComponent") as PlayerProgressionComponent
 
 	var save_path := get_save_path()
 	var tmp_path := get_tmp_path()
@@ -9982,7 +11042,19 @@ static func save_game(world: Node) -> bool:
 		"save_version": CURRENT_VERSION,
 		"timestamp": Time.get_unix_time_from_system(),
 		"current_zone_id": cur_zone,
+		"progression": {
+			"race_id": p_stats.race_id if p_stats else "human",
+			"level": p_prog.level if p_prog else 1,
+			"current_exp": p_prog.current_exp if p_prog else 0,
+			"claimed_exp_sources": p_prog.claimed_exp_sources.duplicate() if p_prog else []
+		},
 		"player": {
+			"race_id": p_stats.race_id if p_stats else "human",
+			"progression": {
+				"level": p_prog.level if p_prog else 1,
+				"current_exp": p_prog.current_exp if p_prog else 0,
+				"claimed_exp_sources": p_prog.claimed_exp_sources.duplicate() if p_prog else []
+			},
 			"position_x": player.global_position.x,
 			"position_y": player.global_position.y,
 			"current_health": clamp(p_health.current_health, 0.0, p_health.max_health) if p_health else 100.0,
@@ -10145,6 +11217,32 @@ static func load_game(world: Node) -> bool:
 			legacy_state["boss"] = data["boss"]
 		ZoneManager.zone_states["noctis_forest"] = legacy_state
 
+	# BƯỚC 0 (Milestone M8): Khôi phục Chủng tộc & Cấp độ TRƯỚC TIÊN
+	var p_stats := player.get_node_or_null("PlayerStatsComponent") as PlayerStatsComponent
+	var p_prog := player.get_node_or_null("PlayerProgressionComponent") as PlayerProgressionComponent
+
+	var prog_data: Dictionary = {}
+	if data.has("progression") and data["progression"] is Dictionary:
+		prog_data = data["progression"]
+	elif data.has("player") and data["player"] is Dictionary and data["player"].has("progression") and data["player"]["progression"] is Dictionary:
+		prog_data = data["player"]["progression"]
+
+	var r_id: String = str(prog_data.get("race_id", ""))
+	if r_id.is_empty() and data.has("player") and data["player"] is Dictionary:
+		r_id = str(data["player"].get("race_id", "human"))
+	if not RaceDatabase.has_race(r_id):
+		r_id = "human"
+
+	if p_stats:
+		p_stats.set_race(r_id)
+
+	if p_prog:
+		p_prog.from_dict({
+			"level": int(prog_data.get("level", 1)),
+			"current_exp": int(prog_data.get("current_exp", 0)),
+			"claimed_exp_sources": prog_data.get("claimed_exp_sources", [])
+		})
+
 	# BƯỚC 1 (QUAN TRỌNG): Khôi phục Trang bị & Túi đồ TRƯỚC để tính toán lại Max Stats (Max MP / Sát thương)
 	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
 	if p_eq:
@@ -10159,6 +11257,10 @@ static func load_game(world: Node) -> bool:
 			p_inv.load_from_dict(data["inventory"])
 		else:
 			p_inv._initialize_slots()
+
+	# BƯỚC 1.2 (Milestone M8): Tính toán lại toàn bộ Max Stats thống nhất sau khi đã nạp Race + Level + Gear
+	if p_stats:
+		p_stats.recalculate_stats(false)
 
 	# BƯỚC 1.5: Khôi phục Sách Phép (SpellbookComponent - M5)
 	var p_spellbook := player.get_node_or_null("SpellbookComponent") as SpellbookComponent
@@ -10301,6 +11403,889 @@ static func get_save_zone_scene_path() -> String:
 
 
 ===================================================
+FILE: src\stats\player_stats_component.gd
+===================================================
+
+class_name PlayerStatsComponent
+extends Node
+
+## Hệ Thống Tính Chỉ Số Thống Nhất (Unified Stats System) cho NOCTELYRA (Milestone M8)
+## Là NGUỒN DUY NHẤT tính toán chỉ số cuối cùng:
+## Final Stats = Race Base Stats + Level Growth + Equipment Bonuses
+## Đồng bộ và áp dụng an toàn sang HealthComponent, MeleeHitbox, SpellbookComponent, MovementData.
+
+signal stats_updated()
+signal race_changed(new_race_id: String)
+
+@export var player: Player
+
+# Thuộc tính chủng tộc hiện tại
+var _race_id: String = "human"
+var race_id: String:
+	get:
+		return _race_id
+	set(val):
+		if _race_id != val or base_health == 0.0:
+			set_race(val)
+		else:
+			_race_id = val
+
+# Chỉ số cơ bản của tộc (được nạp từ RaceDatabase)
+var base_health: float = 100.0
+var base_mana: float = 60.0
+var base_attack: float = 25.0
+var base_mana_regen: float = 5.0
+var base_move_speed: float = 270.0
+var magic_damage_multiplier: float = 1.0
+
+# Chỉ số cuối cùng sau khi cộng cấp độ & trang bị
+var final_max_health: float = 100.0
+var final_max_mana: float = 60.0
+var final_attack: float = 25.0
+var final_mana_regen: float = 5.0
+var final_move_speed: float = 270.0
+var final_magic_multiplier: float = 1.0
+
+# Hệ số tăng trưởng theo mỗi cấp độ (từ cấp 2 trở đi)
+const GROWTH_PER_LEVEL_HP: float = 10.0
+const GROWTH_PER_LEVEL_MP: float = 5.0
+const GROWTH_PER_LEVEL_ATK: float = 2.0
+
+func _ready() -> void:
+	if player == null and get_parent() is Player:
+		player = get_parent() as Player
+
+	_bind_components()
+	set_race(race_id)
+
+func _bind_components() -> void:
+	if player == null:
+		return
+
+	# Kết nối EquipmentComponent
+	var eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
+	if eq and not eq.equipment_changed.is_connected(_on_equipment_changed):
+		eq.equipment_changed.connect(_on_equipment_changed)
+
+	# Kết nối PlayerProgressionComponent
+	var prog := player.get_node_or_null("PlayerProgressionComponent") as PlayerProgressionComponent
+	if prog and not prog.level_up.is_connected(_on_level_up):
+		prog.level_up.connect(_on_level_up)
+
+func set_race(new_race_id: String) -> void:
+	var def := RaceDatabase.get_race(new_race_id)
+	if def == null:
+		def = RaceDatabase.get_race("human")
+
+	_race_id = def.race_id
+	base_health = def.base_health
+	base_mana = def.base_mana
+	base_attack = def.base_attack
+	base_mana_regen = def.base_mana_regen
+	base_move_speed = def.base_move_speed
+	magic_damage_multiplier = def.magic_damage_multiplier
+
+	# Cập nhật ngoại hình visual của Player nếu có
+	if player and player.has_method("apply_race_visual"):
+		player.apply_race_visual(race_id)
+
+	recalculate_stats(false)
+	emit_signal("race_changed", race_id)
+
+func _on_equipment_changed(_slot_type: String, _item_id: String) -> void:
+	recalculate_stats(false)
+
+func _on_level_up(_new_level: int) -> void:
+	# Khi lên cấp: tăng HP/MP hiện tại theo phần vừa được cộng thêm (không hồi đầy)
+	recalculate_stats(true)
+
+func recalculate_stats(is_level_up: bool = false) -> void:
+	if player == null and get_parent() is Player:
+		player = get_parent() as Player
+
+	# 1. Lấy cấp độ hiện tại từ PlayerProgressionComponent
+	var level: int = 1
+	var prog := player.get_node_or_null("PlayerProgressionComponent") as PlayerProgressionComponent if player else null
+	if prog:
+		level = prog.level
+
+	var lvl_diff: int = max(0, level - 1)
+	var growth_hp: float = float(lvl_diff) * GROWTH_PER_LEVEL_HP
+	var growth_mp: float = float(lvl_diff) * GROWTH_PER_LEVEL_MP
+	var growth_atk: float = float(lvl_diff) * GROWTH_PER_LEVEL_ATK
+
+	# 2. Lấy chỉ số thưởng từ trang bị hiện tại (EquipmentComponent)
+	var eq_hp: float = 0.0
+	var eq_mp: float = 0.0
+	var eq_atk: float = 0.0
+
+	var eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent if player else null
+	if eq:
+		var w_id := eq.get_equipped("weapon")
+		if not w_id.is_empty() and ItemDatabase.has_item(w_id):
+			var w_def := ItemDatabase.get_item(w_id)
+			eq_atk += float(w_def.stat_modifiers.get("attack_bonus", 0.0))
+			eq_hp += float(w_def.stat_modifiers.get("max_health_bonus", 0.0))
+			eq_mp += float(w_def.stat_modifiers.get("max_mana_bonus", 0.0))
+
+		var a_id := eq.get_equipped("accessory")
+		if not a_id.is_empty() and ItemDatabase.has_item(a_id):
+			var a_def := ItemDatabase.get_item(a_id)
+			eq_atk += float(a_def.stat_modifiers.get("attack_bonus", 0.0))
+			eq_hp += float(a_def.stat_modifiers.get("max_health_bonus", 0.0))
+			eq_mp += float(a_def.stat_modifiers.get("max_mana_bonus", 0.0))
+
+	# 3. Tính toán Final Stats thống nhất
+	final_max_health = base_health + growth_hp + eq_hp
+	final_max_mana = base_mana + growth_mp + eq_mp
+	final_attack = base_attack + growth_atk + eq_atk
+	final_mana_regen = base_mana_regen
+	final_move_speed = base_move_speed
+	final_magic_multiplier = magic_damage_multiplier
+
+	# 4. Áp dụng đồng bộ vào các component tương ứng của Player
+	if player:
+		# HealthComponent
+		var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
+		if p_health:
+			var prev_max_hp := p_health.max_health
+			var prev_max_mp := p_health.max_mana
+
+			p_health.max_health = final_max_health
+			p_health.max_mana = final_max_mana
+			p_health.mana_regen_rate = final_mana_regen
+
+			if is_level_up:
+				# Khi lên cấp: cộng thêm lượng Max HP/MP tăng thêm vào Current HP/MP (không hồi đầy)
+				var hp_gain: float = max(0.0, final_max_health - prev_max_hp)
+				var mp_gain: float = max(0.0, final_max_mana - prev_max_mp)
+				p_health.current_health = min(final_max_health, p_health.current_health + hp_gain)
+				p_health.current_mana = min(final_max_mana, p_health.current_mana + mp_gain)
+			else:
+				# Khi thay đồ/tháo đồ: giữ HP/MP trong giới hạn mới
+				p_health.current_health = min(final_max_health, p_health.current_health)
+				p_health.current_mana = min(final_max_mana, p_health.current_mana)
+
+			p_health.emit_signal("health_changed", p_health.current_health, p_health.max_health)
+			p_health.emit_signal("mana_changed", p_health.current_mana, p_health.max_mana)
+
+		# Combat Hitbox
+		if player.melee_hitbox:
+			player.melee_hitbox.damage = final_attack
+
+		# SpellbookComponent
+		var p_sb := player.get_node_or_null("SpellbookComponent") as SpellbookComponent
+		if p_sb:
+			p_sb.magic_damage_multiplier = final_magic_multiplier
+
+		# MovementData
+		if player.movement_data:
+			player.movement_data.move_speed = final_move_speed
+
+	emit_signal("stats_updated")
+
+func get_race_definition() -> RaceDefinition:
+	return RaceDatabase.get_race(race_id)
+
+func to_dict() -> Dictionary:
+	return {
+		"race_id": race_id
+	}
+
+func from_dict(data: Dictionary) -> void:
+	if data == null or data.is_empty():
+		return
+	var r_id := str(data.get("race_id", "human"))
+	set_race(r_id)
+
+
+===================================================
+FILE: src\ui\character_creation_ui.gd
+===================================================
+
+class_name CharacterCreationUI
+extends Control
+
+## Giao diện Chọn Chủng Tộc & Khởi Tạo Nhân Vật (Character Creation UI) cho NOCTELYRA (M8)
+## Luồng New Game: Main Menu -> Chọn tộc (Human / Elf / Demon Beast) -> Xác nhận -> Noctis Forest.
+## Tuyệt đối không xóa save cũ nếu người chơi nhấn Quay Lại (Cancel).
+
+signal race_selected(race_id: String)
+signal creation_confirmed(race_id: String)
+signal creation_cancelled()
+signal cancelled()
+signal character_confirmed(race_id: String)
+
+const GAME_SCENE_PATH: String = "res://src/world/noctis_forest.tscn"
+@export var auto_change_scene: bool = true
+
+# UI Elements
+@onready var race_title_label: Label = $Panel/Content/Header/RaceTitleLabel
+@onready var race_motto_label: Label = $Panel/Content/Header/RaceMottoLabel
+@onready var desc_label: Label = $Panel/Content/DescLabel
+@onready var pros_label: Label = $Panel/Content/ProsLabel
+@onready var cons_label: Label = $Panel/Content/ConsLabel
+
+# Stats Display
+@onready var hp_label: Label = $Panel/Content/StatsGrid/HPLabel
+@onready var mp_label: Label = $Panel/Content/StatsGrid/MPLabel
+@onready var atk_label: Label = $Panel/Content/StatsGrid/ATKLabel
+@onready var magic_label: Label = $Panel/Content/StatsGrid/MagicLabel
+@onready var regen_label: Label = $Panel/Content/StatsGrid/RegenLabel
+@onready var speed_label: Label = $Panel/Content/StatsGrid/SpeedLabel
+
+# Race Tab Buttons
+@onready var human_btn: Button = $Panel/RaceTabs/HumanBtn
+@onready var elf_btn: Button = $Panel/RaceTabs/ElfBtn
+@onready var beast_btn: Button = $Panel/RaceTabs/BeastBtn
+
+# Action Buttons
+@onready var confirm_btn: Button = $Panel/Actions/ConfirmBtn
+@onready var back_btn: Button = $Panel/Actions/BackBtn
+
+var selected_race_id: String = "human"
+
+func _ready() -> void:
+	if human_btn:
+		human_btn.pressed.connect(func(): select_race("human"))
+	if elf_btn:
+		elf_btn.pressed.connect(func(): select_race("elf"))
+	if beast_btn:
+		beast_btn.pressed.connect(func(): select_race("demon_beast"))
+
+	if confirm_btn:
+		confirm_btn.pressed.connect(_on_confirm_pressed)
+	if back_btn:
+		back_btn.pressed.connect(_on_back_pressed)
+
+	select_race(selected_race_id)
+
+func select_race(r_id: String) -> void:
+	if not RaceDatabase.has_race(r_id):
+		r_id = "human"
+	selected_race_id = r_id
+
+	var def := RaceDatabase.get_race(r_id)
+	if def == null:
+		return
+
+	if race_title_label:
+		race_title_label.text = def.display_name.to_upper()
+		race_title_label.modulate = def.theme_color
+	if race_motto_label:
+		race_motto_label.text = def.title
+	if desc_label:
+		desc_label.text = def.description
+	if pros_label:
+		pros_label.text = "Ưu điểm: " + def.pros
+	if cons_label:
+		cons_label.text = "Nhược điểm: " + def.cons
+
+	if hp_label:
+		hp_label.text = "Sinh Lực: %d HP" % int(def.base_health)
+	if mp_label:
+		mp_label.text = "Ma Lực: %d MP" % int(def.base_mana)
+	if atk_label:
+		atk_label.text = "Tấn Công: %d ATK" % int(def.base_attack)
+	if magic_label:
+		magic_label.text = "Hệ Số Phép: x%.1f" % def.magic_damage_multiplier
+	if regen_label:
+		regen_label.text = "Hồi MP: %.1f MP/s" % def.base_mana_regen
+	if speed_label:
+		speed_label.text = "Tốc Độ: %d px/s" % int(def.base_move_speed)
+
+	# Cập nhật style nút đang chọn
+	_update_tab_highlights()
+	emit_signal("race_selected", selected_race_id)
+
+func _update_tab_highlights() -> void:
+	if human_btn:
+		human_btn.theme_type_variation = "FlatButton" if selected_race_id != "human" else ""
+	if elf_btn:
+		elf_btn.theme_type_variation = "FlatButton" if selected_race_id != "elf" else ""
+	if beast_btn:
+		beast_btn.theme_type_variation = "FlatButton" if selected_race_id != "demon_beast" else ""
+
+func _select_race(r_id: String) -> void:
+	select_race(r_id)
+
+func _on_cancel_pressed() -> void:
+	_on_back_pressed()
+
+func _on_back_pressed() -> void:
+	# Tuyệt đối không xóa bản lưu khi người chơi nhấn Quay Lại
+	creation_cancelled.emit()
+	cancelled.emit()
+	visible = false
+
+func _on_confirm_pressed() -> void:
+	# Chỉ khi người chơi xác nhận bắt đầu New Game mới xóa bản lưu cũ và khởi tạo
+	SaveManager.delete_save()
+	SaveManager.should_load_on_start = false
+	ZoneManager.reset_session()
+	ZoneManager.initial_race_id = selected_race_id
+
+	creation_confirmed.emit(selected_race_id)
+	character_confirmed.emit(selected_race_id)
+
+	if auto_change_scene and get_tree():
+		get_tree().change_scene_to_file(GAME_SCENE_PATH)
+
+
+===================================================
+FILE: src\ui\character_creation_ui.tscn
+===================================================
+
+[gd_scene load_steps=2 format=3 uid="uid://d2k8charcreat4n"]
+
+[ext_resource type="Script" path="res://src/ui/character_creation_ui.gd" id="1_creation"]
+
+[node name="CharacterCreationUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_creation")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.05, 0.09, 0.95)
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(760, 560)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -280.0
+offset_right = 380.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TitleLabel" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 18.0
+offset_bottom = 48.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 22
+text = "KHỞI TẠO NHÂN VẬT — CHỌN CHỦNG TỘC"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RaceTabs" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 30.0
+offset_top = 60.0
+offset_right = -30.0
+offset_bottom = 105.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+
+[node name="HumanBtn" type="Button" parent="Panel/RaceTabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Nhân tộc"
+
+[node name="ElfBtn" type="Button" parent="Panel/RaceTabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Tinh Linh tộc"
+
+[node name="BeastBtn" type="Button" parent="Panel/RaceTabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "Quỷ tộc bán thú"
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = 120.0
+offset_right = -36.0
+offset_bottom = -75.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="VBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="RaceTitleLabel" type="Label" parent="Panel/Content/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "NHÂN TỘC"
+
+[node name="RaceMottoLabel" type="Label" parent="Panel/Content/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "Hậu Duệ Ánh Nguyệt"
+
+[node name="DescLabel" type="Label" parent="Panel/Content"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "Mô tả chi tiết về nguồn gốc, văn hóa và bối cảnh chủng tộc..."
+autowrap_mode = 2
+
+[node name="ProsLabel" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.95, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "Ưu điểm: ..."
+autowrap_mode = 2
+
+[node name="ConsLabel" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = "Nhược điểm: ..."
+autowrap_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="StatsHeader" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 15
+text = "CHỈ SỐ KHỞI ĐẦU CHỦNG TỘC (LEVEL 1)"
+
+[node name="StatsGrid" type="GridContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="HPLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sinh Lực: 100 HP"
+
+[node name="MPLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ma Lực: 60 MP"
+
+[node name="ATKLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tấn Công: 25 ATK"
+
+[node name="MagicLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hệ Số Phép: x1.0"
+
+[node name="RegenLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hồi MP: 5.0 MP/s"
+
+[node name="SpeedLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tốc Độ: 270 px/s"
+
+[node name="Actions" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = -60.0
+offset_right = -36.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 30
+
+[node name="BackBtn" type="Button" parent="Panel/Actions"]
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "QUAY LẠI"
+
+[node name="ConfirmBtn" type="Button" parent="Panel/Actions"]
+custom_minimum_size = Vector2(240, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.95, 0.7, 1)
+theme_override_font_sizes/font_size = 16
+text = "XÁC NHẬN & BẮT ĐẦU"
+
+
+===================================================
+FILE: src\ui\character_sheet_ui.gd
+===================================================
+
+class_name CharacterSheetUI
+extends Control
+
+## Giao diện Bảng Thông Tin Nhân Vật (Character Sheet UI) cho NOCTELYRA (Milestone M8)
+## Phím tắt C bật/tắt, hiển thị chủng tộc, cấp độ, thanh tiến trình EXP, chỉ số HP/MP,
+## sát thương cận chiến, hệ số ma pháp, hồi MP, tốc độ di chuyển và trang bị hiện tại.
+
+signal sheet_opened()
+signal sheet_closed()
+
+@onready var close_btn: Button = $Panel/Header/CloseBtn
+
+# Header / Profile
+@onready var race_label: Label = $Panel/Content/ProfileBox/RaceLabel
+@onready var race_desc_label: Label = $Panel/Content/ProfileBox/RaceDescLabel
+@onready var level_label: Label = $Panel/Content/ProgressionBox/LevelLabel
+@onready var exp_bar: ProgressBar = $Panel/Content/ProgressionBox/ExpBar
+@onready var exp_label: Label = $Panel/Content/ProgressionBox/ExpLabel
+
+# Stats
+@onready var hp_stat_label: Label = $Panel/Content/StatsGrid/HPLabel
+@onready var mp_stat_label: Label = $Panel/Content/StatsGrid/MPLabel
+@onready var atk_stat_label: Label = $Panel/Content/StatsGrid/ATKLabel
+@onready var magic_stat_label: Label = $Panel/Content/StatsGrid/MagicLabel
+@onready var regen_stat_label: Label = $Panel/Content/StatsGrid/RegenLabel
+@onready var speed_stat_label: Label = $Panel/Content/StatsGrid/SpeedLabel
+
+# Equipment
+@onready var weapon_label: Label = $Panel/Content/EquipBox/WeaponLabel
+@onready var accessory_label: Label = $Panel/Content/EquipBox/AccessoryLabel
+
+var player: Player = null
+
+func _ready() -> void:
+	visible = false
+	if close_btn:
+		close_btn.pressed.connect(close)
+
+func setup_player(p: Player) -> void:
+	player = p
+	if player:
+		if player.player_stats_component:
+			if not player.player_stats_component.stats_updated.is_connected(refresh):
+				player.player_stats_component.stats_updated.connect(refresh)
+		if player.progression_component:
+			if not player.progression_component.progression_updated.is_connected(refresh):
+				player.progression_component.progression_updated.connect(refresh)
+	refresh()
+
+func _ensure_player() -> void:
+	if player == null and get_tree() and get_tree().current_scene:
+		var p := get_tree().current_scene.get_node_or_null("Player") as Player
+		if p:
+			setup_player(p)
+
+func open(p: Player = null) -> void:
+	if p != null:
+		setup_player(p)
+	else:
+		_ensure_player()
+	visible = true
+	refresh()
+	emit_signal("sheet_opened")
+
+func close() -> void:
+	visible = false
+	emit_signal("sheet_closed")
+
+func toggle() -> void:
+	if visible:
+		close()
+	else:
+		open()
+
+func is_open() -> bool:
+	return visible
+
+func refresh() -> void:
+	_ensure_player()
+	if player == null:
+		return
+
+	var stats := player.player_stats_component
+	var prog := player.progression_component
+	var health := player.health_component
+	var eq := player.equipment_component
+
+	# 1. Chủng tộc
+	if stats:
+		var r_def := stats.get_race_definition()
+		if r_def:
+			if race_label:
+				race_label.text = "Chủng tộc: %s (%s)" % [r_def.display_name, r_def.title]
+				race_label.modulate = r_def.theme_color
+			if race_desc_label:
+				race_desc_label.text = "%s\nƯu điểm: %s | Nhược điểm: %s" % [r_def.description, r_def.pros, r_def.cons]
+
+	# 2. Cấp độ & EXP
+	if prog:
+		var cur_lvl := prog.level
+		var cur_exp := prog.current_exp
+		var req_exp := prog.get_current_target_exp()
+
+		if level_label:
+			level_label.text = "Cấp độ: Lv.%d%s" % [cur_lvl, " (Tối đa)" if prog.is_max_level() else ""]
+
+		if exp_bar:
+			if prog.is_max_level():
+				exp_bar.max_value = 100
+				exp_bar.value = 100
+			else:
+				exp_bar.max_value = max(1, req_exp)
+				exp_bar.value = cur_exp
+
+		if exp_label:
+			if prog.is_max_level():
+				exp_label.text = "EXP: ĐÃ ĐẠT CẤP ĐỘ TỐI ĐA (MAX)"
+			else:
+				exp_label.text = "EXP: %d / %d (%d%%)" % [cur_exp, req_exp, int(float(cur_exp) / float(max(1, req_exp)) * 100.0)]
+
+	# 3. Chỉ số chiến đấu thống nhất
+	if stats and health:
+		if hp_stat_label:
+			hp_stat_label.text = "Sinh Lực (HP): %d / %d" % [int(health.current_health), int(stats.final_max_health)]
+		if mp_stat_label:
+			mp_stat_label.text = "Ma Lực (MP): %d / %d" % [int(health.current_mana), int(stats.final_max_mana)]
+		if atk_stat_label:
+			atk_stat_label.text = "Tấn Công Cận Chiến: %d ATK" % [int(stats.final_attack)]
+		if magic_stat_label:
+			magic_stat_label.text = "Hệ Số Phép Thuật: x%.1f" % [stats.final_magic_multiplier]
+		if regen_stat_label:
+			regen_stat_label.text = "Hồi Phục Ma Lực: %.1f MP/s" % [stats.final_mana_regen]
+		if speed_stat_label:
+			speed_stat_label.text = "Tốc Độ Di Chuyển: %d px/s" % [int(stats.final_move_speed)]
+
+	# 4. Trang bị
+	if eq:
+		var w_id := eq.get_equipped("weapon")
+		var a_id := eq.get_equipped("accessory")
+
+		if weapon_label:
+			if not w_id.is_empty() and ItemDatabase.has_item(w_id):
+				var w_def := ItemDatabase.get_item(w_id)
+				weapon_label.text = "Vũ khí: %s (+%d ATK)" % [w_def.display_name, int(w_def.stat_modifiers.get("attack_bonus", 0))]
+			else:
+				weapon_label.text = "Vũ khí: [Trống]"
+
+		if accessory_label:
+			if not a_id.is_empty() and ItemDatabase.has_item(a_id):
+				var a_def := ItemDatabase.get_item(a_id)
+				accessory_label.text = "Phụ kiện: %s (+%d Max MP)" % [a_def.display_name, int(a_def.stat_modifiers.get("max_mana_bonus", 0))]
+			else:
+				accessory_label.text = "Phụ kiện: [Trống]"
+
+
+===================================================
+FILE: src\ui\character_sheet_ui.tscn
+===================================================
+
+[gd_scene load_steps=2 format=3 uid="uid://c8k1sheet4y8z"]
+
+[ext_resource type="Script" path="res://src/ui/character_sheet_ui.gd" id="1_sheet"]
+
+[node name="CharacterSheetUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sheet")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(680, 520)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -260.0
+offset_right = 340.0
+offset_bottom = 260.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = -20.0
+offset_bottom = 48.0
+grow_horizontal = 2
+
+[node name="Title" type="Label" parent="Panel/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "THÔNG TIN NHÂN VẬT (CHARACTER SHEET) [C]"
+vertical_alignment = 1
+
+[node name="CloseBtn" type="Button" parent="Panel/Header"]
+custom_minimum_size = Vector2(36, 32)
+layout_mode = 2
+text = "✕"
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 58.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="ProfileBox" type="VBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="RaceLabel" type="Label" parent="Panel/Content/ProfileBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Chủng tộc: Nhân tộc (Hậu Duệ Ánh Nguyệt)"
+
+[node name="RaceDescLabel" type="Label" parent="Panel/Content/ProfileBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "Mô tả chủng tộc..."
+autowrap_mode = 2
+
+[node name="HSeparator1" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="ProgressionBox" type="VBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="LevelLabel" type="Label" parent="Panel/Content/ProgressionBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Cấp độ: Lv.1"
+
+[node name="ExpBar" type="ProgressBar" parent="Panel/Content/ProgressionBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+max_value = 60.0
+show_percentage = false
+
+[node name="ExpLabel" type="Label" parent="Panel/Content/ProgressionBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "EXP: 0 / 60 (0%)"
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="StatsTitle" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 15
+text = "CHỈ SỐ CHIẾN ĐẤU THỐNG NHẤT"
+
+[node name="StatsGrid" type="GridContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="HPLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sinh Lực (HP): 100 / 100"
+
+[node name="MPLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ma Lực (MP): 60 / 60"
+
+[node name="ATKLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tấn Công Cận Chiến: 25 ATK"
+
+[node name="MagicLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hệ Số Phép Thuật: x1.0"
+
+[node name="RegenLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hồi Phục Ma Lực: 5.0 MP/s"
+
+[node name="SpeedLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tốc Độ Di Chuyển: 270 px/s"
+
+[node name="HSeparator3" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="EquipTitle" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 15
+text = "TRANG BỊ HIỆN TẠI"
+
+[node name="EquipBox" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="WeaponLabel" type="Label" parent="Panel/Content/EquipBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Vũ khí: [Trống]"
+
+[node name="AccessoryLabel" type="Label" parent="Panel/Content/EquipBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Phụ kiện: [Trống]"
+
+
+===================================================
 FILE: src\ui\game_ui.gd
 ===================================================
 
@@ -10348,6 +12333,7 @@ signal victory_dismissed()
 @onready var save_btn: Button = $PauseMenu/Panel/SaveBtn
 @onready var inventory_ui: InventoryUI = $InventoryUI
 @onready var quest_journal_ui: QuestJournalUI = $QuestJournalUI
+@onready var character_sheet_ui: CharacterSheetUI = $CharacterSheetUI
 @onready var spell_hotbar: SpellHotbar = $HUD/SpellHotbar
 
 @onready var zone_label: Label = $HUD/ZoneLabel
@@ -10360,11 +12346,16 @@ var _current_dialogue_idx: int = 0
 var _current_quest_action: String = "none"
 var _notif_timer: float = 0.0
 var _dialogue_cooldown: float = 0.0
+var _ui_close_grace_cooldown: float = 0.0
 var _warning_timer: float = 0.0
 var _announcement_timer: float = 0.0
 var _zone_banner_timer: float = 0.0
 
 func _ready() -> void:
+	if character_sheet_ui == null:
+		character_sheet_ui = get_node_or_null("CharacterSheetUI") as CharacterSheetUI
+	if character_sheet_ui:
+		character_sheet_ui.visible = false
 	if dialogue_box:
 		dialogue_box.visible = false
 	if game_over_panel:
@@ -10397,6 +12388,9 @@ func _process(delta: float) -> void:
 	if _dialogue_cooldown > 0.0:
 		_dialogue_cooldown -= delta
 
+	if _ui_close_grace_cooldown > 0.0:
+		_ui_close_grace_cooldown -= delta
+
 	if _warning_timer > 0.0:
 		_warning_timer -= delta
 		if _warning_timer <= 0.0 and boss_warning_label:
@@ -10427,8 +12421,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	# Phím ESC đóng Journal hoặc Inventory nếu đang mở
+	# Bật/tắt Bảng Thông Tin Nhân Vật bằng phím C
+	if event.is_action_pressed("character_sheet"):
+		if not is_dialogue_open():
+			toggle_character_sheet()
+			get_viewport().set_input_as_handled()
+			return
+
+	# Phím ESC đóng CharacterSheet, Journal hoặc Inventory nếu đang mở
 	if event.is_action_pressed("ui_cancel"):
+		if is_character_sheet_open():
+			close_character_sheet()
+			get_viewport().set_input_as_handled()
+			return
 		if is_quest_journal_open():
 			close_quest_journal()
 			get_viewport().set_input_as_handled()
@@ -10438,14 +12443,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	# Đóng Journal nếu đang mở bằng phím J (attack)
+	# Đóng Journal hoặc Character Sheet nếu đang mở bằng phím J (attack)
 	if is_quest_journal_open() and event.is_action_pressed("attack"):
 		close_quest_journal()
 		get_viewport().set_input_as_handled()
 		return
+	if is_character_sheet_open() and event.is_action_pressed("attack"):
+		close_character_sheet()
+		get_viewport().set_input_as_handled()
+		return
 
-	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ / sổ nhiệm vụ
-	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open() or is_quest_journal_open():
+	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ / sổ nhiệm vụ / bảng nhân vật
+	if is_dialogue_open() or is_dialogue_cooling_down() or is_ui_cooling_down() or is_inventory_open() or is_quest_journal_open() or is_character_sheet_open():
 		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash") or event.is_action_pressed("spell_1") or event.is_action_pressed("spell_2") or event.is_action_pressed("spell_3") or event.is_action_pressed("spell_upgrade"):
 			get_viewport().set_input_as_handled()
 			return
@@ -10482,6 +12491,7 @@ func advance_dialogue() -> void:
 func close_dialogue() -> void:
 	dialogue_box.visible = false
 	_dialogue_cooldown = 0.25 # Grace cooldown 0.25s
+	_ui_close_grace_cooldown = 0.25
 	var scene: Node = _get_active_scene()
 	var quest_mgr: QuestManager = scene.get_node_or_null("QuestManager") as QuestManager if scene else null
 	var player: Player = scene.get_node_or_null("Player") as Player if scene else null
@@ -10514,6 +12524,9 @@ func close_dialogue() -> void:
 			quest_mgr.start_quest()
 		elif _current_quest_action == "complete_quest":
 			quest_mgr.complete_quest(p_health)
+			# M8: Thưởng EXP nhiệm vụ chính Elyra (chống nhận trùng)
+			if player and player.progression_component:
+				player.progression_component.add_exp(ExpDatabase.get_quest_exp("quest_tutorial"), "quest:quest_tutorial")
 			# Tự động lưu sau khi hoàn thành nhiệm vụ và nhận thưởng
 			SaveManager.save_game(scene)
 	_current_quest_action = "none"
@@ -10529,23 +12542,31 @@ func is_dialogue_open() -> bool:
 func is_dialogue_cooling_down() -> bool:
 	return _dialogue_cooldown > 0.0
 
+func is_ui_cooling_down() -> bool:
+	return _ui_close_grace_cooldown > 0.0
+
 func toggle_inventory() -> void:
 	if is_inventory_open():
 		close_inventory()
 	else:
 		if is_quest_journal_open():
 			close_quest_journal()
+		if is_character_sheet_open():
+			close_character_sheet()
 		open_inventory()
 
 func open_inventory() -> void:
 	if is_quest_journal_open():
 		close_quest_journal()
+	if is_character_sheet_open():
+		close_character_sheet()
 	if inventory_ui:
 		inventory_ui.open()
 
 func close_inventory() -> void:
 	if inventory_ui:
 		inventory_ui.close()
+	_ui_close_grace_cooldown = 0.15
 
 func is_inventory_open() -> bool:
 	return inventory_ui != null and inventory_ui.is_open()
@@ -10556,17 +12577,22 @@ func toggle_quest_journal() -> void:
 	else:
 		if is_inventory_open():
 			close_inventory()
+		if is_character_sheet_open():
+			close_character_sheet()
 		open_quest_journal()
 
 func open_quest_journal() -> void:
 	if is_inventory_open():
 		close_inventory()
+	if is_character_sheet_open():
+		close_character_sheet()
 	if quest_journal_ui:
 		quest_journal_ui.open()
 
 func close_quest_journal() -> void:
 	if quest_journal_ui:
 		quest_journal_ui.close()
+	_ui_close_grace_cooldown = 0.15
 
 func is_quest_journal_open() -> bool:
 	return quest_journal_ui != null and quest_journal_ui.is_open()
@@ -10574,6 +12600,42 @@ func is_quest_journal_open() -> bool:
 func update_quest_journal_ui() -> void:
 	if quest_journal_ui and quest_journal_ui.is_open():
 		quest_journal_ui.refresh()
+
+func toggle_character_sheet() -> void:
+	if is_character_sheet_open():
+		close_character_sheet()
+	else:
+		if is_inventory_open():
+			close_inventory()
+		if is_quest_journal_open():
+			close_quest_journal()
+		open_character_sheet()
+
+func open_character_sheet() -> void:
+	if is_inventory_open():
+		close_inventory()
+	if is_quest_journal_open():
+		close_quest_journal()
+	if character_sheet_ui:
+		var scene := _get_active_scene()
+		var player: Player = scene.get_node_or_null("Player") as Player if scene else null
+		if player == null and get_tree():
+			var players = get_tree().get_nodes_in_group("player")
+			if players.size() > 0:
+				player = players[0] as Player
+		character_sheet_ui.open(player)
+
+func close_character_sheet() -> void:
+	if character_sheet_ui:
+		character_sheet_ui.close()
+	_ui_close_grace_cooldown = 0.15
+
+func is_character_sheet_open() -> bool:
+	return character_sheet_ui != null and character_sheet_ui.is_open()
+
+func update_character_sheet_ui() -> void:
+	if character_sheet_ui and character_sheet_ui.is_open():
+		character_sheet_ui.refresh()
 
 func _on_save_pressed() -> void:
 	var scene := _get_active_scene()
@@ -10742,6 +12804,7 @@ FILE: src\ui\game_ui.tscn
 [ext_resource type="PackedScene" uid="uid://c7m9x4v1q5p2" path="res://src/inventory/inventory_ui.tscn" id="2_inv_ui"]
 [ext_resource type="PackedScene" uid="uid://c6j2y5m4k8p1" path="res://src/ui/spell_hotbar.tscn" id="3_spell_hotbar"]
 [ext_resource type="PackedScene" uid="uid://b7q5k2m8p4x9" path="res://src/ui/quest_journal_ui.tscn" id="4_journal_ui"]
+[ext_resource type="PackedScene" uid="uid://c8k1sheet4y8z" path="res://src/ui/character_sheet_ui.tscn" id="5_sheet_ui"]
 
 [node name="GameUI" type="CanvasLayer"]
 script = ExtResource("1_ui")
@@ -11313,6 +13376,9 @@ visible = false
 [node name="QuestJournalUI" parent="." instance=ExtResource("4_journal_ui")]
 visible = false
 
+[node name="CharacterSheetUI" parent="." instance=ExtResource("5_sheet_ui")]
+visible = false
+
 [node name="ZoneBanner" type="Control" parent="."]
 visible = false
 layout_mode = 3
@@ -11379,10 +13445,11 @@ FILE: src\ui\main_menu.gd
 class_name MainMenu
 extends Control
 
-## Màn hình chính (Main Menu) cho NOCTELYRA (M3)
-## Cung cấp Continue (nếu có save), New Game (kèm xác nhận ghi đè), và Quit.
+## Màn hình chính (Main Menu) cho NOCTELYRA (M3 - M8)
+## Cung cấp Continue (nếu có save), New Game -> Chọn Tộc (Character Creation), và Quit.
 
 const GAME_SCENE_PATH: String = "res://src/world/noctis_forest.tscn"
+const CharacterCreationUIScene = preload("res://src/ui/character_creation_ui.tscn")
 
 @onready var continue_btn: Button = $Panel/VBox/ContinueBtn
 @onready var new_game_btn: Button = $Panel/VBox/NewGameBtn
@@ -11392,10 +13459,13 @@ const GAME_SCENE_PATH: String = "res://src/world/noctis_forest.tscn"
 @onready var confirm_yes_btn: Button = $ConfirmDialog/Panel/HBox/YesBtn
 @onready var confirm_no_btn: Button = $ConfirmDialog/Panel/HBox/NoBtn
 
+var character_creation_ui: CharacterCreationUI = null
+
 func _ready() -> void:
 	if confirm_dialog:
 		confirm_dialog.visible = false
 
+	_ensure_character_creation_ui()
 	_update_buttons()
 
 	if continue_btn:
@@ -11409,6 +13479,20 @@ func _ready() -> void:
 		confirm_yes_btn.pressed.connect(_on_confirm_new_game)
 	if confirm_no_btn:
 		confirm_no_btn.pressed.connect(func(): confirm_dialog.visible = false)
+
+func _ensure_character_creation_ui() -> void:
+	if character_creation_ui == null:
+		character_creation_ui = get_node_or_null("CharacterCreationUI") as CharacterCreationUI
+	if character_creation_ui == null:
+		character_creation_ui = CharacterCreationUIScene.instantiate() as CharacterCreationUI
+		character_creation_ui.name = "CharacterCreationUI"
+		add_child(character_creation_ui)
+	character_creation_ui.visible = false
+	if not character_creation_ui.creation_cancelled.is_connected(_on_creation_cancelled):
+		character_creation_ui.creation_cancelled.connect(_on_creation_cancelled)
+
+func _on_creation_cancelled() -> void:
+	_update_buttons()
 
 func _update_buttons() -> void:
 	var has_valid_save := SaveManager.has_save()
@@ -11426,16 +13510,18 @@ func _on_new_game_pressed() -> void:
 		if confirm_dialog:
 			confirm_dialog.visible = true
 	else:
-		_start_new_game()
+		_open_character_creation()
 
 func _on_confirm_new_game() -> void:
-	SaveManager.delete_save()
-	_start_new_game()
+	if confirm_dialog:
+		confirm_dialog.visible = false
+	_open_character_creation()
 
-func _start_new_game() -> void:
-	SaveManager.should_load_on_start = false
-	ZoneManager.reset_session()
-	get_tree().change_scene_to_file(GAME_SCENE_PATH)
+func _open_character_creation() -> void:
+	_ensure_character_creation_ui()
+	if character_creation_ui:
+		character_creation_ui.select_race("human")
+		character_creation_ui.visible = true
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
@@ -12733,6 +14819,17 @@ func _ready() -> void:
 	if SaveManager.should_load_on_start:
 		SaveManager.should_load_on_start = false
 		SaveManager.load_game(self)
+	elif ZoneManager.session_player_data.is_empty():
+		# Khởi tạo game mới với chủng tộc đã chọn (Milestone M8)
+		if player and player.player_stats_component:
+			var init_race := ZoneManager.initial_race_id if not ZoneManager.initial_race_id.is_empty() else "human"
+			player.player_stats_component.set_race(init_race)
+			var p_h := player.health_component
+			if p_h:
+				p_h.current_health = p_h.max_health
+				p_h.current_mana = p_h.max_mana
+				p_h.emit_signal("health_changed", p_h.current_health, p_h.max_health)
+				p_h.emit_signal("mana_changed", p_h.current_mana, p_h.max_mana)
 
 	# 2. Xử lý chuyển cảnh hoặc áp dụng trạng thái từ ZoneManager
 	ZoneManager.on_zone_entered(self)
@@ -12861,15 +14958,30 @@ func setup_ui() -> void:
 		# 4. Cập nhật trạng thái Player
 		_on_player_state_changed("IDLE")
 
-	# 5. Cập nhật Vàng và Nhiệm vụ
+		# 5. Kết nối sự kiện thăng cấp
+		if player.progression_component and not player.progression_component.level_up.is_connected(_on_player_level_up):
+			player.progression_component.level_up.connect(_on_player_level_up)
+
+	# 6. Cập nhật Vàng và Nhiệm vụ
 	if quest_manager:
 		game_ui.update_gold(quest_manager.gold)
 		if quest_manager.current_quest:
 			game_ui.update_quest_info(quest_manager.current_quest)
 
-	# 6. Cập nhật thông tin vùng đất (HUD zone label)
+	# 7. Cập nhật thông tin vùng đất (HUD zone label)
 	if game_ui.has_method("set_current_zone"):
 		game_ui.set_current_zone(zone_id)
+
+func _on_player_level_up(new_level: int) -> void:
+	if game_ui:
+		game_ui.show_notification("✨ Thăng cấp! Bạn đã đạt Cấp %d!" % new_level)
+		if player:
+			var p_health: HealthComponent = player.get_node_or_null("HealthComponent")
+			if p_health:
+				game_ui.update_player_hp(p_health.current_health, p_health.max_health)
+				game_ui.update_player_mp(p_health.current_mana, p_health.max_mana)
+			if game_ui.character_sheet_ui and game_ui.character_sheet_ui.is_open():
+				game_ui.character_sheet_ui.refresh()
 
 func _on_npc_dialogue_requested(npc: NPC, lines: Array[String], action: String) -> void:
 	if game_ui:
@@ -12883,6 +14995,16 @@ func _on_enemy_defeated(enemy_node: Node) -> void:
 	if enemy_node is Enemy and not enemy_node.enemy_id.is_empty():
 		if not enemy_node.enemy_id in defeated_enemy_ids:
 			defeated_enemy_ids.append(enemy_node.enemy_id)
+
+	# M8: Trao EXP từ quái vật (chống nhận trùng bằng enemy_id duy nhất)
+	if player == null:
+		player = get_node_or_null("Player") as Player
+	if player and player.progression_component:
+		var e_type: String = str(enemy_node.enemy_type_id) if "enemy_type_id" in enemy_node else "corrupted_wolf"
+		var exp_val: int = ExpDatabase.get_enemy_exp(e_type)
+		var e_id_str: String = str(enemy_node.enemy_id) if ("enemy_id" in enemy_node and not str(enemy_node.enemy_id).is_empty()) else str(enemy_node.get_instance_id())
+		var source_id: String = "enemy:" + e_id_str
+		player.progression_component.add_exp(exp_val, source_id)
 
 func get_dropped_pickups_data() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -13611,6 +15733,10 @@ func grant_boss_reward() -> void:
 	if quest_manager:
 		quest_manager.gold += 100
 		quest_manager.emit_signal("gold_changed", quest_manager.gold)
+
+	# 1b. Thưởng 150 EXP từ Boss Lunareth (M8)
+	if player and player.progression_component:
+		player.progression_component.add_exp(ExpDatabase.get_boss_exp(), "boss:lunareth")
 
 	# 2. Thưởng vật phẩm Mảnh Nguyệt Thực (eclipse_fragment)
 	if player and player.inventory_component:
@@ -14973,6 +17099,7 @@ extends RefCounted
 
 static var current_zone_id: String = "noctis_forest"
 static var current_spawn_id: String = "spawn_default"
+static var initial_race_id: String = "human"
 static var is_transitioning: bool = false
 static var is_zone_traveling: bool = false
 static var travel_cooldown: float = 0.0
@@ -15005,6 +17132,7 @@ static func get_zone_display_name(zone_id: String) -> String:
 static func reset_session() -> void:
 	current_zone_id = "noctis_forest"
 	current_spawn_id = "spawn_default"
+	initial_race_id = "human"
 	is_transitioning = false
 	is_zone_traveling = false
 	travel_cooldown = 0.0
@@ -15029,8 +17157,14 @@ static func extract_player_state(world: Node) -> Dictionary:
 	var p_eq := player.equipment_component
 	var p_sb := player.spellbook_component
 	var p_journal := player.quest_journal_component
+	var p_stats := player.player_stats_component
+	var p_prog := player.progression_component
 
 	return {
+		"race_id": p_stats.race_id if p_stats else "human",
+		"level": p_prog.level if p_prog else 1,
+		"current_exp": p_prog.current_exp if p_prog else 0,
+		"claimed_exp_sources": p_prog.claimed_exp_sources.duplicate() if p_prog else [],
 		"current_health": p_health.current_health if p_health else 100.0,
 		"current_mana": p_health.current_mana if p_health else 60.0,
 		"max_health": p_health.max_health if p_health else 100.0,
@@ -15057,7 +17191,21 @@ static func apply_player_state(world: Node, data: Dictionary) -> void:
 	if player == null:
 		return
 
-	# 1. Nạp Trang bị & Túi đồ trước để tính lại Max MP/HP
+	# 0. Khôi phục Chủng tộc & Cấp độ / EXP TRƯỚC TIÊN (M8)
+	var p_stats := player.player_stats_component
+	var p_prog := player.progression_component
+
+	if p_stats and data.has("race_id"):
+		p_stats.set_race(str(data["race_id"]))
+
+	if p_prog:
+		p_prog.from_dict({
+			"level": int(data.get("level", 1)),
+			"current_exp": int(data.get("current_exp", 0)),
+			"claimed_exp_sources": data.get("claimed_exp_sources", [])
+		})
+
+	# 1. Nạp Trang bị & Túi đồ
 	var p_eq := player.equipment_component
 	if p_eq and data.has("equipment") and (data["equipment"] is Dictionary):
 		p_eq.load_from_dict(data["equipment"])
@@ -15065,6 +17213,10 @@ static func apply_player_state(world: Node, data: Dictionary) -> void:
 	var p_inv := player.inventory_component
 	if p_inv and data.has("inventory") and (data["inventory"] is Array):
 		p_inv.load_from_dict(data["inventory"])
+
+	# Tính lại Max Stats thống nhất sau khi nạp Race, Level và Gear
+	if p_stats:
+		p_stats.recalculate_stats(false)
 
 	# 2. Nạp Sách Phép
 	var p_sb := player.spellbook_component

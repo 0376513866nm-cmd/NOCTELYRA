@@ -165,6 +165,10 @@ func grant_boss_reward() -> void:
 		quest_manager.gold += 100
 		quest_manager.emit_signal("gold_changed", quest_manager.gold)
 
+	# 1b. Thưởng 150 EXP từ Boss Lunareth (M8)
+	if player and player.progression_component:
+		player.progression_component.add_exp(ExpDatabase.get_boss_exp(), "boss:lunareth")
+
 	# 2. Thưởng vật phẩm Mảnh Nguyệt Thực (eclipse_fragment)
 	if player and player.inventory_component:
 		var inv: InventoryComponent = player.inventory_component

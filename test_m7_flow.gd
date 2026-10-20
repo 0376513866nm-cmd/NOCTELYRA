@@ -585,7 +585,7 @@ func _run_suite() -> void:
 	# CATEGORY 12: World State Persistence & Save/Load v1.4.0
 	# -------------------------------------------------------------
 	print("\n--- CATEGORY 12: World State Persistence & Save/Load v1.4.0 ---")
-	_assert(SaveManager.CURRENT_VERSION == "1.4.0", "SaveManager.CURRENT_VERSION là 1.4.0")
+	_assert(SaveManager.CURRENT_VERSION in ["1.4.0", "1.5.0"], "SaveManager.CURRENT_VERSION là 1.4.0 hoặc mới hơn (1.5.0)")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.4.0"), "SaveManager hỗ trợ phiên bản 1.4.0")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.3.0"), "SaveManager hỗ trợ phiên bản 1.3.0")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.2.0"), "SaveManager hỗ trợ phiên bản 1.2.0")
@@ -611,7 +611,7 @@ func _run_suite() -> void:
 	var s_text = s_file.get_as_text()
 	s_file.close()
 	var s_dict: Dictionary = JSON.parse_string(s_text)
-	_assert(s_dict.get("save_version") == "1.4.0", "Bản lưu ghi đúng save_version == 1.4.0")
+	_assert(s_dict.get("save_version") in ["1.4.0", "1.5.0"], "Bản lưu ghi đúng save_version == 1.4.0 hoặc 1.5.0")
 	_assert(s_dict.has("quest_journal"), "Bản lưu có trường dữ liệu quest_journal")
 	_assert(s_dict["quest_journal"].has("quest_elyndra_cleansing"), "quest_journal lưu tiến độ nhiệm vụ Kaelis")
 

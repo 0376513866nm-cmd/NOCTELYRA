@@ -59,6 +59,9 @@ func equip(item_id: String) -> String:
 
 	return prev_item
 
+func equip_item(item_id: String) -> String:
+	return equip(item_id)
+
 func unequip(slot_type: String) -> String:
 	var old_item: String = ""
 	match slot_type:
@@ -77,7 +80,16 @@ func unequip(slot_type: String) -> String:
 
 	return old_item
 
+func unequip_item(slot_type: String) -> String:
+	return unequip(slot_type)
+
 func _recalculate_stats() -> void:
+	if player:
+		var p_stats := player.get_node_or_null("PlayerStatsComponent") as PlayerStatsComponent
+		if p_stats:
+			p_stats.recalculate_stats(false)
+			return
+
 	var total_attack := base_attack_damage
 	var total_max_mana := base_max_mana
 

@@ -42,6 +42,7 @@ signal victory_dismissed()
 @onready var save_btn: Button = $PauseMenu/Panel/SaveBtn
 @onready var inventory_ui: InventoryUI = $InventoryUI
 @onready var quest_journal_ui: QuestJournalUI = $QuestJournalUI
+@onready var character_sheet_ui: CharacterSheetUI = $CharacterSheetUI
 @onready var spell_hotbar: SpellHotbar = $HUD/SpellHotbar
 
 @onready var zone_label: Label = $HUD/ZoneLabel
@@ -54,11 +55,16 @@ var _current_dialogue_idx: int = 0
 var _current_quest_action: String = "none"
 var _notif_timer: float = 0.0
 var _dialogue_cooldown: float = 0.0
+var _ui_close_grace_cooldown: float = 0.0
 var _warning_timer: float = 0.0
 var _announcement_timer: float = 0.0
 var _zone_banner_timer: float = 0.0
 
 func _ready() -> void:
+	if character_sheet_ui == null:
+		character_sheet_ui = get_node_or_null("CharacterSheetUI") as CharacterSheetUI
+	if character_sheet_ui:
+		character_sheet_ui.visible = false
 	if dialogue_box:
 		dialogue_box.visible = false
 	if game_over_panel:
@@ -91,6 +97,9 @@ func _process(delta: float) -> void:
 	if _dialogue_cooldown > 0.0:
 		_dialogue_cooldown -= delta
 
+	if _ui_close_grace_cooldown > 0.0:
+		_ui_close_grace_cooldown -= delta
+
 	if _warning_timer > 0.0:
 		_warning_timer -= delta
 		if _warning_timer <= 0.0 and boss_warning_label:
@@ -121,8 +130,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	# Phím ESC đóng Journal hoặc Inventory nếu đang mở
+	# Bật/tắt Bảng Thông Tin Nhân Vật bằng phím C
+	if event.is_action_pressed("character_sheet"):
+		if not is_dialogue_open():
+			toggle_character_sheet()
+			get_viewport().set_input_as_handled()
+			return
+
+	# Phím ESC đóng CharacterSheet, Journal hoặc Inventory nếu đang mở
 	if event.is_action_pressed("ui_cancel"):
+		if is_character_sheet_open():
+			close_character_sheet()
+			get_viewport().set_input_as_handled()
+			return
 		if is_quest_journal_open():
 			close_quest_journal()
 			get_viewport().set_input_as_handled()
@@ -132,14 +152,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	# Đóng Journal nếu đang mở bằng phím J (attack)
+	# Đóng Journal hoặc Character Sheet nếu đang mở bằng phím J (attack)
 	if is_quest_journal_open() and event.is_action_pressed("attack"):
 		close_quest_journal()
 		get_viewport().set_input_as_handled()
 		return
+	if is_character_sheet_open() and event.is_action_pressed("attack"):
+		close_character_sheet()
+		get_viewport().set_input_as_handled()
+		return
 
-	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ / sổ nhiệm vụ
-	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open() or is_quest_journal_open():
+	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ / sổ nhiệm vụ / bảng nhân vật
+	if is_dialogue_open() or is_dialogue_cooling_down() or is_ui_cooling_down() or is_inventory_open() or is_quest_journal_open() or is_character_sheet_open():
 		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash") or event.is_action_pressed("spell_1") or event.is_action_pressed("spell_2") or event.is_action_pressed("spell_3") or event.is_action_pressed("spell_upgrade"):
 			get_viewport().set_input_as_handled()
 			return
@@ -176,6 +200,7 @@ func advance_dialogue() -> void:
 func close_dialogue() -> void:
 	dialogue_box.visible = false
 	_dialogue_cooldown = 0.25 # Grace cooldown 0.25s
+	_ui_close_grace_cooldown = 0.25
 	var scene: Node = _get_active_scene()
 	var quest_mgr: QuestManager = scene.get_node_or_null("QuestManager") as QuestManager if scene else null
 	var player: Player = scene.get_node_or_null("Player") as Player if scene else null
@@ -208,6 +233,9 @@ func close_dialogue() -> void:
 			quest_mgr.start_quest()
 		elif _current_quest_action == "complete_quest":
 			quest_mgr.complete_quest(p_health)
+			# M8: Thưởng EXP nhiệm vụ chính Elyra (chống nhận trùng)
+			if player and player.progression_component:
+				player.progression_component.add_exp(ExpDatabase.get_quest_exp("quest_tutorial"), "quest:quest_tutorial")
 			# Tự động lưu sau khi hoàn thành nhiệm vụ và nhận thưởng
 			SaveManager.save_game(scene)
 	_current_quest_action = "none"
@@ -223,23 +251,31 @@ func is_dialogue_open() -> bool:
 func is_dialogue_cooling_down() -> bool:
 	return _dialogue_cooldown > 0.0
 
+func is_ui_cooling_down() -> bool:
+	return _ui_close_grace_cooldown > 0.0
+
 func toggle_inventory() -> void:
 	if is_inventory_open():
 		close_inventory()
 	else:
 		if is_quest_journal_open():
 			close_quest_journal()
+		if is_character_sheet_open():
+			close_character_sheet()
 		open_inventory()
 
 func open_inventory() -> void:
 	if is_quest_journal_open():
 		close_quest_journal()
+	if is_character_sheet_open():
+		close_character_sheet()
 	if inventory_ui:
 		inventory_ui.open()
 
 func close_inventory() -> void:
 	if inventory_ui:
 		inventory_ui.close()
+	_ui_close_grace_cooldown = 0.15
 
 func is_inventory_open() -> bool:
 	return inventory_ui != null and inventory_ui.is_open()
@@ -250,17 +286,22 @@ func toggle_quest_journal() -> void:
 	else:
 		if is_inventory_open():
 			close_inventory()
+		if is_character_sheet_open():
+			close_character_sheet()
 		open_quest_journal()
 
 func open_quest_journal() -> void:
 	if is_inventory_open():
 		close_inventory()
+	if is_character_sheet_open():
+		close_character_sheet()
 	if quest_journal_ui:
 		quest_journal_ui.open()
 
 func close_quest_journal() -> void:
 	if quest_journal_ui:
 		quest_journal_ui.close()
+	_ui_close_grace_cooldown = 0.15
 
 func is_quest_journal_open() -> bool:
 	return quest_journal_ui != null and quest_journal_ui.is_open()
@@ -268,6 +309,42 @@ func is_quest_journal_open() -> bool:
 func update_quest_journal_ui() -> void:
 	if quest_journal_ui and quest_journal_ui.is_open():
 		quest_journal_ui.refresh()
+
+func toggle_character_sheet() -> void:
+	if is_character_sheet_open():
+		close_character_sheet()
+	else:
+		if is_inventory_open():
+			close_inventory()
+		if is_quest_journal_open():
+			close_quest_journal()
+		open_character_sheet()
+
+func open_character_sheet() -> void:
+	if is_inventory_open():
+		close_inventory()
+	if is_quest_journal_open():
+		close_quest_journal()
+	if character_sheet_ui:
+		var scene := _get_active_scene()
+		var player: Player = scene.get_node_or_null("Player") as Player if scene else null
+		if player == null and get_tree():
+			var players = get_tree().get_nodes_in_group("player")
+			if players.size() > 0:
+				player = players[0] as Player
+		character_sheet_ui.open(player)
+
+func close_character_sheet() -> void:
+	if character_sheet_ui:
+		character_sheet_ui.close()
+	_ui_close_grace_cooldown = 0.15
+
+func is_character_sheet_open() -> bool:
+	return character_sheet_ui != null and character_sheet_ui.is_open()
+
+func update_character_sheet_ui() -> void:
+	if character_sheet_ui and character_sheet_ui.is_open():
+		character_sheet_ui.refresh()
 
 func _on_save_pressed() -> void:
 	var scene := _get_active_scene()

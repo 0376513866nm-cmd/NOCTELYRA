@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c7m9x4v1q5p2" path="res://src/inventory/inventory_ui.tscn" id="2_inv_ui"]
 [ext_resource type="PackedScene" uid="uid://c6j2y5m4k8p1" path="res://src/ui/spell_hotbar.tscn" id="3_spell_hotbar"]
 [ext_resource type="PackedScene" uid="uid://b7q5k2m8p4x9" path="res://src/ui/quest_journal_ui.tscn" id="4_journal_ui"]
+[ext_resource type="PackedScene" uid="uid://c8k1sheet4y8z" path="res://src/ui/character_sheet_ui.tscn" id="5_sheet_ui"]
 
 [node name="GameUI" type="CanvasLayer"]
 script = ExtResource("1_ui")
@@ -573,6 +574,9 @@ text = "Quit"
 visible = false
 
 [node name="QuestJournalUI" parent="." instance=ExtResource("4_journal_ui")]
+visible = false
+
+[node name="CharacterSheetUI" parent="." instance=ExtResource("5_sheet_ui")]
 visible = false
 
 [node name="ZoneBanner" type="Control" parent="."]

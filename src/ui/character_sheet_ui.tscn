@@ -1,0 +1,181 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8k1sheet4y8z"]
+
+[ext_resource type="Script" path="res://src/ui/character_sheet_ui.gd" id="1_sheet"]
+
+[node name="CharacterSheetUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sheet")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(680, 520)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -260.0
+offset_right = 340.0
+offset_bottom = 260.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = -20.0
+offset_bottom = 48.0
+grow_horizontal = 2
+
+[node name="Title" type="Label" parent="Panel/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "THÔNG TIN NHÂN VẬT (CHARACTER SHEET) [C]"
+vertical_alignment = 1
+
+[node name="CloseBtn" type="Button" parent="Panel/Header"]
+custom_minimum_size = Vector2(36, 32)
+layout_mode = 2
+text = "✕"
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 58.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="ProfileBox" type="VBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="RaceLabel" type="Label" parent="Panel/Content/ProfileBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Chủng tộc: Nhân tộc (Hậu Duệ Ánh Nguyệt)"
+
+[node name="RaceDescLabel" type="Label" parent="Panel/Content/ProfileBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "Mô tả chủng tộc..."
+autowrap_mode = 2
+
+[node name="HSeparator1" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="ProgressionBox" type="VBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="LevelLabel" type="Label" parent="Panel/Content/ProgressionBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Cấp độ: Lv.1"
+
+[node name="ExpBar" type="ProgressBar" parent="Panel/Content/ProgressionBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+max_value = 60.0
+show_percentage = false
+
+[node name="ExpLabel" type="Label" parent="Panel/Content/ProgressionBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "EXP: 0 / 60 (0%)"
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="StatsTitle" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 15
+text = "CHỈ SỐ CHIẾN ĐẤU THỐNG NHẤT"
+
+[node name="StatsGrid" type="GridContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="HPLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sinh Lực (HP): 100 / 100"
+
+[node name="MPLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Ma Lực (MP): 60 / 60"
+
+[node name="ATKLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tấn Công Cận Chiến: 25 ATK"
+
+[node name="MagicLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hệ Số Phép Thuật: x1.0"
+
+[node name="RegenLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hồi Phục Ma Lực: 5.0 MP/s"
+
+[node name="SpeedLabel" type="Label" parent="Panel/Content/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tốc Độ Di Chuyển: 270 px/s"
+
+[node name="HSeparator3" type="HSeparator" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="EquipTitle" type="Label" parent="Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 15
+text = "TRANG BỊ HIỆN TẠI"
+
+[node name="EquipBox" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="WeaponLabel" type="Label" parent="Panel/Content/EquipBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Vũ khí: [Trống]"
+
+[node name="AccessoryLabel" type="Label" parent="Panel/Content/EquipBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Phụ kiện: [Trống]"

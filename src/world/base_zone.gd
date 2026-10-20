@@ -32,6 +32,17 @@ func _ready() -> void:
 	if SaveManager.should_load_on_start:
 		SaveManager.should_load_on_start = false
 		SaveManager.load_game(self)
+	elif ZoneManager.session_player_data.is_empty():
+		# Khởi tạo game mới với chủng tộc đã chọn (Milestone M8)
+		if player and player.player_stats_component:
+			var init_race := ZoneManager.initial_race_id if not ZoneManager.initial_race_id.is_empty() else "human"
+			player.player_stats_component.set_race(init_race)
+			var p_h := player.health_component
+			if p_h:
+				p_h.current_health = p_h.max_health
+				p_h.current_mana = p_h.max_mana
+				p_h.emit_signal("health_changed", p_h.current_health, p_h.max_health)
+				p_h.emit_signal("mana_changed", p_h.current_mana, p_h.max_mana)
 
 	# 2. Xử lý chuyển cảnh hoặc áp dụng trạng thái từ ZoneManager
 	ZoneManager.on_zone_entered(self)
@@ -160,15 +171,30 @@ func setup_ui() -> void:
 		# 4. Cập nhật trạng thái Player
 		_on_player_state_changed("IDLE")
 
-	# 5. Cập nhật Vàng và Nhiệm vụ
+		# 5. Kết nối sự kiện thăng cấp
+		if player.progression_component and not player.progression_component.level_up.is_connected(_on_player_level_up):
+			player.progression_component.level_up.connect(_on_player_level_up)
+
+	# 6. Cập nhật Vàng và Nhiệm vụ
 	if quest_manager:
 		game_ui.update_gold(quest_manager.gold)
 		if quest_manager.current_quest:
 			game_ui.update_quest_info(quest_manager.current_quest)
 
-	# 6. Cập nhật thông tin vùng đất (HUD zone label)
+	# 7. Cập nhật thông tin vùng đất (HUD zone label)
 	if game_ui.has_method("set_current_zone"):
 		game_ui.set_current_zone(zone_id)
+
+func _on_player_level_up(new_level: int) -> void:
+	if game_ui:
+		game_ui.show_notification("✨ Thăng cấp! Bạn đã đạt Cấp %d!" % new_level)
+		if player:
+			var p_health: HealthComponent = player.get_node_or_null("HealthComponent")
+			if p_health:
+				game_ui.update_player_hp(p_health.current_health, p_health.max_health)
+				game_ui.update_player_mp(p_health.current_mana, p_health.max_mana)
+			if game_ui.character_sheet_ui and game_ui.character_sheet_ui.is_open():
+				game_ui.character_sheet_ui.refresh()
 
 func _on_npc_dialogue_requested(npc: NPC, lines: Array[String], action: String) -> void:
 	if game_ui:
@@ -182,6 +208,16 @@ func _on_enemy_defeated(enemy_node: Node) -> void:
 	if enemy_node is Enemy and not enemy_node.enemy_id.is_empty():
 		if not enemy_node.enemy_id in defeated_enemy_ids:
 			defeated_enemy_ids.append(enemy_node.enemy_id)
+
+	# M8: Trao EXP từ quái vật (chống nhận trùng bằng enemy_id duy nhất)
+	if player == null:
+		player = get_node_or_null("Player") as Player
+	if player and player.progression_component:
+		var e_type: String = str(enemy_node.enemy_type_id) if "enemy_type_id" in enemy_node else "corrupted_wolf"
+		var exp_val: int = ExpDatabase.get_enemy_exp(e_type)
+		var e_id_str: String = str(enemy_node.enemy_id) if ("enemy_id" in enemy_node and not str(enemy_node.enemy_id).is_empty()) else str(enemy_node.get_instance_id())
+		var source_id: String = "enemy:" + e_id_str
+		player.progression_component.add_exp(exp_val, source_id)
 
 func get_dropped_pickups_data() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
