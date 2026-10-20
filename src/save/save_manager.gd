@@ -78,8 +78,27 @@ static func delete_save() -> bool:
 		DirAccess.remove_absolute(bak_path)
 	return success
 
+static func is_boss_combat_active(world: Node) -> bool:
+	if world == null:
+		return false
+	if "boss_battle_started" in world and world.get("boss_battle_started") == true:
+		return true
+	var boss = world.get_node_or_null("BossLunareth")
+	if boss and is_instance_valid(boss):
+		if "current_state" in boss:
+			var st: int = int(boss.get("current_state"))
+			# 0 là DORMANT, 7 là DEFEATED
+			if st != 0 and st != 7:
+				return true
+	return false
+
 static func save_game(world: Node) -> bool:
 	if world == null:
+		return false
+
+	# Kiểm tra bảo vệ: Không cho phép lưu khi đang giao tranh Boss
+	if is_boss_combat_active(world):
+		push_warning("SaveManager: Không thể lưu game trong khi trận đánh Boss đang diễn ra!")
 		return false
 
 	var player := world.get_node_or_null("Player") as Player

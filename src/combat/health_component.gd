@@ -37,6 +37,16 @@ func _process(delta: float) -> void:
 		current_mana = min(max_mana, current_mana + mana_regen_rate * delta)
 		emit_signal("mana_changed", current_mana, max_mana)
 
+func set_invulnerable_duration(duration: float) -> void:
+	is_invulnerable = true
+	_invuln_timer = max(_invuln_timer, duration)
+	emit_signal("invulnerability_started")
+
+func cancel_invulnerability() -> void:
+	is_invulnerable = false
+	_invuln_timer = 0.0
+	emit_signal("invulnerability_ended")
+
 func take_damage(damage: DamageInfo) -> bool:
 	if is_invulnerable or current_health <= 0.0:
 		return false

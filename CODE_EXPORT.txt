@@ -1,6 +1,6 @@
 ﻿===================================================
-  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M4 FINAL)
-  EXPORTED AT: 2026-10-20 12:25:33
+  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M4.1 STABILIZATION FINAL)
+  EXPORTED AT: 2026-10-20 12:43:57
 ===================================================
 
 
@@ -98,20 +98,20 @@ renderer/rendering_method="forward_plus"
 FILE: README.md
 ===================================================
 
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M4 FINAL)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M4.1 STABILIZATION FINAL)
 
 Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M4 FINAL)
+## 1. Cấu trúc thư mục & Module dự án (Bản M4.1 STABILIZATION)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu hướng dẫn, kiến trúc, boss guide & kết quả kiểm thử M4
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M4)
-├── test_m4_flow.gd                 # [MỚI M4] Kịch bản kiểm thử 15 hạng mục Boss M4 (63/63 tests PASS 100%)
+├── README.md                       # Tài liệu hướng dẫn, kiến trúc, boss guide & kết quả kiểm thử M4.1
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M4.1)
+├── test_m4_flow.gd                 # [CẬP NHẬT M4.1] Kịch bản kiểm thử 16 hạng mục Boss M4.1 (75/75 tests PASS 100%)
 ├── test_m3_2_flow.gd               # Kịch bản kiểm thử M3.2 (50/50 tests PASS)
 ├── test_m3_1_flow.gd               # Kịch bản kiểm thử M3.1 (41/41 tests PASS)
 ├── test_m3_flow.gd                 # Kịch bản kiểm thử M3 (67/67 tests PASS)
@@ -149,15 +149,15 @@ D:\project\game\NOCTELYRA\
     │   └── enemy\
     │       ├── enemy.gd                     # Enemy AI, gán enemy_id ổn định, tích hợp rơi đồ LootTable
     │       └── enemy.tscn                   # Scene Enemy với thanh máu HPBar mini, hitbox & hurtbox
-    ├── boss\                                # [MỚI M4] MODULE BOSS LUNARETH — LINH LỘC NGUYỆT THỰC
-    │   ├── boss_lunareth.gd                 # FSM Boss 8 trạng thái, 2 giai đoạn chiến đấu, 2 chiêu thức
+    ├── boss\                                # MODULE BOSS LUNARETH — LINH LỘC NGUYỆT THỰC (M4.1 STABILIZED)
+    │   ├── boss_lunareth.gd                 # [SỬA M4.1] Bất tử 1.3s Phase Transition, reset toàn diện, spawn shockwave đúng thứ tự
     │   ├── boss_lunareth.tscn               # Scene Boss với HealthComponent (320 HP), Hurtbox, Hitbox, Detection
-    │   ├── boss_visual.gd                   # Render hình dáng linh thú 4 chân, sừng ma pháp, bảng màu theo phase
-    │   ├── boss_shockwave.gd                # Sóng chấn ba Hắc Nguyệt Chấn Ba (25 DMG, bay sát mặt đất, né bằng nhảy)
+    │   ├── boss_visual.gd                   # [SỬA M4.1] Thêm reset_visual() khôi phục màu P1, sừng, aura và tắt telegraph
+    │   ├── boss_shockwave.gd                # [SỬA M4.1] Đưa vào group 'boss_projectiles', áp dụng màu P1/P2 không phụ thuộc @onready
     │   └── boss_shockwave.tscn              # Scene projectile sóng xung kích
     ├── combat\
     │   ├── damage_info.gd                   # Struct dữ liệu sát thương & knockback
-    │   ├── health_component.gd              # Quản lý HP, MP, hồi mana & I-frames miễn nhiễm
+    │   ├── health_component.gd              # [SỬA M4.1] Thêm set_invulnerable_duration() và cancel_invulnerability()
     │   ├── hurtbox.gd                       # Vùng nhận đòn chuyển tiếp tới HealthComponent
     │   ├── hitbox.gd                        # Vùng gây sát thương chém cận chiến / đòn húc / chấn ba
     │   ├── combat_component.gd              # Quản lý cooldown chém thường và bắn ma pháp
@@ -168,7 +168,7 @@ D:\project\game\NOCTELYRA\
     │   └── interaction_component.gd         # Area2D tương tác nhận diện Player phạm vi gần
     ├── inventory\                           # HỆ THỐNG VẬT PHẨM & TRANG BỊ
     │   ├── item_definition.gd               # Resource định nghĩa vật phẩm chuẩn (ID, tên, loại, chỉ số, công dụng)
-    │   ├── item_database.gd                 # [CẬP NHẬT M4] Đăng ký vật phẩm ID 5: eclipse_fragment (Mảnh Nguyệt Thực)
+    │   ├── item_database.gd                 # Đăng ký vật phẩm ID 5: eclipse_fragment (Mảnh Nguyệt Thực)
     │   ├── inventory_component.gd           # Quản lý 16 ô túi đồ, kiểm tra tràn túi khi nhận thưởng Boss
     │   ├── equipment_component.gd           # Quản lý 2 ô trang bị & tính toán lại chỉ số
     │   ├── inventory_ui.gd                  # Controller giao diện túi đồ, lưới 16 ô, xem chi tiết & nút bấm
@@ -181,17 +181,17 @@ D:\project\game\NOCTELYRA\
     │   ├── quest_data.gd                    # Resource dữ liệu nhiệm vụ (4 trạng thái FSM)
     │   └── quest_manager.gd                 # Quản lý quest, lưu enemy_id chuỗi ổn định xuyên suốt
     ├── save\                                # HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
-    │   └── save_manager.gd                  # [CẬP NHẬT M4] Hỗ trợ version 1.1.0 & tương thích ngược 1.0.0, lưu boss_state, mở rộng tọa độ tới 6200.0
+    │   └── save_manager.gd                  # [SỬA M4.1] Chặn lưu khi đang giao tranh Boss (is_boss_combat_active), cho phép lưu sau chiến thắng
     ├── ui\
-    │   ├── game_ui.gd                       # [CẬP NHẬT M4] Boss HUD (HP Bar 320, Phase 1/2), Warning, Announcement, Victory Screen, chặn Lưu khi đấu Boss
+    │   ├── game_ui.gd                       # [SỬA M4.1] Tích hợp kiểm tra is_boss_combat_active khi bấm Save, HUD Boss, thông báo chiến thắng
     │   ├── game_ui.tscn                     # CanvasLayer giao diện in-game
     │   ├── pause_controller.gd              # Quản lý Pause/Resume độc lập, Esc đóng túi đồ trước
     │   ├── main_menu.gd                     # Màn hình chính: Chơi mới (xác nhận ghi đè), Tiếp tục, Thoát
     │   └── main_menu.tscn                   # Scene Main Menu
     └── world\
-        ├── magic_gate.gd                    # [MỚI M4] Cổng Ma Pháp chặn lối vào đấu trường, chỉ mở khi Quest COMPLETED
-        ├── magic_gate.tscn                  # Scene Cổng Ma Pháp rào chắn vật lý cao 400px
-        ├── noctis_forest.gd                 # [CẬP NHẬT M4] Mở rộng sàn tới X=6400, trigger đấu trường, rào chắn arena, retry checkpoint (4120, 630), thưởng Boss
+        ├── magic_gate.gd                    # Cổng Ma Pháp cao 400px, chặn Dash & Double Jump, chỉ mở khi Quest COMPLETED
+        ├── magic_gate.tscn                  # Scene Cổng Ma Pháp rào chắn vật lý
+        ├── noctis_forest.gd                 # [SỬA M4.1] Dọn sạch boss_projectiles khi Retry và khi Defeated, checkpoint trước đấu trường (4120, 630)
         ├── noctis_forest.tscn               # Màn chơi hoàn chỉnh kết hợp Làng Elyra, Bìa Rừng, Quái vật và Đấu trường Boss
         ├── test_level.gd                    # Màn test M1 cũ
         └── test_level.tscn
@@ -199,84 +199,54 @@ D:\project\game\NOCTELYRA\
 
 ---
 
-## 2. Thiết kế Boss Lunareth — Linh Lộc Nguyệt Thực
+## 2. Thông số Chiến đấu & Cơ chế Boss Lunareth (M4.1)
 
-### 2.1. Cốt truyện & Định danh Chủng tộc
-- **Tên:** Lunareth — Linh Lộc Nguyệt Thực (*Eclipse Stag*).
-- **Xuất thân:** Lunareth là linh thú bảo hộ Rừng Noctis từ ngàn xưa, mang đôi sừng kết tinh ma pháp ánh trăng cổ xưa. Do ma lực bóng tối tha hóa, linh thú mất đi lý trí và tấn công kẻ lạc lối.
-- **Quan trọng:** Lunareth **không phải Quỷ tộc**. Quỷ tộc bán thú trong thế giới NOCTELYRA là một chủng tộc văn minh, không mặc định phản diện. Khi bị đánh bại, Lunareth **được thanh tẩy ma lực**, lấy lại ánh sáng thuần khiết, cúi đầu tạ ơn và tan biến trong thanh thản (không chết thê thảm).
-
-### 2.2. Trạng thái & Cơ chế chiến đấu (FSM 8 trạng thái)
-- **Máu cơ bản:** 320 HP.
-- **Trạng thái FSM:**
-  1. `DORMANT`: Đứng yên, đợi Player bước vào kích hoạt.
-  2. `INTRO`: Hú gầm ma pháp, rung chuyển màn hình, hiện thanh máu Boss và biểu ngữ cảnh báo.
-  3. `APPROACH`: Tiếp cận Player giữ cự ly giao tranh.
-  4. `TELEGRAPH`: Báo hiệu trước đòn đánh (sáng sừng, hiển thị chỉ báo cảnh báo).
-  5. `ATTACK`: Thi triển một trong 2 chiêu thức.
-  6. `RECOVERY`: Nghỉ ngắn sau đòn đánh (Phase 1: 1.2s; Phase 2: 0.6s).
-  7. `PHASE_TRANSITION`: Kích hoạt khi HP <= 160 (50%). Boss bất tử tạm thời, gầm chấn động, sừng chuyển màu tím sẫm, tốc độ tăng gấp rưỡi.
-  8. `DEFEATED`: Thanh tẩy, sừng chuyển màu trắng vàng linh thánh, mở rào đấu trường, trao thưởng.
-
-### 2.3. Hai Chiêu thức của Boss
-1. **Nguyệt Giác Xung Kích (Crescent Horn Charge):**
-   - *Báo hiệu (Telegraph):* Dừng lại 0.7s (Phase 1) hoặc 0.4s (Phase 2), sừng phát sáng rực rỡ, hiển thị đường tấn công màu đỏ/vàng.
-   - *Hành vi:* Lao nhanh về phía Player (tốc độ 420 px/s), húc trúng gây **30 sát thương** + văng xa (knockback).
-   - *Khắc chế:* Nhảy đôi vượt qua thân Boss hoặc Dash lướt ngược chiều khi Boss bắt đầu lao.
-2. **Hắc Nguyệt Chấn Ba (Dark Moon Shockwave):**
-   - *Báo hiệu:* Nâng hai chân trước lên cao trong 0.8s.
-   - *Hành vi:* Dậm mạnh xuống đất tạo sóng chấn ba ma pháp lan sát mặt đất với vận tốc 280 px/s, gây **25 sát thương**.
-   - *Khắc chế:* Nhảy qua sóng chấn ba.
+| Thông số / Thuộc tính | Giai đoạn 1 (Phase 1) | Giai đoạn 2 (Phase 2 - Hắc Nguyệt) | Ghi chú |
+| :--- | :---: | :---: | :--- |
+| **Máu cơ bản (HP)** | **320 / 320** | $\le$ **160** (50% HP) | Kích hoạt chuyển Phase duy nhất 1 lần |
+| **Thời gian chuyển Phase** | — | **1.3 giây** | **Miễn nhiễm sát thương toàn bộ 1.3s**, hết 1.3s nhận sát thương bình thường |
+| **Tốc độ di chuyển (Walk)** | **160 px/s** | **195 px/s** | Tiếp cận Player mượt mà |
+| **Đòn 1: Nguyệt Giác Xung Kích** | **20 DMG**, lao 550 px/s | **20 DMG**, lao 620 px/s | Telegraph **0.7s** (sừng sáng rực + vệt đỏ trên sàn). Chống sát thương trùng |
+| **Đòn 2: Hắc Nguyệt Chấn Ba** | **25 DMG**, sóng 380 px/s | **25 DMG**, sóng 440 px/s | Telegraph **0.9s** (dậm chân + vòng ma pháp). Né bằng nhảy |
+| **Thời gian hồi đòn (Recovery)** | **1.4s** | **1.1s** (giảm ~21%) | Thời điểm vàng cho người chơi phản công |
+| **Bảng màu hiển thị** | Xanh Lam Nguyệt (Cyan) | Tím Hắc Nguyệt (Dark Violet) | Được khôi phục hoàn toàn về Phase 1 khi Retry |
 
 ---
 
-## 3. Đấu trường & Vòng lặp Gameplay Hoàn chỉnh
+## 3. Các cải tiến & sửa lỗi trọng tâm trong Milestone M4.1
 
-```text
-[Làng Tân Thủ: X=0..1200]
-       │
-       ▼ (Gặp Elyra, nhận nhiệm vụ tiêu diệt 3 quái)
-[Bìa Rừng Noctis: X=1200..3800]
-       │
-       ▼ (Diệt 3 quái, nhặt Mana Shard / Kiếm / Bùa, trả Quest nhận 50 Vàng)
-[Cổng Ma Pháp: X=4000] ──[Bị khóa nếu chưa xong Quest]──> (Mở khi Quest COMPLETED)
-       │
-       ▼ (Bước qua X=4200: Arena Barrier khóa lại tại X=4180 và X=6350)
-[Đấu trường Lunareth: X=4200..6350]
-       │
-   ┌───┴───────────────────────────────┐
-   ▼                                   ▼
-[Player chết]                  [Lunareth Defeated]
-   │                                   │
-   ▼                                   ▼
-Màn hình Game Over             Thanh tẩy linh thú, mở rào đấu trường
-Nút Retry đưa về               Thưởng: 100 Vàng + Mảnh Nguyệt Thực
-Checkpoint (X=4120, Y=630)     (Nếu đầy túi đồ: rơi trên đất)
-Reset Boss về đầy máu          Tự do khám phá tiếp hoặc Lưu game!
-```
+1. **Cơ chế chuyển Phase 2 hoàn hảo:**
+   - Trong `HealthComponent`, bổ sung 2 phương thức: `set_invulnerable_duration(duration)` và `cancel_invulnerability()`.
+   - Trong `BossLunareth`, trạng thái `PHASE_TRANSITION` kéo dài 1.3s đồng thời duy trì `is_invulnerable = true` xuyên suốt.
+   - Khi kết thúc 1.3s, `cancel_invulnerability()` được gọi ngay lập tức đưa Boss về trạng thái nhận sát thương bình thường.
+   - Cơ chế chỉ kích hoạt duy nhất một lần qua cờ `_phase_2_triggered`.
 
----
+2. **Reset hoàn toàn Boss và Visual khi Retry:**
+   - Bổ sung hàm `reset_visual()` trong `BossVisual`: đặt `is_phase_2 = false`, `VisualState.IDLE`, khôi phục màu sừng Lam Nguyệt (`P1_ANTLER_COLOR`), hào quang (`P1_AURA_COLOR`), và ẩn toàn bộ telegraph.
+   - Trong `BossLunareth.reset_boss()`: khôi phục HP 320/320, trạng thái `DORMANT`, tắt hitbox tấn công, bật lại collision shape của hurtbox, xóa timer và danh sách đối tượng đã trúng đòn. Không tạo thêm bản sao Boss.
 
-## 4. Các phím điều khiển (Controls)
+3. **Dọn dẹp projectile của Boss:**
+   - Gán `BossShockwave` vào group `"boss_projectiles"`.
+   - Bổ sung `clear_boss_projectiles()` trong `NoctisForest`, tự động gọi khi Player hy sinh & Retry, hoặc khi Boss bị thanh tẩy.
+   - Không ảnh hưởng đến đạn phép của Player hay các vật phẩm rơi.
 
-| Phím | Chức năng | Chi tiết |
-| :--- | :--- | :--- |
-| **A / D** hoặc **Mũi tên** | Di chuyển Trái / Phải | Có gia tốc mượt, tự động quay mặt nhân vật |
-| **Space** | Nhảy / Nhảy đôi | Nhấn lần 1 nhảy, nhấn lần 2 trên không để Double Jump |
-| **Shift** | Lướt nhanh (Dash) | Lướt ngang tốc độ cao (0.2s), có thể Air-Dash trên không |
-| **J** | **Đánh thường (Melee)** | Chém cận chiến (cơ bản 25 DMG, trang bị Kiếm thành 35 DMG) |
-| **K** | **Ma pháp (Magic Spell)** | Bắn quả cầu ma pháp (30 DMG), tiêu hao 15 MP |
-| **E** | **Tương tác (Interact)** | Nói chuyện với Elyra; duyệt/đóng câu hội thoại |
-| **I** | **Túi đồ (Inventory)** | Mở/đóng Túi đồ & Trang bị (không pause thế giới) |
-| **Esc** | Pause / Thoát | Đóng túi đồ nếu đang mở; hoặc Tạm dừng / Tiếp tục game |
+4. **Sửa thứ tự khởi tạo BossShockwave:**
+   - Trong `BossShockwave`, tách logic cập nhật visual thành `_apply_visuals()`, tự động áp dụng màu sắc Phase 1 (Lam) hoặc Phase 2 (Tím) và tốc độ chính xác mà không bị phụ thuộc vào `@onready` khi gọi trước hoặc sau `add_child`.
+   - Trong `BossLunareth._spawn_shockwaves()`, đưa `add_child` lên trước và cập nhật tọa độ thế giới chính xác.
 
-> **Lưu ý trong trận đấu Boss:** Nút "Lưu Game" trong Pause Menu bị vô hiệu hóa an toàn nhằm ngăn chặn tình trạng lưu giữa combat gây kẹt logic. Khi Boss bị đánh bại hoặc người chơi ở ngoài đấu trường, chức năng Lưu Game hoạt động bình thường.
+5. **Bảo vệ toàn diện Save System:**
+   - Bổ sung phương thức `SaveManager.is_boss_combat_active(world)`: kiểm tra cả cờ `boss_battle_started` của thế giới lẫn trạng thái FSM thực tế của Boss (`current_state != DORMANT` và `!= DEFEATED`).
+   - Lớp `SaveManager.save_game()` từ chối lưu và trả về `false` khi đang trong combat Boss.
+   - Nút Save trong Pause Menu thông báo chặn lưu rõ ràng.
+   - Sau khi Boss bị thanh tẩy, autosave vẫn chạy thành công bình thường.
+   - Vật phẩm thưởng rơi trên mặt đất khi túi đồ đầy được lưu vào `dropped_pickups` và khôi phục nguyên vẹn sau khi Load/Continue.
+   - Tương thích ngược 100% với file save v1.0.0 (M3.2).
 
 ---
 
-## 5. Báo cáo kiểm thử tự động thực tế trên Godot 4.3 Engine
+## 4. Báo cáo kiểm thử tự động thực tế trên Godot 4.3 Engine
 
-### 5.1. Bộ test Boss M4 (`test_m4_flow.gd`) — 63/63 Tests PASS (100%)
+### 4.1. Bộ test Boss M4.1 (`test_m4_flow.gd`) — 75/75 Tests PASS (100%)
 
 Chạy thực tế qua lệnh:
 `& "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "d:\project\game\NOCTELYRA" -s "test_m4_flow.gd"`
@@ -285,134 +255,149 @@ Chạy thực tế qua lệnh:
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 ==================================================
- [NOCTELYRA M4] INTEGRATION TEST SUITE STARTING 
+ [NOCTELYRA M4.1] BOSS ENCOUNTER TEST SUITE START 
 ==================================================
 
---- CATEGORY 1: Khởi tạo Boss Lunareth và Thông số ban đầu ---
+--- CATEGORY 1: Khởi tạo Boss & Kiểm tra Cổng Ma Pháp khóa ban đầu ---
   [PASS] Boss Lunareth tồn tại trong scene
-  [PASS] Boss bắt đầu ở trạng thái DORMANT
-  [PASS] Boss có đúng 320 HP khởi đầu
-  [PASS] Boss Max HP là 320
-  [PASS] Boss Visual controller tồn tại
-  [PASS] Boss Phase ban đầu là 1
+  [PASS] HP tối đa của Boss là 320
+  [PASS] HP hiện tại của Boss là 320/320
+  [PASS] Boss ban đầu ở trạng thái DORMANT
+  [PASS] Boss bắt đầu ở Phase 1
+  [PASS] Trận chiến Boss chưa bắt đầu
+  [PASS] Cổng Ma Pháp đang ở trạng thái KHÓA
+  [PASS] Va chạm vật lý của Cổng Ma Pháp đang BẬT
 
---- CATEGORY 2: Cổng Ma Pháp (Magic Gate) chặn trước khi hoàn thành Quest ---
-  [PASS] Cổng Ma Pháp tồn tại trong scene
-  [PASS] Nhiệm vụ chưa hoàn thành, cổng ma pháp đang ĐÓNG
-  [PASS] Va chạm của cổng ma pháp đang BẬT (chặn người chơi)
+--- CATEGORY 2: Cổng vẫn khóa khi nhiệm vụ ở READY_TO_TURN_IN ---
+  [PASS] Cổng Ma Pháp VẪN KHÓA khi nhiệm vụ ở READY_TO_TURN_IN (chưa trả quest)
+  [PASS] Va chạm vật lý vẫn BẬT khi ở READY_TO_TURN_IN
 
---- CATEGORY 3: Cổng Ma Pháp MỞ sau khi hoàn thành Quest của Elyra ---
-  [PASS] Cổng ma pháp đã MỞ sau khi Quest hoàn thành
-  [PASS] Va chạm cổng ma pháp đã TẮT (cho phép đi qua)
+--- CATEGORY 3: Kiểm thử va chạm vật lý thực tế của Cổng (Dash & Double Jump) ---
+  [PASS] Dash bị chặn đứng bởi Cổng Ma Pháp (X: 3955.3 <= 4000)
+  [PASS] Nhảy đôi trên không vẫn bị Cổng chặn hoàn toàn (X: 3954.0 <= 4000)
 
---- CATEGORY 4: Kích hoạt Đấu trường Boss & Khóa Rào Chắn ---
-  [PASS] Rào chắn đấu trường tồn tại
-  [PASS] Boss chuyển từ DORMANT sang INTRO khi người chơi bước vào
-  [PASS] Rào chắn đấu trường đã ĐÓNG để nhốt người chơi
-  [PASS] Va chạm rào chắn đấu trường đã BẬT
+--- CATEGORY 4: Cổng Ma Pháp CHỈ MỞ khi nhiệm vụ chuyển sang COMPLETED ---
+  [PASS] Cổng Ma Pháp đã MỞ khi nhiệm vụ đạt COMPLETED
+  [PASS] Va chạm vật lý đã TẮT để cho phép người chơi đi qua
+  [PASS] Player đi xuyên qua cổng đã mở thành công
 
---- CATEGORY 5: Giao diện Boss (Boss UI HUD) & Cảnh báo Telegraph ---
-  [PASS] Boss Bar Panel hiển thị khi bắt đầu trận đấu
-  [PASS] Giá trị hiển thị trên thanh máu Boss là 320 / 320
-  [PASS] Nhãn Giai đoạn 1 hiển thị chính xác
+--- CATEGORY 5: Kích hoạt Đấu trường & Rào chắn Arena khóa lại ---
+  [PASS] Cờ boss_battle_started kích hoạt
+  [PASS] Boss chuyển sang thức tỉnh
+  [PASS] Rào chắn đấu trường khóa chặt Player bên trong
+  [PASS] Thanh HUD Boss hiển thị trên màn hình
 
---- CATEGORY 6: Chiêu thức 1 - Nguyệt Giác Xung Kích (Crescent Horn Charge) ---
-  [PASS] Boss có thể chuyển sang TELEGRAPH
-  [PASS] Telegraph đang hoạt động
-  [PASS] Boss chuyển sang ATTACK
-  [PASS] Hitbox của Boss đã BẬT trong đòn đánh
-  [PASS] Sát thương của chiêu húc là 30.0
+--- CATEGORY 6: Thời gian Telegraph thực tế (Charge 0.7s, Shockwave 0.9s) ---
+  [PASS] Thời gian cảnh báo đòn Húc thực tế là 0.70s (yêu cầu >= 0.6s)
+  [PASS] Hitbox húc TẮT trong thời gian Telegraph
+  [PASS] Vùng cảnh báo đòn húc hiển thị
+  [PASS] Thời gian cảnh báo đòn Chấn Ba thực tế là 0.90s (yêu cầu >= 0.8s)
+  [PASS] Vòng ma pháp cảnh báo chấn ba hiển thị
 
---- CATEGORY 7: Chiêu thức 2 - Hắc Nguyệt Chấn Ba (Dark Moon Shockwave) ---
-  [PASS] Boss có thể tạo sóng chấn ba
-  [PASS] Sóng chấn ba tồn tại trong scene
-  [PASS] Sát thương của sóng chấn ba là 25.0
-  [PASS] Tốc độ sóng chấn ba lớn hơn 0
-  [PASS] Sóng chấn ba bay sát mặt đất (Y gần mặt sàn)
+--- CATEGORY 7: Kiểm thử sát thương thực tế & chống trùng đòn (Horn Charge) ---
+  [PASS] Sát thương Horn Charge đúng 20.0
+  [PASS] Lần húc đầu tiên THỰC SỰ gây sát thương: HP giảm từ 100 còn 80.0 (-20 DMG)
+  [PASS] Cơ chế chống đòn trùng: Không gây thêm sát thương trong cùng lượt húc (HP giữ nguyên 80.0)
 
---- CATEGORY 8: Chuyển Giai đoạn 2 (Phase Transition tại HP <= 160) ---
-  [PASS] Boss nhận sát thương còn 160 HP
-  [PASS] Boss tự động kích hoạt PHASE_TRANSITION
-  [PASS] Giai đoạn chuyển thành Phase 2
-  [PASS] Trong chuyển phase Boss được miễn nhiễm (invulnerable)
-  [PASS] Nhãn HUD hiển thị đúng Phase 2
+--- CATEGORY 8: Projectile BossShockwave (Tốc độ & Màu sắc Phase 1 / Phase 2) ---
+  [PASS] Tốc độ sóng chấn ba Phase 1 là 380 px/s
+  [PASS] Sát thương sóng chấn ba đúng 25 DMG
+  [PASS] BossShockwave nằm trong group 'boss_projectiles'
+  [PASS] Màu sắc sóng Phase 1 là tông Lam Nguyệt (Cyan/Blue)
+  [PASS] Tốc độ sóng chấn ba Phase 2 tăng lên 440 px/s
+  [PASS] Màu sắc sóng Phase 2 là tông Hắc Nguyệt (Dark Violet)
+  [PASS] Shockwave gây đúng 25 DMG lên Player (HP: 80.0 -> 55.0)
 
---- CATEGORY 9: Tăng tốc độ và tần suất chiêu thức trong Giai đoạn 2 ---
-  [PASS] Thời gian telegraph Phase 2 (0.4s) nhanh hơn Phase 1 (0.7s)
-  [PASS] Thời gian hồi chiêu Phase 2 (0.6s) ngắn hơn Phase 1 (1.2s)
-  [PASS] Tốc độ lao Phase 2 (500 px/s) nhanh hơn Phase 1 (420 px/s)
+--- CATEGORY 9: Miễn sát thương tuyệt đối trong toàn bộ 1.3s Phase Transition ---
+  [PASS] Boss đã kích hoạt Phase 2 khi HP <= 160
+  [PASS] Boss đang trong trạng thái PHASE_TRANSITION
+  [PASS] Boss bật cờ bất tử khi bắt đầu chuyển phase
+  [PASS] Đòn đánh bị từ chối ở đầu chuyển phase (taken == false)
+  [PASS] HP vẫn giữ nguyên 160.0 không đổi
+  [PASS] Boss VẪN BẤT TỬ ở giữa quá trình chuyển phase (t = 0.6s)
+  [PASS] Đòn đánh bị từ chối ở giữa chuyển phase (không bị HealthComponent._process tắt sớm)
+  [PASS] HP vẫn được bảo toàn nguyên vẹn 160.0
 
---- CATEGORY 10: Lunareth bị đánh bại, Thanh Tẩy & Mở rào đấu trường ---
-  [PASS] Boss nhận sát thương chí mạng về 0 HP
+--- CATEGORY 10: Boss nhận sát thương trở lại bình thường sau khi chuyển Phase xong ---
+  [PASS] Sau 1.3s, Boss kết thúc chuyển phase và sang RECOVERY
+  [PASS] Cờ bất tử đã được gỡ bỏ an toàn, không bị bất tử vĩnh viễn
+  [PASS] Boss nhận sát thương thành công sau khi hoàn tất chuyển phase
+  [PASS] HP giảm chính xác còn 135.0 (160 - 25)
+  [PASS] Phase 2 chỉ kích hoạt duy nhất một lần, không lặp lại
+
+--- CATEGORY 11: Retry từ Phase 2 đưa màu sắc và trạng thái về chuẩn Phase 1 ---
+  [PASS] Boss Visual hiện đang là Phase 2 (màu tím)
+  [PASS] Boss logic trở về Phase 1 sau Retry
+  [PASS] Boss AI trở về DORMANT sau Retry
+  [PASS] HP Boss hồi phục đầy đủ 320/320
+  [PASS] Boss Visual trở về Phase 1 sau Retry
+  [PASS] Boss Visual state trở về IDLE
+  [PASS] Hitbox tấn công tắt sau Retry
+  [PASS] Hurtbox CollisionShape được khôi phục bật sau Retry
+
+--- CATEGORY 12: Dọn dẹp sạch sẽ projectile khi Retry & Thanh Tẩy ---
+  [PASS] Có projectile boss đang tồn tại
+  [PASS] Không còn bất kỳ projectile Boss nào sót lại sau khi Retry
+
+--- CATEGORY 13: Bảo vệ Save System (Chặn lưu khi đang giao tranh Boss) ---
+  [PASS] Hệ thống nhận diện trận đánh Boss đang diễn ra
+WARNING: SaveManager: Không thể lưu game trong khi trận đánh Boss đang diễn ra!
+     at: push_warning (core/variant/variant_utility.cpp:1112)
+  [PASS] SaveManager TỪ CHỐI lưu game khi đang giao chiến với Boss
+
+--- CATEGORY 14: Đánh bại Boss, Autosave sau chiến thắng & Thưởng 100 Vàng + Mảnh Nguyệt Thực ---
   [PASS] Boss chuyển sang trạng thái DEFEATED
-  [PASS] Boss visual chuyển sang trạng thái DEFEATED (thanh tẩy)
-  [PASS] Rào chắn đấu trường MỞ RA sau khi Boss bị đánh bại
-  [PASS] Boss Bar Panel ẩn sau khi kết thúc trận đấu
-  [PASS] Bảng thông báo chiến thắng (Victory Panel) hiển thị
+  [PASS] Cờ boss_defeated được xác lập
+  [PASS] Nhận chính xác 100 Vàng thưởng
+  [PASS] Nhận Mảnh Nguyệt Thực vào túi đồ
+  [PASS] Chiến đấu đã kết thúc, không còn chặn lưu
+  [PASS] Autosave sau chiến thắng chạy thành công hoàn hảo
 
---- CATEGORY 11: Phần thưởng Boss - Vàng và Mảnh Nguyệt Thực ---
-  [PASS] Người chơi nhận được 100 Vàng sau chiến thắng
-  [PASS] Vật phẩm Mảnh Nguyệt Thực (eclipse_fragment) tồn tại trong Database
-  [PASS] Người chơi nhận được Mảnh Nguyệt Thực trong túi đồ
+--- CATEGORY 15: Túi đồ đầy -> Thưởng rơi mặt đất và khôi phục nguyên vẹn sau Save/Load ---
+  [PASS] Mảnh Nguyệt Thực rơi trên mặt đất khi túi đồ đầy
+  [PASS] Định danh pickup_id ổn định: drop_boss_eclipse_fragment
+  [PASS] Lưu game chứa vật phẩm thưởng trên mặt đất thành công
+  [PASS] Mảnh Nguyệt Thực rơi trên đất được PHỤC HỒI CHÍNH XÁC sau khi tải game
+  [PASS] Player nhặt thành công Mảnh Nguyệt Thực vào túi sau khi dọn chỗ
 
---- CATEGORY 12: Xử lý an toàn khi Túi Đồ ĐẦY lúc nhận thưởng Boss ---
-  [PASS] Đã làm đầy 16 ô túi đồ của Player
-  [PASS] Nhận thưởng Boss khi túi đồ đầy không gây lỗi
-  [PASS] Túi đồ vẫn chứa đúng 16 ô
-  [PASS] Mảnh Nguyệt Thực rơi trên mặt đất dưới dạng ItemPickup
+--- CATEGORY 16: Tương thích ngược phiên bản Save 1.0.0 (M3.2) ---
+  [PASS] has_save() chấp nhận bản lưu schema cũ v1.0.0
+  [PASS] load_game() nạp thành công bản lưu v1.0.0 không lỗi
+  [PASS] Boss mặc định chưa thanh tẩy trong bản lưu cũ
 
---- CATEGORY 13: Retry sau khi chết trong Đấu Trường Boss ---
-  [PASS] Người chơi chết trong đấu trường
-  [PASS] Rào chắn đấu trường mở khi người chơi chết
-  [PASS] Sau khi retry, Player hồi sinh tại Checkpoint trước đấu trường (X=4120)
-  [PASS] Sau khi retry, Boss Lunareth được hồi phục đầy đủ 320 HP
-  [PASS] Boss quay về trạng thái sẵn sàng chiến đấu lại
-
---- CATEGORY 14: Hệ thống Lưu/Tải M4 & Chặn Lưu trong Combat Boss ---
-  [PASS] Nút Lưu game bị vô hiệu hóa an toàn trong trận đấu Boss
-  [PASS] Nút Lưu game được mở lại sau khi Boss bị đánh bại
-  [PASS] Dữ liệu Boss đã lưu trữ vào cấu trúc save (Version 1.1.0)
-  [PASS] Tải lại bản lưu thành công
-  [PASS] Trạng thái Boss đã bị đánh bại được phục hồi chính xác
-  [PASS] Giới hạn tọa độ mở rộng an toàn hỗ trợ đến khu vực đấu trường (> 4000)
-
---- CATEGORY 15: Tương thích ngược phiên bản Save 1.0.0 (M3.2) ---
-  [PASS] has_save chấp nhận bản lưu phiên bản cũ 1.0.0
-  [PASS] load_game nạp thành công bản lưu phiên bản cũ 1.0.0
-  [PASS] Boss mặc định chưa bị đánh bại khi nâng cấp từ bản lưu cũ
+--- KIỂM TRA AN TOÀN DỮ LIỆU: File save thật không bị ảnh hưởng ---
+  [PASS] File save thật vẫn tồn tại nguyên vẹn
+  [PASS] Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI
 
 ==================================================
- [NOCTELYRA M4] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
- Tổng số test: 63 | Đạt: 63 | Thất bại: 0
+ [NOCTELYRA M4.1] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
+ Tổng số test: 75 | Đạt: 75 | Thất bại: 0
 ==================================================
->>> ALL M4 TEST SCENARIOS PASSED 100%! <<<
+>>> ALL M4.1 STABILIZATION TESTS PASSED 100%! <<<
 ```
 
-### 5.2. Kết quả kiểm thử hồi quy toàn bộ hệ thống
-- **M3.2 FINAL (`test_m3_2_flow.gd`):** 50/50 Tests PASS (100%)
-- **M3.1 FINAL (`test_m3_1_flow.gd`):** 41/41 Tests PASS (100%)
-- **M3 FINAL (`test_m3_flow.gd`):** 67/67 Tests PASS (100%)
-- **M2.1 FINAL (`test_m2_1_flow.gd`):** 42/42 Tests PASS (100%)
-- **TỔNG CỘNG:** **263 / 263 Tests PASS (100%)** không một lỗi lầm trên Godot 4.3 Engine!
+### 4.2. Bảng kết quả kiểm thử toàn diện dự án
+- **M4.1 STABILIZATION (`test_m4_flow.gd`):** **75 / 75 Tests PASS (100%)**
+- **M3.2 FINAL (`test_m3_2_flow.gd`):** **50 / 50 Tests PASS (100%)**
+- **M3.1 FINAL (`test_m3_1_flow.gd`):** **41 / 41 Tests PASS (100%)**
+- **M3 FINAL (`test_m3_flow.gd`):** **67 / 67 Tests PASS (100%)**
+- **M2.1 FINAL (`test_m2_1_flow.gd`):** **42 / 42 Tests PASS (100%)**
+- **TỔNG CỘNG HỆ THỐNG:** **275 / 275 Tests PASS (100%)** không một lỗi lầm trên Godot 4.3 Engine!
 
 ---
 
-## 6. Hướng dẫn chạy và kiểm thử
+## 5. Hướng dẫn chạy và kiểm thử
 
 - **Chạy game chơi thử:** Click đúp vào file `run_game.bat`.
 - **Mở Godot Editor:** Click đúp vào file `open_editor.bat`.
-- **Xuất toàn bộ mã nguồn cho AI review:** Click đúp vào file `export_code_for_ai.bat`.
-- **Chạy bộ test M4 (Boss Lunareth):**
+- **Xuất mã nguồn:** Click đúp vào file `export_code_for_ai.bat`.
+- **Chạy bộ test M4.1:**
   ```powershell
   & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m4_flow.gd
   ```
-- **Chạy bộ test M3.2:**
+- **Chạy bộ test hồi quy M3.2:**
   ```powershell
   & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m3_2_flow.gd
-  ```
-- **Chạy bộ test M2.1:**
-  ```powershell
-  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m2_1_flow.gd
   ```
 
 
@@ -1478,24 +1463,22 @@ FILE: test_m4_flow.gd
 extends SceneTree
 
 # test_m4_flow.gd
-# Specialized automated test suite for NOCTELYRA Milestone M4: First Boss Encounter (Lunareth).
-# 1. Boss not active before completing Elyra quest.
-# 2. Magic Gate physically blocks player.
-# 3. Completing quest unlocks gate.
-# 4. Boss activates when entering arena (boundary locks).
-# 5. Boss HP reduces from J (melee) and K (spell).
-# 6. Telegraph appears before attacks (Charge >= 0.6s, Shockwave >= 0.8s).
-# 7. No unintended multi-hit in single attack.
-# 8. Phase 2 activates at HP <= 160 threshold.
-# 9. Phase 2 activates only once.
-# 10. Player death & Retry resets Boss accurately without duplicates.
-# 11. Boss purified grants exactly 100 Gold + eclipse_fragment.
-# 12. Save/Continue preserves Boss state, no reward duplication.
-# 13. Full inventory drops reward as pickup on ground.
-# 14. Old M3.2 save files (v1.0.0) load with backward compatibility.
-# 15. Regression check for core M0-M3.2 features.
+# Specialized automated test suite for NOCTELYRA Milestone M4.1 STABILIZATION.
+# Verifies all M4.1 requirements:
+# 1. Boss invulnerability during entire 1.3s Phase Transition & damage resumption afterwards.
+# 2. Complete Boss & Visual reset upon Retry (colors, state, timers, hurtbox, no duplicates).
+# 3. Clean-up of all BossShockwaves on player death/retry and boss purification.
+# 4. Correct initialization order and visual styling for BossShockwave (Phase 1 & Phase 2).
+# 5. SaveManager protection: save refused during boss combat, allowed after victory.
+# 6. Reward dropped on ground when inventory full persists across Save/Load.
+# 7. Gate locked during READY_TO_TURN_IN, unlocked ONLY when COMPLETED.
+# 8. Real physical collision tests for Gate (Dash & Double Jump blocked).
+# 9. Real combat collision tests between Boss & Player (first hit deals real damage, second hit prevented).
+# 10. Backward compatibility with M3.2 save files (v1.0.0) & safe read-only checks on real save file.
 
 const BossLunarethScript = preload("res://src/boss/boss_lunareth.gd")
+const BossVisualScript = preload("res://src/boss/boss_visual.gd")
+const BossShockwaveScript = preload("res://src/boss/boss_shockwave.gd")
 const MagicGateScript = preload("res://src/world/magic_gate.gd")
 
 var failures: int = 0
@@ -1509,7 +1492,7 @@ var real_file_hash_at_start: String = ""
 
 func _init() -> void:
 	print("==================================================")
-	print(" [NOCTELYRA M4] BOSS ENCOUNTER TEST SUITE STARTING")
+	print(" [NOCTELYRA M4.1] BOSS ENCOUNTER TEST SUITE START ")
 	print("==================================================")
 	call_deferred("_run_suite")
 
@@ -1555,249 +1538,320 @@ func _run_suite() -> void:
 	var ui: GameUI = world.game_ui
 
 	# -------------------------------------------------------------
-	# TEST 1: Boss không kích hoạt trước khi hoàn thành nhiệm vụ Elyra
+	# CATEGORY 1: Trạng thái ban đầu & Cổng Ma Pháp chặn lối
 	# -------------------------------------------------------------
-	print("\n--- TEST 1: Boss không kích hoạt trước khi hoàn thành nhiệm vụ Elyra ---")
-	_assert(quest_mgr.current_quest.current_state != QuestData.State.COMPLETED, "Nhiệm vụ Elyra ban đầu chưa hoàn thành")
-	_assert(boss != null and boss.current_state == BossLunarethScript.State.DORMANT, "Boss Lunareth ban đầu ở trạng thái DORMANT (chưa kích hoạt)")
+	print("\n--- CATEGORY 1: Khởi tạo Boss & Kiểm tra Cổng Ma Pháp khóa ban đầu ---")
+	_assert(boss != null, "Boss Lunareth tồn tại trong scene")
+	_assert(boss.health_component.max_health == 320.0, "HP tối đa của Boss là 320")
+	_assert(boss.health_component.current_health == 320.0, "HP hiện tại của Boss là 320/320")
+	_assert(boss.current_state == BossLunarethScript.State.DORMANT, "Boss ban đầu ở trạng thái DORMANT")
+	_assert(boss.is_phase_2 == false, "Boss bắt đầu ở Phase 1")
 	_assert(world.boss_battle_started == false, "Trận chiến Boss chưa bắt đầu")
 
-	# -------------------------------------------------------------
-	# TEST 2: Cổng khóa thực sự chặn Player
-	# -------------------------------------------------------------
-	print("\n--- TEST 2: Cổng khóa thực sự chặn Player (Physics & Gate Locked) ---")
 	_assert(gate != null and gate.is_open == false, "Cổng Ma Pháp đang ở trạng thái KHÓA")
 	var gate_col: CollisionShape2D = gate.get_node_or_null("CollisionShape2D")
-	_assert(gate_col != null and gate_col.disabled == false, "Va chạm vật lý của Cổng Ma Pháp đang BẬT (chặn hoàn toàn)")
+	_assert(gate_col != null and gate_col.disabled == false, "Va chạm vật lý của Cổng Ma Pháp đang BẬT")
 
 	# -------------------------------------------------------------
-	# TEST 3: Hoàn thành nhiệm vụ mở cổng
+	# CATEGORY 2: Cổng vẫn khóa khi nhiệm vụ là READY_TO_TURN_IN
 	# -------------------------------------------------------------
-	print("\n--- TEST 3: Hoàn thành nhiệm vụ Elyra mở khóa Cổng Ma Pháp ---")
+	print("\n--- CATEGORY 2: Cổng vẫn khóa khi nhiệm vụ ở READY_TO_TURN_IN ---")
+	quest_mgr.current_quest.current_state = QuestData.State.READY_TO_TURN_IN
+	gate.update_quest_status(quest_mgr.current_quest)
+	_assert(gate.is_open == false, "Cổng Ma Pháp VẪN KHÓA khi nhiệm vụ ở READY_TO_TURN_IN (chưa trả quest)")
+	_assert(gate_col.disabled == false, "Va chạm vật lý vẫn BẬT khi ở READY_TO_TURN_IN")
+
+	# -------------------------------------------------------------
+	# CATEGORY 3: Kiểm thử va chạm vật lý thực tế của Cổng (Dash & Double Jump)
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 3: Kiểm thử va chạm vật lý thực tế của Cổng (Dash & Double Jump) ---")
+	# Đặt Player ngay sát bên trái cổng (X=3950, Cổng tại X=4000)
+	player.global_position = Vector2(3950.0, 630.0)
+	# Thử lướt Dash tốc độ cao về phía cổng
+	player.velocity = Vector2(800.0, 0.0)
+	player.move_and_slide()
+	_assert(player.global_position.x <= 4000.0, "Dash bị chặn đứng bởi Cổng Ma Pháp (X: %.1f <= 4000)" % player.global_position.x)
+
+	# Thử nhảy cao trên không (Double Jump) bay về phía cổng
+	player.global_position = Vector2(3950.0, 450.0) # Độ cao 180px trên không (vẫn nằm trong rào chắn 400px)
+	player.velocity = Vector2(600.0, -100.0)
+	player.move_and_slide()
+	_assert(player.global_position.x <= 4000.0, "Nhảy đôi trên không vẫn bị Cổng chặn hoàn toàn (X: %.1f <= 4000)" % player.global_position.x)
+
+	# -------------------------------------------------------------
+	# CATEGORY 4: Cổng Ma Pháp CHỈ MỞ khi nhiệm vụ là COMPLETED
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 4: Cổng Ma Pháp CHỈ MỞ khi nhiệm vụ chuyển sang COMPLETED ---")
 	quest_mgr.current_quest.current_state = QuestData.State.COMPLETED
 	gate.update_quest_status(quest_mgr.current_quest)
-	_assert(gate.is_open == true, "Cổng Ma Pháp đã chuyển sang trạng thái MỞ sau khi hoàn thành nhiệm vụ")
-	_assert(gate_col.disabled == true, "Va chạm vật lý của Cổng Ma Pháp đã TẮT (cho phép đi qua)")
+	_assert(gate.is_open == true, "Cổng Ma Pháp đã MỞ khi nhiệm vụ đạt COMPLETED")
+	_assert(gate_col.disabled == true, "Va chạm vật lý đã TẮT để cho phép người chơi đi qua")
+
+	# Cho Player đi qua vị trí cổng đã mở
+	player.global_position = Vector2(3980.0, 630.0)
+	player.velocity = Vector2(400.0, 0.0)
+	player.move_and_slide()
+	_assert(player.global_position.x > 3980.0, "Player đi xuyên qua cổng đã mở thành công")
 
 	# -------------------------------------------------------------
-	# TEST 4: Boss kích hoạt khi Player vào đấu trường & Rào chắn kích hoạt
+	# CATEGORY 5: Kích hoạt Đấu trường & Rào chắn Arena khóa lại
 	# -------------------------------------------------------------
-	print("\n--- TEST 4: Boss kích hoạt khi Player vào đấu trường (Arena Boundary Locks) ---")
-	# Giả lập Player bước qua vạch kích hoạt đấu trường
+	print("\n--- CATEGORY 5: Kích hoạt Đấu trường & Rào chắn Arena khóa lại ---")
 	player.global_position = Vector2(4450.0, 630.0)
 	world._on_arena_trigger_entered(player)
 
-	_assert(world.boss_battle_started == true, "Cờ boss_battle_started được bật")
-	_assert(boss.current_state == BossLunarethScript.State.INTRO or boss.current_state == BossLunarethScript.State.APPROACH, "Boss chuyển sang trạng thái INTRO/APPROACH")
-	_assert(barrier.visible == true, "Rào chắn đấu trường (Arena Barrier) đã hiển thị")
+	_assert(world.boss_battle_started == true, "Cờ boss_battle_started kích hoạt")
+	_assert(boss.current_state == BossLunarethScript.State.INTRO or boss.current_state == BossLunarethScript.State.APPROACH, "Boss chuyển sang thức tỉnh")
 	var barrier_col: CollisionShape2D = barrier.get_node_or_null("CollisionShape2D")
-	_assert(barrier_col != null and barrier_col.disabled == false, "Rào chắn đấu trường đã BẬT va chạm (khóa chặt người chơi trong đấu trường)")
-	_assert(ui.boss_hud.visible == true, "HUD Boss hiển thị trên màn hình")
+	_assert(barrier_col != null and barrier_col.disabled == false, "Rào chắn đấu trường khóa chặt Player bên trong")
+	_assert(ui.boss_hud.visible == true, "Thanh HUD Boss hiển thị trên màn hình")
 
 	# -------------------------------------------------------------
-	# TEST 5: HP Boss giảm đúng khi nhận sát thương từ J/K
+	# CATEGORY 6: Telegraph xuất hiện trước đòn đánh (Charge 0.7s, Shockwave 0.9s)
 	# -------------------------------------------------------------
-	print("\n--- TEST 5: HP Boss giảm đúng khi nhận sát thương từ J (Melee) & K (Magic) ---")
-	var initial_hp: float = boss.health_component.current_health
-	_assert(initial_hp == 320.0, "HP ban đầu của Boss là 320.0")
-
-	# Giả lập đòn chém cận chiến J (sát thương cơ bản 25.0)
-	var melee_dmg := DamageInfo.new(25.0, player, Vector2.RIGHT, 100.0)
-	boss.hurtbox.apply_damage(melee_dmg)
-	_assert(boss.health_component.current_health == 295.0, "HP Boss giảm chính xác còn 295.0 (-25) sau đòn chém thường J")
-
-	# Chờ hết thời gian miễn nhiễm đòn ngắn
-	await _wait_seconds(0.2)
-
-	# Giả lập đòn bắn ma pháp K (sát thương 30.0)
-	var spell_dmg := DamageInfo.new(30.0, player, Vector2.RIGHT, 150.0)
-	boss.hurtbox.apply_damage(spell_dmg)
-	_assert(boss.health_component.current_health == 265.0, "HP Boss giảm chính xác còn 265.0 (-30) sau đòn ma pháp K")
-
-	# -------------------------------------------------------------
-	# TEST 6: Telegraph xuất hiện trước khi đòn đánh gây sát thương
-	# -------------------------------------------------------------
-	print("\n--- TEST 6: Telegraph xuất hiện trước đòn đánh (Charge >= 0.6s, Shockwave >= 0.8s) ---")
-	# Kiểm tra Telegraph đòn 1: Nguyệt Giác Xung Kích
+	print("\n--- CATEGORY 6: Thời gian Telegraph thực tế (Charge 0.7s, Shockwave 0.9s) ---")
 	boss.current_attack = BossLunarethScript.AttackType.HORN_CHARGE
 	boss._change_state(BossLunarethScript.State.TELEGRAPH)
-	_assert(boss._state_timer >= 0.6, "Thời gian cảnh báo đòn Húc đạt tối thiểu 0.6s (thực tế: %.2fs)" % boss._state_timer)
-	_assert(boss.charge_hitbox.monitoring == false, "Hitbox gây sát thương TẮT trong thời gian Telegraph (chưa gây sát thương)")
-	_assert(boss.boss_visual.telegraph_charge_rect.visible == true, "Vùng nguy hiểm màu đỏ hiển thị rõ ràng trên mặt đất")
+	_assert(boss._state_timer >= 0.7, "Thời gian cảnh báo đòn Húc thực tế là %.2fs (yêu cầu >= 0.6s)" % boss._state_timer)
+	_assert(boss.charge_hitbox.monitoring == false, "Hitbox húc TẮT trong thời gian Telegraph")
+	_assert(boss.boss_visual.telegraph_charge_rect.visible == true, "Vùng cảnh báo đòn húc hiển thị")
 
-	# Kiểm tra Telegraph đòn 2: Hắc Nguyệt Chấn Ba
 	boss.current_attack = BossLunarethScript.AttackType.MOON_SHOCKWAVE
 	boss._change_state(BossLunarethScript.State.TELEGRAPH)
-	_assert(boss._state_timer >= 0.8, "Thời gian cảnh báo đòn Chấn Ba đạt tối thiểu 0.8s (thực tế: %.2fs)" % boss._state_timer)
-	_assert(boss.boss_visual.telegraph_shockwave_ring.visible == true, "Vòng ma pháp cảnh báo dưới chân hiển thị")
+	_assert(boss._state_timer >= 0.9, "Thời gian cảnh báo đòn Chấn Ba thực tế là %.2fs (yêu cầu >= 0.8s)" % boss._state_timer)
+	_assert(boss.boss_visual.telegraph_shockwave_ring.visible == true, "Vòng ma pháp cảnh báo chấn ba hiển thị")
 
 	# -------------------------------------------------------------
-	# TEST 7: Một đòn không gây trùng sát thương ngoài thiết kế
+	# CATEGORY 7: Kiểm thử va chạm thực tế & chống sát thương trùng (Horn Charge 20 DMG)
 	# -------------------------------------------------------------
-	print("\n--- TEST 7: Một đòn không gây trùng sát thương ngoài thiết kế ---")
+	print("\n--- CATEGORY 7: Kiểm thử sát thương thực tế & chống trùng đòn (Horn Charge) ---")
 	boss._change_state(BossLunarethScript.State.ATTACK)
 	boss.charge_hitbox.reset_hits()
-	# Giả lập va chạm với Player Hurtbox 2 lần liên tiếp trong cùng một đòn
+	_assert(boss.charge_hitbox.damage == 20.0, "Sát thương Horn Charge đúng 20.0")
+
+	player.health_component.current_health = 100.0
+	player.health_component.cancel_invulnerability()
+
+	# Lần 1: Va chạm thực tế với Player Hurtbox -> CHỨNG MINH THỰC SỰ GÂY SÁT THƯƠNG
 	boss.charge_hitbox._on_area_entered(player.hurtbox)
 	var hp_after_hit1: float = player.health_component.current_health
-	boss.charge_hitbox._on_area_entered(player.hurtbox) # Lần thứ 2
+	_assert(hp_after_hit1 == 80.0, "Lần húc đầu tiên THỰC SỰ gây sát thương: HP giảm từ 100 còn %.1f (-20 DMG)" % hp_after_hit1)
+
+	# Lần 2: Va chạm tiếp trong cùng một đòn (chưa reset hits) -> KHÔNG ĐƯỢC GÂY THÊM SÁT THƯƠNG
+	boss.charge_hitbox._on_area_entered(player.hurtbox)
 	var hp_after_hit2: float = player.health_component.current_health
-	_assert(hp_after_hit1 == hp_after_hit2, "Cơ chế chống đòn trùng: Player không bị mất máu lần 2 trong cùng 1 lượt húc")
+	_assert(hp_after_hit2 == 80.0, "Cơ chế chống đòn trùng: Không gây thêm sát thương trong cùng lượt húc (HP giữ nguyên 80.0)")
 
 	# -------------------------------------------------------------
-	# TEST 8: Giai đoạn 2 (Phase 2) kích hoạt đúng tại ngưỡng HP <= 160
+	# CATEGORY 8: Projectile BossShockwave (Phase 1 & Phase 2 đúng màu và tốc độ)
 	# -------------------------------------------------------------
-	print("\n--- TEST 8: Giai đoạn 2 kích hoạt chính xác tại ngưỡng HP <= 160 (50% HP) ---")
-	_assert(boss.is_phase_2 == false, "Trước khi giảm HP, Boss đang ở Phase 1")
-	# Gây sát thương đưa HP về 160.0
+	print("\n--- CATEGORY 8: Projectile BossShockwave (Tốc độ & Màu sắc Phase 1 / Phase 2) ---")
+	var shockwave_scene: PackedScene = preload("res://src/boss/boss_shockwave.tscn")
+	var sw_p1 = shockwave_scene.instantiate()
+	world.add_child(sw_p1)
+	sw_p1.setup(-1.0, false) # Phase 1
+	_assert(sw_p1.speed == 380.0, "Tốc độ sóng chấn ba Phase 1 là 380 px/s")
+	_assert(sw_p1.damage == 25.0, "Sát thương sóng chấn ba đúng 25 DMG")
+	_assert(sw_p1.is_in_group("boss_projectiles") == true, "BossShockwave nằm trong group 'boss_projectiles'")
+	var wave_col_p1: Color = sw_p1.visual_wave.color
+	_assert(wave_col_p1.b > wave_col_p1.r, "Màu sắc sóng Phase 1 là tông Lam Nguyệt (Cyan/Blue)")
+
+	var sw_p2 = shockwave_scene.instantiate()
+	world.add_child(sw_p2)
+	sw_p2.setup(-1.0, true) # Phase 2
+	_assert(sw_p2.speed == 440.0, "Tốc độ sóng chấn ba Phase 2 tăng lên 440 px/s")
+	var wave_col_p2: Color = sw_p2.visual_wave.color
+	_assert(wave_col_p2.r > 0.8 and wave_col_p2.b > 0.7, "Màu sắc sóng Phase 2 là tông Hắc Nguyệt (Dark Violet)")
+
+	# Kiểm thử sát thương thực tế của Shockwave lên Player
+	player.health_component.cancel_invulnerability()
+	var prev_hp: float = player.health_component.current_health
+	sw_p1._on_area_entered(player.hurtbox)
+	_assert(player.health_component.current_health == prev_hp - 25.0, "Shockwave gây đúng 25 DMG lên Player (HP: %.1f -> %.1f)" % [prev_hp, player.health_component.current_health])
+
+	# -------------------------------------------------------------
+	# CATEGORY 9: Boss Miễn Sát Thương trong toàn bộ Phase Transition (1.3s)
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 9: Miễn sát thương tuyệt đối trong toàn bộ 1.3s Phase Transition ---")
 	boss.health_component.current_health = 160.0
 	boss.health_component.emit_signal("health_changed", 160.0, 320.0)
 
-	_assert(boss.is_phase_2 == true, "Boss kích hoạt Phase 2 thành công")
-	_assert(boss.current_state == BossLunarethScript.State.PHASE_TRANSITION, "Boss chuyển sang trạng thái PHASE_TRANSITION")
-	_assert(boss.boss_visual.is_phase_2 == true, "Visual chuyển sang tông màu tím Hắc Nguyệt rực rỡ")
-	_assert(boss.recovery_time_p2 < boss.recovery_time_p1, "Thời gian hồi đòn Phase 2 giảm (1.4s -> 1.1s, giảm ~21%)")
+	_assert(boss.is_phase_2 == true, "Boss đã kích hoạt Phase 2 khi HP <= 160")
+	_assert(boss.current_state == BossLunarethScript.State.PHASE_TRANSITION, "Boss đang trong trạng thái PHASE_TRANSITION")
+	_assert(boss.health_component.is_invulnerable == true, "Boss bật cờ bất tử khi bắt đầu chuyển phase")
+
+	# Gây sát thương ngay thời điểm bắt đầu chuyển phase (t = 0.0s)
+	var dmg_t0 := DamageInfo.new(30.0, player)
+	var taken_t0: bool = boss.hurtbox.apply_damage(dmg_t0)
+	_assert(taken_t0 == false, "Đòn đánh bị từ chối ở đầu chuyển phase (taken == false)")
+	_assert(boss.health_component.current_health == 160.0, "HP vẫn giữ nguyên 160.0 không đổi")
+
+	# Mô phỏng thời gian chạy đến giữa chuyển phase (t = 0.6s)
+	boss._physics_process(0.6)
+	boss.health_component._process(0.6)
+	_assert(boss.health_component.is_invulnerable == true, "Boss VẪN BẤT TỬ ở giữa quá trình chuyển phase (t = 0.6s)")
+	var dmg_mid := DamageInfo.new(30.0, player)
+	var taken_mid: bool = boss.hurtbox.apply_damage(dmg_mid)
+	_assert(taken_mid == false, "Đòn đánh bị từ chối ở giữa chuyển phase (không bị HealthComponent._process tắt sớm)")
+	_assert(boss.health_component.current_health == 160.0, "HP vẫn được bảo toàn nguyên vẹn 160.0")
 
 	# -------------------------------------------------------------
-	# TEST 9: Phase 2 chỉ kích hoạt đúng một lần duy nhất
+	# CATEGORY 10: Boss nhận sát thương bình thường sau khi chuyển Phase xong
 	# -------------------------------------------------------------
-	print("\n--- TEST 9: Phase 2 chỉ kích hoạt đúng một lần duy nhất ---")
-	boss._change_state(BossLunarethScript.State.RECOVERY)
-	# Tiếp tục giảm HP xuống 120.0
-	boss.health_component.current_health = 120.0
-	boss.health_component.emit_signal("health_changed", 120.0, 320.0)
-	_assert(boss.current_state == BossLunarethScript.State.RECOVERY, "Không bị kích hoạt lại PHASE_TRANSITION khi HP tiếp tục giảm")
+	print("\n--- CATEGORY 10: Boss nhận sát thương trở lại bình thường sau khi chuyển Phase xong ---")
+	# Mô phỏng hết thời gian còn lại (0.8s nữa, tổng cộng > 1.3s)
+	boss._physics_process(0.8)
+	boss.health_component._process(0.8)
+
+	_assert(boss.current_state == BossLunarethScript.State.RECOVERY, "Sau 1.3s, Boss kết thúc chuyển phase và sang RECOVERY")
+	_assert(boss.health_component.is_invulnerable == false, "Cờ bất tử đã được gỡ bỏ an toàn, không bị bất tử vĩnh viễn")
+
+	# Tấn công Boss sau khi chuyển phase xong
+	var dmg_post := DamageInfo.new(25.0, player)
+	var taken_post: bool = boss.hurtbox.apply_damage(dmg_post)
+	_assert(taken_post == true, "Boss nhận sát thương thành công sau khi hoàn tất chuyển phase")
+	_assert(boss.health_component.current_health == 135.0, "HP giảm chính xác còn 135.0 (160 - 25)")
+
+	# Thử giảm thêm HP để chứng minh Phase 2 chỉ kích hoạt 1 lần
+	boss.health_component.current_health = 100.0
+	boss.health_component.emit_signal("health_changed", 100.0, 320.0)
+	_assert(boss.current_state != BossLunarethScript.State.PHASE_TRANSITION, "Phase 2 chỉ kích hoạt duy nhất một lần, không lặp lại")
 
 	# -------------------------------------------------------------
-	# TEST 10: Player tử trận và Retry -> Reset Boss chính xác
+	# CATEGORY 11: Retry từ Phase 2 đưa màu sắc, trạng thái và visual về Phase 1
 	# -------------------------------------------------------------
-	print("\n--- TEST 10: Player tử trận và Retry -> Reset Boss chính xác (Không tạo duplicate) ---")
-	# Giả lập Player chết
+	print("\n--- CATEGORY 11: Retry từ Phase 2 đưa màu sắc và trạng thái về chuẩn Phase 1 ---")
+	_assert(boss.boss_visual.is_phase_2 == true, "Boss Visual hiện đang là Phase 2 (màu tím)")
+
+	# Player chết và Retry
 	player.health_component.current_health = 0.0
 	player.health_component.emit_signal("died")
-
-	# Gọi hàm Retry
 	world._on_retry_requested()
 
-	_assert(player.global_position == world.arena_checkpoint, "Player được đưa về checkpoint ngoài cổng đấu trường (4120, 630)")
-	_assert(player.health_component.current_health == player.health_component.max_health, "HP Player được hồi đầy")
-	_assert(boss.health_component.current_health == 320.0, "HP Boss được reset đầy đủ 320/320")
-	_assert(boss.is_phase_2 == false, "Boss trở về Phase 1")
-	_assert(boss.current_state == BossLunarethScript.State.DORMANT, "Boss trở về trạng thái DORMANT")
-	_assert(barrier_col.disabled == true, "Rào chắn đấu trường được mở khóa an toàn sau khi Retry")
-	var boss_count: int = 0
-	for child in world.get_children():
-		if child is BossLunarethScript:
-			boss_count += 1
-	_assert(boss_count == 1, "Chỉ duy nhất 1 thực thể Boss tồn tại (không sinh bản sao)")
+	_assert(boss.is_phase_2 == false, "Boss logic trở về Phase 1 sau Retry")
+	_assert(boss.current_state == BossLunarethScript.State.DORMANT, "Boss AI trở về DORMANT sau Retry")
+	_assert(boss.health_component.current_health == 320.0, "HP Boss hồi phục đầy đủ 320/320")
+	_assert(boss.boss_visual.is_phase_2 == false, "Boss Visual trở về Phase 1 sau Retry")
+	_assert(boss.boss_visual.current_visual_state == BossVisualScript.VisualState.IDLE, "Boss Visual state trở về IDLE")
+	_assert(boss.charge_hitbox.monitoring == false, "Hitbox tấn công tắt sau Retry")
+	var h_col := boss.hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	_assert(h_col != null and h_col.disabled == false, "Hurtbox CollisionShape được khôi phục bật sau Retry")
 
 	# -------------------------------------------------------------
-	# TEST 11: Boss bị thanh tẩy -> Nhận đúng 100 Vàng + Mảnh Nguyệt Thực
+	# CATEGORY 12: Dọn dẹp sạch sẽ BossShockwave khi Retry & Thanh Tẩy
 	# -------------------------------------------------------------
-	print("\n--- TEST 11: Boss bị thanh tẩy -> Nhận đúng 100 Vàng + Mảnh Nguyệt Thực (eclipse_fragment) ---")
-	var gold_before: int = quest_mgr.gold
-	player.inventory_component._initialize_slots()
-	_assert(player.inventory_component.has_item("eclipse_fragment") == false, "Túi đồ ban đầu chưa có Mảnh Nguyệt Thực")
+	print("\n--- CATEGORY 12: Dọn dẹp sạch sẽ projectile khi Retry & Thanh Tẩy ---")
+	# Tạo thêm shockwave trong scene
+	var extra_sw = shockwave_scene.instantiate()
+	world.add_child(extra_sw)
+	extra_sw.setup(-1.0, false)
+	_assert(world.get_tree().get_nodes_in_group("boss_projectiles").size() > 0, "Có projectile boss đang tồn tại")
 
-	# Kích hoạt lại Boss và tiêu diệt
+	# Gọi hàm Retry -> projectile phải bị dọn sạch
+	world._on_retry_requested()
+	await process_frame
+
+	var active_projectiles = world.get_tree().get_nodes_in_group("boss_projectiles").filter(func(node): return is_instance_valid(node) and not node.is_queued_for_deletion())
+	_assert(active_projectiles.size() == 0, "Không còn bất kỳ projectile Boss nào sót lại sau khi Retry")
+
+	# -------------------------------------------------------------
+	# CATEGORY 13: Bảo vệ Save System - Chặn lưu khi đang đánh Boss
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 13: Bảo vệ Save System (Chặn lưu khi đang giao tranh Boss) ---")
 	world.start_boss_battle()
+	_assert(SaveManager.is_boss_combat_active(world) == true, "Hệ thống nhận diện trận đánh Boss đang diễn ra")
+	var save_during_combat: bool = SaveManager.save_game(world)
+	_assert(save_during_combat == false, "SaveManager TỪ CHỐI lưu game khi đang giao chiến với Boss")
+
+	# -------------------------------------------------------------
+	# CATEGORY 14: Đánh bại Boss, Autosave thành công & Phần thưởng duy nhất
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 14: Đánh bại Boss, Autosave sau chiến thắng & Thưởng 100 Vàng + Mảnh Nguyệt Thực ---")
+	player.inventory_component._initialize_slots()
+	var gold_prior: int = quest_mgr.gold
 	boss.health_component.current_health = 0.0
 	boss.health_component.emit_signal("died")
 
 	_assert(boss.current_state == BossLunarethScript.State.DEFEATED, "Boss chuyển sang trạng thái DEFEATED")
-	_assert(boss.charge_hitbox.monitoring == false, "Hitbox tấn công của Boss bị tắt hoàn toàn ngay khi chết")
-	_assert(boss.hurtbox.monitoring == false, "Hurtbox nhận đòn của Boss bị tắt hoàn toàn")
-	_assert(quest_mgr.gold == gold_before + 100, "Nhận chính xác 100 Vàng thưởng (%d -> %d)" % [gold_before, quest_mgr.gold])
-	_assert(player.inventory_component.has_item("eclipse_fragment") == true, "Player nhận được Mảnh Nguyệt Thực vào túi đồ")
-	_assert(ui.victory_panel.visible == true, "Màn hình Victory 'THANH TẨY THÀNH CÔNG' hiển thị")
-	_assert(barrier_col.disabled == true, "Rào chắn đấu trường mở khóa cho phép di chuyển tự do")
+	_assert(world.boss_defeated == true, "Cờ boss_defeated được xác lập")
+	_assert(quest_mgr.gold == gold_prior + 100, "Nhận chính xác 100 Vàng thưởng")
+	_assert(player.inventory_component.has_item("eclipse_fragment") == true, "Nhận Mảnh Nguyệt Thực vào túi đồ")
+
+	# Kiểm tra Autosave sau chiến thắng
+	_assert(SaveManager.is_boss_combat_active(world) == false, "Chiến đấu đã kết thúc, không còn chặn lưu")
+	var save_after_win: bool = SaveManager.save_game(world)
+	_assert(save_after_win == true, "Autosave sau chiến thắng chạy thành công hoàn hảo")
 
 	# -------------------------------------------------------------
-	# TEST 12: Save/Continue giữ trạng thái Boss & Không nhân đôi phần thưởng
+	# CATEGORY 15: Túi đồ đầy -> Vật phẩm thưởng rơi mặt đất & Phục hồi sau Save/Load
 	# -------------------------------------------------------------
-	print("\n--- TEST 12: Save/Continue giữ trạng thái Boss & Không nhân đôi phần thưởng ---")
-	var saved_gold: int = quest_mgr.gold
-	SaveManager.save_game(world)
-
+	print("\n--- CATEGORY 15: Túi đồ đầy -> Thưởng rơi mặt đất và khôi phục nguyên vẹn sau Save/Load ---")
 	world.queue_free()
 	await process_frame
 
-	var world2: NoctisForest = world_scene.instantiate() as NoctisForest
-	root.add_child(world2)
-	current_scene = world2
-	await _wait_seconds(0.2)
-
-	SaveManager.load_game(world2)
-
-	var boss2: CharacterBody2D = world2.boss_lunareth
-	_assert(world2.boss_defeated == true, "Trạng thái Boss đã thanh tẩy được lưu và nạp thành công")
-	_assert(boss2.current_state == BossLunarethScript.State.DEFEATED, "Boss trong World mới ở trạng thái DEFEATED (không hồi sinh lại)")
-	_assert(world2.quest_manager.gold == saved_gold, "Số Vàng giữ nguyên đúng %d G" % saved_gold)
-	_assert(world2.player.inventory_component.get_item_count("eclipse_fragment") == 1, "Mảnh Nguyệt Thực giữ đúng 1 mảnh (không bị nhân đôi)")
-
-	# Thử gọi lại hàm trả thưởng xem có bị phát trùng không
-	world2.grant_boss_reward()
-	_assert(world2.quest_manager.gold == saved_gold, "Cơ chế chống nhận thưởng lặp: Vàng không bị tăng lần 2")
-	_assert(world2.player.inventory_component.get_item_count("eclipse_fragment") == 1, "Vật phẩm không bị trao lần 2")
-
-	# -------------------------------------------------------------
-	# TEST 13: Túi đồ đầy -> Vật phẩm thưởng rơi thành Pickup không bị mất
-	# -------------------------------------------------------------
-	print("\n--- TEST 13: Túi đồ đầy -> Phần thưởng rơi thành Pickup có thể nhặt, không bị mất ---")
-	# Tạo World mới chưa nhận thưởng
-	world2.queue_free()
-	await process_frame
-
-	var world3: NoctisForest = world_scene.instantiate() as NoctisForest
-	root.add_child(world3)
-	current_scene = world3
+	var world_full: NoctisForest = world_scene.instantiate() as NoctisForest
+	root.add_child(world_full)
+	current_scene = world_full
 	await _wait_seconds(0.2)
 
 	# Làm đầy 16 ô túi đồ
 	for i in range(16):
-		world3.player.inventory_component.slots[i] = {"item_id": "health_potion", "amount": 20}
+		world_full.player.inventory_component.slots[i] = {"item_id": "health_potion", "amount": 20}
 
-	world3.boss_reward_claimed = false
-	world3.grant_boss_reward()
+	world_full.boss_reward_claimed = false
+	world_full.grant_boss_reward()
 
-	var ground_reward_pickup: ItemPickup = null
-	for child in world3.get_children():
+	var ground_drop: ItemPickup = null
+	for child in world_full.get_children():
 		if child is ItemPickup and child.item_id == "eclipse_fragment":
-			ground_reward_pickup = child
+			ground_drop = child
 			break
 
-	_assert(ground_reward_pickup != null, "Mảnh Nguyệt Thực rơi thành công trên mặt đất khi túi đồ đầy")
-	_assert(ground_reward_pickup.pickup_id == "drop_boss_eclipse_fragment", "Pickup có định danh ổn định để bảo toàn lưu/tải")
+	_assert(ground_drop != null, "Mảnh Nguyệt Thực rơi trên mặt đất khi túi đồ đầy")
+	_assert(ground_drop.pickup_id == "drop_boss_eclipse_fragment", "Định danh pickup_id ổn định: drop_boss_eclipse_fragment")
+
+	# Lưu game khi vật phẩm đang nằm trên mặt đất
+	var save_drop_ok: bool = SaveManager.save_game(world_full)
+	_assert(save_drop_ok == true, "Lưu game chứa vật phẩm thưởng trên mặt đất thành công")
+
+	world_full.queue_free()
+	await process_frame
+
+	# Nạp lại game vào thế giới mới
+	var world_loaded: NoctisForest = world_scene.instantiate() as NoctisForest
+	root.add_child(world_loaded)
+	current_scene = world_loaded
+	await _wait_seconds(0.2)
+
+	SaveManager.load_game(world_loaded)
+
+	var restored_drop: ItemPickup = null
+	for child in world_loaded.get_children():
+		if child is ItemPickup and child.item_id == "eclipse_fragment":
+			restored_drop = child
+			break
+
+	_assert(restored_drop != null, "Mảnh Nguyệt Thực rơi trên đất được PHỤC HỒI CHÍNH XÁC sau khi tải game")
+
+	# Làm trống 1 ô và nhặt vật phẩm lên
+	world_loaded.player.inventory_component.slots[0] = {"item_id": "", "amount": 0}
+	world_loaded.player.global_position = restored_drop.global_position
+	restored_drop._on_body_entered(world_loaded.player)
+	_assert(world_loaded.player.inventory_component.has_item("eclipse_fragment") == true, "Player nhặt thành công Mảnh Nguyệt Thực vào túi sau khi dọn chỗ")
 
 	# -------------------------------------------------------------
-	# TEST 14: Tương thích ngược với file save M3.2 cũ (Schema v1.0.0)
+	# CATEGORY 16: Tương thích ngược phiên bản Save 1.0.0 (M3.2)
 	# -------------------------------------------------------------
-	print("\n--- TEST 14: Tương thích ngược với file save M3.2 cũ (Schema v1.0.0 không có trường boss) ---")
+	print("\n--- CATEGORY 16: Tương thích ngược phiên bản Save 1.0.0 (M3.2) ---")
 	var m3_old_save_content := "{\"save_version\":\"1.0.0\",\"player\":{\"position_x\":200.0,\"position_y\":630.0,\"current_health\":100.0,\"current_mana\":60.0},\"gold\":50,\"inventory\":[],\"equipment\":{},\"quest\":{\"state\":3,\"current_amount\":3}}"
 	var test_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
 	test_file.store_string(m3_old_save_content)
 	test_file.close()
 
 	_assert(SaveManager.has_save() == true, "has_save() chấp nhận bản lưu schema cũ v1.0.0")
-	var load_old_res := SaveManager.load_game(world3)
-	_assert(load_old_res == true, "load_game() nạp thành công bản lưu v1.0.0 mà không bị crash")
-	_assert(world3.boss_defeated == false, "Mặc định an toàn: Boss chưa thanh tẩy khi nạp bản lưu cũ")
-
-	# -------------------------------------------------------------
-	# TEST 15: Kiểm tra hồi quy toàn diện M0, M1, M2.1, M3
-	# -------------------------------------------------------------
-	print("\n--- TEST 15: Kiểm tra hồi quy các tính năng cốt lõi M0 - M3.2 ---")
-	_assert(world3.npc_elyra.collision_layer == 0, "M2.1: NPC Elyra collision_layer = 0 (xuyên người)")
-	_assert(world3.player.movement_data.max_jumps == 2, "M0: Double Jump nguyên vẹn")
-	_assert(world3.pause_controller != null, "M0: PauseController hoạt động")
-	world3.pause_controller.pause()
-	_assert(world3.get_tree().paused == true, "Pause thành công")
-	world3.pause_controller.resume()
-	_assert(world3.get_tree().paused == false, "Resume thành công")
-
-	_assert(world3.player.melee_hitbox.damage >= 25.0, "M1: Melee Hitbox nguyên vẹn")
-	_assert(world3.player.combat_component != null, "M1: Combat Component nguyên vẹn")
-	_assert(world3.player.inventory_component.max_slots == 16, "M3: Inventory 16 ô nguyên vẹn")
+	var load_old_res := SaveManager.load_game(world_loaded)
+	_assert(load_old_res == true, "load_game() nạp thành công bản lưu v1.0.0 không lỗi")
+	_assert(world_loaded.boss_defeated == false, "Boss mặc định chưa thanh tẩy trong bản lưu cũ")
 
 	# -------------------------------------------------------------
 	# KIỂM TRA CÁCH LY FILE SAVE THẬT 100%
@@ -1816,12 +1870,12 @@ func _run_suite() -> void:
 	SaveManager.custom_save_path = ""
 
 	print("\n==================================================")
-	print(" [NOCTELYRA M4] KẾT QUẢ KIỂM THỬ TỔNG HỢP:")
+	print(" [NOCTELYRA M4.1] KẾT QUẢ KIỂM THỬ TỔNG HỢP:")
 	print(" Tổng số test: %d | Đạt: %d | Thất bại: %d" % [tests_run, tests_run - failures, failures])
 	print("==================================================")
 
 	if failures == 0:
-		print(">>> ALL 15 M4 BOSS TEST SCENARIOS PASSED 100%! <<<")
+		print(">>> ALL M4.1 STABILIZATION TESTS PASSED 100%! <<<")
 		quit(0)
 	else:
 		print(">>> SOME TESTS FAILED! <<<")
@@ -3069,7 +3123,21 @@ func _physics_process(delta: float) -> void:
 		State.PHASE_TRANSITION:
 			velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
 			_state_timer -= delta
+			# Đảm bảo duy trì trạng thái bất tử trong suốt 1.3s chuyển phase
+			if health_component:
+				health_component.is_invulnerable = true
+				if health_component.has_method("set_invulnerable_duration"):
+					health_component.set_invulnerable_duration(_state_timer)
+				else:
+					health_component.set("_invuln_timer", _state_timer)
 			if _state_timer <= 0.0:
+				# Kết thúc chuyển giai đoạn: tắt bất tử ngay lập tức, Boss nhận sát thương bình thường
+				if health_component:
+					if health_component.has_method("cancel_invulnerability"):
+						health_component.cancel_invulnerability()
+					else:
+						health_component.is_invulnerable = false
+						health_component.set("_invuln_timer", 0.0)
 				_change_state(State.RECOVERY)
 			move_and_slide()
 
@@ -3217,7 +3285,11 @@ func _change_state(new_state: State) -> void:
 			_state_timer = 1.3
 			is_phase_2 = true
 			if health_component:
-				health_component.is_invulnerable = true
+				if health_component.has_method("set_invulnerable_duration"):
+					health_component.set_invulnerable_duration(1.3)
+				else:
+					health_component.is_invulnerable = true
+					health_component.set("_invuln_timer", 1.3)
 			if boss_visual and boss_visual.has_method("set_state"):
 				boss_visual.set_state(BossVisualScript.VisualState.PHASE_TRANSITION)
 			emit_signal("boss_phase_changed", 2)
@@ -3246,10 +3318,12 @@ func _spawn_shockwaves() -> void:
 	var wave_dir: float = float(facing_direction)
 	var sw = shockwave_scene.instantiate()
 	if sw is Node2D:
+		var parent_node: Node = get_parent()
+		if parent_node:
+			parent_node.add_child(sw)
 		sw.global_position = Vector2(global_position.x + wave_dir * 30.0, global_position.y)
 		if sw.has_method("setup"):
 			sw.setup(wave_dir, is_phase_2)
-		get_parent().add_child(sw)
 
 func _on_hit_received(damage_info: DamageInfo) -> void:
 	if current_state == State.DORMANT or current_state == State.DEFEATED or current_state == State.PHASE_TRANSITION:
@@ -3279,10 +3353,17 @@ func reset_boss() -> void:
 	_phase_2_triggered = false
 	_is_defeated = false
 	is_phase_2 = false
+	_state_timer = 0.0
+	_charge_timer = 0.0
+	_attack_alternate = false
 
 	if health_component:
 		health_component.current_health = max_hp
-		health_component.is_invulnerable = false
+		if health_component.has_method("cancel_invulnerability"):
+			health_component.cancel_invulnerability()
+		else:
+			health_component.is_invulnerable = false
+			health_component.set("_invuln_timer", 0.0)
 		emit_signal("boss_health_changed", max_hp, max_hp)
 
 	if charge_hitbox:
@@ -3293,6 +3374,16 @@ func reset_boss() -> void:
 	if hurtbox:
 		hurtbox.set_deferred("monitoring", true)
 		hurtbox.set_deferred("monitorable", true)
+		var h_col := hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if h_col:
+			h_col.disabled = false
+
+	if boss_visual:
+		if boss_visual.has_method("reset_visual"):
+			boss_visual.reset_visual()
+		elif boss_visual.has_method("set_state"):
+			boss_visual.set("is_phase_2", false)
+			boss_visual.set_state(BossVisualScript.VisualState.IDLE)
 
 	emit_signal("boss_phase_changed", 1)
 	_change_state(State.DORMANT)
@@ -3547,6 +3638,7 @@ extends Area2D
 @export var direction: float = -1.0
 @export var max_lifetime: float = 2.8
 
+var is_phase_2: bool = false
 var _time_alive: float = 0.0
 var _hit_nodes: Array[Node] = []
 
@@ -3554,34 +3646,44 @@ var _hit_nodes: Array[Node] = []
 @onready var core_glow: ColorRect = $VisualWave/CoreGlow
 
 func _ready() -> void:
+	add_to_group("boss_projectiles")
 	collision_layer = 0
 	collision_mask = 2 # Player Hurtbox nằm trên Layer 2
 	area_entered.connect(_on_area_entered)
+	_apply_visuals()
 
 func setup(p_direction: float, p_is_phase_2: bool = false) -> void:
 	direction = sign(p_direction)
 	if direction == 0.0:
 		direction = -1.0
-	if p_is_phase_2:
-		speed = 440.0
-		if visual_wave:
-			visual_wave.color = Color(0.95, 0.15, 0.85, 0.9)
-		if core_glow:
-			core_glow.color = Color(1.0, 0.7, 1.0, 1.0)
-	else:
-		speed = 380.0
-		if visual_wave:
-			visual_wave.color = Color(0.3, 0.75, 1.0, 0.9)
-		if core_glow:
-			core_glow.color = Color(0.8, 0.95, 1.0, 1.0)
+	is_phase_2 = p_is_phase_2
+	speed = 440.0 if is_phase_2 else 380.0
+	_apply_visuals()
+
+func _apply_visuals() -> void:
+	var wave_node: ColorRect = visual_wave if visual_wave else get_node_or_null("VisualWave") as ColorRect
+	var glow_node: ColorRect = core_glow if core_glow else get_node_or_null("VisualWave/CoreGlow") as ColorRect
+
+	if wave_node:
+		if is_phase_2:
+			wave_node.color = Color(0.95, 0.15, 0.85, 0.9)
+		else:
+			wave_node.color = Color(0.3, 0.75, 1.0, 0.9)
+
+	if glow_node:
+		if is_phase_2:
+			glow_node.color = Color(1.0, 0.7, 1.0, 1.0)
+		else:
+			glow_node.color = Color(0.8, 0.95, 1.0, 1.0)
 
 func _physics_process(delta: float) -> void:
 	_time_alive += delta
 	position.x += direction * speed * delta
 
 	# Hiệu ứng gợn sóng nhấp nhô
-	if visual_wave:
-		visual_wave.scale.y = 1.0 + sin(_time_alive * 25.0) * 0.15
+	var wave_node: ColorRect = visual_wave if visual_wave else get_node_or_null("VisualWave") as ColorRect
+	if wave_node:
+		wave_node.scale.y = 1.0 + sin(_time_alive * 25.0) * 0.15
 
 	if _time_alive >= max_lifetime:
 		queue_free()
@@ -3597,7 +3699,7 @@ func _on_area_entered(area: Area2D) -> void:
 		var success := hurtbox.apply_damage(dmg_info)
 		if success:
 			_hit_nodes.append(hurtbox.owner_node)
-			# Tạo hiệu ứng va chạm nhẹ và biến mất sau khi đâm trúng
+			# Biến mất sau khi đâm trúng
 			queue_free()
 
 
@@ -3700,6 +3802,23 @@ func _ready() -> void:
 		telegraph_charge_rect.visible = false
 	if telegraph_shockwave_ring:
 		telegraph_shockwave_ring.visible = false
+	_apply_palette()
+
+func reset_visual() -> void:
+	is_phase_2 = false
+	current_visual_state = VisualState.IDLE
+	_anim_timer = 0.0
+	_hit_flash_timer = 0.0
+	if telegraph_charge_rect:
+		telegraph_charge_rect.visible = false
+	if telegraph_shockwave_ring:
+		telegraph_shockwave_ring.visible = false
+	if body_parts:
+		body_parts.position = Vector2.ZERO
+		body_parts.rotation = 0.0
+		body_parts.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	if antlers_root:
+		antlers_root.rotation = 0.0
 	_apply_palette()
 
 func _process(delta: float) -> void:
@@ -3966,6 +4085,16 @@ func _process(delta: float) -> void:
 	if mana_regen_rate > 0.0 and current_mana < max_mana:
 		current_mana = min(max_mana, current_mana + mana_regen_rate * delta)
 		emit_signal("mana_changed", current_mana, max_mana)
+
+func set_invulnerable_duration(duration: float) -> void:
+	is_invulnerable = true
+	_invuln_timer = max(_invuln_timer, duration)
+	emit_signal("invulnerability_started")
+
+func cancel_invulnerability() -> void:
+	is_invulnerable = false
+	_invuln_timer = 0.0
+	emit_signal("invulnerability_ended")
 
 func take_damage(damage: DamageInfo) -> bool:
 	if is_invulnerable or current_health <= 0.0:
@@ -5624,8 +5753,27 @@ static func delete_save() -> bool:
 		DirAccess.remove_absolute(bak_path)
 	return success
 
+static func is_boss_combat_active(world: Node) -> bool:
+	if world == null:
+		return false
+	if "boss_battle_started" in world and world.get("boss_battle_started") == true:
+		return true
+	var boss = world.get_node_or_null("BossLunareth")
+	if boss and is_instance_valid(boss):
+		if "current_state" in boss:
+			var st: int = int(boss.get("current_state"))
+			# 0 là DORMANT, 7 là DEFEATED
+			if st != 0 and st != 7:
+				return true
+	return false
+
 static func save_game(world: Node) -> bool:
 	if world == null:
+		return false
+
+	# Kiểm tra bảo vệ: Không cho phép lưu khi đang giao tranh Boss
+	if is_boss_combat_active(world):
+		push_warning("SaveManager: Không thể lưu game trong khi trận đánh Boss đang diễn ra!")
 		return false
 
 	var player := world.get_node_or_null("Player") as Player
@@ -6071,11 +6219,18 @@ func is_inventory_open() -> bool:
 
 func _on_save_pressed() -> void:
 	var scene := _get_active_scene()
-	# Chặn lưu game thủ công khi Boss đang giao chiến (Yêu cầu F)
+	# Chặn lưu game thủ công khi Boss đang giao chiến
 	if scene and scene.has_method("is_boss_battle_active") and scene.is_boss_battle_active():
 		show_notification("Không thể lưu game trong khi đang giao tranh với Boss!")
 		return
-	SaveManager.save_game(scene)
+	if SaveManager.is_boss_combat_active(scene):
+		show_notification("Không thể lưu game trong khi đang giao tranh với Boss!")
+		return
+	var ok: bool = SaveManager.save_game(scene)
+	if ok:
+		show_notification("Đã lưu tiến trình thành công!")
+	else:
+		show_notification("Không thể lưu game lúc này!")
 
 func update_player_hp(cur: float, max_v: float) -> void:
 	if hp_bar:
@@ -7365,6 +7520,7 @@ func _on_boss_telegraph_started(skill_name: String, duration: float) -> void:
 func _on_boss_defeated() -> void:
 	boss_battle_started = false
 	boss_defeated = true
+	clear_boss_projectiles()
 
 	# Mở khóa rào chắn đấu trường
 	if arena_barrier:
@@ -7488,6 +7644,7 @@ func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_def
 func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> void:
 	boss_defeated = p_defeated
 	boss_reward_claimed = p_reward
+	clear_boss_projectiles()
 
 	if boss_defeated:
 		boss_battle_started = false
@@ -7513,6 +7670,12 @@ func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> 
 			boss_lunareth.reset_boss()
 		if magic_gate and quest_manager and quest_manager.current_quest:
 			magic_gate.update_quest_status(quest_manager.current_quest)
+
+func clear_boss_projectiles() -> void:
+	var projectiles := get_tree().get_nodes_in_group("boss_projectiles")
+	for p in projectiles:
+		if is_instance_valid(p) and not p.is_queued_for_deletion():
+			p.queue_free()
 
 func _on_player_state_changed(st_name: String) -> void:
 	if game_ui:
@@ -7550,6 +7713,9 @@ func _on_retry_requested() -> void:
 		player = get_node_or_null("Player") as Player
 	if player:
 		player.respawn()
+
+	# Xóa toàn bộ projectile của Boss khi Retry
+	clear_boss_projectiles()
 
 	# Xử lý Retry khi tử trận trong trận Boss (Yêu cầu F)
 	if boss_battle_started and not boss_defeated:

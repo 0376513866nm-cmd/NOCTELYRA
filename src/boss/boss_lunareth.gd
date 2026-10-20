@@ -124,7 +124,21 @@ func _physics_process(delta: float) -> void:
 		State.PHASE_TRANSITION:
 			velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
 			_state_timer -= delta
+			# Đảm bảo duy trì trạng thái bất tử trong suốt 1.3s chuyển phase
+			if health_component:
+				health_component.is_invulnerable = true
+				if health_component.has_method("set_invulnerable_duration"):
+					health_component.set_invulnerable_duration(_state_timer)
+				else:
+					health_component.set("_invuln_timer", _state_timer)
 			if _state_timer <= 0.0:
+				# Kết thúc chuyển giai đoạn: tắt bất tử ngay lập tức, Boss nhận sát thương bình thường
+				if health_component:
+					if health_component.has_method("cancel_invulnerability"):
+						health_component.cancel_invulnerability()
+					else:
+						health_component.is_invulnerable = false
+						health_component.set("_invuln_timer", 0.0)
 				_change_state(State.RECOVERY)
 			move_and_slide()
 
@@ -272,7 +286,11 @@ func _change_state(new_state: State) -> void:
 			_state_timer = 1.3
 			is_phase_2 = true
 			if health_component:
-				health_component.is_invulnerable = true
+				if health_component.has_method("set_invulnerable_duration"):
+					health_component.set_invulnerable_duration(1.3)
+				else:
+					health_component.is_invulnerable = true
+					health_component.set("_invuln_timer", 1.3)
 			if boss_visual and boss_visual.has_method("set_state"):
 				boss_visual.set_state(BossVisualScript.VisualState.PHASE_TRANSITION)
 			emit_signal("boss_phase_changed", 2)
@@ -301,10 +319,12 @@ func _spawn_shockwaves() -> void:
 	var wave_dir: float = float(facing_direction)
 	var sw = shockwave_scene.instantiate()
 	if sw is Node2D:
+		var parent_node: Node = get_parent()
+		if parent_node:
+			parent_node.add_child(sw)
 		sw.global_position = Vector2(global_position.x + wave_dir * 30.0, global_position.y)
 		if sw.has_method("setup"):
 			sw.setup(wave_dir, is_phase_2)
-		get_parent().add_child(sw)
 
 func _on_hit_received(damage_info: DamageInfo) -> void:
 	if current_state == State.DORMANT or current_state == State.DEFEATED or current_state == State.PHASE_TRANSITION:
@@ -334,10 +354,17 @@ func reset_boss() -> void:
 	_phase_2_triggered = false
 	_is_defeated = false
 	is_phase_2 = false
+	_state_timer = 0.0
+	_charge_timer = 0.0
+	_attack_alternate = false
 
 	if health_component:
 		health_component.current_health = max_hp
-		health_component.is_invulnerable = false
+		if health_component.has_method("cancel_invulnerability"):
+			health_component.cancel_invulnerability()
+		else:
+			health_component.is_invulnerable = false
+			health_component.set("_invuln_timer", 0.0)
 		emit_signal("boss_health_changed", max_hp, max_hp)
 
 	if charge_hitbox:
@@ -348,6 +375,16 @@ func reset_boss() -> void:
 	if hurtbox:
 		hurtbox.set_deferred("monitoring", true)
 		hurtbox.set_deferred("monitorable", true)
+		var h_col := hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
+		if h_col:
+			h_col.disabled = false
+
+	if boss_visual:
+		if boss_visual.has_method("reset_visual"):
+			boss_visual.reset_visual()
+		elif boss_visual.has_method("set_state"):
+			boss_visual.set("is_phase_2", false)
+			boss_visual.set_state(BossVisualScript.VisualState.IDLE)
 
 	emit_signal("boss_phase_changed", 1)
 	_change_state(State.DORMANT)

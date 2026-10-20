@@ -53,6 +53,23 @@ func _ready() -> void:
 		telegraph_shockwave_ring.visible = false
 	_apply_palette()
 
+func reset_visual() -> void:
+	is_phase_2 = false
+	current_visual_state = VisualState.IDLE
+	_anim_timer = 0.0
+	_hit_flash_timer = 0.0
+	if telegraph_charge_rect:
+		telegraph_charge_rect.visible = false
+	if telegraph_shockwave_ring:
+		telegraph_shockwave_ring.visible = false
+	if body_parts:
+		body_parts.position = Vector2.ZERO
+		body_parts.rotation = 0.0
+		body_parts.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	if antlers_root:
+		antlers_root.rotation = 0.0
+	_apply_palette()
+
 func _process(delta: float) -> void:
 	_anim_timer += delta
 

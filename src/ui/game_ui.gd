@@ -179,11 +179,18 @@ func is_inventory_open() -> bool:
 
 func _on_save_pressed() -> void:
 	var scene := _get_active_scene()
-	# Chặn lưu game thủ công khi Boss đang giao chiến (Yêu cầu F)
+	# Chặn lưu game thủ công khi Boss đang giao chiến
 	if scene and scene.has_method("is_boss_battle_active") and scene.is_boss_battle_active():
 		show_notification("Không thể lưu game trong khi đang giao tranh với Boss!")
 		return
-	SaveManager.save_game(scene)
+	if SaveManager.is_boss_combat_active(scene):
+		show_notification("Không thể lưu game trong khi đang giao tranh với Boss!")
+		return
+	var ok: bool = SaveManager.save_game(scene)
+	if ok:
+		show_notification("Đã lưu tiến trình thành công!")
+	else:
+		show_notification("Không thể lưu game lúc này!")
 
 func update_player_hp(cur: float, max_v: float) -> void:
 	if hp_bar:

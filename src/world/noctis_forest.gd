@@ -177,6 +177,7 @@ func _on_boss_telegraph_started(skill_name: String, duration: float) -> void:
 func _on_boss_defeated() -> void:
 	boss_battle_started = false
 	boss_defeated = true
+	clear_boss_projectiles()
 
 	# Mở khóa rào chắn đấu trường
 	if arena_barrier:
@@ -300,6 +301,7 @@ func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_def
 func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> void:
 	boss_defeated = p_defeated
 	boss_reward_claimed = p_reward
+	clear_boss_projectiles()
 
 	if boss_defeated:
 		boss_battle_started = false
@@ -325,6 +327,12 @@ func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> 
 			boss_lunareth.reset_boss()
 		if magic_gate and quest_manager and quest_manager.current_quest:
 			magic_gate.update_quest_status(quest_manager.current_quest)
+
+func clear_boss_projectiles() -> void:
+	var projectiles := get_tree().get_nodes_in_group("boss_projectiles")
+	for p in projectiles:
+		if is_instance_valid(p) and not p.is_queued_for_deletion():
+			p.queue_free()
 
 func _on_player_state_changed(st_name: String) -> void:
 	if game_ui:
@@ -362,6 +370,9 @@ func _on_retry_requested() -> void:
 		player = get_node_or_null("Player") as Player
 	if player:
 		player.respawn()
+
+	# Xóa toàn bộ projectile của Boss khi Retry
+	clear_boss_projectiles()
 
 	# Xử lý Retry khi tử trận trong trận Boss (Yêu cầu F)
 	if boss_battle_started and not boss_defeated:
