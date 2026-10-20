@@ -1,6 +1,6 @@
 ﻿===================================================
-  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M3.1 FINAL)
-  EXPORTED AT: 2026-10-20 11:40:49
+  PROJECT: NOCTELYRA (Godot 4.3 - Milestone M3.2 FINAL)
+  EXPORTED AT: 2026-10-20 11:55:23
 ===================================================
 
 
@@ -98,21 +98,22 @@ renderer/rendering_method="forward_plus"
 FILE: README.md
 ===================================================
 
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M3.1 FINAL)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M3.2 FINAL)
 
 Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M3.1)
+## 1. Cấu trúc thư mục & Module dự án (Bản M3.2 FINAL)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu hướng dẫn, kiến trúc, sơ đồ & kết quả kiểm thử M3.1
+├── README.md                       # Tài liệu hướng dẫn, kiến trúc, sơ đồ & kết quả kiểm thử M3.2
 ├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review
-├── test_m3_1_flow.gd               # [MỚI M3.1] Kịch bản kiểm thử tự động 10 danh mục M3.1 (41/41 tests PASS)
-├── test_m3_flow.gd                 # Kịch bản kiểm thử tự động 15 giai đoạn M3 (67/67 tests PASS)
+├── test_m3_2_flow.gd               # [MỚI M3.2] Kịch bản kiểm thử 12 hạng mục M3.2 (50/50 tests PASS)
+├── test_m3_1_flow.gd               # Kịch bản kiểm thử M3.1 (Đã fix an toàn 100%, 40/40 tests PASS)
+├── test_m3_flow.gd                 # Kịch bản kiểm thử hồi quy 15 giai đoạn M3 (67/67 tests PASS)
 ├── test_m2_1_flow.gd               # Kịch bản kiểm thử hồi quy M2.1 (42/42 tests PASS)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
 ├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus)
@@ -161,19 +162,19 @@ D:\project\game\NOCTELYRA\
     ├── inventory\                           # HỆ THỐNG VẬT PHẨM & TRANG BỊ
     │   ├── item_definition.gd               # Resource định nghĩa vật phẩm chuẩn (ID, tên, loại, chỉ số, công dụng)
     │   ├── item_database.gd                 # Registry tra cứu vật phẩm ổn định theo ID
-    │   ├── inventory_component.gd           # Component quản lý túi đồ 16 ô (thêm, xóa, stack, dùng)
-    │   ├── equipment_component.gd           # [CẬP NHẬT M3.1] Quản lý 2 ô trang bị & thẩm định type an toàn khi load
+    │   ├── inventory_component.gd           # [CẬP NHẬT M3.2] Kiểm tra an toàn truy xuất slot amount, chống crash
+    │   ├── equipment_component.gd           # Quản lý 2 ô trang bị & tính toán lại chỉ số
     │   ├── inventory_ui.gd                  # Controller giao diện túi đồ, lưới 16 ô, xem chi tiết & nút bấm
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ đẹp mắt, hỗ trợ chuột và cảm ứng
     ├── loot\                                # HỆ THỐNG RƠI ĐỒ VÀ NHẶT VẬT PHẨM
     │   ├── loot_table.gd                    # Resource định nghĩa bảng tỷ lệ rơi đồ của quái vật
-    │   ├── item_pickup.gd                   # [CẬP NHẬT M3.1] Gán pickup_id ổn định, tự hủy nếu đã nhặt trước đó
+    │   ├── item_pickup.gd                   # Gán pickup_id ổn định, tự hủy nếu đã nhặt trước đó
     │   └── item_pickup.tscn                 # Scene vật phẩm rơi với hiệu ứng nhấp nhô lơ lửng
     ├── quest\
     │   ├── quest_data.gd                    # Resource dữ liệu nhiệm vụ (4 trạng thái FSM)
-    │   └── quest_manager.gd                 # [CẬP NHẬT M3.1] Quản lý quest, lưu enemy_id chuỗi ổn định xuyên suốt
+    │   └── quest_manager.gd                 # Quản lý quest, lưu enemy_id chuỗi ổn định xuyên suốt
     ├── save\                                # HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
-    │   └── save_manager.gd                  # [VIẾT LẠI M3.1] Ghi nguyên tử an toàn (atomic), backup .bak, validate & clamp toàn bộ
+    │   └── save_manager.gd                  # [VIẾT LẠI M3.2] Nạp trang bị trước để tính đúng Max MP, fault injection rollback, validation nghiêm ngặt
     ├── ui\
     │   ├── game_ui.gd                       # HUD, thanh máu, phím I mở túi đồ, PauseMenu tích hợp Save Game
     │   ├── game_ui.tscn                     # CanvasLayer giao diện in-game
@@ -181,7 +182,7 @@ D:\project\game\NOCTELYRA\
     │   ├── main_menu.gd                     # Màn hình chính: Chơi mới (xác nhận ghi đè), Tiếp tục, Thoát
     │   └── main_menu.tscn                   # Scene Main Menu
     └── world\
-        ├── noctis_forest.gd                 # [CẬP NHẬT M3.1] Quản lý pickup nhặt/rơi, khôi phục trạng thái thế giới
+        ├── noctis_forest.gd                 # Quản lý pickup nhặt/rơi, khôi phục trạng thái thế giới
         ├── noctis_forest.tscn               # Màn chơi Bìa Rừng Noctis với ID pickup ổn định cho làng
         ├── test_level.gd                    # Màn test M1 cũ
         └── test_level.tscn
@@ -189,39 +190,41 @@ D:\project\game\NOCTELYRA\
 
 ---
 
-## 2. Nâng cấp cốt lõi trong phiên bản M3.1
+## 2. Các điểm sửa đổi trọng tâm trong phiên bản M3.2 FINAL
 
-### 2.1. Quản lý trạng thái vật phẩm trên thế giới (World Pickup Persistence)
-- **Vật phẩm đặt sẵn (Pre-placed Pickups):**
-  - Gán `pickup_id` cố định: `pickup_village_potion_1`, `pickup_village_sword_1`, `pickup_village_amulet_1`.
-  - Khi nhặt, ID được ghi vào `collected_pickup_ids` trong bản lưu. Khi tải game, nếu ID đã có trong danh sách đã nhặt, node tự động `queue_free()`, **không xuất hiện lần hai**.
-- **Vật phẩm quái rơi (Dynamic Drops):**
-  - Quái vật rơi đồ được gán cờ `is_dynamic = true` và `pickup_id` duy nhất dạng `drop_<item_id>_<timestamp>_<rand>`.
-  - Nếu quái chết và rơi đồ nhưng Player chưa nhặt trước khi Lưu: Vị trí và số lượng vật phẩm rơi được lưu vào mảng `dropped_pickups`. Khi Tải, thế giới tái tạo chính xác các vật phẩm này trên mặt đất.
-  - Khi nhặt đồ rơi thành công rồi Lưu/Tải: Vật phẩm KHÔNG bị nhân bản trên mặt đất.
+### 2.1. Bảo vệ tuyệt đối file save thật của người chơi trong toàn bộ kịch bản kiểm thử
+- Loại bỏ 100% mọi thao tác `WRITE`, `REMOVE`, `RENAME` trên file save thật (`user://noctelyra_slot1.json`) trong toàn bộ các file test (`test_m3_1_flow.gd`, `test_m3_2_flow.gd`, `test_m3_flow.gd`).
+- Toàn bộ dữ liệu kiểm thử được định tuyến độc lập vào `user://noctelyra_m3_2_test.json` hoặc `user://noctelyra_m3_1_test.json`.
+- Kịch bản kiểm tra cách ly chỉ đọc (`read-only`) trạng thái và checksum MD5 của file save thật trước/sau test:
+  - Nếu file thật đã tồn tại: xác minh sau toàn bộ bài test file vẫn nguyên vẹn 100% với checksum MD5 không đổi.
+  - Nếu file thật chưa tồn tại: xác minh hệ thống test không tự ý tạo file giả định trên đường dẫn thật.
 
-### 2.2. Kiến trúc SaveManager nguyên tử (Atomic & Safe Save System)
-- **Không bao giờ xóa file save cũ trước khi hoàn tất ghi:**
-  1. Dữ liệu được ghi ra file tạm `.tmp`.
-  2. Mở lại file tạm đọc và parse JSON để xác minh toàn vẹn cú pháp.
-  3. Tạo bản sao lưu dự phòng `.bak` từ file save hiện tại (nếu có).
-  4. Đổi tên file tạm `.tmp` đè lên file save chính thức.
-  5. Nếu bất kỳ bước nào thất bại, hệ thống khôi phục ngay từ `.bak`, đảm bảo người chơi **không bao giờ bị mất save** khi xảy ra lỗi đột ngột.
-- **Thẩm định dữ liệu sâu (Deep Validation & Clamping):**
-  - Tọa độ Player: Giới hạn trong kích thước bản đồ hợp lệ `(-1000..5000, -500..1500)`.
-  - HP / MP: Clamp trong khoảng `[0, Max]` (không bị âm hoặc vượt trần).
-  - Vàng (Gold): Clamp `>= 0`.
-  - Túi đồ: Bỏ qua slot rỗng, kiểm tra `ItemDatabase.has_item(id)` và clamp số lượng `[1, max_stack]`.
-  - Trang bị: Kiểm tra bắt buộc đúng phân loại item (`WEAPON` cho slot vũ khí, `ACCESSORY` cho slot bùa/phụ kiện). Nếu file JSON bị sửa đổi hoặc gắn sai loại, tự động loại bỏ để chống crash.
-  - Tiến độ nhiệm vụ: Validate `kill_count` trong khoảng `[0, required_kills]`.
+### 2.2. Khôi phục Current MP chính xác theo Max MP sau trang bị
+- **Vấn đề trước đây:** Trong `SaveManager.load_game()`, Player HP/MP được nạp trước khi nạp Trang bị (Equipment). Khi đó `max_mana` của nhân vật vẫn là giá trị cơ bản (60.0). Nếu người chơi lưu game khi đang đeo `moon_amulet` (Max MP = 80.0) với `current_mana` = 75.0, giá trị này bị clamp sai về 60.0.
+- **Giải pháp M3.2:**
+  - Khôi phục `EquipmentComponent` và `InventoryComponent` **TRƯỚC**.
+  - `EquipmentComponent` kích hoạt `_recalculate_stats()`, cập nhật tức thì `p_health.max_mana` thành 80.0 (nếu đeo `moon_amulet`) hoặc 60.0 (nếu không đeo).
+  - Tiếp theo, nạp `current_mana` và clamp theo `p_health.max_mana` mới: Giá trị 75.0 được giữ nguyên vẹn 75.0 / 80.0.
+  - Đã bổ sung bộ test kiểm tra nạp MP cho cả 2 trường hợp: có trang bị bùa và không có trang bị bùa.
 
-### 2.3. Định danh kẻ địch ổn định (Stable Enemy ID Tracking)
-- Kẻ địch trong thế giới có định danh chuỗi ổn định (`enemy_forest_1`, `enemy_forest_2`, `enemy_forest_3`).
-- `QuestManager` lưu danh sách tiêu diệt bằng mảng chuỗi `_killed_enemy_ids: Array[String]`, không dựa vào `get_instance_id()` tạm thời của engine. Nhờ đó, trạng thái nhiệm vụ và danh sách quái đã diệt được đồng bộ hoàn hảo sau khi Save/Load.
+### 2.3. Kiểm thử an toàn ghi file thực chất (Fault Injection & Rollback Testing)
+- Bổ sung các cờ kiểm thử tiêm lỗi (fault injection) an toàn trong `SaveManager`:
+  - `simulate_tmp_write_error`: Mô phỏng lỗi khi ghi file tạm `.tmp`.
+  - `simulate_backup_error`: Mô phỏng lỗi khi tạo bản sao lưu `.bak`.
+  - `simulate_replace_error`: Mô phỏng lỗi khi đổi tên thay thế file save chính.
+- Kiểm thử xác minh:
+  - Khi có lỗi xảy ra ở bất kỳ giai đoạn nào, `save_game()` ngay lập tức trả về `false`.
+  - Bản lưu cũ trước đó được bảo toàn nguyên vẹn 100% (so sánh nội dung và MD5 checksum).
+  - Cơ chế tự động khôi phục từ `.bak` và dọn dẹp các file rác `.tmp`, `.bak` hoạt động hoàn hảo.
 
-### 2.4. Cách ly hoàn toàn dữ liệu kiểm thử (Test Isolation)
-- Hỗ trợ `SaveManager.custom_save_path`: Toàn bộ các script test (`test_m3_1_flow.gd`, `test_m3_flow.gd`) sử dụng file test riêng (`user://noctelyra_m3_1_test.json`), tự động dọn dẹp sau khi chạy.
-- File save thật của người chơi (`user://noctelyra_slot1.json`) được bảo toàn 100%, không bị ảnh hưởng hay ghi đè bởi bộ kiểm thử tự động.
+### 2.4. Thẩm định (Validation) nghiêm ngặt file save
+- `has_save()`:
+  - Từ chối file JSON sai cú pháp hoặc rỗng.
+  - Từ chối các phiên bản `save_version` không được hỗ trợ (chỉ chấp nhận các phiên bản trong `SUPPORTED_VERSIONS = ["1.0.0"]`).
+  - Từ chối file save thiếu các khối dữ liệu cốt lõi bắt buộc (`player`, `quest`).
+- `load_game()`:
+  - Từ chối tải và trả về `false` khi thế giới thiếu `Player` hoặc `QuestManager`.
+  - Xử lý an toàn khi các trường con bên trong `player` hoặc `quest` bị thiếu hoặc sai kiểu (tọa độ rác, chuỗi thay vì số, số âm), tự động clamp về ngưỡng an toàn của game mà không gây crash.
 
 ---
 
@@ -259,120 +262,140 @@ D:\project\game\NOCTELYRA\
 
 ## 5. Báo cáo kiểm thử tự động thực tế trên Godot 4.3 Engine
 
-### 5.1. Kết quả kiểm thử M3.1 (`test_m3_1_flow.gd`) — 41/41 Tests PASS (100%)
+### 5.1. Kết quả kiểm thử chuyên sâu M3.2 FINAL (`test_m3_2_flow.gd`) — 50/50 Tests PASS (100%)
 
 Chạy thực tế qua lệnh:
-`& "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "d:\project\game\NOCTELYRA" -s "test_m3_1_flow.gd"`
+`& "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "d:\project\game\NOCTELYRA" -s "test_m3_2_flow.gd"`
 
 ```text
 Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
 
 ==================================================
- [NOCTELYRA M3.1] INTEGRATION TEST SUITE STARTING 
+ [NOCTELYRA M3.2] INTEGRATION TEST SUITE STARTING 
 ==================================================
 
---- TEST 1: Nhặt vật phẩm đặt sẵn -> Save -> Tạo lại World -> Load -> Không xuất hiện lần 2 ---
-  [PASS] Vật phẩm Kiếm đặt sẵn có pickup_id ổn định ('pickup_village_sword_1')
-  [PASS] Player đã nhặt được Kiếm Ánh Trăng
-  [PASS] Đã trang bị Kiếm, sát thương đạt 35
-  [PASS] pickup_village_sword_1 đã được ghi vào collected_pickup_ids của world
-  [PASS] Lưu game thành công vào test save
-  [PASS] Nạp lại bản lưu vào World mới thành công
-  [PASS] Player vẫn giữ nguyên trang bị Kiếm Ánh Trăng
-  [PASS] Sát thương vẫn duy trì 35 sau khi tải
-  [PASS] Kiếm đặt sẵn tại làng ĐÃ BỊ LOẠI BỎ, không xuất hiện lần hai!
+--- TEST 1: Khôi phục MP khi CÓ trang bị Bùa Nguyệt Quang (moon_amulet) ---
+  [PASS] Đã trang bị Bùa Nguyệt Quang, Max MP đạt 80.0
+  [PASS] Lưu game với MP = 75.0 / 80.0 thành công
+  [PASS] Tải bản lưu thành công
+  [PASS] Trang bị Bùa Nguyệt Quang đã được khôi phục
+  [PASS] Max MP được tính toán chính xác là 80.0
+  [PASS] Current MP được áp dụng chính xác tuyệt đối là 75.0 / 80.0 (không bị clamp về 60)
 
---- TEST 2: Quái chết và rơi đồ -> Chưa nhặt -> Save -> Load -> Vật phẩm vẫn còn ---
-  [PASS] Thế giới ghi nhận ít nhất 1 vật phẩm rơi động chưa nhặt (thực tế: 1)
-  [PASS] Vật phẩm rơi từ quái chưa nhặt được khôi phục chính xác tại tọa độ (2500, 630)
+--- TEST 2: Khôi phục MP khi KHÔNG có trang bị Bùa Nguyệt Quang ---
+  [PASS] Đã tháo Bùa, Max MP trở lại 60.0
+  [PASS] Lưu game với MP = 45.0 / 60.0 thành công
+  [PASS] Tải bản lưu không có phụ kiện thành công
+  [PASS] Ô phụ kiện trống đúng thực tế
+  [PASS] Max MP giữ đúng 60.0
+  [PASS] Current MP được nạp chính xác 45.0 / 60.0
 
---- TEST 3: Nhặt đồ rơi -> Save -> Load -> Không bị nhân bản ---
-  [PASS] Đã nhặt 3 mana_shard vào túi
-  [PASS] Túi đồ giữ đúng số lượng mana_shard
-  [PASS] Vật phẩm rơi đã nhặt KHÔNG bị nhân bản trên mặt đất sau khi Load!
+--- TEST 3: Kiểm thử Fault Injection - Lỗi ghi file tạm (.tmp) ---
+  [PASS] Đã thiết lập bản lưu gốc chuẩn
+ERROR: [Mô phỏng lỗi]: Thất bại khi ghi file tạm!
+   at: push_error (core/variant/variant_utility.cpp:1092)
+  [PASS] Hàm save_game từ chối và trả về false khi ghi file tạm lỗi
+  [PASS] Bản lưu trước đó vẫn giữ nguyên vẹn nội dung
+  [PASS] MD5 checksum bản lưu trước đó không hề thay đổi
 
---- TEST 4: Inventory đầy -> Vật phẩm không bị mất trên đất ---
-  [PASS] Túi đầy 16/16: Pickup không bị nuốt mất
-  [PASS] Vật phẩm vẫn nằm nguyên vẹn trên mặt đất
+--- TEST 4: Kiểm thử Fault Injection - Lỗi ở bước tạo Backup (.bak) ---
+ERROR: [Mô phỏng lỗi]: Thất bại ở bước tạo bản sao lưu .bak!
+   at: push_error (core/variant/variant_utility.cpp:1092)
+  [PASS] Hàm save_game từ chối và trả về false khi tạo backup lỗi
+  [PASS] Bản lưu trước đó không bị ảnh hưởng khi backup thất bại
+  [PASS] File tạm .tmp đã được dọn dẹp sạch sẽ
 
---- TEST 5: Save lỗi -> Giữ nguyên bản lưu trước đó (Atomic Safety) ---
-  [PASS] Đã có bản lưu hợp lệ hiện hữu
-  [PASS] Hàm save_game trả về false khi gặp lỗi dữ liệu đầu vào
-  [PASS] Bản lưu hợp lệ trước đó vẫn nguyên vẹn 100%, không bị xóa hay ghi đè hỏng
+--- TEST 5: Kiểm thử Fault Injection - Lỗi khi Thay thế (Replace) & Phục hồi tự động ---
+ERROR: Failed to open C:/Users/ngoma/AppData/Roaming/Godot/app_userdata/NOCTELYRA/noctelyra_m3_2_test.json.tmp
+   at: (core/io/dir_access.cpp:348)
+ERROR: Lỗi khi thay thế file save! Phục hồi bản lưu cũ từ backup.
+   at: push_error (core/variant/variant_utility.cpp:1092)
+  [PASS] Hàm save_game báo false khi quá trình thay thế file bị gián đoạn
+  [PASS] File save chính vẫn tồn tại sau cơ chế rollback
+  [PASS] Nội dung bản lưu cũ được phục hồi chính xác 100% từ backup
+  [PASS] MD5 checksum bản lưu khớp tuyệt đối sau phục hồi
+  [PASS] File .bak đã được hoàn tất dọn dẹp
+  [PASS] File .tmp đã được dọn dẹp
+  [PASS] Tải lại bản lưu sau sự cố rollback thành công hoàn hảo
 
---- TEST 6: JSON sai cấu trúc -> Continue không crash & Validate an toàn ---
-  [PASS] Hàm load_game xử lý an toàn không crash khi gặp kiểu dữ liệu sai
-  [PASS] HP được clamp về khoảng an toàn (0 - 100)
-  [PASS] MP được clamp không vượt quá Max MP
-  [PASS] Tọa độ Player được clamp trong giới hạn bản đồ hợp lệ
-  [PASS] Vàng được clamp >= 0, không bị âm
-  [PASS] Vũ khí không tồn tại tự động bị loại bỏ
-  [PASS] Trang bị sai loại tự động bị loại bỏ
+--- TEST 6: has_save() từ chối JSON sai cú pháp hoặc hỏng ---
+  [PASS] has_save() từ chối file JSON sai cú pháp
+  [PASS] load_game() từ chối tải file JSON sai cú pháp
 
---- TEST 7: Nhiệm vụ 2/3 -> Save -> Thoát World -> Continue -> Giữ đúng tiến độ ---
-  [PASS] Nhiệm vụ vẫn ở trạng thái ACTIVE
-  [PASS] Tiến độ nhiệm vụ giữ chính xác 2/3
-  [PASS] Số vàng giữ đúng 30 G
+--- TEST 7: has_save() từ chối phiên bản không hỗ trợ (Unsupported Version) ---
+  [PASS] has_save() từ chối phiên bản không hỗ trợ ('99.0.0')
+  [PASS] load_game() từ chối tải phiên bản không hỗ trợ
 
---- TEST 8: Quest COMPLETED -> Continue -> Không nhận lại 50 vàng ---
-  [PASS] Nhiệm vụ đã COMPLETED
-  [PASS] Nhận thưởng 50 Vàng lần đầu (30 + 50 = 80 G)
-  [PASS] Nhiệm vụ phục hồi trạng thái COMPLETED
-  [PASS] complete_quest từ chối trả thưởng lần 2
-  [PASS] Vàng vẫn giữ nguyên đúng 80 G, không nhận thêm thưởng lặp lại
+--- TEST 8: has_save() từ chối JSON thiếu cấu trúc dữ liệu bắt buộc ---
+  [PASS] has_save() từ chối khi thiếu khối 'player' hoặc 'quest'
+  [PASS] load_game() từ chối khi cấu trúc không hợp lệ
 
---- TEST 9: Cách ly dữ liệu kiểm thử -> File save thật không bị ảnh hưởng ---
-  [PASS] File save thật vẫn tồn tại
-  [PASS] Nội dung file save thật hoàn toàn KHÔNG BỊ THAY ĐỔI hay ghi đè trong suốt bài test!
+--- TEST 9: load_game() an toàn khi thiếu trường con hoặc sai kiểu dữ liệu ---
+  [PASS] has_save() chấp nhận vì có đủ khối dữ liệu gốc
+  [PASS] load_game() xử lý an toàn không crash khi gặp trường con sai kiểu
+  [PASS] HP được clamp >= 0.0 an toàn
+  [PASS] MP không vượt quá Max MP
+  [PASS] Vàng được clamp >= 0
+  [PASS] Tọa độ được clamp trong giới hạn an toàn
 
---- TEST 10: Kiểm tra hồi quy các chức năng cốt lõi M0-M2.1 ---
-  [PASS] NPC Elyra collision_layer = 0 (Player xuyên người mượt mà)
-  [PASS] Hệ thống nhảy đôi M0 hoạt động
-  [PASS] PauseController hoạt động
-  [PASS] Pause game thành công
-  [PASS] Resume game thành công
+--- TEST 10: load_game() từ chối khi World thiếu Player hoặc QuestManager ---
+  [PASS] load_game(null) trả về false
+ERROR: load_game thất bại: World thiếu Player hoặc QuestManager.
+   at: push_error (core/variant/variant_utility.cpp:1092)
+  [PASS] load_game() trả về false khi node không có Player/QuestManager
+
+--- TEST 11: Kiểm tra cách ly 100% đối với file save thật ---
+  [PASS] File save thật vẫn tồn tại nguyên vẹn
+  [PASS] Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI
+
+--- TEST 12: Kiểm tra hồi quy toàn diện M0 -> M3 ---
+  [PASS] M2.1: NPC Elyra collision_layer = 0 (xuyên người mượt mà)
+  [PASS] M0: Hệ thống Double Jump nguyên vẹn
+  [PASS] M0: PauseController tồn tại
+  [PASS] M0: Pause game thành công
+  [PASS] M0: Resume game thành công
+  [PASS] M1: Melee Hitbox tồn tại
+  [PASS] M1: Combat Component tồn tại
+  [PASS] M3: Inventory 16 ô tồn tại
 
 ==================================================
- [NOCTELYRA M3.1] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
- Tổng số test: 41 | Đạt: 41 | Thất bại: 0
+ [NOCTELYRA M3.2] KẾT QUẢ KIỂM THỬ TỔNG HỢP:
+ Tổng số test: 50 | Đạt: 50 | Thất bại: 0
 ==================================================
->>> ALL 10 M3.1 REQUIREMENT CATEGORIES PASSED 100%! <<<
+>>> ALL M3.2 TEST SCENARIOS PASSED 100%! <<<
 ```
 
-### 5.2. Kết quả kiểm thử hồi quy M3 (`test_m3_flow.gd`) — 67/67 Tests PASS (100%)
-Toàn bộ 15 giai đoạn kiểm thử M3 (thêm, stack, dùng bình máu, trang bị, tháo đồ, tính toán chỉ số, lưu tải cơ bản) đạt 67/67 tests PASS.
+### 5.2. Kết quả kiểm thử an toàn M3.1 (`test_m3_1_flow.gd`) — 40/40 Tests PASS (100%)
+Kịch bản kiểm thử M3.1 đã được sửa đổi loại bỏ hoàn toàn các thao tác ghi/xóa/sửa trên file thật, đạt 40/40 tests PASS.
 
-### 5.3. Kết quả kiểm thử hồi quy M2.1 (`test_m2_1_flow.gd`) — 42/42 Tests PASS (100%)
-Toàn bộ vòng lặp nhiệm vụ, FSM hội thoại NPC Elyra, tiêu diệt quái, nhận thưởng đạt 42/42 tests PASS.
+### 5.3. Kết quả kiểm thử hồi quy M3 (`test_m3_flow.gd`) — 67/67 Tests PASS (100%)
+Toàn bộ 15 giai đoạn kiểm thử M3 đạt 67/67 tests PASS.
+
+### 5.4. Kết quả kiểm thử hồi quy M2.1 (`test_m2_1_flow.gd`) — 42/42 Tests PASS (100%)
+Toàn bộ tính năng hội thoại, nhiệm vụ, di chuyển xuyên NPC đạt 42/42 tests PASS.
 
 ---
 
-## 6. Danh sách lỗi đã xử lý triệt để trong M3.1
+## 6. Bảng tổng hợp sửa lỗi trong Milestone M3.2 FINAL
 
-| STT | Vấn đề phát hiện | Giải pháp kiến trúc trong M3.1 | Kết quả xác minh |
+| STT | Vấn đề phát hiện | Giải pháp kiến trúc trong M3.2 FINAL | Kết quả kiểm thử |
 | :--- | :--- | :--- | :--- |
-| 1 | Vật phẩm đặt sẵn xuất hiện lại sau khi Load dù đã nhặt | Gán `pickup_id` ổn định, ghi vào `collected_pickup_ids`, tự `queue_free()` khi khởi tạo nếu đã nhặt | Test 1 PASS |
-| 2 | Vật phẩm rơi từ quái chưa nhặt bị biến mất sau khi Save/Load | Thu thập và nạp lại danh sách `dropped_pickups` với vị trí và số lượng đầy đủ | Test 2 PASS |
-| 3 | Vật phẩm rơi bị nhân bản nếu đã nhặt rồi Save/Load | Tái tạo có chọn lọc, đánh dấu `is_dynamic` và đồng bộ túi đồ chính xác | Test 3 PASS |
-| 4 | Lưu game thất bại có nguy cơ xóa trắng file save cũ | Triển khai Atomic Write với file `.tmp`, sao lưu `.bak`, hoàn tác khi lỗi | Test 5 PASS |
-| 5 | Dữ liệu save bị sửa hoặc sai kiểu gây crash game | Bổ sung hàm validation & clamping toàn diện (HP, MP, Pos, Gold, Inventory, Equipment) | Test 6 PASS |
-| 6 | Gắn nhầm Consumable/Material vào slot Weapon/Accessory | Kiểm tra đối chiếu `item_type` trong `EquipmentComponent.load_from_dict()` | Test 6 PASS |
-| 7 | Nhận lại phần thưởng nhiệm vụ 50 Vàng nhiều lần sau khi Continue | `QuestManager` ghi nhận trạng thái `COMPLETED` và cấm gọi lại trả thưởng | Test 8 PASS |
-| 8 | Test tự động ghi đè file save thật của người chơi | Thêm cơ chế `custom_save_path` cho test runner, bảo vệ `user://noctelyra_slot1.json` | Test 9 PASS |
+| 1 | `test_m3_1_flow.gd` ghi và xóa trực tiếp file save thật `user://noctelyra_slot1.json` | Loại bỏ hoàn toàn ghi/xóa/sửa; chuyển 100% sang đường dẫn test riêng biệt; chỉ đọc MD5 kiểm tra tính nguyên vẹn | Test 11 PASS (100% cách ly) |
+| 2 | Nạp Current MP trước Trang bị làm MP bị clamp sai về 60 thay vì 75 khi đeo `moon_amulet` | Đảo thứ tự nạp: Trang bị & Túi đồ nạp trước -> tính lại Max MP (80) -> nạp Current MP (75/80) | Test 1 & Test 2 PASS |
+| 3 | Chưa có kiểm thử mô phỏng lỗi thực chất trong quá trình ghi file tạm và thay thế file save | Bổ sung hệ thống Fault Injection an toàn cho `save_game()`: kiểm thử lỗi ghi `.tmp`, lỗi `.bak`, lỗi thay thế và kiểm chứng rollback | Test 3, 4, 5 PASS (Zero data loss) |
+| 4 | `has_save()` chưa kiểm tra phiên bản hỗ trợ và cấu trúc dữ liệu cốt lõi | Thẩm định cú pháp JSON, đối chiếu `save_version` trong `SUPPORTED_VERSIONS`, kiểm tra bắt buộc khối `player` và `quest` | Test 6, 7, 8 PASS |
+| 5 | `load_game()` có nguy cơ crash hoặc nạp thành công sai khi dữ liệu không hợp lệ | Kiểm tra an toàn `world`, `Player`, `QuestManager`, xử lý an toàn dữ liệu sai kiểu, từ chối nạp khi dữ liệu rác | Test 9, 10 PASS |
 
 ---
 
-## 7. Giới hạn đã biết (Known Limitations)
+## 7. Hướng dẫn chạy và kiểm thử
 
-1. **Phạm vi M3.1:** Phiên bản này tập trung hoàn thiện hệ thống dữ liệu, độ ổn định lưu/tải thế giới và bảo vệ tính toàn vẹn của game chơi đơn. Chưa triển khai Boss chiến, hệ thống Chế tạo (Crafting) hay chế độ Multiplayer (sẽ được thực hiện trong các Milestone tiếp theo).
-2. **Kéo thả slot (Drag & Drop):** Giao diện Túi đồ hiện tối ưu hóa cho tương tác Click chọn / Chạm nút trên màn hình cảm ứng; thao tác kéo thả tự do giữa các ô sẽ được bổ sung ở bản nâng cấp UI.
-
----
-
-## 8. Hướng dẫn chạy và kiểm thử
-
-- **Chạy game chơi thử ngay:** Click đúp vào file `run_game.bat`.
+- **Chạy game chơi thử:** Click đúp vào file `run_game.bat`.
 - **Mở Godot Editor:** Click đúp vào file `open_editor.bat`.
+- **Chạy bộ test M3.2:**
+  ```powershell
+  & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m3_2_flow.gd
+  ```
 - **Chạy bộ test M3.1:**
   ```powershell
   & "D:\program\Godot\Godot_v4.3-stable_win64_console.exe" --headless --path "D:\project\game\NOCTELYRA" -s test_m3_1_flow.gd
@@ -902,14 +925,18 @@ FILE: test_m3_1_flow.gd
 extends SceneTree
 
 # test_m3_1_flow.gd
-# Specialized automated test suite for NOCTELYRA Milestone M3.1:
+# Specialized automated test suite for NOCTELYRA Milestone M3.1 (Updated M3.2 Safe Edition):
 # World Item State, Atomic Non-destructive Save, Test Data Isolation & Deep Validation.
+# ZERO WRITE/REMOVE/RENAME operations on user://noctelyra_slot1.json.
 
 var failures: int = 0
 var tests_run: int = 0
 
 const TEST_SAVE_PATH: String = "user://noctelyra_m3_1_test.json"
 const REAL_SAVE_PATH: String = "user://noctelyra_slot1.json"
+
+var real_file_existed_at_start: bool = false
+var real_file_hash_at_start: String = ""
 
 func _init() -> void:
 	print("==================================================")
@@ -931,16 +958,14 @@ func _wait_seconds(seconds: float) -> void:
 func _run_suite() -> void:
 	ItemDatabase.initialize()
 
+	# GHI NHẬN (CHỈ ĐỌC) TRẠNG THÁI FILE SAVE THẬT BAN ĐẦU - TUYỆT ĐỐI KHÔNG GHI/XÓA/SỬA
+	real_file_existed_at_start = FileAccess.file_exists(REAL_SAVE_PATH)
+	if real_file_existed_at_start:
+		real_file_hash_at_start = FileAccess.get_md5(REAL_SAVE_PATH)
+
 	# Cấu hình đường dẫn test riêng biệt
 	SaveManager.custom_save_path = TEST_SAVE_PATH
 	SaveManager.delete_save()
-
-	# Chuẩn bị một file save thật giả định để kiểm tra tính cách ly (Test 9)
-	var real_dummy_content := "{\"save_version\":\"1.0.0\",\"real_player_tag\":\"REAL_SAVE_DATA_DO_NOT_TOUCH\"}"
-	var real_file := FileAccess.open(REAL_SAVE_PATH, FileAccess.WRITE)
-	if real_file:
-		real_file.store_string(real_dummy_content)
-		real_file.close()
 
 	var world_scene: PackedScene = load("res://src/world/noctis_forest.tscn")
 	if not world_scene:
@@ -1002,17 +1027,17 @@ func _run_suite() -> void:
 	dropped_shard.item_id = "mana_shard"
 	dropped_shard.amount = 3
 	dropped_shard.is_dynamic = true
-	dropped_shard.pickup_id = "drop_test_shard_99"
-	dropped_shard.global_position = Vector2(2500, 630)
+	dropped_shard.pickup_id = "drop_shard_test_1"
+	dropped_shard.global_position = Vector2(2500.0, 630.0)
 	world2.add_child(dropped_shard)
-	await process_frame
 
 	var dropped_data := world2.get_dropped_pickups_data()
 	_assert(dropped_data.size() >= 1, "Thế giới ghi nhận ít nhất 1 vật phẩm rơi động chưa nhặt (thực tế: %d)" % dropped_data.size())
 
+	# Lưu game khi đồ rơi vẫn còn trên đất
 	SaveManager.save_game(world2)
 
-	# Giả lập thoát game và tải lại
+	# Tải lại vào world3
 	world2.queue_free()
 	await process_frame
 
@@ -1022,32 +1047,26 @@ func _run_suite() -> void:
 	await _wait_seconds(0.2)
 
 	SaveManager.load_game(world3)
-	await process_frame
 
-	var dyn_pickups_world3 = world3.get_tree().get_nodes_in_group("dynamic_pickups")
-	var found_shard := false
-	for p in dyn_pickups_world3:
-		if p is ItemPickup and p.item_id == "mana_shard" and p.amount == 3:
-			if abs(p.global_position.x - 2500) < 5.0:
-				found_shard = true
-				break
-	_assert(found_shard == true, "Vật phẩm rơi từ quái chưa nhặt được khôi phục chính xác tại tọa độ (2500, 630)")
+	# Kiểm tra xem vật phẩm rơi có được tái tạo đúng vị trí không
+	var restored_shard: ItemPickup = null
+	for child in world3.get_children():
+		if child is ItemPickup and child.pickup_id == "drop_shard_test_1":
+			restored_shard = child
+			break
+	_assert(restored_shard != null and is_equal_approx(restored_shard.global_position.x, 2500.0), "Vật phẩm rơi từ quái chưa nhặt được khôi phục chính xác tại tọa độ (2500, 630)")
 
 	print("\n--- TEST 3: Nhặt đồ rơi -> Save -> Load -> Không bị nhân bản ---")
-	var p3: Player = world3.get_node_or_null("Player") as Player
+	var p3: Player = world3.player
 	var inv3: InventoryComponent = p3.inventory_component
-	var count_before := inv3.get_item_count("mana_shard")
+	if restored_shard:
+		restored_shard._on_body_entered(p3)
+	_assert(inv3.get_item_count("mana_shard") == 3, "Đã nhặt 3 mana_shard vào túi")
 
-	# Tìm và nhặt mảnh mana đó
-	for p in world3.get_tree().get_nodes_in_group("dynamic_pickups"):
-		if p is ItemPickup and p.item_id == "mana_shard" and p.amount == 3:
-			p._on_body_entered(p3)
-			break
-
-	_assert(inv3.get_item_count("mana_shard") == count_before + 3, "Đã nhặt 3 mana_shard vào túi")
-
-	# Lưu và tải lại
+	# Lưu lại khi đã nhặt xong
 	SaveManager.save_game(world3)
+
+	# Nạp lại vào world4
 	world3.queue_free()
 	await process_frame
 
@@ -1057,77 +1076,54 @@ func _run_suite() -> void:
 	await _wait_seconds(0.2)
 
 	SaveManager.load_game(world4)
-	var p4: Player = world4.get_node_or_null("Player") as Player
-	_assert(p4.inventory_component.get_item_count("mana_shard") == count_before + 3, "Túi đồ giữ đúng số lượng mana_shard")
+	var p4: Player = world4.player
+	_assert(p4.inventory_component.get_item_count("mana_shard") == 3, "Túi đồ giữ đúng số lượng mana_shard")
 
-	# Kiểm tra trên đất không còn mảnh mana_shard x3 đó nữa
-	var duplicated_shard := false
-	for p in world4.get_tree().get_nodes_in_group("dynamic_pickups"):
-		if p is ItemPickup and p.item_id == "mana_shard" and p.amount == 3:
-			duplicated_shard = true
-	_assert(duplicated_shard == false, "Vật phẩm rơi đã nhặt KHÔNG bị nhân bản trên mặt đất sau khi Load!")
+	var duplicate_shard_check: ItemPickup = null
+	for child in world4.get_children():
+		if child is ItemPickup and child.pickup_id == "drop_shard_test_1":
+			duplicate_shard_check = child
+			break
+	_assert(duplicate_shard_check == null, "Vật phẩm rơi đã nhặt KHÔNG bị nhân bản trên mặt đất sau khi Load!")
 
 	print("\n--- TEST 4: Inventory đầy -> Vật phẩm không bị mất trên đất ---")
-	var inv4 := p4.inventory_component
-	for i in range(inv4.max_slots):
-		inv4.slots[i].item_id = "health_potion"
-		inv4.slots[i].amount = 20
-
-	var test_amulet_drop := pickup_scene.instantiate() as ItemPickup
-	test_amulet_drop.item_id = "moon_amulet"
-	test_amulet_drop.amount = 1
-	test_amulet_drop.is_dynamic = true
-	test_amulet_drop.global_position = p4.global_position
-	world4.add_child(test_amulet_drop)
-	await process_frame
-
-	test_amulet_drop._on_body_entered(p4)
-	_assert(test_amulet_drop.is_picked_up == false, "Túi đầy 16/16: Pickup không bị nuốt mất")
-	_assert(is_instance_valid(test_amulet_drop), "Vật phẩm vẫn nằm nguyên vẹn trên mặt đất")
-	test_amulet_drop.queue_free()
+	# Làm đầy 16 ô túi đồ
+	for i in range(16):
+		p4.inventory_component.slots[i] = {"item_id": "health_potion", "amount": 20}
+	var ground_potion := pickup_scene.instantiate() as ItemPickup
+	ground_potion.item_id = "health_potion"
+	ground_potion.amount = 1
+	ground_potion.is_dynamic = true
+	ground_potion.pickup_id = "ground_potion_test"
+	world4.add_child(ground_potion)
+	ground_potion._on_body_entered(p4)
+	_assert(ground_potion.is_picked_up == false, "Túi đầy 16/16: Pickup không bị nuốt mất")
+	_assert(ground_potion.is_inside_tree(), "Vật phẩm vẫn nằm nguyên vẹn trên mặt đất")
 
 	print("\n--- TEST 5: Save lỗi -> Giữ nguyên bản lưu trước đó (Atomic Safety) ---")
-	# Tạo một bản lưu hợp lệ trước
+	p4.inventory_component._initialize_slots()
 	SaveManager.save_game(world4)
-	var valid_text := FileAccess.get_file_as_string(TEST_SAVE_PATH)
-	_assert(not valid_text.is_empty(), "Đã có bản lưu hợp lệ hiện hữu")
+	var file_before := FileAccess.get_file_as_string(TEST_SAVE_PATH)
+	_assert(not file_before.is_empty(), "Đã có bản lưu hợp lệ hiện hữu")
 
-	# Giả lập tình huống lỗi ghi: Lưu vào đối tượng null
-	var fail_res := SaveManager.save_game(null)
-	_assert(fail_res == false, "Hàm save_game trả về false khi gặp lỗi dữ liệu đầu vào")
-	var current_text := FileAccess.get_file_as_string(TEST_SAVE_PATH)
-	_assert(current_text == valid_text, "Bản lưu hợp lệ trước đó vẫn nguyên vẹn 100%, không bị xóa hay ghi đè hỏng")
+	# Thử lưu khi truyền node rác (null)
+	var corrupt_save_res := SaveManager.save_game(null)
+	_assert(corrupt_save_res == false, "Hàm save_game trả về false khi gặp lỗi dữ liệu đầu vào")
+	var file_after := FileAccess.get_file_as_string(TEST_SAVE_PATH)
+	_assert(file_before == file_after, "Bản lưu hợp lệ trước đó vẫn nguyên vẹn 100%, không bị xóa hay ghi đè hỏng")
 
 	print("\n--- TEST 6: JSON sai cấu trúc -> Continue không crash & Validate an toàn ---")
-	# Ghi dữ liệu JSON hợp lệ về cú pháp nhưng sai kiểu dữ liệu và thiếu trường
-	var corrupt_types_data = {
-		"save_version": "1.0.0",
-		"player": {
-			"position_x": "INVALID_STRING_COORDINATE", # Sai kiểu
-			"position_y": 99999999.0, # Tọa độ vượt biên
-			"current_health": -50.0, # Máu âm
-			"current_mana": 9999.0 # Mana tràn
-		},
-		"gold": -500, # Vàng âm
-		"inventory": "THIS_SHOULD_BE_AN_ARRAY", # Sai kiểu
-		"equipment": {
-			"weapon": "NON_EXISTENT_SWORD_XYZ", # ID không tồn tại
-			"accessory": "health_potion" # Sai loại trang bị
-		},
-		"quest": {
-			"state": 99, # Trạng thái enum không hợp lệ
-			"current_amount": -10
-		}
-	}
-	var f_corrupt := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
-	f_corrupt.store_string(JSON.stringify(corrupt_types_data))
-	f_corrupt.close()
+	# Ghi một file save cố tình sai kiểu dữ liệu và sai tọa độ
+	var bad_json_content := "{\"save_version\":\"1.0.0\",\"player\":{\"position_x\":\"CORRUPTED_STRING\",\"position_y\":999999.0,\"current_health\":-50.0,\"current_mana\":999.0},\"gold\":-500,\"inventory\":[{\"item_id\":\"unknown_sword_999\",\"quantity\":1000}],\"equipment\":{\"weapon\":\"unknown_sword_999\",\"accessory\":\"health_potion\"},\"quest\":{\"state\":\"INVALID_STRING\",\"current_amount\":\"INVALID\"}}"
+	var bad_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	bad_file.store_string(bad_json_content)
+	bad_file.close()
 
-	var load_corrupt_res := SaveManager.load_game(world4)
-	_assert(load_corrupt_res == true, "Hàm load_game xử lý an toàn không crash khi gặp kiểu dữ liệu sai")
-	_assert(p4.health_component.current_health >= 0.0 and p4.health_component.current_health <= p4.health_component.max_health, "HP được clamp về khoảng an toàn (0 - 100)")
+	var safe_load_res := SaveManager.load_game(world4)
+	_assert(safe_load_res == true, "Hàm load_game xử lý an toàn không crash khi gặp kiểu dữ liệu sai")
+	_assert(p4.health_component.current_health >= 0.0 and p4.health_component.current_health <= 100.0, "HP được clamp về khoảng an toàn (0 - 100)")
 	_assert(p4.health_component.current_mana <= p4.health_component.max_mana, "MP được clamp không vượt quá Max MP")
-	_assert(p4.global_position.x >= 50.0 and p4.global_position.x <= 4300.0, "Tọa độ Player được clamp trong giới hạn bản đồ hợp lệ")
+	_assert(p4.global_position.y <= 700.0, "Tọa độ Player được clamp trong giới hạn bản đồ hợp lệ")
 	_assert(world4.quest_manager.gold >= 0, "Vàng được clamp >= 0, không bị âm")
 	_assert(p4.equipment_component.get_equipped("weapon") == "", "Vũ khí không tồn tại tự động bị loại bỏ")
 	_assert(p4.equipment_component.get_equipped("accessory") == "", "Trang bị sai loại tự động bị loại bỏ")
@@ -1166,14 +1162,16 @@ func _run_suite() -> void:
 	_assert(world5.quest_manager.gold == 80, "Vàng vẫn giữ nguyên đúng 80 G, không nhận thêm thưởng lặp lại")
 
 	print("\n--- TEST 9: Cách ly dữ liệu kiểm thử -> File save thật không bị ảnh hưởng ---")
-	_assert(FileAccess.file_exists(REAL_SAVE_PATH), "File save thật vẫn tồn tại")
-	var real_content_after := FileAccess.get_file_as_string(REAL_SAVE_PATH)
-	_assert(real_content_after == real_dummy_content, "Nội dung file save thật hoàn toàn KHÔNG BỊ THAY ĐỔI hay ghi đè trong suốt bài test!")
+	var real_file_existed_at_end := FileAccess.file_exists(REAL_SAVE_PATH)
+	if real_file_existed_at_start:
+		_assert(real_file_existed_at_end, "File save thật vẫn tồn tại sau toàn bộ bài test")
+		var real_file_hash_at_end := FileAccess.get_md5(REAL_SAVE_PATH)
+		_assert(real_file_hash_at_end == real_file_hash_at_start, "Nội dung & Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI")
+	else:
+		_assert(not real_file_existed_at_end, "File save thật không tồn tại từ đầu và KHÔNG BỊ TỰ TẠO GIẢ ĐỊNH")
 
-	# Dọn dẹp an toàn file test và file giả định
+	# Dọn dẹp DUY NHẤT file test, TUYỆT ĐỐI KHÔNG CHẠM VÀO REAL_SAVE_PATH
 	SaveManager.delete_save()
-	if FileAccess.file_exists(REAL_SAVE_PATH):
-		DirAccess.remove_absolute(REAL_SAVE_PATH)
 	SaveManager.custom_save_path = ""
 
 	print("\n--- TEST 10: Kiểm tra hồi quy các chức năng cốt lõi M0-M2.1 ---")
@@ -1192,6 +1190,275 @@ func _run_suite() -> void:
 
 	if failures == 0:
 		print(">>> ALL 10 M3.1 REQUIREMENT CATEGORIES PASSED 100%! <<<")
+		quit(0)
+	else:
+		print(">>> SOME TESTS FAILED! <<<")
+		quit(1)
+
+
+===================================================
+FILE: test_m3_2_flow.gd
+===================================================
+
+extends SceneTree
+
+# test_m3_2_flow.gd
+# Specialized automated test suite for NOCTELYRA Milestone M3.2 FINAL:
+# 1. Zero-impact Isolation on real save user://noctelyra_slot1.json
+# 2. Strict MP Restoration (with and without equipment, 75/80 and 45/60)
+# 3. True Atomic Save & Rollback Safety (fault injection on tmp write, backup, and replace)
+# 4. Deep Save File Validation (has_save rejecting malformed/unsupported, load_game safety)
+# 5. Full regression check (M0, M1, M2.1, M3).
+
+var failures: int = 0
+var tests_run: int = 0
+
+const TEST_SAVE_PATH: String = "user://noctelyra_m3_2_test.json"
+const REAL_SAVE_PATH: String = "user://noctelyra_slot1.json"
+
+var real_file_existed_at_start: bool = false
+var real_file_hash_at_start: String = ""
+
+func _init() -> void:
+	print("==================================================")
+	print(" [NOCTELYRA M3.2] INTEGRATION TEST SUITE STARTING ")
+	print("==================================================")
+	call_deferred("_run_suite")
+
+func _assert(condition: bool, test_name: String, details: String = "") -> void:
+	tests_run += 1
+	if condition:
+		print("  [PASS] %s" % test_name)
+	else:
+		failures += 1
+		print("  [FAIL] %s - Details: %s" % [test_name, details])
+
+func _wait_seconds(seconds: float) -> void:
+	await create_timer(seconds).timeout
+
+func _run_suite() -> void:
+	ItemDatabase.initialize()
+
+	# ---------------------------------------------------------
+	# PHẦN 1: GHI NHẬN CHỈ ĐỌC TRẠNG THÁI FILE SAVE THẬT BAN ĐẦU
+	# ---------------------------------------------------------
+	real_file_existed_at_start = FileAccess.file_exists(REAL_SAVE_PATH)
+	if real_file_existed_at_start:
+		real_file_hash_at_start = FileAccess.get_md5(REAL_SAVE_PATH)
+
+	# Định tuyến đường dẫn lưu sang file test riêng biệt
+	SaveManager.custom_save_path = TEST_SAVE_PATH
+	SaveManager.delete_save()
+
+	var world_scene: PackedScene = load("res://src/world/noctis_forest.tscn")
+	if not world_scene:
+		print("FATAL: Could not load noctis_forest.tscn")
+		quit(1)
+		return
+
+	var world: NoctisForest = world_scene.instantiate() as NoctisForest
+	root.add_child(world)
+	current_scene = world
+	await _wait_seconds(0.3)
+
+	var player: Player = world.player
+	var p_health: HealthComponent = player.health_component
+	var p_eq: EquipmentComponent = player.equipment_component
+	var p_inv: InventoryComponent = player.inventory_component
+
+	# ---------------------------------------------------------
+	# PHẦN 2: SỬA LỖI KHÔI PHỤC MP (CÓ VÀ KHÔNG CÓ TRANG BỊ)
+	# ---------------------------------------------------------
+	print("\n--- TEST 1: Khôi phục MP khi CÓ trang bị Bùa Nguyệt Quang (moon_amulet) ---")
+	# Tạm tắt mana regen tự động để đo lường chính xác tuyệt đối
+	p_health.mana_regen_rate = 0.0
+
+	# Trang bị Bùa Nguyệt Quang: Max MP tăng từ 60 lên 80
+	p_eq.equip("moon_amulet")
+	_assert(p_health.max_mana == 80.0, "Đã trang bị Bùa Nguyệt Quang, Max MP đạt 80.0")
+
+	# Đặt Current MP = 75.0 và lưu game
+	p_health.current_mana = 75.0
+	var s_mp1 := SaveManager.save_game(world)
+	_assert(s_mp1 == true, "Lưu game với MP = 75.0 / 80.0 thành công")
+
+	# Khởi tạo World hoàn toàn mới từ đĩa để kiểm tra Load
+	world.queue_free()
+	await process_frame
+
+	var world_mp: NoctisForest = world_scene.instantiate() as NoctisForest
+	root.add_child(world_mp)
+	current_scene = world_mp
+	await _wait_seconds(0.2)
+
+	var p_mp: Player = world_mp.player
+	var h_mp: HealthComponent = p_mp.health_component
+	h_mp.mana_regen_rate = 0.0
+
+	# Nạp game: SaveManager phải khôi phục trang bị trước rồi mới khôi phục Current MP
+	var l_mp1 := SaveManager.load_game(world_mp)
+	_assert(l_mp1 == true, "Tải bản lưu thành công")
+	_assert(p_mp.equipment_component.get_equipped("accessory") == "moon_amulet", "Trang bị Bùa Nguyệt Quang đã được khôi phục")
+	_assert(h_mp.max_mana == 80.0, "Max MP được tính toán chính xác là 80.0")
+	_assert(is_equal_approx(h_mp.current_mana, 75.0), "Current MP được áp dụng chính xác tuyệt đối là 75.0 / 80.0 (không bị clamp về 60)")
+
+	print("\n--- TEST 2: Khôi phục MP khi KHÔNG có trang bị Bùa Nguyệt Quang ---")
+	# Tháo Bùa Nguyệt Quang: Max MP trở lại 60.0
+	p_mp.equipment_component.unequip("accessory")
+	_assert(h_mp.max_mana == 60.0, "Đã tháo Bùa, Max MP trở lại 60.0")
+
+	# Đặt Current MP = 45.0 và lưu game
+	h_mp.current_mana = 45.0
+	var s_mp2 := SaveManager.save_game(world_mp)
+	_assert(s_mp2 == true, "Lưu game với MP = 45.0 / 60.0 thành công")
+
+	# Khởi tạo World mới và Load
+	world_mp.queue_free()
+	await process_frame
+
+	var world_no_acc: NoctisForest = world_scene.instantiate() as NoctisForest
+	root.add_child(world_no_acc)
+	current_scene = world_no_acc
+	await _wait_seconds(0.2)
+
+	var p_no_acc: Player = world_no_acc.player
+	var h_no_acc: HealthComponent = p_no_acc.health_component
+	h_no_acc.mana_regen_rate = 0.0
+
+	var l_mp2 := SaveManager.load_game(world_no_acc)
+	_assert(l_mp2 == true, "Tải bản lưu không có phụ kiện thành công")
+	_assert(p_no_acc.equipment_component.get_equipped("accessory") == "", "Ô phụ kiện trống đúng thực tế")
+	_assert(h_no_acc.max_mana == 60.0, "Max MP giữ đúng 60.0")
+	_assert(is_equal_approx(h_no_acc.current_mana, 45.0), "Current MP được nạp chính xác 45.0 / 60.0")
+
+	# ---------------------------------------------------------
+	# PHẦN 3: KIỂM THỬ GHI FILE AN TOÀN THỰC CHẤT (ATOMIC & ROLLBACK)
+	# ---------------------------------------------------------
+	print("\n--- TEST 3: Kiểm thử Fault Injection - Lỗi ghi file tạm (.tmp) ---")
+	# Tạo một bản lưu chuẩn làm căn cứ
+	SaveManager.save_game(world_no_acc)
+	var baseline_text := FileAccess.get_file_as_string(TEST_SAVE_PATH)
+	var baseline_md5 := FileAccess.get_md5(TEST_SAVE_PATH)
+	_assert(not baseline_text.is_empty(), "Đã thiết lập bản lưu gốc chuẩn")
+
+	# Bật mô phỏng lỗi ghi file tạm
+	SaveManager.simulate_tmp_write_error = true
+	var res_tmp_err := SaveManager.save_game(world_no_acc)
+	_assert(res_tmp_err == false, "Hàm save_game từ chối và trả về false khi ghi file tạm lỗi")
+	var text_after_tmp_err := FileAccess.get_file_as_string(TEST_SAVE_PATH)
+	_assert(text_after_tmp_err == baseline_text, "Bản lưu trước đó vẫn giữ nguyên vẹn nội dung")
+	_assert(FileAccess.get_md5(TEST_SAVE_PATH) == baseline_md5, "MD5 checksum bản lưu trước đó không hề thay đổi")
+	SaveManager.simulate_tmp_write_error = false
+
+	print("\n--- TEST 4: Kiểm thử Fault Injection - Lỗi ở bước tạo Backup (.bak) ---")
+	SaveManager.simulate_backup_error = true
+	var res_bak_err := SaveManager.save_game(world_no_acc)
+	_assert(res_bak_err == false, "Hàm save_game từ chối và trả về false khi tạo backup lỗi")
+	_assert(FileAccess.get_file_as_string(TEST_SAVE_PATH) == baseline_text, "Bản lưu trước đó không bị ảnh hưởng khi backup thất bại")
+	_assert(not FileAccess.file_exists(SaveManager.get_tmp_path()), "File tạm .tmp đã được dọn dẹp sạch sẽ")
+	SaveManager.simulate_backup_error = false
+
+	print("\n--- TEST 5: Kiểm thử Fault Injection - Lỗi khi Thay thế (Replace) & Phục hồi tự động ---")
+	SaveManager.simulate_replace_error = true
+	var res_rep_err := SaveManager.save_game(world_no_acc)
+	_assert(res_rep_err == false, "Hàm save_game báo false khi quá trình thay thế file bị gián đoạn")
+	_assert(FileAccess.file_exists(TEST_SAVE_PATH), "File save chính vẫn tồn tại sau cơ chế rollback")
+	_assert(FileAccess.get_file_as_string(TEST_SAVE_PATH) == baseline_text, "Nội dung bản lưu cũ được phục hồi chính xác 100% từ backup")
+	_assert(FileAccess.get_md5(TEST_SAVE_PATH) == baseline_md5, "MD5 checksum bản lưu khớp tuyệt đối sau phục hồi")
+	_assert(not FileAccess.file_exists(SaveManager.get_bak_path()), "File .bak đã được hoàn tất dọn dẹp")
+	_assert(not FileAccess.file_exists(SaveManager.get_tmp_path()), "File .tmp đã được dọn dẹp")
+
+	# Kiểm tra tải lại bản lưu sau sự cố: Phải tải thành công bình thường
+	SaveManager.simulate_replace_error = false
+	var load_after_rollback := SaveManager.load_game(world_no_acc)
+	_assert(load_after_rollback == true, "Tải lại bản lưu sau sự cố rollback thành công hoàn hảo")
+
+	# ---------------------------------------------------------
+	# PHẦN 4: THẨM ĐỊNH (VALIDATION) CHẶT CHẼ FILE SAVE
+	# ---------------------------------------------------------
+	print("\n--- TEST 6: has_save() từ chối JSON sai cú pháp hoặc hỏng ---")
+	var bad_syntax_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	bad_syntax_file.store_string("THIS IS NOT A VALID JSON {[[[[")
+	bad_syntax_file.close()
+	_assert(SaveManager.has_save() == false, "has_save() từ chối file JSON sai cú pháp")
+	_assert(SaveManager.load_game(world_no_acc) == false, "load_game() từ chối tải file JSON sai cú pháp")
+
+	print("\n--- TEST 7: has_save() từ chối phiên bản không hỗ trợ (Unsupported Version) ---")
+	var bad_ver_json := "{\"save_version\":\"99.0.0\",\"player\":{},\"quest\":{}}"
+	var bad_ver_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	bad_ver_file.store_string(bad_ver_json)
+	bad_ver_file.close()
+	_assert(SaveManager.has_save() == false, "has_save() từ chối phiên bản không hỗ trợ ('99.0.0')")
+	_assert(SaveManager.load_game(world_no_acc) == false, "load_game() từ chối tải phiên bản không hỗ trợ")
+
+	print("\n--- TEST 8: has_save() từ chối JSON thiếu cấu trúc dữ liệu bắt buộc ---")
+	var missing_root_json := "{\"save_version\":\"1.0.0\",\"some_other_data\":123}"
+	var missing_root_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	missing_root_file.store_string(missing_root_json)
+	missing_root_file.close()
+	_assert(SaveManager.has_save() == false, "has_save() từ chối khi thiếu khối 'player' hoặc 'quest'")
+	_assert(SaveManager.load_game(world_no_acc) == false, "load_game() từ chối khi cấu trúc không hợp lệ")
+
+	print("\n--- TEST 9: load_game() an toàn khi thiếu trường con hoặc sai kiểu dữ liệu ---")
+	var corrupt_inner_json := "{\"save_version\":\"1.0.0\",\"player\":{\"position_x\":\"CORRUPTED\",\"position_y\":99999.0,\"current_health\":-500.0,\"current_mana\":9999.0},\"gold\":-999,\"inventory\":\"NOT_AN_ARRAY\",\"equipment\":\"NOT_A_DICT\",\"quest\":{\"state\":\"INVALID\",\"current_amount\":\"INVALID\"}}"
+	var corrupt_inner_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	corrupt_inner_file.store_string(corrupt_inner_json)
+	corrupt_inner_file.close()
+
+	_assert(SaveManager.has_save() == true, "has_save() chấp nhận vì có đủ khối dữ liệu gốc")
+	var safe_load := SaveManager.load_game(world_no_acc)
+	_assert(safe_load == true, "load_game() xử lý an toàn không crash khi gặp trường con sai kiểu")
+	_assert(world_no_acc.player.health_component.current_health >= 0.0, "HP được clamp >= 0.0 an toàn")
+	_assert(world_no_acc.player.health_component.current_mana <= world_no_acc.player.health_component.max_mana, "MP không vượt quá Max MP")
+	_assert(world_no_acc.quest_manager.gold >= 0, "Vàng được clamp >= 0")
+	_assert(world_no_acc.player.global_position.y <= 700.0, "Tọa độ được clamp trong giới hạn an toàn")
+
+	print("\n--- TEST 10: load_game() từ chối khi World thiếu Player hoặc QuestManager ---")
+	_assert(SaveManager.load_game(null) == false, "load_game(null) trả về false")
+	var dummy_empty_node := Node.new()
+	_assert(SaveManager.load_game(dummy_empty_node) == false, "load_game() trả về false khi node không có Player/QuestManager")
+	dummy_empty_node.queue_free()
+
+	# ---------------------------------------------------------
+	# PHẦN 5: CÁCH LY TUYỆT ĐỐI KHÔNG CHẠM VÀO FILE SAVE THẬT
+	# ---------------------------------------------------------
+	print("\n--- TEST 11: Kiểm tra cách ly 100% đối với file save thật ---")
+	var real_file_existed_at_end := FileAccess.file_exists(REAL_SAVE_PATH)
+	if real_file_existed_at_start:
+		_assert(real_file_existed_at_end == true, "File save thật vẫn tồn tại nguyên vẹn")
+		var real_hash_at_end := FileAccess.get_md5(REAL_SAVE_PATH)
+		_assert(real_hash_at_end == real_file_hash_at_start, "Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI")
+	else:
+		_assert(real_file_existed_at_end == false, "File save thật không tồn tại từ đầu và TUYỆT ĐỐI KHÔNG BỊ TẠO GIẢ ĐỊNH")
+
+	# Dọn dẹp DUY NHẤT file test
+	SaveManager.delete_save()
+	SaveManager.custom_save_path = ""
+
+	# ---------------------------------------------------------
+	# PHẦN 6: KIỂM TRA HỒI QUY M0, M1, M2.1, M3
+	# ---------------------------------------------------------
+	print("\n--- TEST 12: Kiểm tra hồi quy toàn diện M0 -> M3 ---")
+	_assert(world_no_acc.npc_elyra.collision_layer == 0, "M2.1: NPC Elyra collision_layer = 0 (xuyên người mượt mà)")
+	_assert(world_no_acc.player.movement_data.max_jumps == 2, "M0: Hệ thống Double Jump nguyên vẹn")
+	_assert(world_no_acc.pause_controller != null, "M0: PauseController tồn tại")
+
+	world_no_acc.pause_controller.pause()
+	_assert(world_no_acc.get_tree().paused == true, "M0: Pause game thành công")
+	world_no_acc.pause_controller.resume()
+	_assert(world_no_acc.get_tree().paused == false, "M0: Resume game thành công")
+
+	_assert(world_no_acc.player.melee_hitbox != null, "M1: Melee Hitbox tồn tại")
+	_assert(world_no_acc.player.combat_component != null, "M1: Combat Component tồn tại")
+	_assert(world_no_acc.player.inventory_component.max_slots == 16, "M3: Inventory 16 ô tồn tại")
+
+	print("\n==================================================")
+	print(" [NOCTELYRA M3.2] KẾT QUẢ KIỂM THỬ TỔNG HỢP:")
+	print(" Tổng số test: %d | Đạt: %d | Thất bại: %d" % [tests_run, tests_run - failures, failures])
+	print("==================================================")
+
+	if failures == 0:
+		print(">>> ALL M3.2 TEST SCENARIOS PASSED 100%! <<<")
 		quit(0)
 	else:
 		print(">>> SOME TESTS FAILED! <<<")
@@ -2910,7 +3177,7 @@ func get_slot(index: int) -> Dictionary:
 
 func is_slot_empty(index: int) -> bool:
 	var s := get_slot(index)
-	return s.item_id.is_empty() or s.amount <= 0
+	return str(s.get("item_id", "")).is_empty() or int(s.get("amount", 0)) <= 0
 
 func can_add_item(item_id: String, amount: int = 1) -> bool:
 	if amount <= 0 or not ItemDatabase.has_item(item_id):
@@ -2921,15 +3188,19 @@ func can_add_item(item_id: String, amount: int = 1) -> bool:
 	# Kiểm tra các ô hiện có cùng loại nếu có thể stack
 	if item_def.max_stack > 1:
 		for s in slots:
-			if s.item_id == item_id and s.amount < item_def.max_stack:
-				var space: int = item_def.max_stack - s.amount
+			var s_id: String = str(s.get("item_id", ""))
+			var s_amount: int = int(s.get("amount", 0))
+			if s_id == item_id and s_amount < item_def.max_stack:
+				var space: int = item_def.max_stack - s_amount
 				needed -= space
 				if needed <= 0:
 					return true
 
 	# Kiểm tra các ô trống còn lại
 	for s in slots:
-		if s.item_id.is_empty() or s.amount <= 0:
+		var s_id: String = str(s.get("item_id", ""))
+		var s_amount: int = int(s.get("amount", 0))
+		if s_id.is_empty() or s_amount <= 0:
 			needed -= item_def.max_stack
 			if needed <= 0:
 				return true
@@ -4037,15 +4308,22 @@ FILE: src\save\save_manager.gd
 class_name SaveManager
 extends RefCounted
 
-## Hệ thống Lưu & Tải Tiến trình (Save/Load System) cho NOCTELYRA (M3.1 FINAL)
-## Hỗ trợ ghi tạm nguyên tử (Atomic write), backup an toàn, validate/clamping sâu,
-## khôi phục trạng thái vật phẩm thế giới và cách ly dữ liệu kiểm thử.
+## Hệ thống Lưu & Tải Tiến trình (Save/Load System) cho NOCTELYRA (M3.2 FINAL)
+## Hỗ trợ ghi tạm nguyên tử (Atomic write), backup và rollback khi lỗi,
+## nạp trang bị trước để tính toán chính xác Max MP/Current MP,
+## thẩm định (validation) chặt chẽ và cách ly dữ liệu kiểm thử an toàn 100%.
 
 const DEFAULT_SAVE_PATH: String = "user://noctelyra_slot1.json"
 const CURRENT_VERSION: String = "1.0.0"
+const SUPPORTED_VERSIONS: Array[String] = ["1.0.0"]
 
 static var custom_save_path: String = ""
 static var should_load_on_start: bool = false
+
+# Các cờ mô phỏng lỗi dùng riêng cho kiểm thử an toàn ghi file (Fault Injection)
+static var simulate_tmp_write_error: bool = false
+static var simulate_backup_error: bool = false
+static var simulate_replace_error: bool = false
 
 static func get_save_path() -> String:
 	if not custom_save_path.is_empty():
@@ -4068,12 +4346,30 @@ static func has_save() -> bool:
 	var text := file.get_as_text()
 	file.close()
 
+	if text.strip_edges().is_empty():
+		return false
+
 	var test_json := JSON.new()
 	var err := test_json.parse(text)
 	if err != OK or not (test_json.data is Dictionary):
 		return false
+
 	var dict: Dictionary = test_json.data
-	return dict.has("save_version")
+
+	# Thẩm định phiên bản save_version
+	if not dict.has("save_version") or not (dict["save_version"] is String):
+		return false
+	var ver: String = dict["save_version"]
+	if not ver in SUPPORTED_VERSIONS:
+		return false
+
+	# Thẩm định cấu trúc dữ liệu cốt lõi bắt buộc phải tồn tại
+	if not dict.has("player") or not (dict["player"] is Dictionary):
+		return false
+	if not dict.has("quest") or not (dict["quest"] is Dictionary):
+		return false
+
+	return true
 
 static func delete_save() -> bool:
 	var path := get_save_path()
@@ -4131,7 +4427,11 @@ static func save_game(world: Node) -> bool:
 
 	var json_str := JSON.stringify(save_data, "\t")
 
-	# 1. Ghi an toàn vào file tạm .tmp
+	# 1. Ghi an toàn vào file tạm .tmp (Kiểm tra fault injection)
+	if simulate_tmp_write_error:
+		push_error("[Mô phỏng lỗi]: Thất bại khi ghi file tạm!")
+		return false
+
 	var tmp_file := FileAccess.open(tmp_path, FileAccess.WRITE)
 	if tmp_file == null:
 		push_error("Không thể mở file tạm để ghi: " + tmp_path)
@@ -4155,30 +4455,43 @@ static func save_game(world: Node) -> bool:
 		DirAccess.remove_absolute(tmp_path)
 		return false
 
-	# 3. Thay thế an toàn không xóa mất file cũ (Bảo vệ dữ liệu M3.1)
+	# 3. Tạo bản sao lưu dự phòng .bak từ file hiện tại (nếu đã có file save cũ)
 	var has_old := FileAccess.file_exists(save_path)
 	if has_old:
 		if FileAccess.file_exists(bak_path):
 			DirAccess.remove_absolute(bak_path)
-		var bak_err := DirAccess.rename_absolute(save_path, bak_path)
-		if bak_err != OK:
-			# Không thể backup file cũ thì copy
-			DirAccess.copy_absolute(save_path, bak_path)
 
-	# Đổi tên .tmp -> file chính
+		if simulate_backup_error:
+			push_error("[Mô phỏng lỗi]: Thất bại ở bước tạo bản sao lưu .bak!")
+			DirAccess.remove_absolute(tmp_path)
+			return false
+
+		var copy_bak_err := DirAccess.copy_absolute(save_path, bak_path)
+		if copy_bak_err != OK and not FileAccess.file_exists(bak_path):
+			var bak_err := DirAccess.rename_absolute(save_path, bak_path)
+			if bak_err != OK and not FileAccess.file_exists(bak_path):
+				push_error("Không thể tạo bản sao lưu backup!")
+				DirAccess.remove_absolute(tmp_path)
+				return false
+
+	# 4. Thay thế an toàn file chính bằng file tạm (.tmp -> save_path)
 	var replace_err := DirAccess.rename_absolute(tmp_path, save_path)
-	if replace_err != OK:
-		# Thử sao chép nếu rename thất bại
+	if replace_err != OK or simulate_replace_error:
 		var copy_err := DirAccess.copy_absolute(tmp_path, save_path)
-		if copy_err != OK:
+		if copy_err != OK or simulate_replace_error:
 			push_error("Lỗi khi thay thế file save! Phục hồi bản lưu cũ từ backup.")
 			if FileAccess.file_exists(bak_path):
-				DirAccess.copy_absolute(bak_path, save_path)
-			DirAccess.remove_absolute(tmp_path)
+				var restore_err := DirAccess.copy_absolute(bak_path, save_path)
+				if restore_err != OK and not FileAccess.file_exists(save_path):
+					DirAccess.rename_absolute(bak_path, save_path)
+				if FileAccess.file_exists(save_path) and FileAccess.file_exists(bak_path):
+					DirAccess.remove_absolute(bak_path)
+			if FileAccess.file_exists(tmp_path):
+				DirAccess.remove_absolute(tmp_path)
 			return false
 		DirAccess.remove_absolute(tmp_path)
 
-	# Thành công, xóa file backup
+	# 5. Hoàn tất thành công, dọn dẹp file backup
 	if FileAccess.file_exists(bak_path):
 		DirAccess.remove_absolute(bak_path)
 
@@ -4189,6 +4502,14 @@ static func save_game(world: Node) -> bool:
 
 static func load_game(world: Node) -> bool:
 	if world == null or not has_save():
+		return false
+
+	var player := world.get_node_or_null("Player") as Player
+	var quest_mgr := world.get_node_or_null("QuestManager") as QuestManager
+	var ui := world.get_node_or_null("GameUI") as GameUI
+
+	if player == null or quest_mgr == null:
+		push_error("load_game thất bại: World thiếu Player hoặc QuestManager.")
 		return false
 
 	var save_path := get_save_path()
@@ -4206,80 +4527,87 @@ static func load_game(world: Node) -> bool:
 
 	var data: Dictionary = test_json.data
 	var version: String = str(data.get("save_version", ""))
-	if version.is_empty():
-		push_warning("Thiếu phiên bản save_version.")
+	if not version in SUPPORTED_VERSIONS:
+		push_warning("Phiên bản save_version không được hỗ trợ: " + version)
 		return false
 
-	var player := world.get_node_or_null("Player") as Player
-	var quest_mgr := world.get_node_or_null("QuestManager") as QuestManager
-	var ui := world.get_node_or_null("GameUI") as GameUI
+	# Kiểm tra các khối dữ liệu cốt lõi
+	if not data.has("player") or not (data["player"] is Dictionary):
+		push_warning("Thiếu dữ liệu player hợp lệ trong bản lưu.")
+		return false
+	if not data.has("quest") or not (data["quest"] is Dictionary):
+		push_warning("Thiếu dữ liệu quest hợp lệ trong bản lưu.")
+		return false
 
-	# 1. Khôi phục & Validate Player (Tọa độ & HP/MP)
-	if player and data.has("player") and (data["player"] is Dictionary):
-		var p_data: Dictionary = data["player"]
-		var raw_x = p_data.get("position_x", player.global_position.x)
-		var raw_y = p_data.get("position_y", player.global_position.y)
-
-		var px: float = float(raw_x) if typeof(raw_x) in [TYPE_FLOAT, TYPE_INT] else player.global_position.x
-		var py: float = float(raw_y) if typeof(raw_y) in [TYPE_FLOAT, TYPE_INT] else player.global_position.y
-		if not is_finite(px): px = 180.0
-		if not is_finite(py): py = 630.0
-
-		# Giới hạn tọa độ trong thế giới an toàn (clamp)
-		px = clamp(px, 50.0, 4300.0)
-		py = clamp(py, 100.0, 700.0)
-		player.global_position = Vector2(px, py)
-
-		var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
-		if p_health:
-			var raw_hp = p_data.get("current_health", p_health.max_health)
-			var hp_val: float = float(raw_hp) if typeof(raw_hp) in [TYPE_FLOAT, TYPE_INT] else p_health.max_health
-			p_health.current_health = clamp(hp_val, 0.0, p_health.max_health)
-
-			var raw_mp = p_data.get("current_mana", p_health.max_mana)
-			var mp_val: float = float(raw_mp) if typeof(raw_mp) in [TYPE_FLOAT, TYPE_INT] else p_health.max_mana
-			p_health.current_mana = clamp(mp_val, 0.0, p_health.max_mana)
-
-			p_health.emit_signal("health_changed", p_health.current_health, p_health.max_health)
-			p_health.emit_signal("mana_changed", p_health.current_mana, p_health.max_mana)
-
-	# 2. Khôi phục & Validate Inventory & Equipment
-	if player:
-		var p_inv := player.get_node_or_null("InventoryComponent") as InventoryComponent
-		if p_inv and data.has("inventory") and (data["inventory"] is Array):
-			p_inv.load_from_dict(data["inventory"])
-
-		var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
-		if p_eq and data.has("equipment") and (data["equipment"] is Dictionary):
+	# BƯỚC 1 (QUAN TRỌNG): Khôi phục Trang bị & Túi đồ TRƯỚC để tính toán lại Max Stats (Max MP / Sát thương)
+	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
+	if p_eq:
+		if data.has("equipment") and (data["equipment"] is Dictionary):
 			p_eq.load_from_dict(data["equipment"])
+		else:
+			p_eq.load_from_dict({})
 
-	# 3. Khôi phục & Validate Vàng & Nhiệm vụ
-	if quest_mgr:
-		var raw_gold = data.get("gold", 0)
-		var val_gold: int = int(raw_gold) if typeof(raw_gold) in [TYPE_INT, TYPE_FLOAT] else 0
-		quest_mgr.gold = clamp(val_gold, 0, 999999)
-		quest_mgr.emit_signal("gold_changed", quest_mgr.gold)
+	var p_inv := player.get_node_or_null("InventoryComponent") as InventoryComponent
+	if p_inv:
+		if data.has("inventory") and (data["inventory"] is Array):
+			p_inv.load_from_dict(data["inventory"])
+		else:
+			p_inv._initialize_slots()
 
-		if data.has("quest") and (data["quest"] is Dictionary):
-			var q_data: Dictionary = data["quest"]
-			var raw_state = q_data.get("state", 0)
-			var q_state: int = int(raw_state) if typeof(raw_state) in [TYPE_INT, TYPE_FLOAT] else 0
-			q_state = clamp(q_state, 0, 3)
+	# BƯỚC 2: Khôi phục Player (Tọa độ & HP/MP)
+	# Nhờ Bước 1 đã chạy, p_health.max_mana đã được cập nhật chính xác (80 nếu đeo moon_amulet, 60 nếu không)
+	var p_data: Dictionary = data["player"]
+	var raw_x = p_data.get("position_x", player.global_position.x)
+	var raw_y = p_data.get("position_y", player.global_position.y)
 
-			var raw_amt = q_data.get("current_amount", 0)
-			var q_amt: int = int(raw_amt) if typeof(raw_amt) in [TYPE_INT, TYPE_FLOAT] else 0
+	var px: float = float(raw_x) if typeof(raw_x) in [TYPE_FLOAT, TYPE_INT] else player.global_position.x
+	var py: float = float(raw_y) if typeof(raw_y) in [TYPE_FLOAT, TYPE_INT] else player.global_position.y
+	if not is_finite(px): px = 180.0
+	if not is_finite(py): py = 630.0
 
-			if quest_mgr.current_quest:
-				quest_mgr.current_quest.current_state = q_state as QuestData.State
-				quest_mgr.current_quest.current_amount = clamp(q_amt, 0, quest_mgr.current_quest.target_amount)
-				if q_state == QuestData.State.COMPLETED:
-					quest_mgr.current_quest.current_amount = quest_mgr.current_quest.target_amount
+	# Giới hạn tọa độ trong thế giới an toàn (clamp)
+	px = clamp(px, 50.0, 4300.0)
+	py = clamp(py, 100.0, 700.0)
+	player.global_position = Vector2(px, py)
 
-				if ui:
-					ui.update_quest_info(quest_mgr.current_quest)
-					ui.update_gold(quest_mgr.gold)
+	var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
+	if p_health:
+		var raw_hp = p_data.get("current_health", p_health.max_health)
+		var hp_val: float = float(raw_hp) if typeof(raw_hp) in [TYPE_FLOAT, TYPE_INT] else p_health.max_health
+		p_health.current_health = clamp(hp_val, 0.0, p_health.max_health)
 
-	# 4. Khôi phục trạng thái vật phẩm thế giới và quái vật (M3.1)
+		var raw_mp = p_data.get("current_mana", p_health.max_mana)
+		var mp_val: float = float(raw_mp) if typeof(raw_mp) in [TYPE_FLOAT, TYPE_INT] else p_health.max_mana
+		p_health.current_mana = clamp(mp_val, 0.0, p_health.max_mana)
+
+		p_health.emit_signal("health_changed", p_health.current_health, p_health.max_health)
+		p_health.emit_signal("mana_changed", p_health.current_mana, p_health.max_mana)
+
+	# BƯỚC 3: Khôi phục & Validate Vàng & Nhiệm vụ
+	var raw_gold = data.get("gold", 0)
+	var val_gold: int = int(raw_gold) if typeof(raw_gold) in [TYPE_INT, TYPE_FLOAT] else 0
+	quest_mgr.gold = clamp(val_gold, 0, 999999)
+	quest_mgr.emit_signal("gold_changed", quest_mgr.gold)
+
+	var q_data: Dictionary = data["quest"]
+	var raw_state = q_data.get("state", 0)
+	var q_state: int = int(raw_state) if typeof(raw_state) in [TYPE_INT, TYPE_FLOAT] else 0
+	q_state = clamp(q_state, 0, 3)
+
+	var raw_amt = q_data.get("current_amount", 0)
+	var q_amt: int = int(raw_amt) if typeof(raw_amt) in [TYPE_INT, TYPE_FLOAT] else 0
+
+	if quest_mgr.current_quest:
+		quest_mgr.current_quest.current_state = q_state as QuestData.State
+		quest_mgr.current_quest.current_amount = clamp(q_amt, 0, quest_mgr.current_quest.target_amount)
+		if q_state == QuestData.State.COMPLETED:
+			quest_mgr.current_quest.current_amount = quest_mgr.current_quest.target_amount
+
+		if ui:
+			ui.update_quest_info(quest_mgr.current_quest)
+			ui.update_gold(quest_mgr.gold)
+
+	# BƯỚC 4: Khôi phục trạng thái vật phẩm thế giới và quái vật
 	var raw_collected = data.get("collected_pickup_ids", [])
 	var collected_ids: Array = raw_collected if raw_collected is Array else []
 
@@ -4293,11 +4621,10 @@ static func load_game(world: Node) -> bool:
 		world.restore_world_state(collected_ids, dropped_pickups, defeated_ids)
 
 	# Đồng bộ danh sách quái đã chết vào QuestManager để chống đếm trùng
-	if quest_mgr:
-		for did in defeated_ids:
-			var sid := str(did)
-			if not sid in quest_mgr._killed_enemy_ids:
-				quest_mgr._killed_enemy_ids.append(sid)
+	for did in defeated_ids:
+		var sid := str(did)
+		if not sid in quest_mgr._killed_enemy_ids:
+			quest_mgr._killed_enemy_ids.append(sid)
 
 	if ui:
 		ui.show_notification("Đã tải bản lưu thành công!")

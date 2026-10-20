@@ -1,15 +1,22 @@
 class_name SaveManager
 extends RefCounted
 
-## Hệ thống Lưu & Tải Tiến trình (Save/Load System) cho NOCTELYRA (M3.1 FINAL)
-## Hỗ trợ ghi tạm nguyên tử (Atomic write), backup an toàn, validate/clamping sâu,
-## khôi phục trạng thái vật phẩm thế giới và cách ly dữ liệu kiểm thử.
+## Hệ thống Lưu & Tải Tiến trình (Save/Load System) cho NOCTELYRA (M3.2 FINAL)
+## Hỗ trợ ghi tạm nguyên tử (Atomic write), backup và rollback khi lỗi,
+## nạp trang bị trước để tính toán chính xác Max MP/Current MP,
+## thẩm định (validation) chặt chẽ và cách ly dữ liệu kiểm thử an toàn 100%.
 
 const DEFAULT_SAVE_PATH: String = "user://noctelyra_slot1.json"
 const CURRENT_VERSION: String = "1.0.0"
+const SUPPORTED_VERSIONS: Array[String] = ["1.0.0"]
 
 static var custom_save_path: String = ""
 static var should_load_on_start: bool = false
+
+# Các cờ mô phỏng lỗi dùng riêng cho kiểm thử an toàn ghi file (Fault Injection)
+static var simulate_tmp_write_error: bool = false
+static var simulate_backup_error: bool = false
+static var simulate_replace_error: bool = false
 
 static func get_save_path() -> String:
 	if not custom_save_path.is_empty():
@@ -32,12 +39,30 @@ static func has_save() -> bool:
 	var text := file.get_as_text()
 	file.close()
 
+	if text.strip_edges().is_empty():
+		return false
+
 	var test_json := JSON.new()
 	var err := test_json.parse(text)
 	if err != OK or not (test_json.data is Dictionary):
 		return false
+
 	var dict: Dictionary = test_json.data
-	return dict.has("save_version")
+
+	# Thẩm định phiên bản save_version
+	if not dict.has("save_version") or not (dict["save_version"] is String):
+		return false
+	var ver: String = dict["save_version"]
+	if not ver in SUPPORTED_VERSIONS:
+		return false
+
+	# Thẩm định cấu trúc dữ liệu cốt lõi bắt buộc phải tồn tại
+	if not dict.has("player") or not (dict["player"] is Dictionary):
+		return false
+	if not dict.has("quest") or not (dict["quest"] is Dictionary):
+		return false
+
+	return true
 
 static func delete_save() -> bool:
 	var path := get_save_path()
@@ -95,7 +120,11 @@ static func save_game(world: Node) -> bool:
 
 	var json_str := JSON.stringify(save_data, "\t")
 
-	# 1. Ghi an toàn vào file tạm .tmp
+	# 1. Ghi an toàn vào file tạm .tmp (Kiểm tra fault injection)
+	if simulate_tmp_write_error:
+		push_error("[Mô phỏng lỗi]: Thất bại khi ghi file tạm!")
+		return false
+
 	var tmp_file := FileAccess.open(tmp_path, FileAccess.WRITE)
 	if tmp_file == null:
 		push_error("Không thể mở file tạm để ghi: " + tmp_path)
@@ -119,30 +148,43 @@ static func save_game(world: Node) -> bool:
 		DirAccess.remove_absolute(tmp_path)
 		return false
 
-	# 3. Thay thế an toàn không xóa mất file cũ (Bảo vệ dữ liệu M3.1)
+	# 3. Tạo bản sao lưu dự phòng .bak từ file hiện tại (nếu đã có file save cũ)
 	var has_old := FileAccess.file_exists(save_path)
 	if has_old:
 		if FileAccess.file_exists(bak_path):
 			DirAccess.remove_absolute(bak_path)
-		var bak_err := DirAccess.rename_absolute(save_path, bak_path)
-		if bak_err != OK:
-			# Không thể backup file cũ thì copy
-			DirAccess.copy_absolute(save_path, bak_path)
 
-	# Đổi tên .tmp -> file chính
+		if simulate_backup_error:
+			push_error("[Mô phỏng lỗi]: Thất bại ở bước tạo bản sao lưu .bak!")
+			DirAccess.remove_absolute(tmp_path)
+			return false
+
+		var copy_bak_err := DirAccess.copy_absolute(save_path, bak_path)
+		if copy_bak_err != OK and not FileAccess.file_exists(bak_path):
+			var bak_err := DirAccess.rename_absolute(save_path, bak_path)
+			if bak_err != OK and not FileAccess.file_exists(bak_path):
+				push_error("Không thể tạo bản sao lưu backup!")
+				DirAccess.remove_absolute(tmp_path)
+				return false
+
+	# 4. Thay thế an toàn file chính bằng file tạm (.tmp -> save_path)
 	var replace_err := DirAccess.rename_absolute(tmp_path, save_path)
-	if replace_err != OK:
-		# Thử sao chép nếu rename thất bại
+	if replace_err != OK or simulate_replace_error:
 		var copy_err := DirAccess.copy_absolute(tmp_path, save_path)
-		if copy_err != OK:
+		if copy_err != OK or simulate_replace_error:
 			push_error("Lỗi khi thay thế file save! Phục hồi bản lưu cũ từ backup.")
 			if FileAccess.file_exists(bak_path):
-				DirAccess.copy_absolute(bak_path, save_path)
-			DirAccess.remove_absolute(tmp_path)
+				var restore_err := DirAccess.copy_absolute(bak_path, save_path)
+				if restore_err != OK and not FileAccess.file_exists(save_path):
+					DirAccess.rename_absolute(bak_path, save_path)
+				if FileAccess.file_exists(save_path) and FileAccess.file_exists(bak_path):
+					DirAccess.remove_absolute(bak_path)
+			if FileAccess.file_exists(tmp_path):
+				DirAccess.remove_absolute(tmp_path)
 			return false
 		DirAccess.remove_absolute(tmp_path)
 
-	# Thành công, xóa file backup
+	# 5. Hoàn tất thành công, dọn dẹp file backup
 	if FileAccess.file_exists(bak_path):
 		DirAccess.remove_absolute(bak_path)
 
@@ -153,6 +195,14 @@ static func save_game(world: Node) -> bool:
 
 static func load_game(world: Node) -> bool:
 	if world == null or not has_save():
+		return false
+
+	var player := world.get_node_or_null("Player") as Player
+	var quest_mgr := world.get_node_or_null("QuestManager") as QuestManager
+	var ui := world.get_node_or_null("GameUI") as GameUI
+
+	if player == null or quest_mgr == null:
+		push_error("load_game thất bại: World thiếu Player hoặc QuestManager.")
 		return false
 
 	var save_path := get_save_path()
@@ -170,80 +220,87 @@ static func load_game(world: Node) -> bool:
 
 	var data: Dictionary = test_json.data
 	var version: String = str(data.get("save_version", ""))
-	if version.is_empty():
-		push_warning("Thiếu phiên bản save_version.")
+	if not version in SUPPORTED_VERSIONS:
+		push_warning("Phiên bản save_version không được hỗ trợ: " + version)
 		return false
 
-	var player := world.get_node_or_null("Player") as Player
-	var quest_mgr := world.get_node_or_null("QuestManager") as QuestManager
-	var ui := world.get_node_or_null("GameUI") as GameUI
+	# Kiểm tra các khối dữ liệu cốt lõi
+	if not data.has("player") or not (data["player"] is Dictionary):
+		push_warning("Thiếu dữ liệu player hợp lệ trong bản lưu.")
+		return false
+	if not data.has("quest") or not (data["quest"] is Dictionary):
+		push_warning("Thiếu dữ liệu quest hợp lệ trong bản lưu.")
+		return false
 
-	# 1. Khôi phục & Validate Player (Tọa độ & HP/MP)
-	if player and data.has("player") and (data["player"] is Dictionary):
-		var p_data: Dictionary = data["player"]
-		var raw_x = p_data.get("position_x", player.global_position.x)
-		var raw_y = p_data.get("position_y", player.global_position.y)
-
-		var px: float = float(raw_x) if typeof(raw_x) in [TYPE_FLOAT, TYPE_INT] else player.global_position.x
-		var py: float = float(raw_y) if typeof(raw_y) in [TYPE_FLOAT, TYPE_INT] else player.global_position.y
-		if not is_finite(px): px = 180.0
-		if not is_finite(py): py = 630.0
-
-		# Giới hạn tọa độ trong thế giới an toàn (clamp)
-		px = clamp(px, 50.0, 4300.0)
-		py = clamp(py, 100.0, 700.0)
-		player.global_position = Vector2(px, py)
-
-		var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
-		if p_health:
-			var raw_hp = p_data.get("current_health", p_health.max_health)
-			var hp_val: float = float(raw_hp) if typeof(raw_hp) in [TYPE_FLOAT, TYPE_INT] else p_health.max_health
-			p_health.current_health = clamp(hp_val, 0.0, p_health.max_health)
-
-			var raw_mp = p_data.get("current_mana", p_health.max_mana)
-			var mp_val: float = float(raw_mp) if typeof(raw_mp) in [TYPE_FLOAT, TYPE_INT] else p_health.max_mana
-			p_health.current_mana = clamp(mp_val, 0.0, p_health.max_mana)
-
-			p_health.emit_signal("health_changed", p_health.current_health, p_health.max_health)
-			p_health.emit_signal("mana_changed", p_health.current_mana, p_health.max_mana)
-
-	# 2. Khôi phục & Validate Inventory & Equipment
-	if player:
-		var p_inv := player.get_node_or_null("InventoryComponent") as InventoryComponent
-		if p_inv and data.has("inventory") and (data["inventory"] is Array):
-			p_inv.load_from_dict(data["inventory"])
-
-		var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
-		if p_eq and data.has("equipment") and (data["equipment"] is Dictionary):
+	# BƯỚC 1 (QUAN TRỌNG): Khôi phục Trang bị & Túi đồ TRƯỚC để tính toán lại Max Stats (Max MP / Sát thương)
+	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
+	if p_eq:
+		if data.has("equipment") and (data["equipment"] is Dictionary):
 			p_eq.load_from_dict(data["equipment"])
+		else:
+			p_eq.load_from_dict({})
 
-	# 3. Khôi phục & Validate Vàng & Nhiệm vụ
-	if quest_mgr:
-		var raw_gold = data.get("gold", 0)
-		var val_gold: int = int(raw_gold) if typeof(raw_gold) in [TYPE_INT, TYPE_FLOAT] else 0
-		quest_mgr.gold = clamp(val_gold, 0, 999999)
-		quest_mgr.emit_signal("gold_changed", quest_mgr.gold)
+	var p_inv := player.get_node_or_null("InventoryComponent") as InventoryComponent
+	if p_inv:
+		if data.has("inventory") and (data["inventory"] is Array):
+			p_inv.load_from_dict(data["inventory"])
+		else:
+			p_inv._initialize_slots()
 
-		if data.has("quest") and (data["quest"] is Dictionary):
-			var q_data: Dictionary = data["quest"]
-			var raw_state = q_data.get("state", 0)
-			var q_state: int = int(raw_state) if typeof(raw_state) in [TYPE_INT, TYPE_FLOAT] else 0
-			q_state = clamp(q_state, 0, 3)
+	# BƯỚC 2: Khôi phục Player (Tọa độ & HP/MP)
+	# Nhờ Bước 1 đã chạy, p_health.max_mana đã được cập nhật chính xác (80 nếu đeo moon_amulet, 60 nếu không)
+	var p_data: Dictionary = data["player"]
+	var raw_x = p_data.get("position_x", player.global_position.x)
+	var raw_y = p_data.get("position_y", player.global_position.y)
 
-			var raw_amt = q_data.get("current_amount", 0)
-			var q_amt: int = int(raw_amt) if typeof(raw_amt) in [TYPE_INT, TYPE_FLOAT] else 0
+	var px: float = float(raw_x) if typeof(raw_x) in [TYPE_FLOAT, TYPE_INT] else player.global_position.x
+	var py: float = float(raw_y) if typeof(raw_y) in [TYPE_FLOAT, TYPE_INT] else player.global_position.y
+	if not is_finite(px): px = 180.0
+	if not is_finite(py): py = 630.0
 
-			if quest_mgr.current_quest:
-				quest_mgr.current_quest.current_state = q_state as QuestData.State
-				quest_mgr.current_quest.current_amount = clamp(q_amt, 0, quest_mgr.current_quest.target_amount)
-				if q_state == QuestData.State.COMPLETED:
-					quest_mgr.current_quest.current_amount = quest_mgr.current_quest.target_amount
+	# Giới hạn tọa độ trong thế giới an toàn (clamp)
+	px = clamp(px, 50.0, 4300.0)
+	py = clamp(py, 100.0, 700.0)
+	player.global_position = Vector2(px, py)
 
-				if ui:
-					ui.update_quest_info(quest_mgr.current_quest)
-					ui.update_gold(quest_mgr.gold)
+	var p_health := player.get_node_or_null("HealthComponent") as HealthComponent
+	if p_health:
+		var raw_hp = p_data.get("current_health", p_health.max_health)
+		var hp_val: float = float(raw_hp) if typeof(raw_hp) in [TYPE_FLOAT, TYPE_INT] else p_health.max_health
+		p_health.current_health = clamp(hp_val, 0.0, p_health.max_health)
 
-	# 4. Khôi phục trạng thái vật phẩm thế giới và quái vật (M3.1)
+		var raw_mp = p_data.get("current_mana", p_health.max_mana)
+		var mp_val: float = float(raw_mp) if typeof(raw_mp) in [TYPE_FLOAT, TYPE_INT] else p_health.max_mana
+		p_health.current_mana = clamp(mp_val, 0.0, p_health.max_mana)
+
+		p_health.emit_signal("health_changed", p_health.current_health, p_health.max_health)
+		p_health.emit_signal("mana_changed", p_health.current_mana, p_health.max_mana)
+
+	# BƯỚC 3: Khôi phục & Validate Vàng & Nhiệm vụ
+	var raw_gold = data.get("gold", 0)
+	var val_gold: int = int(raw_gold) if typeof(raw_gold) in [TYPE_INT, TYPE_FLOAT] else 0
+	quest_mgr.gold = clamp(val_gold, 0, 999999)
+	quest_mgr.emit_signal("gold_changed", quest_mgr.gold)
+
+	var q_data: Dictionary = data["quest"]
+	var raw_state = q_data.get("state", 0)
+	var q_state: int = int(raw_state) if typeof(raw_state) in [TYPE_INT, TYPE_FLOAT] else 0
+	q_state = clamp(q_state, 0, 3)
+
+	var raw_amt = q_data.get("current_amount", 0)
+	var q_amt: int = int(raw_amt) if typeof(raw_amt) in [TYPE_INT, TYPE_FLOAT] else 0
+
+	if quest_mgr.current_quest:
+		quest_mgr.current_quest.current_state = q_state as QuestData.State
+		quest_mgr.current_quest.current_amount = clamp(q_amt, 0, quest_mgr.current_quest.target_amount)
+		if q_state == QuestData.State.COMPLETED:
+			quest_mgr.current_quest.current_amount = quest_mgr.current_quest.target_amount
+
+		if ui:
+			ui.update_quest_info(quest_mgr.current_quest)
+			ui.update_gold(quest_mgr.gold)
+
+	# BƯỚC 4: Khôi phục trạng thái vật phẩm thế giới và quái vật
 	var raw_collected = data.get("collected_pickup_ids", [])
 	var collected_ids: Array = raw_collected if raw_collected is Array else []
 
@@ -257,11 +314,10 @@ static func load_game(world: Node) -> bool:
 		world.restore_world_state(collected_ids, dropped_pickups, defeated_ids)
 
 	# Đồng bộ danh sách quái đã chết vào QuestManager để chống đếm trùng
-	if quest_mgr:
-		for did in defeated_ids:
-			var sid := str(did)
-			if not sid in quest_mgr._killed_enemy_ids:
-				quest_mgr._killed_enemy_ids.append(sid)
+	for did in defeated_ids:
+		var sid := str(did)
+		if not sid in quest_mgr._killed_enemy_ids:
+			quest_mgr._killed_enemy_ids.append(sid)
 
 	if ui:
 		ui.show_notification("Đã tải bản lưu thành công!")

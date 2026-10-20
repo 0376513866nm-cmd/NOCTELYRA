@@ -30,7 +30,7 @@ func get_slot(index: int) -> Dictionary:
 
 func is_slot_empty(index: int) -> bool:
 	var s := get_slot(index)
-	return s.item_id.is_empty() or s.amount <= 0
+	return str(s.get("item_id", "")).is_empty() or int(s.get("amount", 0)) <= 0
 
 func can_add_item(item_id: String, amount: int = 1) -> bool:
 	if amount <= 0 or not ItemDatabase.has_item(item_id):
@@ -41,15 +41,19 @@ func can_add_item(item_id: String, amount: int = 1) -> bool:
 	# Kiểm tra các ô hiện có cùng loại nếu có thể stack
 	if item_def.max_stack > 1:
 		for s in slots:
-			if s.item_id == item_id and s.amount < item_def.max_stack:
-				var space: int = item_def.max_stack - s.amount
+			var s_id: String = str(s.get("item_id", ""))
+			var s_amount: int = int(s.get("amount", 0))
+			if s_id == item_id and s_amount < item_def.max_stack:
+				var space: int = item_def.max_stack - s_amount
 				needed -= space
 				if needed <= 0:
 					return true
 
 	# Kiểm tra các ô trống còn lại
 	for s in slots:
-		if s.item_id.is_empty() or s.amount <= 0:
+		var s_id: String = str(s.get("item_id", ""))
+		var s_amount: int = int(s.get("amount", 0))
+		if s_id.is_empty() or s_amount <= 0:
 			needed -= item_def.max_stack
 			if needed <= 0:
 				return true

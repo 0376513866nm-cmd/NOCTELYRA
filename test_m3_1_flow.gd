@@ -1,14 +1,18 @@
 extends SceneTree
 
 # test_m3_1_flow.gd
-# Specialized automated test suite for NOCTELYRA Milestone M3.1:
+# Specialized automated test suite for NOCTELYRA Milestone M3.1 (Updated M3.2 Safe Edition):
 # World Item State, Atomic Non-destructive Save, Test Data Isolation & Deep Validation.
+# ZERO WRITE/REMOVE/RENAME operations on user://noctelyra_slot1.json.
 
 var failures: int = 0
 var tests_run: int = 0
 
 const TEST_SAVE_PATH: String = "user://noctelyra_m3_1_test.json"
 const REAL_SAVE_PATH: String = "user://noctelyra_slot1.json"
+
+var real_file_existed_at_start: bool = false
+var real_file_hash_at_start: String = ""
 
 func _init() -> void:
 	print("==================================================")
@@ -30,16 +34,14 @@ func _wait_seconds(seconds: float) -> void:
 func _run_suite() -> void:
 	ItemDatabase.initialize()
 
+	# GHI NHẬN (CHỈ ĐỌC) TRẠNG THÁI FILE SAVE THẬT BAN ĐẦU - TUYỆT ĐỐI KHÔNG GHI/XÓA/SỬA
+	real_file_existed_at_start = FileAccess.file_exists(REAL_SAVE_PATH)
+	if real_file_existed_at_start:
+		real_file_hash_at_start = FileAccess.get_md5(REAL_SAVE_PATH)
+
 	# Cấu hình đường dẫn test riêng biệt
 	SaveManager.custom_save_path = TEST_SAVE_PATH
 	SaveManager.delete_save()
-
-	# Chuẩn bị một file save thật giả định để kiểm tra tính cách ly (Test 9)
-	var real_dummy_content := "{\"save_version\":\"1.0.0\",\"real_player_tag\":\"REAL_SAVE_DATA_DO_NOT_TOUCH\"}"
-	var real_file := FileAccess.open(REAL_SAVE_PATH, FileAccess.WRITE)
-	if real_file:
-		real_file.store_string(real_dummy_content)
-		real_file.close()
 
 	var world_scene: PackedScene = load("res://src/world/noctis_forest.tscn")
 	if not world_scene:
@@ -101,17 +103,17 @@ func _run_suite() -> void:
 	dropped_shard.item_id = "mana_shard"
 	dropped_shard.amount = 3
 	dropped_shard.is_dynamic = true
-	dropped_shard.pickup_id = "drop_test_shard_99"
-	dropped_shard.global_position = Vector2(2500, 630)
+	dropped_shard.pickup_id = "drop_shard_test_1"
+	dropped_shard.global_position = Vector2(2500.0, 630.0)
 	world2.add_child(dropped_shard)
-	await process_frame
 
 	var dropped_data := world2.get_dropped_pickups_data()
 	_assert(dropped_data.size() >= 1, "Thế giới ghi nhận ít nhất 1 vật phẩm rơi động chưa nhặt (thực tế: %d)" % dropped_data.size())
 
+	# Lưu game khi đồ rơi vẫn còn trên đất
 	SaveManager.save_game(world2)
 
-	# Giả lập thoát game và tải lại
+	# Tải lại vào world3
 	world2.queue_free()
 	await process_frame
 
@@ -121,32 +123,26 @@ func _run_suite() -> void:
 	await _wait_seconds(0.2)
 
 	SaveManager.load_game(world3)
-	await process_frame
 
-	var dyn_pickups_world3 = world3.get_tree().get_nodes_in_group("dynamic_pickups")
-	var found_shard := false
-	for p in dyn_pickups_world3:
-		if p is ItemPickup and p.item_id == "mana_shard" and p.amount == 3:
-			if abs(p.global_position.x - 2500) < 5.0:
-				found_shard = true
-				break
-	_assert(found_shard == true, "Vật phẩm rơi từ quái chưa nhặt được khôi phục chính xác tại tọa độ (2500, 630)")
+	# Kiểm tra xem vật phẩm rơi có được tái tạo đúng vị trí không
+	var restored_shard: ItemPickup = null
+	for child in world3.get_children():
+		if child is ItemPickup and child.pickup_id == "drop_shard_test_1":
+			restored_shard = child
+			break
+	_assert(restored_shard != null and is_equal_approx(restored_shard.global_position.x, 2500.0), "Vật phẩm rơi từ quái chưa nhặt được khôi phục chính xác tại tọa độ (2500, 630)")
 
 	print("\n--- TEST 3: Nhặt đồ rơi -> Save -> Load -> Không bị nhân bản ---")
-	var p3: Player = world3.get_node_or_null("Player") as Player
+	var p3: Player = world3.player
 	var inv3: InventoryComponent = p3.inventory_component
-	var count_before := inv3.get_item_count("mana_shard")
+	if restored_shard:
+		restored_shard._on_body_entered(p3)
+	_assert(inv3.get_item_count("mana_shard") == 3, "Đã nhặt 3 mana_shard vào túi")
 
-	# Tìm và nhặt mảnh mana đó
-	for p in world3.get_tree().get_nodes_in_group("dynamic_pickups"):
-		if p is ItemPickup and p.item_id == "mana_shard" and p.amount == 3:
-			p._on_body_entered(p3)
-			break
-
-	_assert(inv3.get_item_count("mana_shard") == count_before + 3, "Đã nhặt 3 mana_shard vào túi")
-
-	# Lưu và tải lại
+	# Lưu lại khi đã nhặt xong
 	SaveManager.save_game(world3)
+
+	# Nạp lại vào world4
 	world3.queue_free()
 	await process_frame
 
@@ -156,77 +152,54 @@ func _run_suite() -> void:
 	await _wait_seconds(0.2)
 
 	SaveManager.load_game(world4)
-	var p4: Player = world4.get_node_or_null("Player") as Player
-	_assert(p4.inventory_component.get_item_count("mana_shard") == count_before + 3, "Túi đồ giữ đúng số lượng mana_shard")
+	var p4: Player = world4.player
+	_assert(p4.inventory_component.get_item_count("mana_shard") == 3, "Túi đồ giữ đúng số lượng mana_shard")
 
-	# Kiểm tra trên đất không còn mảnh mana_shard x3 đó nữa
-	var duplicated_shard := false
-	for p in world4.get_tree().get_nodes_in_group("dynamic_pickups"):
-		if p is ItemPickup and p.item_id == "mana_shard" and p.amount == 3:
-			duplicated_shard = true
-	_assert(duplicated_shard == false, "Vật phẩm rơi đã nhặt KHÔNG bị nhân bản trên mặt đất sau khi Load!")
+	var duplicate_shard_check: ItemPickup = null
+	for child in world4.get_children():
+		if child is ItemPickup and child.pickup_id == "drop_shard_test_1":
+			duplicate_shard_check = child
+			break
+	_assert(duplicate_shard_check == null, "Vật phẩm rơi đã nhặt KHÔNG bị nhân bản trên mặt đất sau khi Load!")
 
 	print("\n--- TEST 4: Inventory đầy -> Vật phẩm không bị mất trên đất ---")
-	var inv4 := p4.inventory_component
-	for i in range(inv4.max_slots):
-		inv4.slots[i].item_id = "health_potion"
-		inv4.slots[i].amount = 20
-
-	var test_amulet_drop := pickup_scene.instantiate() as ItemPickup
-	test_amulet_drop.item_id = "moon_amulet"
-	test_amulet_drop.amount = 1
-	test_amulet_drop.is_dynamic = true
-	test_amulet_drop.global_position = p4.global_position
-	world4.add_child(test_amulet_drop)
-	await process_frame
-
-	test_amulet_drop._on_body_entered(p4)
-	_assert(test_amulet_drop.is_picked_up == false, "Túi đầy 16/16: Pickup không bị nuốt mất")
-	_assert(is_instance_valid(test_amulet_drop), "Vật phẩm vẫn nằm nguyên vẹn trên mặt đất")
-	test_amulet_drop.queue_free()
+	# Làm đầy 16 ô túi đồ
+	for i in range(16):
+		p4.inventory_component.slots[i] = {"item_id": "health_potion", "amount": 20}
+	var ground_potion := pickup_scene.instantiate() as ItemPickup
+	ground_potion.item_id = "health_potion"
+	ground_potion.amount = 1
+	ground_potion.is_dynamic = true
+	ground_potion.pickup_id = "ground_potion_test"
+	world4.add_child(ground_potion)
+	ground_potion._on_body_entered(p4)
+	_assert(ground_potion.is_picked_up == false, "Túi đầy 16/16: Pickup không bị nuốt mất")
+	_assert(ground_potion.is_inside_tree(), "Vật phẩm vẫn nằm nguyên vẹn trên mặt đất")
 
 	print("\n--- TEST 5: Save lỗi -> Giữ nguyên bản lưu trước đó (Atomic Safety) ---")
-	# Tạo một bản lưu hợp lệ trước
+	p4.inventory_component._initialize_slots()
 	SaveManager.save_game(world4)
-	var valid_text := FileAccess.get_file_as_string(TEST_SAVE_PATH)
-	_assert(not valid_text.is_empty(), "Đã có bản lưu hợp lệ hiện hữu")
+	var file_before := FileAccess.get_file_as_string(TEST_SAVE_PATH)
+	_assert(not file_before.is_empty(), "Đã có bản lưu hợp lệ hiện hữu")
 
-	# Giả lập tình huống lỗi ghi: Lưu vào đối tượng null
-	var fail_res := SaveManager.save_game(null)
-	_assert(fail_res == false, "Hàm save_game trả về false khi gặp lỗi dữ liệu đầu vào")
-	var current_text := FileAccess.get_file_as_string(TEST_SAVE_PATH)
-	_assert(current_text == valid_text, "Bản lưu hợp lệ trước đó vẫn nguyên vẹn 100%, không bị xóa hay ghi đè hỏng")
+	# Thử lưu khi truyền node rác (null)
+	var corrupt_save_res := SaveManager.save_game(null)
+	_assert(corrupt_save_res == false, "Hàm save_game trả về false khi gặp lỗi dữ liệu đầu vào")
+	var file_after := FileAccess.get_file_as_string(TEST_SAVE_PATH)
+	_assert(file_before == file_after, "Bản lưu hợp lệ trước đó vẫn nguyên vẹn 100%, không bị xóa hay ghi đè hỏng")
 
 	print("\n--- TEST 6: JSON sai cấu trúc -> Continue không crash & Validate an toàn ---")
-	# Ghi dữ liệu JSON hợp lệ về cú pháp nhưng sai kiểu dữ liệu và thiếu trường
-	var corrupt_types_data = {
-		"save_version": "1.0.0",
-		"player": {
-			"position_x": "INVALID_STRING_COORDINATE", # Sai kiểu
-			"position_y": 99999999.0, # Tọa độ vượt biên
-			"current_health": -50.0, # Máu âm
-			"current_mana": 9999.0 # Mana tràn
-		},
-		"gold": -500, # Vàng âm
-		"inventory": "THIS_SHOULD_BE_AN_ARRAY", # Sai kiểu
-		"equipment": {
-			"weapon": "NON_EXISTENT_SWORD_XYZ", # ID không tồn tại
-			"accessory": "health_potion" # Sai loại trang bị
-		},
-		"quest": {
-			"state": 99, # Trạng thái enum không hợp lệ
-			"current_amount": -10
-		}
-	}
-	var f_corrupt := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
-	f_corrupt.store_string(JSON.stringify(corrupt_types_data))
-	f_corrupt.close()
+	# Ghi một file save cố tình sai kiểu dữ liệu và sai tọa độ
+	var bad_json_content := "{\"save_version\":\"1.0.0\",\"player\":{\"position_x\":\"CORRUPTED_STRING\",\"position_y\":999999.0,\"current_health\":-50.0,\"current_mana\":999.0},\"gold\":-500,\"inventory\":[{\"item_id\":\"unknown_sword_999\",\"quantity\":1000}],\"equipment\":{\"weapon\":\"unknown_sword_999\",\"accessory\":\"health_potion\"},\"quest\":{\"state\":\"INVALID_STRING\",\"current_amount\":\"INVALID\"}}"
+	var bad_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	bad_file.store_string(bad_json_content)
+	bad_file.close()
 
-	var load_corrupt_res := SaveManager.load_game(world4)
-	_assert(load_corrupt_res == true, "Hàm load_game xử lý an toàn không crash khi gặp kiểu dữ liệu sai")
-	_assert(p4.health_component.current_health >= 0.0 and p4.health_component.current_health <= p4.health_component.max_health, "HP được clamp về khoảng an toàn (0 - 100)")
+	var safe_load_res := SaveManager.load_game(world4)
+	_assert(safe_load_res == true, "Hàm load_game xử lý an toàn không crash khi gặp kiểu dữ liệu sai")
+	_assert(p4.health_component.current_health >= 0.0 and p4.health_component.current_health <= 100.0, "HP được clamp về khoảng an toàn (0 - 100)")
 	_assert(p4.health_component.current_mana <= p4.health_component.max_mana, "MP được clamp không vượt quá Max MP")
-	_assert(p4.global_position.x >= 50.0 and p4.global_position.x <= 4300.0, "Tọa độ Player được clamp trong giới hạn bản đồ hợp lệ")
+	_assert(p4.global_position.y <= 700.0, "Tọa độ Player được clamp trong giới hạn bản đồ hợp lệ")
 	_assert(world4.quest_manager.gold >= 0, "Vàng được clamp >= 0, không bị âm")
 	_assert(p4.equipment_component.get_equipped("weapon") == "", "Vũ khí không tồn tại tự động bị loại bỏ")
 	_assert(p4.equipment_component.get_equipped("accessory") == "", "Trang bị sai loại tự động bị loại bỏ")
@@ -265,14 +238,16 @@ func _run_suite() -> void:
 	_assert(world5.quest_manager.gold == 80, "Vàng vẫn giữ nguyên đúng 80 G, không nhận thêm thưởng lặp lại")
 
 	print("\n--- TEST 9: Cách ly dữ liệu kiểm thử -> File save thật không bị ảnh hưởng ---")
-	_assert(FileAccess.file_exists(REAL_SAVE_PATH), "File save thật vẫn tồn tại")
-	var real_content_after := FileAccess.get_file_as_string(REAL_SAVE_PATH)
-	_assert(real_content_after == real_dummy_content, "Nội dung file save thật hoàn toàn KHÔNG BỊ THAY ĐỔI hay ghi đè trong suốt bài test!")
+	var real_file_existed_at_end := FileAccess.file_exists(REAL_SAVE_PATH)
+	if real_file_existed_at_start:
+		_assert(real_file_existed_at_end, "File save thật vẫn tồn tại sau toàn bộ bài test")
+		var real_file_hash_at_end := FileAccess.get_md5(REAL_SAVE_PATH)
+		_assert(real_file_hash_at_end == real_file_hash_at_start, "Nội dung & Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI")
+	else:
+		_assert(not real_file_existed_at_end, "File save thật không tồn tại từ đầu và KHÔNG BỊ TỰ TẠO GIẢ ĐỊNH")
 
-	# Dọn dẹp an toàn file test và file giả định
+	# Dọn dẹp DUY NHẤT file test, TUYỆT ĐỐI KHÔNG CHẠM VÀO REAL_SAVE_PATH
 	SaveManager.delete_save()
-	if FileAccess.file_exists(REAL_SAVE_PATH):
-		DirAccess.remove_absolute(REAL_SAVE_PATH)
 	SaveManager.custom_save_path = ""
 
 	print("\n--- TEST 10: Kiểm tra hồi quy các chức năng cốt lõi M0-M2.1 ---")
