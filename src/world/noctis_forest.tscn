@@ -411,6 +411,48 @@ item_id = "moon_amulet"
 amount = 1
 pickup_id = "pickup_village_amulet_1"
 
+[node name="ForestPickup_Shard1" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(850, 460)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_1"
+
+[node name="ForestPickup_Shard2" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(1450, 640)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_2"
+
+[node name="ForestPickup_Shard3" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(2000, 640)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_3"
+
+[node name="ForestPickup_Shard4" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(2300, 440)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_4"
+
+[node name="ForestPickup_Shard5" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(2800, 340)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_5"
+
+[node name="ForestPickup_Shard6" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(3400, 430)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_6"
+
+[node name="ForestPickup_Shard7" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(3950, 640)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_7"
+
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(180, 630)
 limit_left = 0

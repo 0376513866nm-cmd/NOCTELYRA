@@ -1,6 +1,6 @@
 ﻿===================================================
   PROJECT: NOCTELYRA (Godot 4.3 - Milestone M5 FINAL)
-  EXPORTED AT: 2026-10-20 13:48:50
+  EXPORTED AT: 2026-10-20 14:52:45
 ===================================================
 
 
@@ -118,27 +118,27 @@ renderer/rendering_method="forward_plus"
 FILE: README.md
 ===================================================
 
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M5 FINAL: Magic Combat System)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M5.1 STABILIZATION: Magic Combat System)
 
 Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M5 FINAL)
+## 1. Cấu trúc thư mục & Module dự án (Bản M5.1 STABILIZATION)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu hướng dẫn, kiến trúc, bảng phép thuật & kết quả kiểm thử M5
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M5 Final)
-├── test_m5_flow.gd                 # [MỚI M5] Kịch bản kiểm thử 20 nhóm tính năng ma pháp (85/85 tests PASS 100%)
+├── README.md                       # Tài liệu hướng dẫn, kiến trúc, bảng phép thuật & kết quả kiểm thử M5.1
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M5.1 Final)
+├── test_m5_flow.gd                 # [M5.1] Kịch bản kiểm thử 26 nhóm tính năng ma pháp & vật lý (100/100 tests PASS 100%)
 ├── test_m4_flow.gd                 # Kịch bản kiểm thử 17 hạng mục Boss M4 (87/87 tests PASS 100%)
 ├── test_m3_2_flow.gd               # Kịch bản kiểm thử M3.2 (50/50 tests PASS 100%)
 ├── test_m3_1_flow.gd               # Kịch bản kiểm thử M3.1 (41/41 tests PASS 100%)
 ├── test_m3_flow.gd                 # Kịch bản kiểm thử M3 (67/67 tests PASS 100%)
 ├── test_m2_1_flow.gd               # Kịch bản kiểm thử M2.1 (42/42 tests PASS 100%)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
-├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus, input maps M5)
+├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus, input maps M5.1)
 ├── run_game.bat                    # 1-Click chạy game test ngay lập tức
 ├── open_editor.bat                 # 1-Click mở Godot Editor
 ├── export_code_for_ai.bat          # 1-Click gom toàn bộ source code thành file CODE_EXPORT.txt
@@ -161,14 +161,14 @@ D:\project\game\NOCTELYRA\
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player, tích hợp SpellbookComponent, phím 1/2/3/U, combat
+    │   │   ├── player.gd                    # FSM Player, dọn sạch đạn khi chết/hồi sinh, phím 1/2/3/U, combat
     │   │   ├── player.tscn                  # Scene Player có SpellbookComponent
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy đôi, dash
     │   ├── npc\
     │   │   ├── npc.gd                       # Logic NPC Elyra, mở khóa Cổng Ma Pháp sau khi trả nhiệm vụ
     │   │   └── npc.tscn                     # Scene NPC Elyra (collision_layer = 0: xuyên người mượt mà)
     │   └── enemy\
-    │       ├── enemy.gd                     # Enemy AI, apply_slow(ratio, duration), khôi phục tốc độ chuẩn
+    │       ├── enemy.gd                     # Enemy AI, làm chậm 35%, rơi Tinh thể Ma lực an toàn
     │       └── enemy.tscn                   # Scene Enemy với thanh máu HPBar mini, hitbox & hurtbox
     ├── boss\                                # MODULE BOSS LUNARETH — LINH LỘC NGUYỆT THỰC
     │   ├── boss_lunareth.gd                 # Miễn nhiễm slow, bất tử 1.3s Phase Transition, shockwave
@@ -184,16 +184,16 @@ D:\project\game\NOCTELYRA\
     │   ├── combat_component.gd              # Điều phối chém kiếm và ủy quyền cast_spell sang SpellbookComponent
     │   ├── magic_projectile.gd              # Projectile cũ (giữ tương thích)
     │   └── magic_projectile.tscn
-    ├── magic\                               # [MỚI M5] HỆ THỐNG PHÁP THUẬT CHIẾN ĐẤU
-    │   ├── spell_definition.gd              # Custom Resource: thông số, sát thương theo cấp, giá nâng cấp
-    │   ├── spell_database.gd                # Registry tra cứu tĩnh 3 phép chuẩn theo ID
+    ├── magic\                               # [M5.1] HỆ THỐNG PHÁP THUẬT CHIẾN ĐẤU
+    │   ├── spell_definition.gd              # Custom Resource: tỉ lệ tăng cấp unrounded (100%, 115%, 130%), giá nâng cấp
+    │   ├── spell_database.gd                # Thông số thiết kế chuẩn M5.1 (15 MP/0.6s, 25 MP/2.0s, 18 MP/1.0s)
     │   ├── spellbook_component.gd           # Quản lý danh sách phép, phép đang chọn, cấp độ, cooldown độc lập
     │   └── projectiles\
-    │       ├── moon_bolt_projectile.gd      # Đạn ánh trăng 550 px/s, đơn mục tiêu (30/40/55 DMG)
+    │       ├── moon_bolt_projectile.gd      # Đạn ánh trăng 550 px/s, đơn mục tiêu (30.0 / 34.5 / 39.0 DMG)
     │       ├── moon_bolt_projectile.tscn
-    │       ├── ember_bloom_projectile.gd    # Đạn lửa 380 px/s, nổ AoE 110 px (22/30/40 DMG, chống đòn trùng)
+    │       ├── ember_bloom_projectile.gd    # Đạn lửa 380 px/s, nổ AoE 110 px (22.0 / 25.3 / 28.6 DMG, chống đòn trùng)
     │       ├── ember_bloom_projectile.tscn
-    │       ├── frost_shard_projectile.gd    # Đạn băng 650 px/s, làm chậm quái 35% trong 2s (20/28/38 DMG)
+    │       ├── frost_shard_projectile.gd    # Đạn băng 650 px/s, làm chậm quái 35% trong 2s (20.0 / 23.0 / 26.0 DMG)
     │       └── frost_shard_projectile.tscn
     ├── interaction\
     │   ├── interaction_coordinator.gd       # Bộ điều phối Input tập trung cho tương tác & hội thoại
@@ -215,8 +215,8 @@ D:\project\game\NOCTELYRA\
     ├── save\                                # HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
     │   └── save_manager.gd                  # Version 1.2.0, lưu/nạp spellbook, tương thích ngược v1.0.0 & v1.1.0
     ├── ui\
-    │   ├── spell_hotbar.gd                  # [MỚI M5] Controller thanh chọn phép 3 ô [1], [2], [3] & nút [U]
-    │   ├── spell_hotbar.tscn                # [MỚI M5] Scene thanh hotbar hiển thị highlight, cooldown, MP, Lv
+    │   ├── spell_hotbar.gd                  # Controller thanh chọn phép 3 ô [1], [2], [3] & nút [U]
+    │   ├── spell_hotbar.tscn                # Scene thanh hotbar hiển thị highlight, cooldown, MP, Lv
     │   ├── game_ui.gd                       # Tích hợp hotbar, hiển thị thông báo nâng cấp phép
     │   ├── game_ui.tscn                     # CanvasLayer HUD, Bars, Dialogue, PauseMenu, Hotbar
     │   ├── pause_controller.gd              # Quản lý Pause/Resume độc lập
@@ -225,99 +225,110 @@ D:\project\game\NOCTELYRA\
     └── world\
         ├── magic_gate.gd                    # Cổng Ma Pháp tại X=4200
         ├── magic_gate.tscn                  # Scene Cổng Ma Pháp rào chắn vật lý
-        ├── noctis_forest.gd                 # Kết nối SpellHotbar, Boss, Arena, Checkpoint
-        └── noctis_forest.tscn               # Màn chơi thế giới đầy đủ
+        ├── noctis_forest.gd                 # Tích hợp 7 Tinh thể Ma lực đặt sẵn, dọn projectile khi retry
+        └── noctis_forest.tscn               # Màn chơi chứa 7 pickup Tinh thể Ma lực + 3 quái (tổng 10 Shards)
 ```
 
 ---
 
-## 2. Thông số 3 Kỹ năng Ma pháp (Milestone M5)
+## 2. Thông số 3 Kỹ năng Ma pháp (Milestone M5.1 Chuẩn)
 
 | Thuộc tính | 1. Nguyệt Quang Đạn (`moon_bolt`) | 2. Tinh Hỏa Bùng Nổ (`ember_bloom`) | 3. Hàn Tinh Tiễn (`frost_shard`) |
 | :--- | :---: | :---: | :---: |
 | **Phím tắt chọn** | **Phím [1]** | **Phím [2]** | **Phím [3]** |
 | **Phím thi triển** | **Phím [K]** | **Phím [K]** | **Phím [K]** |
-| **Tiêu hao MP** | **12 MP** | **18 MP** | **15 MP** |
-| **Thời gian hồi (CD)** | **0.5 giây** (Độc lập) | **1.0 giây** (Độc lập) | **0.7 giây** (Độc lập) |
+| **Tiêu hao MP** | **15 MP** | **25 MP** | **18 MP** |
+| **Thời gian hồi (CD)** | **0.6 giây** (Độc lập) | **2.0 giây** (Độc lập) | **1.0 giây** (Độc lập) |
 | **Tốc độ đạn** | **550 px/s** | **380 px/s** | **650 px/s** |
 | **Cơ chế đòn đánh** | Đơn mục tiêu, đạn bay thẳng, tan biến khi chạm mục tiêu | Bắn cầu lửa phát nổ diện rộng **bán kính 110 px**, chống sát thương trùng | Đạn băng sắc bén, **làm chậm 35% tốc độ quái vật** trong **2.0 giây** |
 | **Miễn nhiễm làm chậm** | — | — | **Boss Lunareth miễn nhiễm hoàn toàn** với hiệu ứng làm chậm |
-| **Sát thương Cấp 1** | **30 DMG** | **22 DMG** | **20 DMG** |
-| **Sát thương Cấp 2** | **40 DMG** | **30 DMG** | **28 DMG** |
-| **Sát thương Cấp 3** | **55 DMG** | **40 DMG** | **38 DMG** |
+| **Sát thương Cấp 1 (100%)** | **30.0 DMG** | **22.0 DMG** | **20.0 DMG** |
+| **Sát thương Cấp 2 (115%)** | **34.5 DMG** (unrounded) | **25.3 DMG** (unrounded) | **23.0 DMG** (unrounded) |
+| **Sát thương Cấp 3 (130%)** | **39.0 DMG** (unrounded) | **28.6 DMG** (unrounded) | **26.0 DMG** (unrounded) |
 | **Chi phí nâng Cấp 2** | **3 Tinh thể Ma lực** (`mana_shard`) | **3 Tinh thể Ma lực** (`mana_shard`) | **3 Tinh thể Ma lực** (`mana_shard`) |
 | **Chi phí nâng Cấp 3** | **6 Tinh thể Ma lực** (`mana_shard`) | **6 Tinh thể Ma lực** (`mana_shard`) | **6 Tinh thể Ma lực** (`mana_shard`) |
 
----
-
-## 3. Hệ thống Nâng cấp Phép & Ràng buộc Chiến thuật
-
-- **Phím tắt nâng cấp:** **Phím [U]** (hoặc nhấp trực tiếp nút `[U] Nâng cấp` trên giao diện Hotbar).
-- **Nguyên liệu:** Tiêu hao `mana_shard` (Tinh thể Ma lực) nhặt được từ việc tiêu diệt quái vật tha hóa trong Rừng Noctis.
-- **Ràng buộc chiến thuật (Bảo vệ tính cân bằng):**
-  1. **Chặn nâng cấp trong trận chiến Boss:** Khi Boss Lunareth đang giao chiến, người chơi không thể nâng cấp phép để tránh gian lận sức mạnh giữa trận.
-  2. **Chặn nâng cấp khi đã chết:** Trạng thái `DEAD` vô hiệu hóa mọi thao tác nâng cấp.
-  3. **Chặn nâng cấp khi đang Pause / Mở Hội thoại / Mở Túi đồ.**
-  4. **Chặn nâng cấp khi đã đạt Cấp tối đa (Cấp 3).**
-  5. **Thông báo hệ thống:** Mọi kết quả nâng cấp thành công hoặc lý do thất bại đều được hiển thị qua `GameUI.show_notification()`.
+> **Ghi chú về sát thương:** Sát thương không được làm tròn số trong logic game (ví dụ: `34.5`, `25.3`, `28.6` được tính toán chính xác bằng số thực `float`).
 
 ---
 
-## 4. Thanh chọn phép (Spell Hotbar UI)
+## 3. Phân bổ Tài nguyên Tinh thể Ma lực (Mana Shard) trong Bản đồ
 
-- Tọa lạc ở đáy màn hình chính giữa (Bottom-Center), không che chắn thanh HP/MP bên góc trái hay Quest Panel góc phải.
-- Gồm 3 thẻ phép đại diện:
-  + **Viền sáng (Highlight):** Nhận diện phép thuật đang kích hoạt.
-  + **Overlay & Số đếm hồi chiêu:** Hiển thị lớp phủ tối kèm thời gian hồi độc lập `X.Xs` khi phép đang cooldown.
-  + **Thông tin trực quan:** Icon màu sắc, nhãn phím `[1]`, `[2]`, `[3]`, cấp độ hiện tại `Lv.X`, lượng tiêu hao `X MP`.
-  + **Tương tác chuột:** Cho phép nhấp chuột trái vào từng ô để đổi phép, hoặc nhấp nút `[U]` để nâng cấp nhanh.
-
----
-
-## 5. Hệ thống Lưu / Tải Dữ liệu v1.2.0 & Tính Tương thích Ngược
-
-- **Định danh phiên bản mới:** `save_version: "1.2.0"`.
-- **Cấu trúc khối ma pháp:**
-  ```json
-  "spellbook": {
-      "selected_spell": "ember_bloom",
-      "known_spells": ["moon_bolt", "ember_bloom", "frost_shard"],
-      "spell_levels": {
-          "moon_bolt": 3,
-          "ember_bloom": 1,
-          "frost_shard": 1
-      }
-  }
-  ```
-- **Tương thích ngược hoàn hảo:**
-  + Hỗ trợ load các file save cũ phiên bản `1.0.0` (M3.2) và `1.1.0` (M4).
-  + Khi load save cũ thiếu khối `"spellbook"`, hệ thống tự động khởi tạo mặc định 3 phép thuật cơ bản ở Cấp 1, chọn sẵn `moon_bolt`, người chơi tiếp tục trải nghiệm mà không bị crash hay mất dữ liệu.
-- **Cách ly dữ liệu kiểm thử 100%:**
-  + Bộ test sử dụng đường dẫn `user://noctelyra_m5_test.json`.
-  + File save thật của người chơi `user://noctelyra_slot1.json` được bảo vệ nguyên vẹn 100%, kiểm tra đối chiếu MD5 checksum trước và sau test không đổi.
+Để đảm bảo người chơi có thể nâng cấp đầy đủ từ Cấp 1 lên Cấp 3 (cần tổng cộng 3 + 6 = 9 Shards) trong một lượt chơi:
+- **7 Tinh thể Ma lực đặt sẵn (`preplaced_pickups`):**
+  1. `ForestPickup_Shard1` tại $(1000, 640)$ (Mặt đất khu vực đầu rừng)
+  2. `ForestPickup_Shard2` tại $(1450, 640)$ (Gần cụm quái thứ 1)
+  3. `ForestPickup_Shard3` tại $(2000, 640)$ (Giữa rừng)
+  4. `ForestPickup_Shard4` tại $(2300, 440)$ (Platform cao bí mật thứ 1)
+  5. `ForestPickup_Shard5` tại $(2800, 340)$ (Platform ngọn cây cao thứ 2)
+  6. `ForestPickup_Shard6` tại $(3400, 430)$ (Platform tàn tích cổ)
+  7. `ForestPickup_Shard7` tại $(3950, 640)$ (Trước Cổng Ma Pháp X=4200)
+- **3 Tinh thể Ma lực từ Quái vật:** 3 quái vật tha hóa trong rừng mỗi con rơi 1 Tinh thể Ma lực khi bị tiêu diệt.
+- **Tổng tài nguyên:** **10 Tinh thể Ma lực** (đáp ứng vượt mức yêu cầu $\ge 9$ Tinh thể để nâng cấp max Cấp 3).
+- **Lưu trữ & Chống trùng lặp:** Mỗi vật phẩm đặt sẵn có `pickup_id` duy nhất (`pickup_forest_shard_1` đến `pickup_forest_shard_7`). Sau khi nhặt, `SaveManager` ghi nhận vào `collected_pickup_ids`, đảm bảo khi tải lại game các mảnh đã nhặt không hồi sinh và số lượng trong túi đồ không bị nhân đôi.
 
 ---
 
-## 6. Báo cáo Kiểm thử Tự động Tổng hợp trên Godot 4.3 Engine
+## 4. Kiểm thử Tích hợp Vật lý Thực tế (Godot Physics Server)
+
+Các kịch bản kiểm thử M5.1 chạy qua `await physics_frame` mô phỏng trực tiếp trên Engine vật lý:
+1. **Bay & Va chạm thực tế (Moon Bolt):** Đạn bay thực sự ở vận tốc 550 px/s, Physics Server phát hiện va chạm với Hurtbox của Quái vật (`collision_layer = 4`), gây 30 DMG và tự hủy.
+2. **Kiểm tra bán kính nổ 110 px (Ember Bloom):**
+   - Quái vật trong bán kính 110 px (cách tâm 70 px): Nhận 22 DMG.
+   - Quái vật ngoài bán kính 110 px (cách tâm 160 px): Nhận 0 DMG.
+   - Chống sát thương trùng: Kích hoạt thêm lần nữa trong cùng vụ nổ không gây thêm sát thương.
+3. **Hiệu ứng làm chậm & Phục hồi (Frost Shard):**
+   - Quái vật dính đạn bị giảm 35% vận tốc di chuyển (tốc độ còn 65%).
+   - Sau 2.0 giây, vận tốc tự động khôi phục 100% nguyên bản.
+   - Boss Lunareth nhận sát thương bình thường nhưng **miễn nhiễm 100%** với hiệu ứng làm chậm (vận tốc giữ nguyên).
+4. **Không tự gây sát thương (No Self-Damage):** Đạn xuất hiện chạm người Player không gây sát thương lên người chơi.
+5. **Hết thời gian tồn tại (Lifetime Expiration):** Đạn bay ra ngoài không gian tự giải phóng bộ nhớ sau thời gian sống (lifetime).
+6. **Dọn dẹp đạn khi Chết & Retry:** Toàn bộ đạn trong nhóm `player_projectiles` và `boss_projectiles` lập tức bị xóa sạch khi Player chết hoặc khi bấm Retry bản đồ.
+
+---
+
+## 5. Ràng buộc Nâng cấp Phép & Giao diện Hotbar
+
+- **Phím chọn phép:** `[1]`, `[2]`, `[3]`.
+- **Phím bắn phép:** `[K]`.
+- **Phím nâng cấp:** `[U]` (hoặc nhấp chuột vào nút trên Hotbar).
+- **Ràng buộc an toàn:**
+  + Chặn nâng cấp khi đang đấu Boss Lunareth (`boss_battle_started = true`).
+  + Chặn nâng cấp khi Player đã chết (`Player.State.DEAD`).
+  + Chặn nâng cấp khi đang tạm dừng (`paused`), mở hội thoại NPC hoặc mở túi đồ.
+  + Chặn nâng cấp khi đã đạt Cấp tối đa (Cấp 3).
+
+---
+
+## 6. Hệ thống Lưu / Tải Dữ liệu v1.2.0 & Cách Ly File Thật
+
+- **Phiên bản bản lưu:** `1.2.0`.
+- **Khối dữ liệu `spellbook`:** Lưu trữ phép đang chọn, danh sách phép đã học, cấp độ của từng phép.
+- **Tương thích ngược:** Nạp an toàn bản lưu cũ `1.0.0` (M3.2) và `1.1.0` (M4), tự động bù đắp dữ liệu mặc định mà không gây crash.
+- **Cách ly tuyệt đối:** Bộ kiểm thử chỉ tương tác với file test riêng biệt `user://noctelyra_m5_test.json`. File save thật `user://noctelyra_slot1.json` được bảo vệ nguyên vẹn 100% với MD5 checksum đối chiếu không thay đổi.
+
+---
+
+## 7. Báo cáo Kiểm thử Tự động Tổng hợp trên Godot 4.3 Engine
 
 Tất cả các bộ test đều chạy trong môi trường Engine thực tế (`Godot_v4.3-stable_win64_console.exe --headless`):
 
 ```text
 ========================================================================================
- BỘ KIỂM THỬ                         | SỐ TEST   | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
+ BỘ KIỂM THỬ                         | SỐ TEST    | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
 ----------------------------------------------------------------------------------------
- test_m5_flow.gd (Ma pháp M5)        | 85 tests  | PASS 100%    | 0
- test_m4_flow.gd (Boss Lunareth M4)  | 87 tests  | PASS 100%    | 0
- test_m3_2_flow.gd (Save/Load M3.2)  | 50 tests  | PASS 100%    | 0
- test_m2_1_flow.gd (NPC & Quest M2)  | 42 tests  | PASS 100%    | 0
+ test_m5_flow.gd (Ma pháp M5.1)      | 100 tests  | PASS 100%    | 0
+ test_m4_flow.gd (Boss Lunareth M4)  |  87 tests  | PASS 100%    | 0
+ test_m3_2_flow.gd (Save/Load M3.2)  |  50 tests  | PASS 100%    | 0
+ test_m2_1_flow.gd (NPC & Quest M2)  |  42 tests  | PASS 100%    | 0
 ========================================================================================
- TỔNG CỘNG                           | 264 tests | PASS 100%    | HOÀN HẢO KHÔNG LỖI
+ TỔNG CỘNG                           | 279 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
 ========================================================================================
 ```
 
 ---
 
-## 7. Hướng dẫn Điều khiển & Trải nghiệm
+## 8. Hướng dẫn Điều khiển & Trải nghiệm
 
 | Phím bấm | Hành động |
 | :--- | :--- |
@@ -1878,28 +1889,34 @@ FILE: test_m5_flow.gd
 extends SceneTree
 
 # test_m5_flow.gd
-# Specialized automated test suite for NOCTELYRA Milestone M5: Magic Combat System.
-# Verifies all 20 requirement groups:
-# 1. Spell Definition & Registry (ID & static lookup)
+# Specialized automated test suite for NOCTELYRA Milestone M5 / M5.1: Magic Combat System.
+# Verifies all requirement groups:
+# 1. Spell Definition & Registry (ID & static lookup, exact M5.1 design parameters)
 # 2. Spellbook Initialization (3 spells, Lv.1, moon_bolt selected)
 # 3. Spell Selection (Hotkeys 1, 2, 3 and index/ID)
-# 4. Spell Mana Consumption (12 MP, 18 MP, 15 MP)
+# 4. Spell Mana Consumption (15 MP, 25 MP, 18 MP)
 # 5. Insufficient Mana Check (blocked, no deduction, failure signal)
-# 6. Independent Cooldowns per spell
+# 6. Independent Cooldowns per spell (0.6s, 2.0s, 1.0s)
 # 7. Cooldown Persistence across Spell Switching
 # 8. Cooldown Expiration & Ready State
 # 9. Moon Bolt Projectile (550 px/s, single target 30 base DMG)
-# 10. Ember Bloom Projectile & AoE Radius (110px explosion, no duplicate damage)
-# 11. Frost Shard Projectile & Enemy Slow Effect (35% slow for 2.0s)
+# 10. Ember Bloom Projectile & AoE Radius (380 px/s, 110px explosion, no duplicate damage)
+# 11. Frost Shard Projectile & Enemy Slow Effect (650 px/s, 35% slow for 2.0s)
 # 12. Enemy Slow Duration Expiration & Speed Recovery
 # 13. Boss Lunareth Immunity to Slow
 # 14. Spell Upgrade System (3 shards Lv.2, 6 shards Lv.3, deduction from inventory)
-# 15. Damage Scaling on Upgrade (Lv.1 -> Lv.2 -> Lv.3)
-# 16. Upgrade Blocked during Boss Battle, Death, or Dialogue
+# 15. Damage Scaling on Upgrade (100% -> 115% -> 130%, unrounded)
+# 16. Upgrade Blocked during Boss Battle, Death, Dialogue, or Pause
 # 17. Spell Hotbar UI Display & Interaction
 # 18. Quest & Loot attribution on magic kills
 # 19. Boss Combat & Phase Transition / Defeat via Magic
 # 20. Save & Load v1.2.0 & Backward Compatibility (v1.0.0, v1.1.0) & Real Save Isolation
+# 21. Real Physics Server Flight & Collision Detection (await physics_frame)
+# 22. Real Physics Ember Bloom 110px AoE Detection & Exclusion
+# 23. Projectile No Self-Damage to Player
+# 24. Projectile Lifetime Expiration
+# 25. Projectile Cleanup on Player Death & Retry
+# 26. Resource Availability & Map Pickups (>= 9 Shards, Full Lv.3 Upgrade & Persistence)
 
 const BossLunarethScript = preload("res://src/boss/boss_lunareth.gd")
 const EnemyScript = preload("res://src/actors/enemy/enemy.gd")
@@ -1923,7 +1940,7 @@ var real_file_hash_at_start: String = ""
 
 func _init() -> void:
 	print("==================================================")
-	print(" [NOCTELYRA M5] MAGIC COMBAT TEST SUITE STARTING ")
+	print(" [NOCTELYRA M5.1] MAGIC COMBAT TEST SUITE STARTING")
 	print("==================================================")
 	call_deferred("_run_suite")
 
@@ -1973,15 +1990,15 @@ func _run_suite() -> void:
 	# -------------------------------------------------------------
 	# GROUP 1: Spell Definition & Registry (ID & Static Lookup)
 	# -------------------------------------------------------------
-	print("\n--- GROUP 1: Spell Definition & Database Registry ---")
+	print("\n--- GROUP 1: Spell Definition & Database Registry (M5.1 Specs) ---")
 	var mb_def = SpellDatabaseScript.get_spell("moon_bolt")
 	var eb_def = SpellDatabaseScript.get_spell("ember_bloom")
 	var fs_def = SpellDatabaseScript.get_spell("frost_shard")
 
 	_assert(mb_def != null and eb_def != null and fs_def != null, "Cả 3 phép thuật đã đăng ký thành công trong SpellDatabase")
-	_assert(mb_def.base_damage == 30.0 and mb_def.mana_cost == 12.0 and mb_def.cooldown == 0.5 and mb_def.projectile_speed == 550.0, "Moon Bolt: 30 DMG, 12 MP, 0.5s CD, 550 spd")
-	_assert(eb_def.base_damage == 22.0 and eb_def.mana_cost == 18.0 and eb_def.cooldown == 1.0 and eb_def.effect_radius == 110.0, "Ember Bloom: 22 DMG, 18 MP, 1.0s CD, 110 px AoE")
-	_assert(fs_def.base_damage == 20.0 and fs_def.mana_cost == 15.0 and fs_def.cooldown == 0.7 and fs_def.slow_ratio == 0.35, "Frost Shard: 20 DMG, 15 MP, 0.7s CD, 35% Slow")
+	_assert(mb_def.base_damage == 30.0 and mb_def.mana_cost == 15.0 and mb_def.cooldown == 0.6 and mb_def.projectile_speed == 550.0, "Moon Bolt: 30 DMG, 15 MP, 0.6s CD, 550 spd")
+	_assert(eb_def.base_damage == 22.0 and eb_def.mana_cost == 25.0 and eb_def.cooldown == 2.0 and eb_def.projectile_speed == 380.0 and eb_def.effect_radius == 110.0, "Ember Bloom: 22 DMG, 25 MP, 2.0s CD, 380 spd, 110 px AoE")
+	_assert(fs_def.base_damage == 20.0 and fs_def.mana_cost == 18.0 and fs_def.cooldown == 1.0 and fs_def.projectile_speed == 650.0 and fs_def.slow_ratio == 0.35, "Frost Shard: 20 DMG, 18 MP, 1.0s CD, 650 spd, 35% Slow")
 
 	# -------------------------------------------------------------
 	# GROUP 2: Spellbook Initialization
@@ -2006,54 +2023,54 @@ func _run_suite() -> void:
 	_assert(invalid_select == false and p_spellbook.selected_spell_id == "moon_bolt", "Chọn ID không tồn tại bị từ chối và giữ nguyên phép cũ")
 
 	# -------------------------------------------------------------
-	# GROUP 4: Spell Mana Consumption
+	# GROUP 4: Spell Mana Consumption (M5.1: 15 MP, 25 MP, 18 MP)
 	# -------------------------------------------------------------
-	print("\n--- GROUP 4: Spell Mana Consumption ---")
-	p_health.current_mana = 60.0
+	print("\n--- GROUP 4: Spell Mana Consumption (15, 25, 18 MP) ---")
+	p_health.current_mana = 80.0
 	p_spellbook.select_spell("moon_bolt")
 	p_spellbook.cooldown_timers["moon_bolt"] = 0.0
 	var cast_mb_res = p_spellbook.cast_selected_spell(player, 1, p_health)
 	_assert(cast_mb_res == true, "Thi triển Moon Bolt thành công")
-	_assert(is_equal_approx(p_health.current_mana, 48.0), "Moon Bolt tiêu hao chính xác 12 MP (60 -> 48)")
+	_assert(is_equal_approx(p_health.current_mana, 65.0), "Moon Bolt tiêu hao chính xác 15 MP (80 -> 65)")
 
 	p_spellbook.select_spell("ember_bloom")
 	p_spellbook.cooldown_timers["ember_bloom"] = 0.0
 	var cast_eb_res = p_spellbook.cast_selected_spell(player, 1, p_health)
 	_assert(cast_eb_res == true, "Thi triển Ember Bloom thành công")
-	_assert(is_equal_approx(p_health.current_mana, 30.0), "Ember Bloom tiêu hao chính xác 18 MP (48 -> 30)")
+	_assert(is_equal_approx(p_health.current_mana, 40.0), "Ember Bloom tiêu hao chính xác 25 MP (65 -> 40)")
 
 	p_spellbook.select_spell("frost_shard")
 	p_spellbook.cooldown_timers["frost_shard"] = 0.0
 	var cast_fs_res = p_spellbook.cast_selected_spell(player, 1, p_health)
 	_assert(cast_fs_res == true, "Thi triển Frost Shard thành công")
-	_assert(is_equal_approx(p_health.current_mana, 15.0), "Frost Shard tiêu hao chính xác 15 MP (30 -> 15)")
+	_assert(is_equal_approx(p_health.current_mana, 22.0), "Frost Shard tiêu hao chính xác 18 MP (40 -> 22)")
 
 	# -------------------------------------------------------------
 	# GROUP 5: Insufficient Mana Check
 	# -------------------------------------------------------------
 	print("\n--- GROUP 5: Insufficient Mana Check ---")
-	# Hiện còn 15 MP, Ember Bloom cần 18 MP -> thất bại
-	p_spellbook.select_spell("ember_bloom")
-	p_spellbook.cooldown_timers["ember_bloom"] = 0.0
+	p_health.current_mana = 10.0 # Thiếu MP cho cả 3 phép (15, 25, 18)
+	p_spellbook.select_spell("moon_bolt")
+	p_spellbook.cooldown_timers["moon_bolt"] = 0.0
 	var check_res = p_spellbook.can_cast_selected(p_health)
-	_assert(check_res["can_cast"] == false and check_res["reason"] == "NOT_ENOUGH_MANA", "can_cast_selected trả về NOT_ENOUGH_MANA khi MP không đủ")
+	_assert(check_res["can_cast"] == false and check_res["reason"] == "NOT_ENOUGH_MANA", "can_cast_selected trả về NOT_ENOUGH_MANA khi MP không đủ (10 < 15)")
 
 	var failed_cast = p_spellbook.cast_selected_spell(player, 1, p_health)
 	_assert(failed_cast == false, "cast_selected_spell từ chối thi triển khi thiếu MP")
-	_assert(is_equal_approx(p_health.current_mana, 15.0), "MP không bị trừ khi thi triển thất bại")
+	_assert(is_equal_approx(p_health.current_mana, 10.0), "MP không bị trừ khi thi triển thất bại")
 
 	# -------------------------------------------------------------
 	# GROUP 6: Independent Cooldowns
 	# -------------------------------------------------------------
 	print("\n--- GROUP 6: Independent Cooldowns ---")
-	p_health.current_mana = 60.0
+	p_health.current_mana = 100.0
 	p_spellbook.select_spell("moon_bolt")
 	p_spellbook.cooldown_timers["moon_bolt"] = 0.0
 	p_spellbook.cooldown_timers["ember_bloom"] = 0.0
 	p_spellbook.cooldown_timers["frost_shard"] = 0.0
 
 	p_spellbook.cast_selected_spell(player, 1, p_health)
-	_assert(p_spellbook.is_on_cooldown("moon_bolt") == true, "Moon Bolt đang trong thời gian hồi chiêu (0.5s)")
+	_assert(p_spellbook.is_on_cooldown("moon_bolt") == true, "Moon Bolt đang trong thời gian hồi chiêu (0.6s)")
 	_assert(p_spellbook.is_on_cooldown("ember_bloom") == false, "Ember Bloom vẫn sẵn sàng (cooldown = 0.0s)")
 	_assert(p_spellbook.is_on_cooldown("frost_shard") == false, "Frost Shard vẫn sẵn sàng (cooldown = 0.0s)")
 
@@ -2070,8 +2087,8 @@ func _run_suite() -> void:
 	# GROUP 8: Cooldown Expiration & Ready State
 	# -------------------------------------------------------------
 	print("\n--- GROUP 8: Cooldown Expiration ---")
-	p_spellbook._process(0.55)
-	_assert(p_spellbook.is_on_cooldown("moon_bolt") == false, "Sau 0.55s, Moon Bolt đã hết thời gian hồi và sẵn sàng")
+	p_spellbook._process(0.65)
+	_assert(p_spellbook.is_on_cooldown("moon_bolt") == false, "Sau 0.65s, Moon Bolt đã hết thời gian hồi và sẵn sàng")
 	_assert(p_spellbook.can_cast_selected(p_health)["can_cast"] == true, "can_cast_selected trả về true sau khi hết cooldown")
 
 	# -------------------------------------------------------------
@@ -2088,7 +2105,6 @@ func _run_suite() -> void:
 	world.add_child(mb_proj)
 	mb_proj.global_position = test_enemy.global_position
 	mb_proj.setup(Vector2.RIGHT, player, 30.0)
-	# Giả lập va chạm với hurtbox quái
 	var e_hurtbox: Hurtbox = test_enemy.get_node_or_null("Hurtbox")
 	mb_proj._on_area_entered(e_hurtbox)
 	_assert(e_health.current_health == initial_hp - 30.0, "Moon Bolt gây chính xác 30 sát thương lên đơn mục tiêu")
@@ -2120,7 +2136,6 @@ func _run_suite() -> void:
 	_assert(ea_health.current_health == hp_a_before - 22.0, "Enemy A trong bán kính vụ nổ nhận 22 sát thương")
 	_assert(eb_health.current_health == hp_b_before - 22.0, "Enemy B trong bán kính vụ nổ nhận 22 sát thương")
 
-	# Kích hoạt thêm lần nữa để chứng minh mỗi mục tiêu chỉ nhận 1 lần sát thương trong 1 vụ nổ
 	var hp_a_after_first := ea_health.current_health
 	eb_proj._trigger_explosion()
 	_assert(ea_health.current_health == hp_a_after_first, "Vụ nổ không gây sát thương trùng lặp lên cùng 1 mục tiêu")
@@ -2208,17 +2223,17 @@ func _run_suite() -> void:
 	_assert(p_inv.get_item_count("mana_shard") == 10, "Không trừ nguyên liệu khi đã Max Level")
 
 	# -------------------------------------------------------------
-	# GROUP 15: Damage Scaling on Upgrade
+	# GROUP 15: Damage Scaling on Upgrade (M5.1 Unrounded Scaling)
 	# -------------------------------------------------------------
-	print("\n--- GROUP 15: Damage Scaling on Upgrade ---")
-	_assert(mb_def.get_damage_for_level(1) == 30.0, "Moon Bolt Lv.1 = 30 DMG")
-	_assert(mb_def.get_damage_for_level(2) == 40.0, "Moon Bolt Lv.2 = 40 DMG")
-	_assert(mb_def.get_damage_for_level(3) == 55.0, "Moon Bolt Lv.3 = 55 DMG")
+	print("\n--- GROUP 15: Damage Scaling on Upgrade (100%, 115%, 130%) ---")
+	_assert(mb_def.get_damage_for_level(1) == 30.0, "Moon Bolt Lv.1 = 30.0 DMG")
+	_assert(is_equal_approx(mb_def.get_damage_for_level(2), 34.5), "Moon Bolt Lv.2 = 34.5 DMG (115%%, không làm tròn)")
+	_assert(is_equal_approx(mb_def.get_damage_for_level(3), 39.0), "Moon Bolt Lv.3 = 39.0 DMG (130%%, không làm tròn)")
 
-	_assert(eb_def.get_damage_for_level(1) == 22.0 and eb_def.get_damage_for_level(2) == 30.0 and eb_def.get_damage_for_level(3) == 40.0, "Ember Bloom tăng tiến: 22 -> 30 -> 40 DMG")
-	_assert(fs_def.get_damage_for_level(1) == 20.0 and fs_def.get_damage_for_level(2) == 28.0 and fs_def.get_damage_for_level(3) == 38.0, "Frost Shard tăng tiến: 20 -> 28 -> 38 DMG")
+	_assert(eb_def.get_damage_for_level(1) == 22.0 and is_equal_approx(eb_def.get_damage_for_level(2), 25.3) and is_equal_approx(eb_def.get_damage_for_level(3), 28.6), "Ember Bloom tăng tiến: 22.0 -> 25.3 -> 28.6 DMG (không làm tròn)")
+	_assert(fs_def.get_damage_for_level(1) == 20.0 and is_equal_approx(fs_def.get_damage_for_level(2), 23.0) and is_equal_approx(fs_def.get_damage_for_level(3), 26.0), "Frost Shard tăng tiến: 20.0 -> 23.0 -> 26.0 DMG (không làm tròn)")
 
-	# Bắn Moon Bolt Lv.3 gây 55 sát thương
+	# Bắn Moon Bolt Lv.3 gây 39.0 sát thương
 	var dummy_enemy: Enemy = EnemyScene.instantiate() as Enemy
 	world.add_child(dummy_enemy)
 	dummy_enemy.global_position = Vector2(1200.0, 630.0)
@@ -2230,15 +2245,14 @@ func _run_suite() -> void:
 	p_health.current_mana = 60.0
 	p_spellbook.cast_selected_spell(player, 1, p_health)
 
-	# Lấy đạn vừa sinh ra
 	var last_proj: Node = null
 	for child in world.get_children():
 		if child is MoonBoltScript:
 			last_proj = child
-	_assert(last_proj != null and last_proj.damage == 55.0, "Đạn Moon Bolt Lv.3 được tạo ra với đúng 55 sát thương")
+	_assert(last_proj != null and is_equal_approx(last_proj.damage, 39.0), "Đạn Moon Bolt Lv.3 được tạo ra với đúng 39.0 sát thương")
 	if last_proj:
 		last_proj._on_area_entered(dummy_enemy.get_node_or_null("Hurtbox"))
-		_assert(de_health.current_health == de_hp_before - 55.0, "Mục tiêu nhận chính xác 55 sát thương từ Moon Bolt Lv.3")
+		_assert(is_equal_approx(de_health.current_health, de_hp_before - 39.0), "Mục tiêu nhận chính xác 39.0 sát thương từ Moon Bolt Lv.3")
 		last_proj.queue_free()
 	dummy_enemy.queue_free()
 
@@ -2246,13 +2260,11 @@ func _run_suite() -> void:
 	# GROUP 16: Upgrade Blocked Conditions
 	# -------------------------------------------------------------
 	print("\n--- GROUP 16: Upgrade Blocked Conditions ---")
-	# 1. Chặn khi đang trong trận chiến Boss
 	world.boss_battle_started = true
 	var up_during_boss = p_spellbook.upgrade_spell("ember_bloom", p_inv, world)
 	_assert(up_during_boss["success"] == false, "Chặn nâng cấp phép khi đang đánh Boss")
 	world.boss_battle_started = false
 
-	# 2. Chặn khi Player đã chết
 	player.current_state = Player.State.DEAD
 	var shards_before := p_inv.get_item_count("mana_shard")
 	player._upgrade_current_spell()
@@ -2271,7 +2283,6 @@ func _run_suite() -> void:
 	_assert(hotbar.slot2.get_node("Highlight").visible == false, "Slot 2 (Ember Bloom) không có viền highlight")
 	_assert(hotbar.slot1.get_node("LevelLabel").text == "Lv.3", "Slot 1 hiển thị đúng cấp độ Lv.3")
 
-	# Mô phỏng nhấp chuột vào Slot 2 trên UI
 	hotbar._on_slot_clicked(1)
 	_assert(p_spellbook.selected_spell_id == "ember_bloom", "Nhấp chuột vào Slot 2 đổi phép đang chọn sang Ember Bloom")
 	_assert(hotbar.slot2.get_node("Highlight").visible == true, "Slot 2 được highlight sau khi nhấp chuột")
@@ -2290,7 +2301,6 @@ func _run_suite() -> void:
 	q_enemy.enemy_defeated.connect(quest_mgr.register_enemy_kill)
 	q_enemy.global_position = Vector2(1400.0, 630.0)
 
-	# Giết quái bằng phép
 	var qe_health: HealthComponent = q_enemy.get_node_or_null("HealthComponent")
 	qe_health.take_damage(DamageInfo.new(100.0, player))
 	await _wait_seconds(0.1)
@@ -2304,12 +2314,10 @@ func _run_suite() -> void:
 	print("\n--- GROUP 19: Boss Combat Phase 2 & Defeat via Magic ---")
 	boss_health.cancel_invulnerability()
 	boss_health.current_health = 175.0
-	# Bắn phép làm Boss tụt xuống <= 160 HP
 	boss_health.take_damage(DamageInfo.new(20.0, player))
 	_assert(boss_health.current_health == 155.0, "Boss nhận sát thương phép còn 155 HP (<= 160 HP)")
 	_assert(boss.current_state == BossLunarethScript.State.PHASE_TRANSITION, "Sát thương phép kích hoạt Boss chuyển sang Giai đoạn 2 (PHASE_TRANSITION)")
 
-	# Sau khi chuyển giai đoạn kết thúc, hạ gục Boss bằng phép
 	boss._physics_process(1.4)
 	boss.health_component._process(1.4)
 	boss_health.cancel_invulnerability()
@@ -2324,12 +2332,10 @@ func _run_suite() -> void:
 	_assert(SaveManager.CURRENT_VERSION == "1.2.0", "SaveManager.CURRENT_VERSION đã nâng cấp lên 1.2.0")
 	_assert(SaveManager.SUPPORTED_VERSIONS.has("1.2.0") and SaveManager.SUPPORTED_VERSIONS.has("1.1.0") and SaveManager.SUPPORTED_VERSIONS.has("1.0.0"), "SaveManager hỗ trợ cả 3 phiên bản 1.0.0, 1.1.0 và 1.2.0")
 
-	# Lưu game phiên bản 1.2.0
 	world.boss_battle_started = false
 	var save_ok := SaveManager.save_game(world)
 	_assert(save_ok == true, "Lưu game thành công vào test save v1.2.0")
 
-	# Đọc nội dung file save test xem có block spellbook không
 	var test_file_read := FileAccess.open(TEST_SAVE_PATH, FileAccess.READ)
 	var save_json_str := test_file_read.get_as_text()
 	test_file_read.close()
@@ -2341,7 +2347,6 @@ func _run_suite() -> void:
 	_assert(saved_sb.get("selected_spell") == "ember_bloom", "Lưu đúng phép đang chọn là ember_bloom")
 	_assert(int(saved_sb.get("spell_levels", {}).get("moon_bolt", 1)) == 3, "Lưu đúng cấp độ Moon Bolt Lv.3")
 
-	# Khôi phục từ save v1.2.0
 	p_spellbook.selected_spell_id = "frost_shard"
 	p_spellbook.spell_levels["moon_bolt"] = 1
 	var load_v12_res := SaveManager.load_game(world)
@@ -2349,7 +2354,6 @@ func _run_suite() -> void:
 	_assert(p_spellbook.selected_spell_id == "ember_bloom", "Khôi phục chính xác phép đang chọn là ember_bloom")
 	_assert(p_spellbook.get_spell_level("moon_bolt") == 3, "Khôi phục chính xác Moon Bolt Cấp 3")
 
-	# Kiểm tra tương thích ngược bản lưu v1.0.0 (M3.2)
 	var legacy_v10 := "{\"save_version\":\"1.0.0\",\"player\":{\"position_x\":200.0,\"position_y\":630.0,\"current_health\":100.0,\"current_mana\":60.0},\"gold\":50,\"inventory\":[],\"equipment\":{},\"quest\":{\"state\":3,\"current_amount\":3}}"
 	var f10 := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
 	f10.store_string(legacy_v10)
@@ -2359,7 +2363,6 @@ func _run_suite() -> void:
 	_assert(p_spellbook.selected_spell_id == "moon_bolt", "Tương thích ngược v1.0.0: mặc định chọn moon_bolt")
 	_assert(p_spellbook.get_spell_level("moon_bolt") == 1 and p_spellbook.get_spell_level("ember_bloom") == 1, "Tương thích ngược v1.0.0: mặc định các phép ở Cấp 1")
 
-	# Kiểm tra tương thích ngược bản lưu v1.1.0 (M4.1)
 	var legacy_v11 := "{\"save_version\":\"1.1.0\",\"player\":{\"position_x\":200.0,\"position_y\":630.0,\"current_health\":100.0,\"current_mana\":60.0},\"gold\":100,\"inventory\":[],\"equipment\":{},\"quest\":{\"state\":3,\"current_amount\":3},\"boss\":{\"activated\":true,\"defeated\":true,\"reward_claimed\":true}}"
 	var f11 := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
 	f11.store_string(legacy_v11)
@@ -2367,6 +2370,160 @@ func _run_suite() -> void:
 	var load_v11_res := SaveManager.load_game(world)
 	_assert(load_v11_res == true, "Nạp thành công bản lưu cũ v1.1.0 không có khối spellbook")
 	_assert(p_spellbook.selected_spell_id == "moon_bolt", "Tương thích ngược v1.1.0: mặc định chọn moon_bolt")
+
+	# -------------------------------------------------------------
+	# GROUP 21: Godot Physics Projectile Flight & Collision
+	# -------------------------------------------------------------
+	print("\n--- GROUP 21: Real Physics Server Flight & Collision Detection ---")
+	var phys_enemy: Enemy = EnemyScene.instantiate() as Enemy
+	world.add_child(phys_enemy)
+	phys_enemy.global_position = Vector2(1600.0, 630.0)
+	var pe_health: HealthComponent = phys_enemy.health_component
+	var pe_hp_before := pe_health.current_health
+
+	# Sinh đạn ngang ngực quái (Y=600), cách quái 80px về bên trái, bay sang phải với vận tốc 550 px/s
+	var phys_mb: Node2D = mb_def.projectile_scene.instantiate()
+	world.add_child(phys_mb)
+	phys_mb.global_position = Vector2(1520.0, 600.0)
+	phys_mb.setup(Vector2.RIGHT, player, 30.0)
+
+	# Chờ các physics_frame để PhysicsServer tính toán va chạm vật lý thực
+	var frames_waited := 0
+	while is_instance_valid(phys_mb) and not phys_mb.is_queued_for_deletion() and frames_waited < 30:
+		await world.get_tree().physics_frame
+		frames_waited += 1
+
+	_assert(pe_health.current_health == pe_hp_before - 30.0, "Đạn Moon Bolt bay và va chạm vật lý thực tế qua PhysicsServer gây 30 sát thương")
+	_assert(not is_instance_valid(phys_mb) or phys_mb.is_queued_for_deletion(), "Đạn Moon Bolt tự hủy sau khi va chạm vật lý trúng quái")
+	phys_enemy.queue_free()
+
+	# -------------------------------------------------------------
+	# GROUP 22: Godot Physics Ember Bloom 110px AoE Detection
+	# -------------------------------------------------------------
+	print("\n--- GROUP 22: Ember Bloom 110px AoE In-Range & Out-of-Range ---")
+	var aoe_target_in: Enemy = EnemyScene.instantiate() as Enemy
+	var aoe_target_out: Enemy = EnemyScene.instantiate() as Enemy
+	world.add_child(aoe_target_in)
+	world.add_child(aoe_target_out)
+
+	# Tâm nổ tại X=1800, Target In tại X=1870 (70px <= 110px), Target Out tại X=1960 (160px > 110px)
+	aoe_target_in.global_position = Vector2(1870.0, 630.0)
+	aoe_target_out.global_position = Vector2(1960.0, 630.0)
+
+	var in_hp_before := aoe_target_in.health_component.current_health
+	var out_hp_before := aoe_target_out.health_component.current_health
+
+	var phys_eb = eb_def.projectile_scene.instantiate()
+	world.add_child(phys_eb)
+	phys_eb.global_position = Vector2(1800.0, 630.0)
+	phys_eb.setup(Vector2.RIGHT, player, 22.0)
+	phys_eb._trigger_explosion()
+
+	# Chờ 2 physics frames để Physics Server phát hiện va chạm Area2D
+	await world.get_tree().physics_frame
+	await world.get_tree().physics_frame
+
+	_assert(aoe_target_in.health_component.current_health == in_hp_before - 22.0, "Mục tiêu trong bán kính 110px (cách 70px) nhận 22 sát thương")
+	_assert(aoe_target_out.health_component.current_health == out_hp_before, "Mục tiêu ngoài bán kính 110px (cách 160px) KHÔNG nhận sát thương")
+
+	phys_eb.queue_free()
+	aoe_target_in.queue_free()
+	aoe_target_out.queue_free()
+
+	# -------------------------------------------------------------
+	# GROUP 23: Projectile No Self-Damage to Player
+	# -------------------------------------------------------------
+	print("\n--- GROUP 23: Projectile No Self-Damage to Player ---")
+	var p_hp_before := p_health.current_health
+	var safe_mb = mb_def.projectile_scene.instantiate()
+	world.add_child(safe_mb)
+	safe_mb.global_position = player.global_position
+	safe_mb.setup(Vector2.RIGHT, player, 30.0)
+
+	for i in range(5):
+		await world.get_tree().physics_frame
+
+	_assert(p_health.current_health == p_hp_before, "Đạn phép không gây sát thương lên chính Player sở hữu (No Self-Damage)")
+	if is_instance_valid(safe_mb):
+		safe_mb.queue_free()
+
+	# -------------------------------------------------------------
+	# GROUP 24: Projectile Lifetime Expiration
+	# -------------------------------------------------------------
+	print("\n--- GROUP 24: Projectile Lifetime Expiration ---")
+	var expire_mb = mb_def.projectile_scene.instantiate()
+	world.add_child(expire_mb)
+	expire_mb.global_position = Vector2(100.0, 100.0)
+	expire_mb.setup(Vector2.RIGHT, player, 30.0)
+
+	# Giả lập trôi qua hết lifetime (lifetime = 3.0s)
+	expire_mb._physics_process(3.2)
+	await world.get_tree().process_frame
+
+	_assert(not is_instance_valid(expire_mb) or expire_mb.is_queued_for_deletion(), "Đạn phép tự hủy sau khi vượt quá thời gian tồn tại tối đa (lifetime)")
+
+	# -------------------------------------------------------------
+	# GROUP 25: Projectile Cleanup on Player Death & Retry
+	# -------------------------------------------------------------
+	print("\n--- GROUP 25: Projectile Cleanup on Player Death & Retry ---")
+	var cleanup_p1 = mb_def.projectile_scene.instantiate()
+	world.add_child(cleanup_p1)
+	cleanup_p1.global_position = Vector2(200.0, 600.0)
+	cleanup_p1.setup(Vector2.RIGHT, player, 30.0)
+
+	player._on_player_died()
+	await world.get_tree().process_frame
+	_assert(not is_instance_valid(cleanup_p1) or cleanup_p1.is_queued_for_deletion(), "Toàn bộ đạn phép của Player tự dọn dẹp biến mất khi Player chết")
+
+	# Hồi sinh và kiểm tra retry dọn dẹp
+	player.respawn()
+	var cleanup_p2 = eb_def.projectile_scene.instantiate()
+	world.add_child(cleanup_p2)
+	cleanup_p2.global_position = Vector2(250.0, 600.0)
+	cleanup_p2.setup(Vector2.RIGHT, player, 22.0)
+
+	world._on_retry_requested()
+	await world.get_tree().process_frame
+	_assert(not is_instance_valid(cleanup_p2) or cleanup_p2.is_queued_for_deletion(), "Toàn bộ đạn phép trên màn hình tự dọn dẹp khi Retry bản đồ")
+
+	# -------------------------------------------------------------
+	# GROUP 26: Resource Availability & Map Pickups (>= 9 Shards)
+	# -------------------------------------------------------------
+	print("\n--- GROUP 26: Resource Availability & Map Pickups (>= 9 Shards) ---")
+	# Kiểm tra Noctis Forest có sẵn các mảnh Tinh thể Ma lực đặt sẵn
+	var preplaced_count: int = 0
+	var preplaced_shard_nodes: Array[Node] = []
+	for child in world.get_children():
+		if child is ItemPickup and child.item_id == "mana_shard" and not child.is_dynamic:
+			preplaced_count += 1
+			preplaced_shard_nodes.append(child)
+
+	_assert(preplaced_count >= 7, "Khu rừng Noctis có ít nhất 7 Tinh thể Ma lực đặt sẵn trong thế giới (thực tế: %d)" % preplaced_count)
+
+	# Nhặt các mảnh đặt sẵn
+	p_inv.clear()
+	for shard_node in preplaced_shard_nodes:
+		world.register_collected_pickup(shard_node.pickup_id)
+		p_inv.add_item("mana_shard", 1)
+
+	# Cộng thêm 3 mảnh từ quái vật đánh rơi
+	p_inv.add_item("mana_shard", 3)
+	var total_collected := p_inv.get_item_count("mana_shard")
+	_assert(total_collected >= 10, "Tổng số Tinh thể Ma lực người chơi thu thập được trong 1 vòng chơi >= 10 (thực tế: %d, yêu cầu >= 9)" % total_collected)
+
+	# Tiến hành nâng cấp từ Lv.1 -> Lv.2 (3 shards) -> Lv.3 (6 shards)
+	p_spellbook.spell_levels["ember_bloom"] = 1
+	var up_e2 = p_spellbook.upgrade_spell("ember_bloom", p_inv, world)
+	_assert(up_e2["success"] == true and p_spellbook.get_spell_level("ember_bloom") == 2, "Nâng cấp Ember Bloom lên Cấp 2 tiêu tốn 3 Shards thành công")
+	_assert(p_inv.get_item_count("mana_shard") == total_collected - 3, "Số shard còn lại: %d" % p_inv.get_item_count("mana_shard"))
+
+	var up_e3 = p_spellbook.upgrade_spell("ember_bloom", p_inv, world)
+	_assert(up_e3["success"] == true and p_spellbook.get_spell_level("ember_bloom") == 3, "Nâng cấp Ember Bloom lên Cấp 3 tiêu tốn 6 Shards thành công")
+	_assert(p_inv.get_item_count("mana_shard") == total_collected - 9, "Số shard còn lại sau khi lên Cấp 3: %d" % p_inv.get_item_count("mana_shard"))
+
+	# Lưu và nạp lại để kiểm tra các mảnh đã nhặt không xuất hiện lại
+	SaveManager.save_game(world)
+	_assert(world.collected_pickup_ids.has("pickup_forest_shard_1"), "Mảnh đã nhặt được ghi nhớ trong collected_pickup_ids")
 
 	# -------------------------------------------------------------
 	# KIỂM TRA CÁCH LY TUYỆT ĐỐI FILE SAVE THẬT
@@ -2385,12 +2542,12 @@ func _run_suite() -> void:
 	SaveManager.custom_save_path = ""
 
 	print("\n==================================================")
-	print(" [NOCTELYRA M5] KẾT QUẢ KIỂM THỬ TỔNG HỢP:        ")
+	print(" [NOCTELYRA M5.1] KẾT QUẢ KIỂM THỬ TỔNG HỢP:      ")
 	print(" Tổng số test: %d | Đạt: %d | Thất bại: %d" % [tests_run, tests_run - failures, failures])
 	print("==================================================")
 
 	if failures == 0:
-		print(">>> ALL M5 MAGIC SYSTEM TESTS PASSED 100%! <<<")
+		print(">>> ALL M5.1 MAGIC SYSTEM TESTS PASSED 100%! <<<")
 		quit(0)
 	else:
 		print(">>> SOME TESTS FAILED! <<<")
@@ -2595,14 +2752,16 @@ func _spawn_loot() -> void:
 		if loot_table:
 			loot_table.spawn_loot(global_position, spawn_parent)
 		else:
-			var pickup_scene: PackedScene = preload("res://src/loot/item_pickup.tscn")
-			var pickup := pickup_scene.instantiate() as ItemPickup
-			pickup.item_id = "mana_shard"
-			pickup.amount = 1
-			pickup.is_dynamic = true
-			pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
-			pickup.global_position = global_position
-			spawn_parent.add_child.call_deferred(pickup)
+			var pickup_scene: PackedScene = load("res://src/loot/item_pickup.tscn")
+			if pickup_scene:
+				var pickup := pickup_scene.instantiate() as ItemPickup
+				if pickup:
+					pickup.item_id = "mana_shard"
+					pickup.amount = 1
+					pickup.is_dynamic = true
+					pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
+					pickup.global_position = global_position
+					spawn_parent.add_child.call_deferred(pickup)
 
 func _finish_attack() -> void:
 	if attack_hitbox:
@@ -3184,6 +3343,12 @@ func _on_player_died() -> void:
 	if sprite_root:
 		sprite_root.modulate = Color(0.6, 0.2, 0.2, 0.6)
 
+	# Dọn dẹp các projectile của Player đang bay để không gây tác động sau khi chết
+	if get_tree():
+		for p in get_tree().get_nodes_in_group("player_projectiles"):
+			if is_instance_valid(p) and not p.is_queued_for_deletion():
+				p.queue_free()
+
 	emit_signal("player_died")
 
 	var ui := _get_game_ui()
@@ -3204,7 +3369,12 @@ func respawn() -> void:
 		hurtbox.set_deferred("monitorable", true)
 	if sprite_root:
 		sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
-	
+
+	if get_tree():
+		for p in get_tree().get_nodes_in_group("player_projectiles"):
+			if is_instance_valid(p) and not p.is_queued_for_deletion():
+				p.queue_free()
+
 	_restore_jumps()
 	dash_timer = 0.0
 	dash_cooldown_timer = 0.0
@@ -6329,12 +6499,13 @@ func trigger_explosion() -> void:
 
 		for t in potential_targets:
 			if t is Node2D and not (t in hit_targets) and t != shooter:
-				var dist := global_position.distance_to((t as Node2D).global_position)
-				if dist <= explosion_radius + 35.0:
-					var hb = t.get_node_or_null("Hurtbox") as Hurtbox
-					if hb:
+				var hb := t.get_node_or_null("Hurtbox") as Hurtbox
+				if hb:
+					var target_pos := hb.global_position
+					var dist := global_position.distance_to(target_pos)
+					if dist <= explosion_radius:
 						hit_targets.append(t)
-						var hit_dir := ((t as Node2D).global_position - global_position).normalized()
+						var hit_dir := (target_pos - global_position).normalized()
 						if hit_dir == Vector2.ZERO:
 							hit_dir = direction
 						var dmg_info := DamageInfo.new(damage_amount, shooter, hit_dir, knockback_force)
@@ -6826,10 +6997,10 @@ static func initialize() -> void:
 	mb.display_name = "Nguyệt Quang Đạn"
 	mb.description = "Bắn quả cầu ma pháp ánh trăng bay thẳng gây sát thương cho một mục tiêu."
 	mb.base_damage = 30.0
-	mb.mana_cost = 12.0
-	mb.cooldown = 0.5
+	mb.mana_cost = 15.0
+	mb.cooldown = 0.6
 	mb.projectile_speed = 550.0
-	mb.level_damages = [30.0, 40.0, 55.0]
+	mb.level_damages = [30.0, 34.5, 39.0]
 	mb.projectile_scene = preload("res://src/magic/projectiles/moon_bolt_projectile.tscn")
 	mb.effect_type = SpellDefinition.EffectType.SINGLE_TARGET
 	mb.icon_color = Color(0.25, 0.75, 1.0)
@@ -6843,10 +7014,10 @@ static func initialize() -> void:
 	eb.display_name = "Tinh Hỏa Bùng Nổ"
 	eb.description = "Bắn cầu lửa ma thuật phát nổ khi chạm mục tiêu, gây sát thương diện rộng bán kính 110 px."
 	eb.base_damage = 22.0
-	eb.mana_cost = 18.0
-	eb.cooldown = 1.0
+	eb.mana_cost = 25.0
+	eb.cooldown = 2.0
 	eb.projectile_speed = 380.0
-	eb.level_damages = [22.0, 30.0, 40.0]
+	eb.level_damages = [22.0, 25.3, 28.6]
 	eb.projectile_scene = preload("res://src/magic/projectiles/ember_bloom_projectile.tscn")
 	eb.effect_type = SpellDefinition.EffectType.EXPLOSION
 	eb.effect_radius = 110.0
@@ -6861,10 +7032,10 @@ static func initialize() -> void:
 	fs.display_name = "Hàn Tinh Tiễn"
 	fs.description = "Bắn mũi tên băng sắc bén, gây sát thương và làm chậm 35% tốc độ quái vật trong 2 giây."
 	fs.base_damage = 20.0
-	fs.mana_cost = 15.0
-	fs.cooldown = 0.7
+	fs.mana_cost = 18.0
+	fs.cooldown = 1.0
 	fs.projectile_speed = 650.0
-	fs.level_damages = [20.0, 28.0, 38.0]
+	fs.level_damages = [20.0, 23.0, 26.0]
 	fs.projectile_scene = preload("res://src/magic/projectiles/frost_shard_projectile.tscn")
 	fs.effect_type = SpellDefinition.EffectType.SLOW
 	fs.slow_ratio = 0.35
@@ -6940,19 +7111,18 @@ enum EffectType {
 func get_damage_for_level(level: int) -> float:
 	if level <= 0:
 		return base_damage
-	if not level_damages.is_empty():
-		var idx := clampi(level - 1, 0, level_damages.size() - 1)
-		return level_damages[idx]
+	if not level_damages.is_empty() and level <= level_damages.size():
+		return level_damages[level - 1]
 	match level:
 		1:
 			return base_damage
 		2:
-			return base_damage * 1.2
+			return base_damage * 1.15
 		3:
-			return base_damage * 1.4
+			return base_damage * 1.30
 		_:
 			if level > 3:
-				return base_damage * 1.4
+				return base_damage * 1.30
 			return base_damage
 
 func get_upgrade_cost(current_level: int) -> int:
@@ -8862,7 +9032,7 @@ offset_top = 55.0
 offset_right = 68.0
 offset_bottom = 72.0
 theme_override_font_sizes/font_size = 11
-text = "12 MP"
+text = "15 MP"
 horizontal_alignment = 1
 
 [node name="Highlight" type="ReferenceRect" parent="Slots/Slot1"]
@@ -8897,7 +9067,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
 theme_override_font_sizes/font_size = 14
-text = "0.5s"
+text = "0.6s"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -8950,7 +9120,7 @@ offset_top = 55.0
 offset_right = 68.0
 offset_bottom = 72.0
 theme_override_font_sizes/font_size = 11
-text = "18 MP"
+text = "25 MP"
 horizontal_alignment = 1
 
 [node name="Highlight" type="ReferenceRect" parent="Slots/Slot2"]
@@ -8986,7 +9156,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
 theme_override_font_sizes/font_size = 14
-text = "1.0s"
+text = "2.0s"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -9039,7 +9209,7 @@ offset_top = 55.0
 offset_right = 68.0
 offset_bottom = 72.0
 theme_override_font_sizes/font_size = 11
-text = "15 MP"
+text = "18 MP"
 horizontal_alignment = 1
 
 [node name="Highlight" type="ReferenceRect" parent="Slots/Slot3"]
@@ -9562,6 +9732,16 @@ func clear_boss_projectiles() -> void:
 		if is_instance_valid(p) and not p.is_queued_for_deletion():
 			p.queue_free()
 
+func clear_player_projectiles() -> void:
+	var projectiles := get_tree().get_nodes_in_group("player_projectiles")
+	for p in projectiles:
+		if is_instance_valid(p) and not p.is_queued_for_deletion():
+			p.queue_free()
+
+func clear_all_projectiles() -> void:
+	clear_boss_projectiles()
+	clear_player_projectiles()
+
 func _on_player_state_changed(st_name: String) -> void:
 	if game_ui:
 		game_ui.update_player_state(st_name)
@@ -9599,8 +9779,8 @@ func _on_retry_requested() -> void:
 	if player:
 		player.respawn()
 
-	# Xóa toàn bộ projectile của Boss khi Retry
-	clear_boss_projectiles()
+	# Xóa toàn bộ projectile của Boss và Player khi Retry
+	clear_all_projectiles()
 
 	# Xử lý Retry khi tử trận trong trận Boss (Yêu cầu F)
 	if boss_battle_started and not boss_defeated:
@@ -10039,6 +10219,48 @@ position = Vector2(680, 640)
 item_id = "moon_amulet"
 amount = 1
 pickup_id = "pickup_village_amulet_1"
+
+[node name="ForestPickup_Shard1" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(850, 460)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_1"
+
+[node name="ForestPickup_Shard2" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(1450, 640)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_2"
+
+[node name="ForestPickup_Shard3" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(2000, 640)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_3"
+
+[node name="ForestPickup_Shard4" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(2300, 440)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_4"
+
+[node name="ForestPickup_Shard5" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(2800, 340)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_5"
+
+[node name="ForestPickup_Shard6" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(3400, 430)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_6"
+
+[node name="ForestPickup_Shard7" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(3950, 640)
+item_id = "mana_shard"
+amount = 1
+pickup_id = "pickup_forest_shard_7"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(180, 630)

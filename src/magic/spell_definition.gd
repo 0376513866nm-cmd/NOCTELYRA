@@ -30,19 +30,18 @@ enum EffectType {
 func get_damage_for_level(level: int) -> float:
 	if level <= 0:
 		return base_damage
-	if not level_damages.is_empty():
-		var idx := clampi(level - 1, 0, level_damages.size() - 1)
-		return level_damages[idx]
+	if not level_damages.is_empty() and level <= level_damages.size():
+		return level_damages[level - 1]
 	match level:
 		1:
 			return base_damage
 		2:
-			return base_damage * 1.2
+			return base_damage * 1.15
 		3:
-			return base_damage * 1.4
+			return base_damage * 1.30
 		_:
 			if level > 3:
-				return base_damage * 1.4
+				return base_damage * 1.30
 			return base_damage
 
 func get_upgrade_cost(current_level: int) -> int:

@@ -192,14 +192,16 @@ func _spawn_loot() -> void:
 		if loot_table:
 			loot_table.spawn_loot(global_position, spawn_parent)
 		else:
-			var pickup_scene: PackedScene = preload("res://src/loot/item_pickup.tscn")
-			var pickup := pickup_scene.instantiate() as ItemPickup
-			pickup.item_id = "mana_shard"
-			pickup.amount = 1
-			pickup.is_dynamic = true
-			pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
-			pickup.global_position = global_position
-			spawn_parent.add_child.call_deferred(pickup)
+			var pickup_scene: PackedScene = load("res://src/loot/item_pickup.tscn")
+			if pickup_scene:
+				var pickup := pickup_scene.instantiate() as ItemPickup
+				if pickup:
+					pickup.item_id = "mana_shard"
+					pickup.amount = 1
+					pickup.is_dynamic = true
+					pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
+					pickup.global_position = global_position
+					spawn_parent.add_child.call_deferred(pickup)
 
 func _finish_attack() -> void:
 	if attack_hitbox:

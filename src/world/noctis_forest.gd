@@ -336,6 +336,16 @@ func clear_boss_projectiles() -> void:
 		if is_instance_valid(p) and not p.is_queued_for_deletion():
 			p.queue_free()
 
+func clear_player_projectiles() -> void:
+	var projectiles := get_tree().get_nodes_in_group("player_projectiles")
+	for p in projectiles:
+		if is_instance_valid(p) and not p.is_queued_for_deletion():
+			p.queue_free()
+
+func clear_all_projectiles() -> void:
+	clear_boss_projectiles()
+	clear_player_projectiles()
+
 func _on_player_state_changed(st_name: String) -> void:
 	if game_ui:
 		game_ui.update_player_state(st_name)
@@ -373,8 +383,8 @@ func _on_retry_requested() -> void:
 	if player:
 		player.respawn()
 
-	# Xóa toàn bộ projectile của Boss khi Retry
-	clear_boss_projectiles()
+	# Xóa toàn bộ projectile của Boss và Player khi Retry
+	clear_all_projectiles()
 
 	# Xử lý Retry khi tử trận trong trận Boss (Yêu cầu F)
 	if boss_battle_started and not boss_defeated:

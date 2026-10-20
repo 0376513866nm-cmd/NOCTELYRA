@@ -221,6 +221,12 @@ func _on_player_died() -> void:
 	if sprite_root:
 		sprite_root.modulate = Color(0.6, 0.2, 0.2, 0.6)
 
+	# Dọn dẹp các projectile của Player đang bay để không gây tác động sau khi chết
+	if get_tree():
+		for p in get_tree().get_nodes_in_group("player_projectiles"):
+			if is_instance_valid(p) and not p.is_queued_for_deletion():
+				p.queue_free()
+
 	emit_signal("player_died")
 
 	var ui := _get_game_ui()
@@ -241,7 +247,12 @@ func respawn() -> void:
 		hurtbox.set_deferred("monitorable", true)
 	if sprite_root:
 		sprite_root.modulate = Color(1.0, 1.0, 1.0, 1.0)
-	
+
+	if get_tree():
+		for p in get_tree().get_nodes_in_group("player_projectiles"):
+			if is_instance_valid(p) and not p.is_queued_for_deletion():
+				p.queue_free()
+
 	_restore_jumps()
 	dash_timer = 0.0
 	dash_cooldown_timer = 0.0

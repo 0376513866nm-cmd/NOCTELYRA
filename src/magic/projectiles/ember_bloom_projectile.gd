@@ -131,12 +131,13 @@ func trigger_explosion() -> void:
 
 		for t in potential_targets:
 			if t is Node2D and not (t in hit_targets) and t != shooter:
-				var dist := global_position.distance_to((t as Node2D).global_position)
-				if dist <= explosion_radius + 35.0:
-					var hb = t.get_node_or_null("Hurtbox") as Hurtbox
-					if hb:
+				var hb := t.get_node_or_null("Hurtbox") as Hurtbox
+				if hb:
+					var target_pos := hb.global_position
+					var dist := global_position.distance_to(target_pos)
+					if dist <= explosion_radius:
 						hit_targets.append(t)
-						var hit_dir := ((t as Node2D).global_position - global_position).normalized()
+						var hit_dir := (target_pos - global_position).normalized()
 						if hit_dir == Vector2.ZERO:
 							hit_dir = direction
 						var dmg_info := DamageInfo.new(damage_amount, shooter, hit_dir, knockback_force)

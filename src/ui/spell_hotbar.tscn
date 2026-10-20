@@ -73,7 +73,7 @@ offset_top = 55.0
 offset_right = 68.0
 offset_bottom = 72.0
 theme_override_font_sizes/font_size = 11
-text = "12 MP"
+text = "15 MP"
 horizontal_alignment = 1
 
 [node name="Highlight" type="ReferenceRect" parent="Slots/Slot1"]
@@ -108,7 +108,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
 theme_override_font_sizes/font_size = 14
-text = "0.5s"
+text = "0.6s"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -161,7 +161,7 @@ offset_top = 55.0
 offset_right = 68.0
 offset_bottom = 72.0
 theme_override_font_sizes/font_size = 11
-text = "18 MP"
+text = "25 MP"
 horizontal_alignment = 1
 
 [node name="Highlight" type="ReferenceRect" parent="Slots/Slot2"]
@@ -197,7 +197,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
 theme_override_font_sizes/font_size = 14
-text = "1.0s"
+text = "2.0s"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -250,7 +250,7 @@ offset_top = 55.0
 offset_right = 68.0
 offset_bottom = 72.0
 theme_override_font_sizes/font_size = 11
-text = "15 MP"
+text = "18 MP"
 horizontal_alignment = 1
 
 [node name="Highlight" type="ReferenceRect" parent="Slots/Slot3"]

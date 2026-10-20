@@ -1,24 +1,24 @@
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M5 FINAL: Magic Combat System)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M5.1 STABILIZATION: Magic Combat System)
 
 Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M5 FINAL)
+## 1. Cấu trúc thư mục & Module dự án (Bản M5.1 STABILIZATION)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu hướng dẫn, kiến trúc, bảng phép thuật & kết quả kiểm thử M5
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M5 Final)
-├── test_m5_flow.gd                 # [MỚI M5] Kịch bản kiểm thử 20 nhóm tính năng ma pháp (85/85 tests PASS 100%)
+├── README.md                       # Tài liệu hướng dẫn, kiến trúc, bảng phép thuật & kết quả kiểm thử M5.1
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M5.1 Final)
+├── test_m5_flow.gd                 # [M5.1] Kịch bản kiểm thử 26 nhóm tính năng ma pháp & vật lý (100/100 tests PASS 100%)
 ├── test_m4_flow.gd                 # Kịch bản kiểm thử 17 hạng mục Boss M4 (87/87 tests PASS 100%)
 ├── test_m3_2_flow.gd               # Kịch bản kiểm thử M3.2 (50/50 tests PASS 100%)
 ├── test_m3_1_flow.gd               # Kịch bản kiểm thử M3.1 (41/41 tests PASS 100%)
 ├── test_m3_flow.gd                 # Kịch bản kiểm thử M3 (67/67 tests PASS 100%)
 ├── test_m2_1_flow.gd               # Kịch bản kiểm thử M2.1 (42/42 tests PASS 100%)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
-├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus, input maps M5)
+├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus, input maps M5.1)
 ├── run_game.bat                    # 1-Click chạy game test ngay lập tức
 ├── open_editor.bat                 # 1-Click mở Godot Editor
 ├── export_code_for_ai.bat          # 1-Click gom toàn bộ source code thành file CODE_EXPORT.txt
@@ -41,14 +41,14 @@ D:\project\game\NOCTELYRA\
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player, tích hợp SpellbookComponent, phím 1/2/3/U, combat
+    │   │   ├── player.gd                    # FSM Player, dọn sạch đạn khi chết/hồi sinh, phím 1/2/3/U, combat
     │   │   ├── player.tscn                  # Scene Player có SpellbookComponent
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy đôi, dash
     │   ├── npc\
     │   │   ├── npc.gd                       # Logic NPC Elyra, mở khóa Cổng Ma Pháp sau khi trả nhiệm vụ
     │   │   └── npc.tscn                     # Scene NPC Elyra (collision_layer = 0: xuyên người mượt mà)
     │   └── enemy\
-    │       ├── enemy.gd                     # Enemy AI, apply_slow(ratio, duration), khôi phục tốc độ chuẩn
+    │       ├── enemy.gd                     # Enemy AI, làm chậm 35%, rơi Tinh thể Ma lực an toàn
     │       └── enemy.tscn                   # Scene Enemy với thanh máu HPBar mini, hitbox & hurtbox
     ├── boss\                                # MODULE BOSS LUNARETH — LINH LỘC NGUYỆT THỰC
     │   ├── boss_lunareth.gd                 # Miễn nhiễm slow, bất tử 1.3s Phase Transition, shockwave
@@ -64,16 +64,16 @@ D:\project\game\NOCTELYRA\
     │   ├── combat_component.gd              # Điều phối chém kiếm và ủy quyền cast_spell sang SpellbookComponent
     │   ├── magic_projectile.gd              # Projectile cũ (giữ tương thích)
     │   └── magic_projectile.tscn
-    ├── magic\                               # [MỚI M5] HỆ THỐNG PHÁP THUẬT CHIẾN ĐẤU
-    │   ├── spell_definition.gd              # Custom Resource: thông số, sát thương theo cấp, giá nâng cấp
-    │   ├── spell_database.gd                # Registry tra cứu tĩnh 3 phép chuẩn theo ID
+    ├── magic\                               # [M5.1] HỆ THỐNG PHÁP THUẬT CHIẾN ĐẤU
+    │   ├── spell_definition.gd              # Custom Resource: tỉ lệ tăng cấp unrounded (100%, 115%, 130%), giá nâng cấp
+    │   ├── spell_database.gd                # Thông số thiết kế chuẩn M5.1 (15 MP/0.6s, 25 MP/2.0s, 18 MP/1.0s)
     │   ├── spellbook_component.gd           # Quản lý danh sách phép, phép đang chọn, cấp độ, cooldown độc lập
     │   └── projectiles\
-    │       ├── moon_bolt_projectile.gd      # Đạn ánh trăng 550 px/s, đơn mục tiêu (30/40/55 DMG)
+    │       ├── moon_bolt_projectile.gd      # Đạn ánh trăng 550 px/s, đơn mục tiêu (30.0 / 34.5 / 39.0 DMG)
     │       ├── moon_bolt_projectile.tscn
-    │       ├── ember_bloom_projectile.gd    # Đạn lửa 380 px/s, nổ AoE 110 px (22/30/40 DMG, chống đòn trùng)
+    │       ├── ember_bloom_projectile.gd    # Đạn lửa 380 px/s, nổ AoE 110 px (22.0 / 25.3 / 28.6 DMG, chống đòn trùng)
     │       ├── ember_bloom_projectile.tscn
-    │       ├── frost_shard_projectile.gd    # Đạn băng 650 px/s, làm chậm quái 35% trong 2s (20/28/38 DMG)
+    │       ├── frost_shard_projectile.gd    # Đạn băng 650 px/s, làm chậm quái 35% trong 2s (20.0 / 23.0 / 26.0 DMG)
     │       └── frost_shard_projectile.tscn
     ├── interaction\
     │   ├── interaction_coordinator.gd       # Bộ điều phối Input tập trung cho tương tác & hội thoại
@@ -95,8 +95,8 @@ D:\project\game\NOCTELYRA\
     ├── save\                                # HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
     │   └── save_manager.gd                  # Version 1.2.0, lưu/nạp spellbook, tương thích ngược v1.0.0 & v1.1.0
     ├── ui\
-    │   ├── spell_hotbar.gd                  # [MỚI M5] Controller thanh chọn phép 3 ô [1], [2], [3] & nút [U]
-    │   ├── spell_hotbar.tscn                # [MỚI M5] Scene thanh hotbar hiển thị highlight, cooldown, MP, Lv
+    │   ├── spell_hotbar.gd                  # Controller thanh chọn phép 3 ô [1], [2], [3] & nút [U]
+    │   ├── spell_hotbar.tscn                # Scene thanh hotbar hiển thị highlight, cooldown, MP, Lv
     │   ├── game_ui.gd                       # Tích hợp hotbar, hiển thị thông báo nâng cấp phép
     │   ├── game_ui.tscn                     # CanvasLayer HUD, Bars, Dialogue, PauseMenu, Hotbar
     │   ├── pause_controller.gd              # Quản lý Pause/Resume độc lập
@@ -105,99 +105,110 @@ D:\project\game\NOCTELYRA\
     └── world\
         ├── magic_gate.gd                    # Cổng Ma Pháp tại X=4200
         ├── magic_gate.tscn                  # Scene Cổng Ma Pháp rào chắn vật lý
-        ├── noctis_forest.gd                 # Kết nối SpellHotbar, Boss, Arena, Checkpoint
-        └── noctis_forest.tscn               # Màn chơi thế giới đầy đủ
+        ├── noctis_forest.gd                 # Tích hợp 7 Tinh thể Ma lực đặt sẵn, dọn projectile khi retry
+        └── noctis_forest.tscn               # Màn chơi chứa 7 pickup Tinh thể Ma lực + 3 quái (tổng 10 Shards)
 ```
 
 ---
 
-## 2. Thông số 3 Kỹ năng Ma pháp (Milestone M5)
+## 2. Thông số 3 Kỹ năng Ma pháp (Milestone M5.1 Chuẩn)
 
 | Thuộc tính | 1. Nguyệt Quang Đạn (`moon_bolt`) | 2. Tinh Hỏa Bùng Nổ (`ember_bloom`) | 3. Hàn Tinh Tiễn (`frost_shard`) |
 | :--- | :---: | :---: | :---: |
 | **Phím tắt chọn** | **Phím [1]** | **Phím [2]** | **Phím [3]** |
 | **Phím thi triển** | **Phím [K]** | **Phím [K]** | **Phím [K]** |
-| **Tiêu hao MP** | **12 MP** | **18 MP** | **15 MP** |
-| **Thời gian hồi (CD)** | **0.5 giây** (Độc lập) | **1.0 giây** (Độc lập) | **0.7 giây** (Độc lập) |
+| **Tiêu hao MP** | **15 MP** | **25 MP** | **18 MP** |
+| **Thời gian hồi (CD)** | **0.6 giây** (Độc lập) | **2.0 giây** (Độc lập) | **1.0 giây** (Độc lập) |
 | **Tốc độ đạn** | **550 px/s** | **380 px/s** | **650 px/s** |
 | **Cơ chế đòn đánh** | Đơn mục tiêu, đạn bay thẳng, tan biến khi chạm mục tiêu | Bắn cầu lửa phát nổ diện rộng **bán kính 110 px**, chống sát thương trùng | Đạn băng sắc bén, **làm chậm 35% tốc độ quái vật** trong **2.0 giây** |
 | **Miễn nhiễm làm chậm** | — | — | **Boss Lunareth miễn nhiễm hoàn toàn** với hiệu ứng làm chậm |
-| **Sát thương Cấp 1** | **30 DMG** | **22 DMG** | **20 DMG** |
-| **Sát thương Cấp 2** | **40 DMG** | **30 DMG** | **28 DMG** |
-| **Sát thương Cấp 3** | **55 DMG** | **40 DMG** | **38 DMG** |
+| **Sát thương Cấp 1 (100%)** | **30.0 DMG** | **22.0 DMG** | **20.0 DMG** |
+| **Sát thương Cấp 2 (115%)** | **34.5 DMG** (unrounded) | **25.3 DMG** (unrounded) | **23.0 DMG** (unrounded) |
+| **Sát thương Cấp 3 (130%)** | **39.0 DMG** (unrounded) | **28.6 DMG** (unrounded) | **26.0 DMG** (unrounded) |
 | **Chi phí nâng Cấp 2** | **3 Tinh thể Ma lực** (`mana_shard`) | **3 Tinh thể Ma lực** (`mana_shard`) | **3 Tinh thể Ma lực** (`mana_shard`) |
 | **Chi phí nâng Cấp 3** | **6 Tinh thể Ma lực** (`mana_shard`) | **6 Tinh thể Ma lực** (`mana_shard`) | **6 Tinh thể Ma lực** (`mana_shard`) |
 
----
-
-## 3. Hệ thống Nâng cấp Phép & Ràng buộc Chiến thuật
-
-- **Phím tắt nâng cấp:** **Phím [U]** (hoặc nhấp trực tiếp nút `[U] Nâng cấp` trên giao diện Hotbar).
-- **Nguyên liệu:** Tiêu hao `mana_shard` (Tinh thể Ma lực) nhặt được từ việc tiêu diệt quái vật tha hóa trong Rừng Noctis.
-- **Ràng buộc chiến thuật (Bảo vệ tính cân bằng):**
-  1. **Chặn nâng cấp trong trận chiến Boss:** Khi Boss Lunareth đang giao chiến, người chơi không thể nâng cấp phép để tránh gian lận sức mạnh giữa trận.
-  2. **Chặn nâng cấp khi đã chết:** Trạng thái `DEAD` vô hiệu hóa mọi thao tác nâng cấp.
-  3. **Chặn nâng cấp khi đang Pause / Mở Hội thoại / Mở Túi đồ.**
-  4. **Chặn nâng cấp khi đã đạt Cấp tối đa (Cấp 3).**
-  5. **Thông báo hệ thống:** Mọi kết quả nâng cấp thành công hoặc lý do thất bại đều được hiển thị qua `GameUI.show_notification()`.
+> **Ghi chú về sát thương:** Sát thương không được làm tròn số trong logic game (ví dụ: `34.5`, `25.3`, `28.6` được tính toán chính xác bằng số thực `float`).
 
 ---
 
-## 4. Thanh chọn phép (Spell Hotbar UI)
+## 3. Phân bổ Tài nguyên Tinh thể Ma lực (Mana Shard) trong Bản đồ
 
-- Tọa lạc ở đáy màn hình chính giữa (Bottom-Center), không che chắn thanh HP/MP bên góc trái hay Quest Panel góc phải.
-- Gồm 3 thẻ phép đại diện:
-  + **Viền sáng (Highlight):** Nhận diện phép thuật đang kích hoạt.
-  + **Overlay & Số đếm hồi chiêu:** Hiển thị lớp phủ tối kèm thời gian hồi độc lập `X.Xs` khi phép đang cooldown.
-  + **Thông tin trực quan:** Icon màu sắc, nhãn phím `[1]`, `[2]`, `[3]`, cấp độ hiện tại `Lv.X`, lượng tiêu hao `X MP`.
-  + **Tương tác chuột:** Cho phép nhấp chuột trái vào từng ô để đổi phép, hoặc nhấp nút `[U]` để nâng cấp nhanh.
-
----
-
-## 5. Hệ thống Lưu / Tải Dữ liệu v1.2.0 & Tính Tương thích Ngược
-
-- **Định danh phiên bản mới:** `save_version: "1.2.0"`.
-- **Cấu trúc khối ma pháp:**
-  ```json
-  "spellbook": {
-      "selected_spell": "ember_bloom",
-      "known_spells": ["moon_bolt", "ember_bloom", "frost_shard"],
-      "spell_levels": {
-          "moon_bolt": 3,
-          "ember_bloom": 1,
-          "frost_shard": 1
-      }
-  }
-  ```
-- **Tương thích ngược hoàn hảo:**
-  + Hỗ trợ load các file save cũ phiên bản `1.0.0` (M3.2) và `1.1.0` (M4).
-  + Khi load save cũ thiếu khối `"spellbook"`, hệ thống tự động khởi tạo mặc định 3 phép thuật cơ bản ở Cấp 1, chọn sẵn `moon_bolt`, người chơi tiếp tục trải nghiệm mà không bị crash hay mất dữ liệu.
-- **Cách ly dữ liệu kiểm thử 100%:**
-  + Bộ test sử dụng đường dẫn `user://noctelyra_m5_test.json`.
-  + File save thật của người chơi `user://noctelyra_slot1.json` được bảo vệ nguyên vẹn 100%, kiểm tra đối chiếu MD5 checksum trước và sau test không đổi.
+Để đảm bảo người chơi có thể nâng cấp đầy đủ từ Cấp 1 lên Cấp 3 (cần tổng cộng 3 + 6 = 9 Shards) trong một lượt chơi:
+- **7 Tinh thể Ma lực đặt sẵn (`preplaced_pickups`):**
+  1. `ForestPickup_Shard1` tại $(1000, 640)$ (Mặt đất khu vực đầu rừng)
+  2. `ForestPickup_Shard2` tại $(1450, 640)$ (Gần cụm quái thứ 1)
+  3. `ForestPickup_Shard3` tại $(2000, 640)$ (Giữa rừng)
+  4. `ForestPickup_Shard4` tại $(2300, 440)$ (Platform cao bí mật thứ 1)
+  5. `ForestPickup_Shard5` tại $(2800, 340)$ (Platform ngọn cây cao thứ 2)
+  6. `ForestPickup_Shard6` tại $(3400, 430)$ (Platform tàn tích cổ)
+  7. `ForestPickup_Shard7` tại $(3950, 640)$ (Trước Cổng Ma Pháp X=4200)
+- **3 Tinh thể Ma lực từ Quái vật:** 3 quái vật tha hóa trong rừng mỗi con rơi 1 Tinh thể Ma lực khi bị tiêu diệt.
+- **Tổng tài nguyên:** **10 Tinh thể Ma lực** (đáp ứng vượt mức yêu cầu $\ge 9$ Tinh thể để nâng cấp max Cấp 3).
+- **Lưu trữ & Chống trùng lặp:** Mỗi vật phẩm đặt sẵn có `pickup_id` duy nhất (`pickup_forest_shard_1` đến `pickup_forest_shard_7`). Sau khi nhặt, `SaveManager` ghi nhận vào `collected_pickup_ids`, đảm bảo khi tải lại game các mảnh đã nhặt không hồi sinh và số lượng trong túi đồ không bị nhân đôi.
 
 ---
 
-## 6. Báo cáo Kiểm thử Tự động Tổng hợp trên Godot 4.3 Engine
+## 4. Kiểm thử Tích hợp Vật lý Thực tế (Godot Physics Server)
+
+Các kịch bản kiểm thử M5.1 chạy qua `await physics_frame` mô phỏng trực tiếp trên Engine vật lý:
+1. **Bay & Va chạm thực tế (Moon Bolt):** Đạn bay thực sự ở vận tốc 550 px/s, Physics Server phát hiện va chạm với Hurtbox của Quái vật (`collision_layer = 4`), gây 30 DMG và tự hủy.
+2. **Kiểm tra bán kính nổ 110 px (Ember Bloom):**
+   - Quái vật trong bán kính 110 px (cách tâm 70 px): Nhận 22 DMG.
+   - Quái vật ngoài bán kính 110 px (cách tâm 160 px): Nhận 0 DMG.
+   - Chống sát thương trùng: Kích hoạt thêm lần nữa trong cùng vụ nổ không gây thêm sát thương.
+3. **Hiệu ứng làm chậm & Phục hồi (Frost Shard):**
+   - Quái vật dính đạn bị giảm 35% vận tốc di chuyển (tốc độ còn 65%).
+   - Sau 2.0 giây, vận tốc tự động khôi phục 100% nguyên bản.
+   - Boss Lunareth nhận sát thương bình thường nhưng **miễn nhiễm 100%** với hiệu ứng làm chậm (vận tốc giữ nguyên).
+4. **Không tự gây sát thương (No Self-Damage):** Đạn xuất hiện chạm người Player không gây sát thương lên người chơi.
+5. **Hết thời gian tồn tại (Lifetime Expiration):** Đạn bay ra ngoài không gian tự giải phóng bộ nhớ sau thời gian sống (lifetime).
+6. **Dọn dẹp đạn khi Chết & Retry:** Toàn bộ đạn trong nhóm `player_projectiles` và `boss_projectiles` lập tức bị xóa sạch khi Player chết hoặc khi bấm Retry bản đồ.
+
+---
+
+## 5. Ràng buộc Nâng cấp Phép & Giao diện Hotbar
+
+- **Phím chọn phép:** `[1]`, `[2]`, `[3]`.
+- **Phím bắn phép:** `[K]`.
+- **Phím nâng cấp:** `[U]` (hoặc nhấp chuột vào nút trên Hotbar).
+- **Ràng buộc an toàn:**
+  + Chặn nâng cấp khi đang đấu Boss Lunareth (`boss_battle_started = true`).
+  + Chặn nâng cấp khi Player đã chết (`Player.State.DEAD`).
+  + Chặn nâng cấp khi đang tạm dừng (`paused`), mở hội thoại NPC hoặc mở túi đồ.
+  + Chặn nâng cấp khi đã đạt Cấp tối đa (Cấp 3).
+
+---
+
+## 6. Hệ thống Lưu / Tải Dữ liệu v1.2.0 & Cách Ly File Thật
+
+- **Phiên bản bản lưu:** `1.2.0`.
+- **Khối dữ liệu `spellbook`:** Lưu trữ phép đang chọn, danh sách phép đã học, cấp độ của từng phép.
+- **Tương thích ngược:** Nạp an toàn bản lưu cũ `1.0.0` (M3.2) và `1.1.0` (M4), tự động bù đắp dữ liệu mặc định mà không gây crash.
+- **Cách ly tuyệt đối:** Bộ kiểm thử chỉ tương tác với file test riêng biệt `user://noctelyra_m5_test.json`. File save thật `user://noctelyra_slot1.json` được bảo vệ nguyên vẹn 100% với MD5 checksum đối chiếu không thay đổi.
+
+---
+
+## 7. Báo cáo Kiểm thử Tự động Tổng hợp trên Godot 4.3 Engine
 
 Tất cả các bộ test đều chạy trong môi trường Engine thực tế (`Godot_v4.3-stable_win64_console.exe --headless`):
 
 ```text
 ========================================================================================
- BỘ KIỂM THỬ                         | SỐ TEST   | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
+ BỘ KIỂM THỬ                         | SỐ TEST    | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
 ----------------------------------------------------------------------------------------
- test_m5_flow.gd (Ma pháp M5)        | 85 tests  | PASS 100%    | 0
- test_m4_flow.gd (Boss Lunareth M4)  | 87 tests  | PASS 100%    | 0
- test_m3_2_flow.gd (Save/Load M3.2)  | 50 tests  | PASS 100%    | 0
- test_m2_1_flow.gd (NPC & Quest M2)  | 42 tests  | PASS 100%    | 0
+ test_m5_flow.gd (Ma pháp M5.1)      | 100 tests  | PASS 100%    | 0
+ test_m4_flow.gd (Boss Lunareth M4)  |  87 tests  | PASS 100%    | 0
+ test_m3_2_flow.gd (Save/Load M3.2)  |  50 tests  | PASS 100%    | 0
+ test_m2_1_flow.gd (NPC & Quest M2)  |  42 tests  | PASS 100%    | 0
 ========================================================================================
- TỔNG CỘNG                           | 264 tests | PASS 100%    | HOÀN HẢO KHÔNG LỖI
+ TỔNG CỘNG                           | 279 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
 ========================================================================================
 ```
 
 ---
 
-## 7. Hướng dẫn Điều khiển & Trải nghiệm
+## 8. Hướng dẫn Điều khiển & Trải nghiệm
 
 | Phím bấm | Hành động |
 | :--- | :--- |
