@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://b7y2n4m8q1v9"]
+[gd_scene load_steps=8 format=3 uid="uid://b7y2n4m8q1v9"]
 
 [ext_resource type="Script" path="res://src/actors/enemy/enemy.gd" id="1_enemy"]
 [ext_resource type="Script" path="res://src/combat/health_component.gd" id="2_health"]
 [ext_resource type="Script" path="res://src/combat/hurtbox.gd" id="3_hurtbox"]
 [ext_resource type="Script" path="res://src/combat/hitbox.gd" id="4_hitbox"]
+[ext_resource type="Script" path="res://src/actors/enemy/enemy_visual.gd" id="5_visual"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_enemy"]
 radius = 18.0
@@ -22,20 +23,23 @@ position = Vector2(0, -30)
 shape = SubResource("CapsuleShape2D_enemy")
 
 [node name="VisualRoot" type="Node2D" parent="."]
+script = ExtResource("5_visual")
 
-[node name="BodyRect" type="ColorRect" parent="VisualRoot"]
+[node name="MainBody" type="ColorRect" parent="VisualRoot"]
 offset_left = -18.0
 offset_top = -60.0
 offset_right = 18.0
 offset_bottom = 0.0
 color = Color(0.8, 0.2, 0.2, 1)
 
-[node name="EyeRect" type="ColorRect" parent="VisualRoot"]
-offset_left = -12.0
-offset_top = -48.0
-offset_right = -4.0
-offset_bottom = -40.0
+[node name="EyeRect" type="ColorRect" parent="VisualRoot/MainBody"]
+offset_left = 6.0
+offset_top = 12.0
+offset_right = 14.0
+offset_bottom = 20.0
 color = Color(1, 1, 1, 1)
+
+[node name="DetailNode" type="Node2D" parent="VisualRoot"]
 
 [node name="HPBar" type="ProgressBar" parent="VisualRoot"]
 offset_left = -25.0

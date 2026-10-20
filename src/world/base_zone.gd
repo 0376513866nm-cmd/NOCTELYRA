@@ -96,6 +96,16 @@ func setup_signals() -> void:
 			if n is NPC and not n.dialogue_requested.is_connected(_on_npc_dialogue_requested):
 				n.dialogue_requested.connect(_on_npc_dialogue_requested)
 
+	# Kết nối tất cả Enemy trong khu vực
+	if get_tree():
+		for e in get_tree().get_nodes_in_group("enemies"):
+			if e is Enemy:
+				if not e.enemy_defeated.is_connected(_on_enemy_defeated):
+					e.enemy_defeated.connect(_on_enemy_defeated)
+				if player and player.quest_journal_component:
+					if not e.enemy_defeated.is_connected(player.quest_journal_component.register_enemy_kill):
+						e.enemy_defeated.connect(player.quest_journal_component.register_enemy_kill)
+
 func setup_camera() -> void:
 	if player == null:
 		player = get_node_or_null("Player") as Player

@@ -7,8 +7,8 @@ extends RefCounted
 ## thẩm định (validation) chặt chẽ và cách ly dữ liệu kiểm thử an toàn 100%.
 
 const DEFAULT_SAVE_PATH: String = "user://noctelyra_slot1.json"
-const CURRENT_VERSION: String = "1.3.0"
-const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0", "1.3.0"]
+const CURRENT_VERSION: String = "1.4.0"
+const SUPPORTED_VERSIONS: Array[String] = ["1.0.0", "1.1.0", "1.2.0", "1.3.0", "1.4.0"]
 
 static var custom_save_path: String = ""
 static var should_load_on_start: bool = false
@@ -117,6 +117,7 @@ static func save_game(world: Node) -> bool:
 	var p_inv := player.get_node_or_null("InventoryComponent") as InventoryComponent
 	var p_eq := player.get_node_or_null("EquipmentComponent") as EquipmentComponent
 	var p_spellbook := player.get_node_or_null("SpellbookComponent") as SpellbookComponent
+	var p_journal := player.get_node_or_null("QuestJournalComponent") as QuestJournalComponent
 
 	var save_path := get_save_path()
 	var tmp_path := get_tmp_path()
@@ -143,6 +144,7 @@ static func save_game(world: Node) -> bool:
 			"known_spells": ["moon_bolt", "ember_bloom", "frost_shard"],
 			"spell_levels": {"moon_bolt": 1, "ember_bloom": 1, "frost_shard": 1}
 		},
+		"quest_journal": p_journal.to_dict() if p_journal else {},
 		"quest": {
 			"state": int(quest_mgr.current_quest.current_state) if quest_mgr.current_quest else 0,
 			"current_amount": int(quest_mgr.current_quest.current_amount) if quest_mgr.current_quest else 0
@@ -372,9 +374,17 @@ static func load_game(world: Node) -> bool:
 		if q_state == QuestData.State.COMPLETED:
 			quest_mgr.current_quest.current_amount = quest_mgr.current_quest.target_amount
 
-		if ui:
+	# BƯỚC 3b: Khôi phục Sổ Nhiệm Vụ (M7)
+	var p_journal := player.get_node_or_null("QuestJournalComponent") as QuestJournalComponent
+	if p_journal and data.has("quest_journal") and (data["quest_journal"] is Dictionary):
+		p_journal.from_dict(data["quest_journal"])
+
+	if ui:
+		if quest_mgr.current_quest:
 			ui.update_quest_info(quest_mgr.current_quest)
-			ui.update_gold(quest_mgr.gold)
+		ui.update_gold(quest_mgr.gold)
+		if ui.has_method("update_quest_journal_ui"):
+			ui.update_quest_journal_ui()
 
 	# BƯỚC 4: Khôi phục trạng thái vật phẩm thế giới và quái vật cho khu vực hiện tại
 	var cur_zone_state: Dictionary = ZoneManager.zone_states.get(z_id, {})

@@ -1,17 +1,18 @@
-# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M6.1 STABILIZATION: World Expansion & Camera/UI Fixes)
+# NOCTELYRA — 2D Action RPG Cross-platform (Milestone M7: Regional Gameplay Expansion)
 
-Dự án game Fantasy 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
+Dự án game Action RPG 2D màn hình ngang phát triển bằng **Godot 4.3 (GDScript)**, hướng tới phát hành PC (Steam), Android và iOS.
 
 ---
 
-## 1. Cấu trúc thư mục & Module dự án (Bản M6.1 STABILIZATION)
+## 1. Cấu trúc thư mục & Module dự án (Milestone M7)
 
 ```text
 D:\project\game\NOCTELYRA\
 ├── .gitignore                      # Loại bỏ cache Godot (.godot/)
-├── README.md                       # Tài liệu kiến trúc, bản vá M6.1 & kết quả kiểm thử
-├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M6.1 Final)
-├── test_m6_flow.gd                 # [M6.1] Kịch bản kiểm thử 19 nhóm tính năng (117/117 tests PASS 100%)
+├── README.md                       # Tài liệu kiến trúc Milestone M7 & kết quả kiểm thử
+├── CODE_EXPORT.txt                 # Toàn bộ mã nguồn dự án cho AI review (đã cập nhật M7 Final)
+├── test_m7_flow.gd                 # [M7] Kịch bản kiểm thử 13 nhóm tính năng mở rộng vùng đất (116/116 tests PASS 100%)
+├── test_m6_flow.gd                 # Kịch bản kiểm thử thế giới mở rộng & cổng dịch chuyển (117/117 tests PASS 100%)
 ├── test_m5_flow.gd                 # Kịch bản kiểm thử 26 nhóm tính năng ma pháp (100/100 tests PASS 100%)
 ├── test_m4_flow.gd                 # Kịch bản kiểm thử 17 hạng mục Boss M4 (87/87 tests PASS 100%)
 ├── test_m3_2_flow.gd               # Kịch bản kiểm thử M3.2 (50/50 tests PASS 100%)
@@ -19,138 +20,138 @@ D:\project\game\NOCTELYRA\
 ├── test_m3_flow.gd                 # Kịch bản kiểm thử M3 (67/67 tests PASS 100%)
 ├── test_m2_1_flow.gd               # Kịch bản kiểm thử M2.1 (42/42 tests PASS 100%)
 ├── icon.svg                        # Icon chuẩn của dự án (128x128 SVG)
-├── project.godot                   # Main Scene: main_menu.tscn (1280x720, forward_plus, autoload ZoneManager)
+├── project.godot                   # Cấu hình dự án, Input Map (thêm phím Q: quest_journal)
 ├── run_game.bat                    # 1-Click chạy game test ngay lập tức
 ├── open_editor.bat                 # 1-Click mở Godot Editor
 ├── export_code_for_ai.bat          # 1-Click gom toàn bộ source code thành file CODE_EXPORT.txt
 │
-├── source_assets\                  # TÀI NGUYÊN NGUỒN (Được cách ly bằng .gdignore, không đưa vào build)
-│   ├── .gdignore                   # Khai báo Godot Engine bỏ qua thư mục này khi import/export
-│   ├── README.md                   # Hướng dẫn tái tạo Atlas từ ảnh Strip
-│   ├── repack_sprites.ps1          # Script PowerShell tự động cắt và đóng gói lại Atlas vuông
-│   ├── player_idle_strip.png       # Dải ảnh gốc 48 frame Idle (24.576 x 680 px)
-│   └── player_run_strip.png        # Dải ảnh gốc 14 frame Run (7.168 x 680 px)
-│
 ├── assets\
 │   └── sprites\
 │       └── player\
-│           ├── player_idle_atlas.png         # Đã tối ưu Atlas 2048x2040 (8 cols x 6 rows, 48 frames)
-│           ├── player_idle_atlas.png.import
-│           ├── player_run_atlas.png          # Đã tối ưu Atlas 1024x1360 (4 cols x 4 rows, 14 frames)
-│           └── player_run_atlas.png.import
+│           ├── player_idle_atlas.png         # Atlas nhân vật Idle
+│           ├── player_run_atlas.png          # Atlas nhân vật Run
+│           └── ...
 │
 └── src\
     ├── actors\
     │   ├── player\
-    │   │   ├── player.gd                    # FSM Player, dọn sạch đạn khi chết/hồi sinh, combat, di chuyển
-    │   │   ├── player.tscn                  # Scene Player có SpellbookComponent & InventoryComponent
+    │   │   ├── player.gd                    # FSM Player, tích hợp QuestJournalComponent
+    │   │   ├── player.tscn                  # Scene Player có đủ các Component chiến đấu và dữ liệu
     │   │   └── player_movement_data.gd      # Resource thông số di chuyển, nhảy đôi, dash
     │   ├── npc\
-    │   │   ├── npc.gd                       # Logic NPC đa năng: Elyra (Noctis), Kaelis (Elyndra), Rhaek (Vharok)
-    │   │   └── npc.tscn                     # Scene NPC (collision_layer = 0: xuyên người mượt mà)
+    │   │   ├── npc.gd                       # Logic NPC: Elyra (Noctis), Kaelis (Elyndra), Rhaek (Vharok)
+    │   │   └── npc.tscn                     # Scene NPC xuyên người mượt mà (collision_layer = 0)
     │   └── enemy\
-    │       ├── enemy.gd                     # Enemy AI, làm chậm 35%, rơi Tinh thể Ma lực an toàn
-    │       └── enemy.tscn                   # Scene Enemy với thanh máu HPBar mini, hitbox & hurtbox
+    │       ├── enemy.gd                     # Enemy AI đa hình thái: MELEE, LUNGE, RANGED, Leash, Stop on Player Death
+    │       ├── enemy.tscn                   # Scene Enemy mô đun hóa (Health, Hitbox, Hurtbox, Visual)
+    │       ├── enemy_definition.gd          # Custom Resource EnemyDefinition (5 presets cấu hình)
+    │       ├── enemy_projectile.gd          # Đạn ma pháp / cầu lửa của quái tầm xa (mask 2: Player hurtbox)
+    │       ├── enemy_projectile.tscn        # Scene đạn quái vật
+    │       └── enemy_visual.gd              # Bộ điều khiển hiển thị 5 trạng thái (idle, move, telegraph, attack, hit, death)
     ├── boss\                                # MODULE BOSS LUNARETH — LINH LỘC NGUYỆT THỰC
-    │   ├── boss_lunareth.gd                 # Miễn nhiễm slow, bất tử 1.3s Phase Transition, shockwave
-    │   ├── boss_lunareth.tscn               # Scene Boss với HealthComponent (320 HP), Hurtbox, Hitbox
+    │   ├── boss_lunareth.gd                 # Boss 2 Phase, shockwave, telegraph, bất tử lúc chuyển giai đoạn
+    │   ├── boss_lunareth.tscn               # Scene Boss với HealthComponent (320 HP)
     │   ├── boss_visual.gd                   # Visual chuyển phase, aura tím, telegraph
     │   ├── boss_shockwave.gd                # Projectile group 'boss_projectiles'
     │   └── boss_shockwave.tscn              # Scene projectile sóng xung kích
     ├── combat\
-    │   ├── damage_info.gd                   # Struct dữ liệu sát thương & knockback
-    │   ├── health_component.gd              # Quản lý máu, MP, hồi MP tự nhiên, bất tử
-    │   ├── hurtbox.gd                       # Vùng nhận đòn chuyển tiếp tới HealthComponent
-    │   ├── hitbox.gd                        # Vùng gây sát thương chém cận chiến
-    │   ├── combat_component.gd              # Điều phối chém kiếm và ủy quyền cast_spell sang SpellbookComponent
-    │   ├── magic_projectile.gd              # Projectile cũ (giữ tương thích)
-    │   └── magic_projectile.tscn
-    ├── magic\                               # HỆ THỐNG PHÁP THUẬT CHIẾN ĐẤU
-    │   ├── spell_definition.gd              # Custom Resource: tỉ lệ tăng cấp unrounded (100%, 115%, 130%), giá nâng cấp
-    │   ├── spell_database.gd                # Thông số thiết kế chuẩn M5.1 (15 MP/0.6s, 25 MP/2.0s, 18 MP/1.0s)
-    │   ├── spellbook_component.gd           # Quản lý danh sách phép, phép đang chọn, cấp độ, cooldown độc lập
-    │   └── projectiles\
-    │       ├── moon_bolt_projectile.gd      # Đạn ánh trăng 550 px/s, đơn mục tiêu (30.0 / 34.5 / 39.0 DMG)
-    │       ├── moon_bolt_projectile.tscn
-    │       ├── ember_bloom_projectile.gd    # Đạn lửa 380 px/s, nổ AoE 110 px (22.0 / 25.3 / 28.6 DMG)
-    │       ├── ember_bloom_projectile.tscn
-    │       ├── frost_shard_projectile.gd    # Đạn băng 650 px/s, làm chậm quái 35% trong 2s (20.0 / 23.0 / 26.0 DMG)
-    │       └── frost_shard_projectile.tscn
-    ├── interaction\
-    │   ├── interaction_coordinator.gd       # Bộ điều phối Input tập trung cho NPC, Cổng dịch chuyển & Cổ Tinh Thạch
-    │   └── interaction_component.gd         # Area2D tương tác nhận diện Player phạm vi gần
-    ├── inventory\                           # HỆ THỐNG VẬT PHẨM & TRANG BỊ
-    │   ├── item_definition.gd               # Resource định nghĩa vật phẩm chuẩn
-    │   ├── item_database.gd                 # Đăng ký mana_shard, health_potion, moonsteel_sword, moon_amulet, eclipse_fragment
-    │   ├── inventory_component.gd           # Quản lý 16 ô túi đồ, clear(), remove_item_by_id()
-    │   ├── equipment_component.gd           # Quản lý 2 ô trang bị & tính toán lại chỉ số
-    │   ├── inventory_ui.gd                  # Controller giao diện túi đồ, fix lambda connect đa trùng lặp
+    │   ├── combat_component.gd              # Quản lý combo kiếm, thời gian hồi đòn
+    │   ├── damage_info.gd                   # DTO sát thương (amount, source, knockback)
+    │   ├── health_component.gd              # Quản lý HP/MP, invulnerability timer, hồi MP
+    │   ├── hitbox.gd                        # Vùng gây sát thương (chống đếm trùng reset_hits)
+    │   └── hurtbox.gd                       # Vùng nhận sát thương
+    ├── inventory\
+    │   ├── item_database.gd                 # Cơ sở dữ liệu vật phẩm (thêm ember_core Lõi Tàn Hỏa)
+    │   ├── item_definition.gd               # Custom Resource ItemDefinition
+    │   ├── inventory_component.gd           # Túi đồ 16 ô, stack item, kiểm tra chỗ trống an toàn
+    │   ├── equipment_component.gd           # Quản lý 2 ô trang bị (weapon, accessory)
+    │   ├── inventory_ui.gd                  # UI túi đồ 16 ô
     │   └── inventory_ui.tscn                # Scene giao diện túi đồ
-    ├── loot\                                # HỆ THỐNG RƠI ĐỒ VÀ NHẶT VẬT PHẨM
-    │   ├── loot_table.gd                    # Resource định nghĩa bảng tỷ lệ rơi đồ
-    │   ├── item_pickup.gd                   # Gán pickup_id ổn định, tự hủy nếu đã nhặt trước đó
-    │   └── item_pickup.tscn                 # Scene vật phẩm rơi với hiệu ứng nhấp nhô lơ lửng
+    ├── magic\
+    │   ├── spell_database.gd                # Danh mục phép thuật: moon_bolt, ember_bloom, frost_shard
+    │   ├── spell_definition.gd              # Resource cấu hình phép
+    │   ├── spellbook_component.gd           # Quản lý sách phép, cấp độ, nâng cấp
+    │   └── projectiles\                     # Đạn phép thuật của Player
     ├── quest\
-    │   ├── quest_data.gd                    # Resource dữ liệu nhiệm vụ (4 trạng thái FSM)
-    │   └── quest_manager.gd                 # Quản lý quest, lưu enemy_id chuỗi ổn định xuyên suốt
-    ├── save\                                # HỆ THỐNG LƯU / TẢI TIẾN TRÌNH OFFLINE
-    │   └── save_manager.gd                  # Version 1.3.0, lưu current_zone_id & zone_states, tương thích 1.0.0 -> 1.2.0
+    │   ├── quest_data.gd                    # Nhiệm vụ chính của Elyra (M0–M6)
+    │   ├── quest_definition.gd              # [M7] Resource nhiệm vụ phụ: KILL_ENEMY_TYPE & COLLECT_ITEMS
+    │   ├── quest_journal_component.gd       # [M7] Component quản lý nhật ký nhiệm vụ, lọc quái, trao thưởng an toàn
+    │   └── quest_manager.gd                 # Quản lý nhiệm vụ chính và Vàng
+    ├── save\
+    │   └── save_manager.gd                  # [M7 v1.4.0] Ghi nguyên tử, lưu Quest Journal, world state, backward-compatible
     ├── ui\
-    │   ├── spell_hotbar.gd                  # Controller thanh chọn phép 3 ô [1], [2], [3] & nút [U]
-    │   ├── spell_hotbar.tscn                # Scene thanh hotbar hiển thị highlight, cooldown, MP, Lv
-    │   ├── game_ui.gd                       # Tích hợp hotbar, thông báo Zone Banner & nhãn ZoneLabel
-    │   ├── game_ui.tscn                     # CanvasLayer HUD, Bars, Dialogue, PauseMenu, Hotbar, Zone HUD
-    │   ├── pause_controller.gd              # Quản lý Pause/Resume độc lập
-    │   ├── main_menu.gd                     # Màn hình chính (Continue nạp trực tiếp scene khu vực đã lưu)
-    │   └── main_menu.tscn
-    └── world\                               # HỆ THỐNG MỞ RỘNG THẾ GIỚI & DỊCH CHUYỂN KHU VỰC
-        ├── zone_definition.gd               # Resource metadata khu vực (zone_id, name, subtitle, scene_path, default_spawn)
-        ├── zone_spawn_point.gd              # Điểm xuất hiện an toàn trong khu vực (spawn_point_id, facing_direction)
-        ├── zone_portal.gd                   # Cổng dịch chuyển liên khu vực, điều kiện mở khóa, kiểm tra tương tác
-        ├── zone_portal.tscn                 # Scene Area2D Cổng dịch chuyển với prompt nhấp nháy
-        ├── ancient_crystal.gd               # Cổ Tinh Thạch tương tác đọc truyền thuyết (Lore object)
-        ├── ancient_crystal.tscn             # Scene Cổ Tinh Thạch với visual tinh thể phát sáng
-        ├── base_zone.gd                     # [M6.1] Tách biệt setup_signals, setup_camera, setup_ui độc lập
-        ├── zone_manager.gd                  # [M6.1] Snap camera tức thì khi spawn, gắn Player vào inventory_ui
-        ├── magic_gate.gd                    # Cổng Ma Pháp tại X=4200 (khóa arena Boss Lunareth)
-        ├── magic_gate.tscn                  # Scene Cổng Ma Pháp rào chắn vật lý
-        ├── noctis_forest.gd                 # [M6.1] Rừng Noctis kế thừa BaseZone, setup_ui độc lập
+    │   ├── game_ui.gd                       # HUD chính, kết nối phím Q bật Sổ Nhiệm Vụ, thoại NPC Kaelis/Rhaek
+    │   ├── game_ui.tscn                     # CanvasLayer HUD, tích hợp QuestJournalUI
+    │   ├── quest_journal_ui.gd              # [M7] UI Sổ Nhiệm Vụ: hiển thị 3 nhiệm vụ, tiến độ, phần thưởng, badge
+    │   ├── quest_journal_ui.tscn            # [M7] Scene Sổ Nhiệm Vụ
+    │   ├── spell_hotbar.gd                  # Thanh kỹ năng ma pháp HUD
+    │   └── spell_hotbar.tscn                # Scene thanh kỹ năng ma pháp
+    └── world\
+        ├── base_zone.gd                     # Quản lý thế giới cơ sở, kết nối tín hiệu quái, hồi phục thế giới
+        ├── zone_manager.gd                  # Chuyển cảnh, bảo toàn quest journal và dữ liệu người chơi
+        ├── zone_definition.gd               # Đăng ký thông tin và scene 3 khu vực
+        ├── zone_portal.gd                   # Cổng ma pháp dịch chuyển giữa các vùng
+        ├── zone_portal.tscn                 # Scene cổng dịch chuyển
+        ├── ancient_crystal.gd               # Cổ Tinh Thạch tại Elyndra
+        ├── noctis_forest.gd                 # Vùng 1: Rừng Noctis & Đấu trường Boss
         ├── noctis_forest.tscn
-        ├── elyndra_glade.gd                 # [Zone 2] Thánh Lâm Elyndra (0-2400px), NPC Kaelis, Cổ Tinh Thạch
-        ├── elyndra_glade.tscn               # [M6.1] Bổ sung RemoteTransform2D bám sát Camera2D
-        ├── vharok_outpost.gd                # [Zone 3] Tiền Đồn Vharok (0-2400px), NPC Rhaek
-        └── vharok_outpost.tscn              # [M6.1] Bổ sung RemoteTransform2D bám sát Camera2D
+        ├── elyndra_glade.gd                 # Vùng 2: Thánh Lâm Elyndra
+        ├── elyndra_glade.tscn               # (Chứa NPC Kaelis, 3 Corrupted Mooncap, 2 Corrupted Mana Wisp)
+        ├── vharok_outpost.gd                # Vùng 3: Tiền Đồn Vharok
+        └── vharok_outpost.tscn              # (Chứa NPC Rhaek, 3 Ashfang Wolf, 2 Ember Lizard, 3 Ember Core pickups)
 ```
 
 ---
 
-## 2. Các Bản Vá Chính trong Milestone M6.1
+## 2. Chi Tiết Triển Khai Milestone M7
 
-### 2.1. Sửa Cơ Chế Camera Bám Player tại Elyndra & Vharok
-- **Nguyên nhân trước M6.1:** Scene `elyndra_glade.tscn` và `vharok_outpost.tscn` có node `Camera2D` nằm ở gốc scene nhưng thiếu node `RemoteTransform2D` dưới `Player`, khiến camera đứng yên tại $(300, 630)$ khi Player chạy, nhảy hoặc di chuyển khắp bản đồ.
-- **Giải pháp:**
-  1. Thêm `RemoteTransform2D` vào node `Player` trong cả 2 scene, cấu hình `remote_path = NodePath("../../Camera2D")` và `update_scale = false`.
-  2. Bổ sung hàm `setup_camera()` và `snap_camera_to_player()` trong [`base_zone.gd`](file:///d:/project/game/NOCTELYRA/src/world/base_zone.gd).
-  3. Trong [`zone_manager.gd`](file:///d:/project/game/NOCTELYRA/src/world/zone_manager.gd), khi đặt Player tại điểm spawn (`_place_player_at_spawn`), camera lập tức được cập nhật tọa độ trùng với điểm spawn và gọi `cam.reset_smoothing()`.
-  4. Đảm bảo khi dịch chuyển từ Vharok sang Elyndra tại $X = 2120$, camera cập nhật ngay tức thì tại $X = 2120$, loại bỏ hoàn toàn hiện tượng camera đứng yên ở $X=300$ hoặc trượt chậm trên màn hình.
+### A. Hệ thống Sinh vật & Chiến đấu Vùng miền (Regional Creatures)
+- **Kiến trúc dữ liệu:**
+  + Sử dụng `EnemyDefinition` để cấu hình thông số riêng biệt cho từng loài quái, tách biệt dữ liệu khỏi mã logic.
+  + Hỗ trợ 3 kiểu tấn công: `MELEE` (cận chiến), `LUNGE` (lao tới tốc độ cao), `RANGED` (bắn đạn ma thuật/cầu lửa từ xa).
+  + Hỗ trợ giai đoạn báo trước (`telegraph`) và thời gian khựng nghỉ (`recovery`), tạo nhịp điệu chiến đấu side-scrolling rõ ràng, công bằng cho người chơi.
+  + **Cơ chế Leash Protection:** Quái vật rượt đuổi người chơi nhưng tự động hủy mục tiêu và quay về khi vượt quá `leash_distance` tính từ điểm sinh ban đầu.
+  + **Dừng tấn công khi Player tử vong:** Quái vật tự động hủy mục tiêu và tắt hitbox tấn công ngay lập tức khi Player chết.
+  + **Chống sát thương trùng lặp (No Infinite Damage Loop):** Sử dụng `reset_hits()` và bộ đệm kiểm tra mục tiêu đã trúng đòn trong cùng một lượt đánh.
+- **Sinh vật Thánh Lâm Elyndra:**
+  + **Corrupted Mooncap (Nấm Mộng Tha Hóa):** Cận chiến, di chuyển chậm, có thời gian rung lắc báo hiệu trước khi tấn công. Rơi Tinh thể Ma lực (`mana_shard`).
+  + **Corrupted Mana Wisp (Linh Hồn Tinh Mạch):** Sinh vật bay lơ lửng không chịu trọng lực rơi, bắn đạn ma pháp tím định hướng (`enemy_projectile`) gây 12 DMG.
+- **Sinh vật Tiền Đồn Vharok:**
+  + **Ashfang Wolf (Sói Tro):** Di chuyển nhanh (180 px/s), gầm báo hiệu (0.5s) rồi lao vụt tới (460 px/s) gây 18 DMG, có thời gian nghỉ hồi phục (0.85s).
+  + **Ember Lizard (Hỏa Tích Hắc Nham):** Tấn công tầm xa, tích tụ lửa và bắn cầu lửa cam (15 DMG, 280 px/s), có xác suất đánh rơi Lõi Tàn Hỏa (`ember_core`).
+- **Hiển thị Placeholder Phân biệt (`EnemyVisual`):**
+  + Mỗi loại quái có bảng màu, kích thước và chi tiết đặc trưng (Nấm có mũ đốm sáng ma thuật, Wisp có lõi năng lượng lơ lửng, Sói có mắt đỏ nhe răng, Thằn lằn có vảy đá gai lưng).
+  + Hỗ trợ đầy đủ 5 animation state: `idle`, `move`, `telegraph`, `attack`, `hit`, `death`, sẵn sàng thay thế trực tiếp bằng `AnimatedSprite2D` khi có sprite art hoàn chỉnh.
 
-### 2.2. Ổn Định Vòng Đời Khởi Tạo UI (Decoupled UI Initialization)
-- **Nguyên nhân trước M6.1:** Logic kết nối `game_ui.retry_requested` đi kèm khối khởi tạo `inventory_ui.setup_player()` và `spell_hotbar.set_spellbook()`. Khi được gọi trong `_enter_tree()`, các node `@onready` của `GameUI` chưa sẵn sàng; đến khi `_ready()` chạy thì cờ `is_connected` đã là `true` khiến toàn bộ khối khởi tạo UI bị bỏ qua.
-- **Giải pháp:**
-  1. Tách biệt hoàn toàn `setup_signals()` (kết nối tín hiệu an toàn với `is_connected`) và `setup_ui()` (gắn đối tượng Player, Spellbook, cập nhật thanh HP/MP/Gold/Quest/Zone).
-  2. `setup_ui()` được gọi sau khi các node con đã hoàn tất `_ready()`, cho phép gọi nhiều lần an toàn sau khi dịch chuyển portal, Save/Continue hoặc Retry.
-  3. Sửa lỗi kết nối lambda không tên trong `inventory_ui.gd` bằng phương thức có tên `_on_equipment_changed`, ngăn ngừa tạo nhiều kết nối trùng lặp.
+### B. Hệ thống Nhiệm vụ Phụ & Đối thoại NPC
+- **Nhiệm vụ Thánh Lâm — Kaelis (`quest_elyndra_cleansing`):**
+  + Kaelis nhờ thanh tẩy các cây Nấm Mộng Tha Hóa làm ô nhiễm dòng chảy Tinh Mạch.
+  + Mục tiêu: Tiêu diệt 3 `corrupted_mooncap`. Giết các loài quái khác không làm tăng tiến độ.
+  + Phần thưởng: **80 Vàng + 2 Bình Máu (`health_potion`)**.
+  + Sau khi hoàn thành: Kaelis chia sẻ lore về lịch sử Tinh Mạch và mối quan hệ cổ xưa giữa Tinh Linh và Quỷ tộc bán thú.
+- **Nhiệm vụ Tiền Đồn — Rhaek (`quest_vharok_embers`):**
+  + Rhaek cần Lõi Tàn Hỏa để duy trì ngọn lửa rèn của Tiền Đồn.
+  + Mục tiêu: Thu thập 3 `ember_core` (nhặt từ 3 vị trí trên bản đồ Tiền Đồn Vharok hoặc đánh rơi từ Hỏa Tích Hắc Nham).
+  + Khi trả nhiệm vụ: Hệ thống tự động kiểm tra và **trừ đúng 3 `ember_core`** khỏi Inventory của người chơi.
+  + Phần thưởng: **100 Vàng + 3 Mảnh Chân Ma (`mana_shard`)**.
+  + Sau khi hoàn thành: Rhaek khen ngợi lòng quả cảm của người chơi và kể về tinh thần trọng danh dự của Quỷ tộc.
+- **Bảo vệ chống nhận thưởng lặp lại:** Cờ `reward_claimed` ngăn chặn tuyệt đối việc nhận vàng hay vật phẩm nhiều lần khi tương tác lại.
+- **Bảo vệ túi đồ đầy:** Nếu túi đồ không còn chỗ trống khi nhận thưởng, vật phẩm tự động rơi xuống mặt đất dưới dạng item pickup an toàn, không bị mất dữ liệu.
 
-### 2.3. Bổ Sung Kiểm Thử M6.1 & Phân Biệt Test Rõ Ràng
-- Nâng cấp [`test_m6_flow.gd`](file:///d:/project/game/NOCTELYRA/test_m6_flow.gd) lên **117 bài kiểm tra (100% PASS)**:
-  + Kiểm tra Camera Elyndra bám sát Player khi chạy và nhảy lên platform cao.
-  + Kiểm tra Camera Vharok bám sát Player.
-  + Kiểm tra Camera snap tức thì tại $X=2120$ khi đi từ Vharok về Elyndra.
-  + Kiểm tra `inventory_ui.player` và `spell_hotbar._spellbook` được trỏ chính xác vào instance Player của từng scene sau khi đổi màn, nạp save và bấm Retry.
-  + Kiểm tra vùng tương tác Portal (ngoài vùng tương tác -> từ chối, đang cooldown -> từ chối, trong vùng và hết cooldown -> cho phép).
-  + **Phân biệt rõ ràng:**
-    * **Group 18:** `Integration Test: Simulated State Portal Chain` (kiểm thử chuỗi dịch chuyển mô phỏng trạng thái).
-    * **Group 19:** `Genuine End-to-End Gameplay Loop` (chơi thực tế từ nhận quest NPC Elyra $\rightarrow$ diệt 3 quái $\rightarrow$ trả quest $\rightarrow$ mở cổng MagicGate $\rightarrow$ kích hoạt Boss Lunareth $\rightarrow$ đánh qua Phase 2 $\rightarrow$ hạ gục Boss $\rightarrow$ bước qua Moonveil Portal sang Elyndra $\rightarrow$ qua Vharok $\rightarrow$ lưu game).
+### C. Sổ Nhiệm Vụ (Quest Journal UI — Phím Q)
+- Bật/tắt nhanh bằng phím **Q**, nút **[✕]** hoặc phím **ESC**.
+- Hiển thị danh sách đầy đủ cả 3 nhiệm vụ:
+  1. **Nhiệm vụ chính:** Thanh Tẩy Rừng Noctis (Elyra)
+  2. **Nhiệm vụ phụ 1:** Thanh Tẩy Thánh Lâm (Kaelis)
+  3. **Nhiệm vụ phụ 2:** Lửa Rèn Tiền Đồn (Rhaek)
+- Mỗi thẻ nhiệm vụ hiển thị trực quan: Tên nhiệm vụ, Người giao, Khu vực, Mô tả, Mục tiêu & Tiến độ chi tiết, Phần thưởng và Huy hiệu Trạng thái màu sắc: `[Chưa nhận]`, `[Đang thực hiện]`, `[Sẵn sàng trả]`, `[Đã hoàn thành]`.
+- Tự động tạm khóa các phím hành động (đánh, nhảy, lướt, dùng phép) khi Sổ Nhiệm Vụ đang mở.
+
+### D. Nâng cấp Hệ thống Lưu & Tải Tiến trình v1.4.0
+- Nâng cấp `CURRENT_VERSION = "1.4.0"`.
+- Lưu trữ toàn bộ dữ liệu `QuestJournalComponent`: trạng thái nhiệm vụ, tiến độ, cờ đã nhận thưởng, danh sách quái đã hạ gục.
+- Lưu trữ trạng thái thế giới của từng khu vực: các quái vật đã bị tiêu diệt và các vật phẩm đã nhặt tại Elyndra Glade và Vharok Outpost được lưu nhớ chính xác, không bị hồi sinh hay tạo lại khi tải game.
+- **Tương thích ngược hoàn hảo:** Tải an toàn các bản lưu cũ v1.0.0, v1.1.0, v1.2.0, v1.3.0 mà không gây crash hoặc lỗi dữ liệu.
 
 ---
 
@@ -162,13 +163,14 @@ Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-
 ========================================================================================
  BỘ KIỂM THỬ                         | SỐ TEST    | KẾT QUẢ      | MÃ THOÁT (EXIT CODE)
 ----------------------------------------------------------------------------------------
+ test_m7_flow.gd (Mở rộng vùng M7)   | 116 tests  | PASS 100%    | 0
  test_m6_flow.gd (Thế giới & M6.1)   | 117 tests  | PASS 100%    | 0
  test_m5_flow.gd (Ma pháp M5.1)      | 100 tests  | PASS 100%    | 0
  test_m4_flow.gd (Boss Lunareth M4)  |  87 tests  | PASS 100%    | 0
  test_m3_2_flow.gd (Save/Load M3.2)  |  50 tests  | PASS 100%    | 0
  test_m2_1_flow.gd (NPC & Quest M2)  |  42 tests  | PASS 100%    | 0
 ========================================================================================
- TỔNG CỘNG                           | 396 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
+ TỔNG CỘNG                           | 512 tests  | PASS 100%    | HOÀN HẢO KHÔNG LỖI
 ========================================================================================
 ```
 
@@ -186,5 +188,6 @@ Tất cả các bộ test đều chạy trực tiếp trên engine (`Godot_v4.3-
 | **1, 2, 3** | Chọn phép thuật: [1] Nguyệt Quang Đạn \| [2] Tinh Hỏa Bùng Nổ \| [3] Hàn Tinh Tiễn |
 | **U** | Nâng cấp phép thuật đang chọn (Tiêu hao Tinh thể Ma lực `mana_shard`) |
 | **E** | Tương tác NPC (Elyra, Kaelis, Rhaek) / Kích hoạt Cổng dịch chuyển / Đọc Cổ Tinh Thạch |
+| **Q** | **Mở / Đóng Sổ Nhiệm Vụ (Quest Journal)** |
 | **I** | Mở / Đóng túi đồ (Inventory) & Bảng trang bị |
-| **Esc** | Tạm dừng trò chơi (Pause Menu) / Đóng túi đồ / Đóng hội thoại |
+| **Esc** | Tạm dừng trò chơi (Pause Menu) / Đóng túi đồ / Đóng Sổ Nhiệm Vụ / Đóng hội thoại |

@@ -77,6 +77,19 @@ static func initialize() -> void:
 	fragment.icon = _create_placeholder_icon(Color(0.85, 0.35, 0.95, 1.0)) # Tím nguyệt thực rực rỡ
 	register_item(fragment)
 
+	# 6. Lõi Tàn Hỏa (ember_core) - [MỚI M7: Nhiệm vụ Tiền Đồn Vharok]
+	var ember_core = ItemDefinition.new()
+	ember_core.item_id = "ember_core"
+	ember_core.display_name = "Lõi Tàn Hỏa"
+	ember_core.description = "Mảnh lõi nham thạch tích tụ nhiệt lượng cổ xưa tại Tiền Đồn Vharok. Cần thiết để củng cố kết giới."
+	ember_core.item_type = ItemDefinition.ItemType.MATERIAL
+	ember_core.max_stack = 99
+	ember_core.sell_value = 20
+	ember_core.stat_modifiers = {}
+	ember_core.use_effect = {}
+	ember_core.icon = _create_placeholder_icon(Color(1.0, 0.45, 0.1, 1.0)) # Cam lửa nham thạch
+	register_item(ember_core)
+
 	_is_initialized = true
 
 static func register_item(item: ItemDefinition) -> void:

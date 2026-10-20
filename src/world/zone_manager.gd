@@ -62,6 +62,7 @@ static func extract_player_state(world: Node) -> Dictionary:
 	var p_inv := player.inventory_component
 	var p_eq := player.equipment_component
 	var p_sb := player.spellbook_component
+	var p_journal := player.quest_journal_component
 
 	return {
 		"current_health": p_health.current_health if p_health else 100.0,
@@ -72,6 +73,7 @@ static func extract_player_state(world: Node) -> Dictionary:
 		"inventory": p_inv.to_dict() if p_inv else [],
 		"equipment": p_eq.to_dict() if p_eq else {},
 		"spellbook": p_sb.to_dict() if p_sb else {},
+		"quest_journal": p_journal.to_dict() if p_journal else {},
 		"quest": {
 			"state": int(quest_mgr.current_quest.current_state) if quest_mgr and quest_mgr.current_quest else 0,
 			"current_amount": int(quest_mgr.current_quest.current_amount) if quest_mgr and quest_mgr.current_quest else 0
@@ -102,6 +104,11 @@ static func apply_player_state(world: Node, data: Dictionary) -> void:
 	var p_sb := player.spellbook_component
 	if p_sb and data.has("spellbook") and (data["spellbook"] is Dictionary):
 		p_sb.from_dict(data["spellbook"])
+
+	# 2b. Nạp Sổ Nhiệm Vụ (M7)
+	var p_journal := player.quest_journal_component
+	if p_journal and data.has("quest_journal") and (data["quest_journal"] is Dictionary):
+		p_journal.from_dict(data["quest_journal"])
 
 	# 3. Nạp Máu và Mana hiện tại (GIỮ NGUYÊN CHÍNH XÁC, không tự hồi đầy!)
 	var p_health := player.health_component

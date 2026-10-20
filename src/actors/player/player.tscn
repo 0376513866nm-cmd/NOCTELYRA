@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://src/inventory/inventory_component.gd" id="9_inv"]
 [ext_resource type="Script" path="res://src/inventory/equipment_component.gd" id="10_equip"]
 [ext_resource type="Script" path="res://src/magic/spellbook_component.gd" id="11_spellbook"]
+[ext_resource type="Script" path="res://src/quest/quest_journal_component.gd" id="12_quest_journal"]
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
@@ -213,3 +214,6 @@ player = NodePath("..")
 
 [node name="SpellbookComponent" type="Node" parent="."]
 script = ExtResource("11_spellbook")
+
+[node name="QuestJournalComponent" type="Node" parent="."]
+script = ExtResource("12_quest_journal")

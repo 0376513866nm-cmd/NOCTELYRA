@@ -1,0 +1,227 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7q5k2m8p4x9"]
+
+[ext_resource type="Script" path="res://src/ui/quest_journal_ui.gd" id="1_journal"]
+
+[node name="QuestJournalUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_journal")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(700, 520)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -260.0
+offset_right = 350.0
+offset_bottom = 260.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 15.0
+offset_right = -20.0
+offset_bottom = 50.0
+grow_horizontal = 2
+
+[node name="Title" type="Label" parent="Panel/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 20
+text = "SỔ NHIỆM VỤ (QUEST JOURNAL) [Q]"
+vertical_alignment = 1
+
+[node name="CloseBtn" type="Button" parent="Panel/Header"]
+custom_minimum_size = Vector2(36, 32)
+layout_mode = 2
+text = "✕"
+
+[node name="HSeparator" type="HSeparator" parent="Panel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 55.0
+offset_right = -20.0
+offset_bottom = 65.0
+grow_horizontal = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 70.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="QuestList" type="VBoxContainer" parent="Panel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="MainQuestCard" type="PanelContainer" parent="Panel/ScrollContainer/QuestList"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/ScrollContainer/QuestList/MainQuestCard"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderHBox" type="HBoxContainer" parent="Panel/ScrollContainer/QuestList/MainQuestCard/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/ScrollContainer/QuestList/MainQuestCard/VBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.85, 0.3, 1)
+theme_override_font_sizes/font_size = 16
+text = "Nhiệm Vụ Chính: Thanh Tẩy Rừng Noctis"
+
+[node name="BadgeLabel" type="Label" parent="Panel/ScrollContainer/QuestList/MainQuestCard/VBox/HeaderHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[Chưa nhận]"
+
+[node name="NpcLabel" type="Label" parent="Panel/ScrollContainer/QuestList/MainQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "Người giao: Elyra | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
+
+[node name="DescLabel" type="Label" parent="Panel/ScrollContainer/QuestList/MainQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 13
+text = "Tiêu diệt sinh vật ma hóa để bảo vệ Làng Ánh Nguyệt và mở Cổng Ma Thuật."
+autowrap_mode = 3
+
+[node name="ProgressLabel" type="Label" parent="Panel/ScrollContainer/QuestList/MainQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "Mục tiêu: Tiêu diệt 3 sinh vật ma hóa (0/3)"
+
+[node name="RewardLabel" type="Label" parent="Panel/ScrollContainer/QuestList/MainQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "Phần thưởng: 50 Vàng, Hồi phục toàn bộ HP & MP"
+
+[node name="KaelisQuestCard" type="PanelContainer" parent="Panel/ScrollContainer/QuestList"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/ScrollContainer/QuestList/KaelisQuestCard"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderHBox" type="HBoxContainer" parent="Panel/ScrollContainer/QuestList/KaelisQuestCard/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/ScrollContainer/QuestList/KaelisQuestCard/VBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.6, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Nhiệm Vụ Phụ: Thanh Tẩy Thánh Lâm"
+
+[node name="BadgeLabel" type="Label" parent="Panel/ScrollContainer/QuestList/KaelisQuestCard/VBox/HeaderHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[Chưa nhận]"
+
+[node name="NpcLabel" type="Label" parent="Panel/ScrollContainer/QuestList/KaelisQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "Người giao: Kaelis | Khu vực: Thánh Lâm Elyndra"
+
+[node name="DescLabel" type="Label" parent="Panel/ScrollContainer/QuestList/KaelisQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 13
+text = "Tiêu diệt các cây Nấm Ma Hóa đang ô nhiễm dòng chảy Tinh Mạch của Thánh Lâm."
+autowrap_mode = 3
+
+[node name="ProgressLabel" type="Label" parent="Panel/ScrollContainer/QuestList/KaelisQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "Mục tiêu: 0/3 Corrupted Mooncap"
+
+[node name="RewardLabel" type="Label" parent="Panel/ScrollContainer/QuestList/KaelisQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "Phần thưởng: 80 Vàng, 2 Bình Máu (health_potion)"
+
+[node name="RhaekQuestCard" type="PanelContainer" parent="Panel/ScrollContainer/QuestList"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/ScrollContainer/QuestList/RhaekQuestCard"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderHBox" type="HBoxContainer" parent="Panel/ScrollContainer/QuestList/RhaekQuestCard/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/ScrollContainer/QuestList/RhaekQuestCard/VBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.6, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "Nhiệm Vụ Phụ: Lửa Rèn Tiền Đồn"
+
+[node name="BadgeLabel" type="Label" parent="Panel/ScrollContainer/QuestList/RhaekQuestCard/VBox/HeaderHBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "[Chưa nhận]"
+
+[node name="NpcLabel" type="Label" parent="Panel/ScrollContainer/QuestList/RhaekQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "Người giao: Rhaek | Khu vực: Tiền Đồn Vharok"
+
+[node name="DescLabel" type="Label" parent="Panel/ScrollContainer/QuestList/RhaekQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 1)
+theme_override_font_sizes/font_size = 13
+text = "Thu thập Lõi Tàn Hỏa từ vách đá hoặc Thằn Lằn Tro Tàn để duy trì lò rèn Quỷ tộc."
+autowrap_mode = 3
+
+[node name="ProgressLabel" type="Label" parent="Panel/ScrollContainer/QuestList/RhaekQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "Mục tiêu: 0/3 Ember Core"
+
+[node name="RewardLabel" type="Label" parent="Panel/ScrollContainer/QuestList/RhaekQuestCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "Phần thưởng: 100 Vàng, 3 Mảnh Chân Ma (mana_shard)"

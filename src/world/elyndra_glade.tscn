@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://e1g8m2v4k7p9"]
+[gd_scene load_steps=16 format=3 uid="uid://e1g8m2v4k7p9"]
 
 [ext_resource type="Script" path="res://src/world/elyndra_glade.gd" id="1_elyndra"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://c6zp01y4k8v2" path="res://src/world/zone_portal.tscn" id="8_portal"]
 [ext_resource type="Script" path="res://src/world/zone_spawn_point.gd" id="9_spawn"]
 [ext_resource type="PackedScene" uid="uid://b8ac01y5m2v1" path="res://src/world/ancient_crystal.tscn" id="10_crystal"]
+[ext_resource type="PackedScene" uid="uid://b7y2n4m8q1v9" path="res://src/actors/enemy/enemy.tscn" id="11_enemy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(2600, 100)
@@ -239,6 +240,31 @@ limit_bottom = 720
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
+
+[node name="Mooncap1" parent="." groups=["enemies"] instance=ExtResource("11_enemy")]
+position = Vector2(620, 630)
+enemy_id = "elyndra_mooncap_1"
+enemy_type_id = "corrupted_mooncap"
+
+[node name="Mooncap2" parent="." groups=["enemies"] instance=ExtResource("11_enemy")]
+position = Vector2(1450, 630)
+enemy_id = "elyndra_mooncap_2"
+enemy_type_id = "corrupted_mooncap"
+
+[node name="Mooncap3" parent="." groups=["enemies"] instance=ExtResource("11_enemy")]
+position = Vector2(1780, 630)
+enemy_id = "elyndra_mooncap_3"
+enemy_type_id = "corrupted_mooncap"
+
+[node name="ManaWisp1" parent="." groups=["enemies"] instance=ExtResource("11_enemy")]
+position = Vector2(820, 320)
+enemy_id = "elyndra_wisp_1"
+enemy_type_id = "corrupted_mana_wisp"
+
+[node name="ManaWisp2" parent="." groups=["enemies"] instance=ExtResource("11_enemy")]
+position = Vector2(1600, 300)
+enemy_id = "elyndra_wisp_2"
+enemy_type_id = "corrupted_mana_wisp"
 
 [node name="GameUI" parent="." instance=ExtResource("4_ui")]
 

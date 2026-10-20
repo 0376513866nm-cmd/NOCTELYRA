@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://v1k8m4p7r2q5"]
+[gd_scene load_steps=16 format=3 uid="uid://v1k8m4p7r2q5"]
 
 [ext_resource type="Script" path="res://src/world/vharok_outpost.gd" id="1_vharok"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
@@ -9,6 +9,8 @@
 [ext_resource type="Script" path="res://src/interaction/interaction_coordinator.gd" id="7_interact"]
 [ext_resource type="PackedScene" uid="uid://c6zp01y4k8v2" path="res://src/world/zone_portal.tscn" id="8_portal"]
 [ext_resource type="Script" path="res://src/world/zone_spawn_point.gd" id="9_spawn"]
+[ext_resource type="PackedScene" uid="uid://b7y2n4m8q1v9" path="res://src/actors/enemy/enemy.tscn" id="10_enemy"]
+[ext_resource type="PackedScene" uid="uid://b5m9n2q8v3k1" path="res://src/loot/item_pickup.tscn" id="11_pickup"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(2600, 100)
@@ -229,6 +231,49 @@ limit_bottom = 720
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
+
+[node name="Wolf1" parent="." groups=["enemies"] instance=ExtResource("10_enemy")]
+position = Vector2(650, 630)
+enemy_id = "vharok_wolf_1"
+enemy_type_id = "ashfang_wolf"
+
+[node name="Wolf2" parent="." groups=["enemies"] instance=ExtResource("10_enemy")]
+position = Vector2(1380, 630)
+enemy_id = "vharok_wolf_2"
+enemy_type_id = "ashfang_wolf"
+
+[node name="Wolf3" parent="." groups=["enemies"] instance=ExtResource("10_enemy")]
+position = Vector2(1850, 630)
+enemy_id = "vharok_wolf_3"
+enemy_type_id = "ashfang_wolf"
+
+[node name="Lizard1" parent="." groups=["enemies"] instance=ExtResource("10_enemy")]
+position = Vector2(750, 335)
+enemy_id = "vharok_lizard_1"
+enemy_type_id = "ember_lizard"
+
+[node name="Lizard2" parent="." groups=["enemies"] instance=ExtResource("10_enemy")]
+position = Vector2(1650, 355)
+enemy_id = "vharok_lizard_2"
+enemy_type_id = "ember_lizard"
+
+[node name="EmberCorePickup1" parent="." instance=ExtResource("11_pickup")]
+position = Vector2(450, 465)
+item_id = "ember_core"
+amount = 1
+pickup_id = "pickup_vharok_ember_1"
+
+[node name="EmberCorePickup2" parent="." instance=ExtResource("11_pickup")]
+position = Vector2(1200, 435)
+item_id = "ember_core"
+amount = 1
+pickup_id = "pickup_vharok_ember_2"
+
+[node name="EmberCorePickup3" parent="." instance=ExtResource("11_pickup")]
+position = Vector2(1950, 475)
+item_id = "ember_core"
+amount = 1
+pickup_id = "pickup_vharok_ember_3"
 
 [node name="GameUI" parent="." instance=ExtResource("4_ui")]
 

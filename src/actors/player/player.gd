@@ -26,6 +26,7 @@ enum State {
 @onready var inventory_component: InventoryComponent = $InventoryComponent
 @onready var equipment_component: EquipmentComponent = $EquipmentComponent
 @onready var spellbook_component: SpellbookComponent = $SpellbookComponent
+@onready var quest_journal_component: QuestJournalComponent = $QuestJournalComponent
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1

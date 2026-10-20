@@ -35,27 +35,76 @@ func trigger_interaction() -> void:
 		return
 
 	var quest_mgr: QuestManager = _get_quest_manager()
+	var player: Player = _get_player()
 	var lines: Array[String] = []
 	var action: String = "none"
 
 	if npc_name == "Kaelis":
-		lines = [
-			"Chào lữ khách từ Rừng Hắc Nguyệt. Ta là Kaelis, Người Canh Giữ Tinh Mạch của Thánh Lâm Elyndra.",
-			"Ngươi mang theo ma lực thanh tẩy thuần khiết... Lunareth cuối cùng đã được giải thoát khỏi sự tha hóa bóng tối.",
-			"Thánh Lâm này là nơi Tinh Mạch cổ xưa của NOCTELYRA hội tụ, nuôi dưỡng vạn vật bằng ma năng nguyên sơ.",
-			"Cổ Tinh Thạch gần đây còn lưu giữ những ghi chép về nguồn gốc ma pháp thuở sơ khai, ngươi hãy thử chiêm nghiệm.",
-			"Phía đông là Tiền Đồn Vharok của Quỷ tộc bán thú. Hãy giữ thái độ hòa hảo, họ là những chiến binh trọng danh dự."
-		]
-		action = "none"
+		var p_journal = player.quest_journal_component if player else null
+		var q_state = QuestDefinition.QuestState.NOT_STARTED
+		if p_journal:
+			q_state = p_journal.get_quest_state("quest_elyndra_cleansing")
+		match q_state:
+			QuestDefinition.QuestState.NOT_STARTED:
+				lines = [
+					"Chào lữ khách từ Rừng Hắc Nguyệt. Ta là Kaelis, Người Canh Giữ Tinh Mạch của Thánh Lâm Elyndra.",
+					"Ma khí bóng tối đang len lỏi vào các bụi nấm, biến chúng thành Nấm Ma Hóa làm ô nhiễm dòng chảy Tinh Mạch.",
+					"Ngươi có thể giúp ta tiêu diệt 3 Nấm Ma Hóa (Corrupted Mooncap) để thanh tẩy vùng này không?"
+				]
+				action = "start_quest:quest_elyndra_cleansing"
+			QuestDefinition.QuestState.ACTIVE:
+				var prog: int = p_journal.get_quest_progress("quest_elyndra_cleansing") if p_journal else 0
+				lines = [
+					"Hãy cẩn trọng khi bước qua những cụm nấm phát sáng ma thuật.",
+					"Tiến độ hiện tại: %d/3 Nấm Ma Hóa. Cố gắng lên nhé lữ khách!" % prog
+				]
+				action = "none"
+			QuestDefinition.QuestState.READY_TO_TURN_IN:
+				lines = [
+					"Thật phi thường! Dòng chảy Tinh Mạch đã bắt đầu lưu thông thanh khiết trở lại.",
+					"Xin hãy nhận 80 Vàng và 2 Bình Máu như lời cảm tạ chân thành từ Thánh Lâm Elyndra!"
+				]
+				action = "complete_quest:quest_elyndra_cleansing"
+			QuestDefinition.QuestState.COMPLETED:
+				lines = [
+					"Cảm ơn ngươi đã bảo vệ Thánh Lâm. Nơi này từng là điểm giao thoa hòa bình giữa Tinh Linh và Quỷ tộc bán thú từ thời cổ đại.",
+					"Quỷ tộc ở Tiền Đồn Vharok tuy thô ráp nhưng rất coi trọng danh dự và hiệp ước. Hãy ghé thăm họ nếu ngươi cần thêm thử thách."
+				]
+				action = "none"
 	elif npc_name == "Rhaek":
-		lines = [
-			"Đứng lại, lữ khách! Ngươi đang diện kiến Tiền Đồn Vharok của Gia tộc Hắc Nham Quỷ tộc.",
-			"Ta ngửi thấy mùi hương thảo mộc của Tinh Linh và ánh trăng của Rừng Noctis trên người ngươi.",
-			"Nhân tộc và Tinh Linh thường nghĩ Quỷ tộc chúng ta là lũ dã thú cuồng sát... Đó là định kiến của kẻ yếu đuối!",
-			"Quỷ tộc bán thú chúng ta sống theo luật danh dự, tôn thờ gia tộc và sức mạnh rèn giũa từ lửa dung nham.",
-			"Miễn là ngươi không rút vũ khí gây hấn, Tiền Đồn Vharok luôn tôn trọng và tiếp đón những vị khách có thực lực."
-		]
-		action = "none"
+		var p_journal = player.quest_journal_component if player else null
+		var q_state = QuestDefinition.QuestState.NOT_STARTED
+		if p_journal:
+			var inv = player.inventory_component if player else null
+			p_journal.update_item_collection(inv)
+			q_state = p_journal.get_quest_state("quest_vharok_embers")
+		match q_state:
+			QuestDefinition.QuestState.NOT_STARTED:
+				lines = [
+					"Đứng lại, lữ khách! Ta là Rhaek, Chiến Binh Tiền Đồn của Gia tộc Hắc Nham Quỷ tộc.",
+					"Lò rèn của Tiền Đồn Vharok đang cạn kiệt năng lượng. Chúng ta cần Lõi Tàn Hỏa (Ember Core) từ đá núi lửa để duy trì ngọn lửa rèn.",
+					"Hãy thu thập giúp ta 3 Lõi Tàn Hỏa, ta sẽ thù lao xứng đáng cho ngươi!"
+				]
+				action = "start_quest:quest_vharok_embers"
+			QuestDefinition.QuestState.ACTIVE:
+				var prog: int = p_journal.get_quest_progress("quest_vharok_embers") if p_journal else 0
+				lines = [
+					"Ngươi có thể tìm Lõi Tàn Hỏa quanh các mỏm đá vách núi hoặc tiêu diệt Lũ Thằn Lằn Tro Tàn (Ember Lizard).",
+					"Ngươi hiện có %d/3 Lõi Tàn Hỏa. Hãy mau tìm đủ mang về đây!" % prog
+				]
+				action = "none"
+			QuestDefinition.QuestState.READY_TO_TURN_IN:
+				lines = [
+					"Hahaha! Tốt lắm! Đúng là Lõi Tàn Hỏa rực lửa nguyên chất!",
+					"Quỷ tộc bán thú luôn sòng phẳng: đây là 100 Vàng và 3 Mảnh Chân Ma dành cho lòng quả cảm của ngươi!"
+				]
+				action = "complete_quest:quest_vharok_embers"
+			QuestDefinition.QuestState.COMPLETED:
+				lines = [
+					"Lò rèn của tiền đồn đã rực cháy trở lại! Ngươi đã chứng minh được dũng khí của một chiến binh thực thụ.",
+					"Vùng đất cằn cỗi này còn nhiều mối đe dọa rình rập. Hãy giữ vững tinh thần cảnh giác, người bạn của Quỷ tộc!"
+				]
+				action = "none"
 	elif quest_mgr and quest_mgr.current_quest and npc_name == "Elyra":
 		var q_state = quest_mgr.current_quest.current_state
 		match q_state:
@@ -102,6 +151,23 @@ func _get_quest_manager() -> QuestManager:
 		var mgr = p.get_node_or_null("QuestManager") as QuestManager
 		if mgr:
 			return mgr
+	return null
+
+func _get_player() -> Player:
+	var cur_scene = get_tree().current_scene if get_tree() else null
+	if cur_scene:
+		var p = cur_scene.get_node_or_null("Player") as Player
+		if p:
+			return p
+	var par = get_parent()
+	if par:
+		var p = par.get_node_or_null("Player") as Player
+		if p:
+			return p
+	if get_tree():
+		var players = get_tree().get_nodes_in_group("player")
+		if players.size() > 0:
+			return players[0] as Player
 	return null
 
 func _get_game_ui() -> GameUI:

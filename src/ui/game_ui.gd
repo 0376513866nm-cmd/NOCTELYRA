@@ -41,6 +41,7 @@ signal victory_dismissed()
 @onready var pause_menu: Control = $PauseMenu
 @onready var save_btn: Button = $PauseMenu/Panel/SaveBtn
 @onready var inventory_ui: InventoryUI = $InventoryUI
+@onready var quest_journal_ui: QuestJournalUI = $QuestJournalUI
 @onready var spell_hotbar: SpellHotbar = $HUD/SpellHotbar
 
 @onready var zone_label: Label = $HUD/ZoneLabel
@@ -106,6 +107,13 @@ func _process(delta: float) -> void:
 			zone_banner.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Bật/tắt Sổ Nhiệm Vụ bằng phím Q
+	if event.is_action_pressed("quest_journal"):
+		if not is_dialogue_open():
+			toggle_quest_journal()
+			get_viewport().set_input_as_handled()
+			return
+
 	# Mở/đóng Túi đồ bằng phím I
 	if event.is_action_pressed("inventory"):
 		if not is_dialogue_open():
@@ -113,8 +121,19 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 
-	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ
-	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open():
+	# Phím ESC đóng Journal hoặc Inventory nếu đang mở
+	if event.is_action_pressed("ui_cancel"):
+		if is_quest_journal_open():
+			close_quest_journal()
+			get_viewport().set_input_as_handled()
+			return
+		if is_inventory_open():
+			close_inventory()
+			get_viewport().set_input_as_handled()
+			return
+
+	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ / sổ nhiệm vụ
+	if is_dialogue_open() or is_dialogue_cooling_down() or is_inventory_open() or is_quest_journal_open():
 		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash") or event.is_action_pressed("spell_1") or event.is_action_pressed("spell_2") or event.is_action_pressed("spell_3") or event.is_action_pressed("spell_upgrade"):
 			get_viewport().set_input_as_handled()
 			return
@@ -154,9 +173,28 @@ func close_dialogue() -> void:
 	var scene: Node = _get_active_scene()
 	var quest_mgr: QuestManager = scene.get_node_or_null("QuestManager") as QuestManager if scene else null
 	var player: Player = scene.get_node_or_null("Player") as Player if scene else null
+	if player == null and get_tree():
+		var players = get_tree().get_nodes_in_group("player")
+		if players.size() > 0:
+			player = players[0] as Player
 	var p_health: HealthComponent = player.get_node_or_null("HealthComponent") as HealthComponent if player else null
 
-	if quest_mgr:
+	if _current_quest_action.begins_with("start_quest:"):
+		var q_id: String = _current_quest_action.substr(12)
+		if player and player.quest_journal_component:
+			player.quest_journal_component.start_quest(q_id)
+			show_notification("Đã nhận nhiệm vụ mới!")
+			update_quest_journal_ui()
+	elif _current_quest_action.begins_with("complete_quest:"):
+		var q_id: String = _current_quest_action.substr(15)
+		if player and player.quest_journal_component:
+			var res: Dictionary = player.quest_journal_component.turn_in_quest(q_id, player.inventory_component, quest_mgr)
+			if bool(res.get("success", false)):
+				show_notification("Đã hoàn thành nhiệm vụ và nhận thưởng!")
+				update_quest_journal_ui()
+				# Tự động lưu sau khi hoàn thành nhiệm vụ
+				SaveManager.save_game(scene)
+	elif quest_mgr:
 		if _current_quest_action == "start_quest":
 			quest_mgr.start_quest()
 		elif _current_quest_action == "complete_quest":
@@ -190,6 +228,25 @@ func close_inventory() -> void:
 
 func is_inventory_open() -> bool:
 	return inventory_ui != null and inventory_ui.is_open()
+
+func toggle_quest_journal() -> void:
+	if quest_journal_ui:
+		quest_journal_ui.toggle()
+
+func open_quest_journal() -> void:
+	if quest_journal_ui:
+		quest_journal_ui.open()
+
+func close_quest_journal() -> void:
+	if quest_journal_ui:
+		quest_journal_ui.close()
+
+func is_quest_journal_open() -> bool:
+	return quest_journal_ui != null and quest_journal_ui.is_open()
+
+func update_quest_journal_ui() -> void:
+	if quest_journal_ui and quest_journal_ui.is_open():
+		quest_journal_ui.refresh()
 
 func _on_save_pressed() -> void:
 	var scene := _get_active_scene()
@@ -243,6 +300,7 @@ func update_quest_info(quest: QuestData) -> void:
 				quest_progress_label.text = "Tiến độ: 3/3 (Về gặp Elyra nhận thưởng!)"
 			QuestData.State.COMPLETED:
 				quest_progress_label.text = "Trạng thái: Hoàn thành! (Cổng Đấu trường đã mở)"
+	update_quest_journal_ui()
 
 func show_notification(msg: String) -> void:
 	if notification_label:
