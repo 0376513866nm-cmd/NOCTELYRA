@@ -1,17 +1,17 @@
 extends SceneTree
 
 # test_m4_flow.gd
-# Specialized automated test suite for NOCTELYRA Milestone M4.1 STABILIZATION.
-# Verifies all M4.1 requirements:
-# 1. Boss invulnerability during entire 1.3s Phase Transition & damage resumption afterwards.
-# 2. Complete Boss & Visual reset upon Retry (colors, state, timers, hurtbox, no duplicates).
-# 3. Clean-up of all BossShockwaves on player death/retry and boss purification.
-# 4. Correct initialization order and visual styling for BossShockwave (Phase 1 & Phase 2).
-# 5. SaveManager protection: save refused during boss combat, allowed after victory.
-# 6. Reward dropped on ground when inventory full persists across Save/Load.
-# 7. Gate locked during READY_TO_TURN_IN, unlocked ONLY when COMPLETED.
-# 8. Real physical collision tests for Gate (Dash & Double Jump blocked).
-# 9. Real combat collision tests between Boss & Player (first hit deals real damage, second hit prevented).
+# Specialized automated test suite for NOCTELYRA Milestone M4 FINAL TEST CORRECTION.
+# Verifies all M4/M4.1 requirements:
+# 1. Gate MagicGate at X=4200 (real physical Dash & Double Jump collision test).
+# 2. Real Godot Physics Server collisions for Horn Charge & Shockwave.
+# 3. Boss invulnerability during entire 1.3s Phase Transition & damage resumption afterwards.
+# 4. Complete Boss & Visual reset upon Retry (colors, state, timers, hurtbox, no duplicates).
+# 5. Clean-up of all BossShockwaves on player death/retry and boss purification.
+# 6. Correct initialization order and visual styling for BossShockwave (Phase 1 & Phase 2).
+# 7. SaveManager protection: save refused during boss combat, allowed after victory.
+# 8. Save/Continue after defeating Lunareth: Boss remains DEFEATED, Gold not duplicated, eclipse_fragment not duplicated, no second boss.
+# 9. Reward dropped on ground when inventory full persists across Save/Load.
 # 10. Backward compatibility with M3.2 save files (v1.0.0) & safe read-only checks on real save file.
 
 const BossLunarethScript = preload("res://src/boss/boss_lunareth.gd")
@@ -30,7 +30,7 @@ var real_file_hash_at_start: String = ""
 
 func _init() -> void:
 	print("==================================================")
-	print(" [NOCTELYRA M4.1] BOSS ENCOUNTER TEST SUITE START ")
+	print(" [NOCTELYRA M4 FINAL] TEST SUITE STARTING         ")
 	print("==================================================")
 	call_deferred("_run_suite")
 
@@ -76,9 +76,9 @@ func _run_suite() -> void:
 	var ui: GameUI = world.game_ui
 
 	# -------------------------------------------------------------
-	# CATEGORY 1: Trạng thái ban đầu & Cổng Ma Pháp chặn lối
+	# CATEGORY 1: Khởi tạo Boss & Vị trí Cổng Ma Pháp X=4200
 	# -------------------------------------------------------------
-	print("\n--- CATEGORY 1: Khởi tạo Boss & Kiểm tra Cổng Ma Pháp khóa ban đầu ---")
+	print("\n--- CATEGORY 1: Khởi tạo Boss & Vị trí Cổng Ma Pháp X=4200 ---")
 	_assert(boss != null, "Boss Lunareth tồn tại trong scene")
 	_assert(boss.health_component.max_health == 320.0, "HP tối đa của Boss là 320")
 	_assert(boss.health_component.current_health == 320.0, "HP hiện tại của Boss là 320/320")
@@ -86,7 +86,9 @@ func _run_suite() -> void:
 	_assert(boss.is_phase_2 == false, "Boss bắt đầu ở Phase 1")
 	_assert(world.boss_battle_started == false, "Trận chiến Boss chưa bắt đầu")
 
-	_assert(gate != null and gate.is_open == false, "Cổng Ma Pháp đang ở trạng thái KHÓA")
+	_assert(gate != null, "Cổng Ma Pháp tồn tại trong scene")
+	_assert(gate.global_position.x == 4200.0, "Cổng Ma Pháp nằm chính xác tại tọa độ X=4200 (thực tế: %.1f)" % gate.global_position.x)
+	_assert(gate.is_open == false, "Cổng Ma Pháp đang ở trạng thái KHÓA")
 	var gate_col: CollisionShape2D = gate.get_node_or_null("CollisionShape2D")
 	_assert(gate_col != null and gate_col.disabled == false, "Va chạm vật lý của Cổng Ma Pháp đang BẬT")
 
@@ -100,24 +102,28 @@ func _run_suite() -> void:
 	_assert(gate_col.disabled == false, "Va chạm vật lý vẫn BẬT khi ở READY_TO_TURN_IN")
 
 	# -------------------------------------------------------------
-	# CATEGORY 3: Kiểm thử va chạm vật lý thực tế của Cổng (Dash & Double Jump)
+	# CATEGORY 3: Kiểm thử va chạm vật lý thực tế của Cổng tại X=4200 (Dash & Double Jump)
 	# -------------------------------------------------------------
-	print("\n--- CATEGORY 3: Kiểm thử va chạm vật lý thực tế của Cổng (Dash & Double Jump) ---")
-	# Đặt Player ngay sát bên trái cổng (X=3950, Cổng tại X=4000)
-	player.global_position = Vector2(3950.0, 630.0)
-	# Thử lướt Dash tốc độ cao về phía cổng
+	print("\n--- CATEGORY 3: Kiểm thử va chạm vật lý thực tế của Cổng tại X=4200 (Dash & Double Jump) ---")
+	# Đặt Player tiếp cận sát Cổng (X=4120, Cổng tại X=4200, ranh giới cản tại X=4164)
+	player.global_position = Vector2(4120.0, 630.0)
+	# Thử lướt Dash tốc độ cao 800 px/s về phía cổng
 	player.velocity = Vector2(800.0, 0.0)
-	player.move_and_slide()
-	_assert(player.global_position.x <= 4000.0, "Dash bị chặn đứng bởi Cổng Ma Pháp (X: %.1f <= 4000)" % player.global_position.x)
+	for i in range(10):
+		player.move_and_slide()
+	_assert(player.global_position.x <= 4175.0, "Dash bị chặn đứng hoàn toàn bởi Cổng tại X=4200 (Player dừng tại X: %.1f <= 4175)" % player.global_position.x)
+	_assert(player.global_position.x < 4200.0, "Player tuyệt đối không thể vượt qua Cổng khi đang khóa bằng Dash")
 
 	# Thử nhảy cao trên không (Double Jump) bay về phía cổng
-	player.global_position = Vector2(3950.0, 450.0) # Độ cao 180px trên không (vẫn nằm trong rào chắn 400px)
-	player.velocity = Vector2(600.0, -100.0)
-	player.move_and_slide()
-	_assert(player.global_position.x <= 4000.0, "Nhảy đôi trên không vẫn bị Cổng chặn hoàn toàn (X: %.1f <= 4000)" % player.global_position.x)
+	player.global_position = Vector2(4120.0, 450.0) # Độ cao 180px trên không (vẫn nằm trong rào chắn 400px)
+	player.velocity = Vector2(600.0, 0.0)
+	for i in range(10):
+		player.move_and_slide()
+	_assert(player.global_position.x <= 4175.0, "Nhảy đôi trên không vẫn bị Cổng tại X=4200 chặn hoàn toàn (Player dừng tại X: %.1f <= 4175)" % player.global_position.x)
+	_assert(player.global_position.x < 4200.0, "Player tuyệt đối không thể vượt qua Cổng khi đang khóa bằng Double Jump")
 
 	# -------------------------------------------------------------
-	# CATEGORY 4: Cổng Ma Pháp CHỈ MỞ khi nhiệm vụ là COMPLETED
+	# CATEGORY 4: Cổng Ma Pháp CHỈ MỞ khi nhiệm vụ chuyển sang COMPLETED
 	# -------------------------------------------------------------
 	print("\n--- CATEGORY 4: Cổng Ma Pháp CHỈ MỞ khi nhiệm vụ chuyển sang COMPLETED ---")
 	quest_mgr.current_quest.current_state = QuestData.State.COMPLETED
@@ -126,10 +132,11 @@ func _run_suite() -> void:
 	_assert(gate_col.disabled == true, "Va chạm vật lý đã TẮT để cho phép người chơi đi qua")
 
 	# Cho Player đi qua vị trí cổng đã mở
-	player.global_position = Vector2(3980.0, 630.0)
-	player.velocity = Vector2(400.0, 0.0)
-	player.move_and_slide()
-	_assert(player.global_position.x > 3980.0, "Player đi xuyên qua cổng đã mở thành công")
+	player.global_position = Vector2(4180.0, 630.0)
+	for i in range(15):
+		player.velocity = Vector2(800.0, 0.0)
+		player.move_and_slide()
+	_assert(player.global_position.x > 4220.0, "Player đi xuyên qua cổng đã mở tại X=4200 thành công (X: %.1f > 4220)" % player.global_position.x)
 
 	# -------------------------------------------------------------
 	# CATEGORY 5: Kích hoạt Đấu trường & Rào chắn Arena khóa lại
@@ -145,7 +152,7 @@ func _run_suite() -> void:
 	_assert(ui.boss_hud.visible == true, "Thanh HUD Boss hiển thị trên màn hình")
 
 	# -------------------------------------------------------------
-	# CATEGORY 6: Telegraph xuất hiện trước đòn đánh (Charge 0.7s, Shockwave 0.9s)
+	# CATEGORY 6: Thời gian Telegraph thực tế (Charge 0.7s, Shockwave 0.9s)
 	# -------------------------------------------------------------
 	print("\n--- CATEGORY 6: Thời gian Telegraph thực tế (Charge 0.7s, Shockwave 0.9s) ---")
 	boss.current_attack = BossLunarethScript.AttackType.HORN_CHARGE
@@ -160,30 +167,37 @@ func _run_suite() -> void:
 	_assert(boss.boss_visual.telegraph_shockwave_ring.visible == true, "Vòng ma pháp cảnh báo chấn ba hiển thị")
 
 	# -------------------------------------------------------------
-	# CATEGORY 7: Kiểm thử va chạm thực tế & chống sát thương trùng (Horn Charge 20 DMG)
+	# CATEGORY 7: Va chạm vật lý thực tế qua Godot Physics cho Horn Charge (20 DMG)
 	# -------------------------------------------------------------
-	print("\n--- CATEGORY 7: Kiểm thử sát thương thực tế & chống trùng đòn (Horn Charge) ---")
+	print("\n--- CATEGORY 7: Va chạm vật lý thực tế qua Godot Physics Server (Horn Charge) ---")
 	boss._change_state(BossLunarethScript.State.ATTACK)
-	boss.charge_hitbox.reset_hits()
 	_assert(boss.charge_hitbox.damage == 20.0, "Sát thương Horn Charge đúng 20.0")
 
+	player.global_position = Vector2(4500.0, 630.0)
 	player.health_component.current_health = 100.0
 	player.health_component.cancel_invulnerability()
 
-	# Lần 1: Va chạm thực tế với Player Hurtbox -> CHỨNG MINH THỰC SỰ GÂY SÁT THƯƠNG
-	boss.charge_hitbox._on_area_entered(player.hurtbox)
-	var hp_after_hit1: float = player.health_component.current_health
-	_assert(hp_after_hit1 == 80.0, "Lần húc đầu tiên THỰC SỰ gây sát thương: HP giảm từ 100 còn %.1f (-20 DMG)" % hp_after_hit1)
+	boss.global_position = Vector2(4500.0, 630.0)
+	boss.charge_hitbox.position = Vector2.ZERO # Trùng vị trí Hurtbox của Player
+	boss.charge_hitbox.reset_hits()
+	boss.charge_hitbox.monitoring = true
 
-	# Lần 2: Va chạm tiếp trong cùng một đòn (chưa reset hits) -> KHÔNG ĐƯỢC GÂY THÊM SÁT THƯƠNG
-	boss.charge_hitbox._on_area_entered(player.hurtbox)
-	var hp_after_hit2: float = player.health_component.current_health
-	_assert(hp_after_hit2 == 80.0, "Cơ chế chống đòn trùng: Không gây thêm sát thương trong cùng lượt húc (HP giữ nguyên 80.0)")
+	# Chờ Physics Server tự động phát hiện va chạm Area2D
+	await physics_frame
+	await physics_frame
+
+	_assert(player.health_component.current_health == 80.0, "Godot Physics Engine tự động phát hiện va chạm: Player mất 20 HP (100 -> 80)")
+
+	# Duy trì chồng lấn trong các frame physics tiếp theo để kiểm tra chống sát thương trùng
+	await physics_frame
+	await physics_frame
+	_assert(player.health_component.current_health == 80.0, "Godot Physics chống sát thương trùng khi chồng lấn liên tục (HP giữ nguyên 80.0)")
+	boss.charge_hitbox.monitoring = false
 
 	# -------------------------------------------------------------
-	# CATEGORY 8: Projectile BossShockwave (Phase 1 & Phase 2 đúng màu và tốc độ)
+	# CATEGORY 8: Va chạm vật lý thực tế qua Godot Physics cho Shockwave (25 DMG) & Thuộc tính Phase 1/2
 	# -------------------------------------------------------------
-	print("\n--- CATEGORY 8: Projectile BossShockwave (Tốc độ & Màu sắc Phase 1 / Phase 2) ---")
+	print("\n--- CATEGORY 8: Va chạm vật lý thực tế & Thuộc tính Projectile BossShockwave ---")
 	var shockwave_scene: PackedScene = preload("res://src/boss/boss_shockwave.tscn")
 	var sw_p1 = shockwave_scene.instantiate()
 	world.add_child(sw_p1)
@@ -201,11 +215,20 @@ func _run_suite() -> void:
 	var wave_col_p2: Color = sw_p2.visual_wave.color
 	_assert(wave_col_p2.r > 0.8 and wave_col_p2.b > 0.7, "Màu sắc sóng Phase 2 là tông Hắc Nguyệt (Dark Violet)")
 
-	# Kiểm thử sát thương thực tế của Shockwave lên Player
+	# Kiểm thử va chạm vật lý tự động thực tế của Shockwave lên Player
 	player.health_component.cancel_invulnerability()
-	var prev_hp: float = player.health_component.current_health
-	sw_p1._on_area_entered(player.hurtbox)
-	_assert(player.health_component.current_health == prev_hp - 25.0, "Shockwave gây đúng 25 DMG lên Player (HP: %.1f -> %.1f)" % [prev_hp, player.health_component.current_health])
+	var prev_hp_sw: float = player.health_component.current_health # 80.0
+	var sw_phys = shockwave_scene.instantiate()
+	world.add_child(sw_phys)
+	sw_phys.global_position = player.global_position + Vector2(0.0, -42.0)
+	sw_phys.setup(-1.0, false)
+
+	await physics_frame
+	await physics_frame
+
+	_assert(player.health_component.current_health == prev_hp_sw - 25.0, "Godot Physics tự động phát hiện va chạm Shockwave: Player mất 25 HP (80 -> 55)")
+	await physics_frame
+	_assert(sw_phys.is_queued_for_deletion() == true or not is_instance_valid(sw_phys), "Shockwave tự hủy sau khi va chạm vật lý trúng Player")
 
 	# -------------------------------------------------------------
 	# CATEGORY 9: Boss Miễn Sát Thương trong toàn bộ Phase Transition (1.3s)
@@ -279,7 +302,6 @@ func _run_suite() -> void:
 	# CATEGORY 12: Dọn dẹp sạch sẽ BossShockwave khi Retry & Thanh Tẩy
 	# -------------------------------------------------------------
 	print("\n--- CATEGORY 12: Dọn dẹp sạch sẽ projectile khi Retry & Thanh Tẩy ---")
-	# Tạo thêm shockwave trong scene
 	var extra_sw = shockwave_scene.instantiate()
 	world.add_child(extra_sw)
 	extra_sw.setup(-1.0, false)
@@ -312,7 +334,7 @@ func _run_suite() -> void:
 
 	_assert(boss.current_state == BossLunarethScript.State.DEFEATED, "Boss chuyển sang trạng thái DEFEATED")
 	_assert(world.boss_defeated == true, "Cờ boss_defeated được xác lập")
-	_assert(quest_mgr.gold == gold_prior + 100, "Nhận chính xác 100 Vàng thưởng")
+	_assert(quest_mgr.gold == gold_prior + 100, "Nhận chính xác 100 Vàng thưởng (%d -> %d)" % [gold_prior, quest_mgr.gold])
 	_assert(player.inventory_component.has_item("eclipse_fragment") == true, "Nhận Mảnh Nguyệt Thực vào túi đồ")
 
 	# Kiểm tra Autosave sau chiến thắng
@@ -321,10 +343,45 @@ func _run_suite() -> void:
 	_assert(save_after_win == true, "Autosave sau chiến thắng chạy thành công hoàn hảo")
 
 	# -------------------------------------------------------------
-	# CATEGORY 15: Túi đồ đầy -> Vật phẩm thưởng rơi mặt đất & Phục hồi sau Save/Load
+	# CATEGORY 15: Save/Continue sau khi đánh bại Lunareth
 	# -------------------------------------------------------------
-	print("\n--- CATEGORY 15: Túi đồ đầy -> Thưởng rơi mặt đất và khôi phục nguyên vẹn sau Save/Load ---")
+	print("\n--- CATEGORY 15: Save/Continue sau khi đánh bại Lunareth (Bảo toàn DEFEATED, không nhân đôi Vàng/Vật phẩm, không có Boss thứ 2) ---")
+	var saved_gold_defeated: int = quest_mgr.gold
+	SaveManager.save_game(world)
+
 	world.queue_free()
+	await process_frame
+
+	var world_continue: NoctisForest = world_scene.instantiate() as NoctisForest
+	root.add_child(world_continue)
+	current_scene = world_continue
+	await _wait_seconds(0.2)
+
+	SaveManager.load_game(world_continue)
+
+	var boss_loaded: CharacterBody2D = world_continue.boss_lunareth
+	_assert(world_continue.boss_defeated == true, "Trạng thái boss_defeated vẫn là true sau khi Continue")
+	_assert(boss_loaded.current_state == BossLunarethScript.State.DEFEATED, "Boss vẫn ở trạng thái DEFEATED sau khi Continue")
+	_assert(world_continue.quest_manager.gold == saved_gold_defeated, "Vàng không bị tăng thêm lần nữa (%d G)" % saved_gold_defeated)
+	_assert(world_continue.player.inventory_component.get_item_count("eclipse_fragment") == 1, "Mảnh Nguyệt Thực không bị nhân đôi (đúng 1 mảnh)")
+
+	# Thử gọi lại hàm trả thưởng xem có bị phát trùng không
+	world_continue.grant_boss_reward()
+	_assert(world_continue.quest_manager.gold == saved_gold_defeated, "Cơ chế chống nhận thưởng lặp: Vàng giữ nguyên sau khi gọi lại grant_boss_reward()")
+	_assert(world_continue.player.inventory_component.get_item_count("eclipse_fragment") == 1, "Cơ chế chống nhận thưởng lặp: Vật phẩm không bị trao lần 2")
+
+	# Kiểm tra không xuất hiện Boss thứ hai
+	var boss_count := 0
+	for child in world_continue.get_children():
+		if child is BossLunarethScript:
+			boss_count += 1
+	_assert(boss_count == 1, "Chỉ duy nhất 1 thực thể Boss tồn tại trong scene (không xuất hiện Boss thứ hai)")
+
+	# -------------------------------------------------------------
+	# CATEGORY 16: Túi đồ đầy -> Vật phẩm thưởng rơi mặt đất & Phục hồi sau Save/Load
+	# -------------------------------------------------------------
+	print("\n--- CATEGORY 16: Túi đồ đầy -> Thưởng rơi mặt đất và khôi phục nguyên vẹn sau Save/Load ---")
+	world_continue.queue_free()
 	await process_frame
 
 	var world_full: NoctisForest = world_scene.instantiate() as NoctisForest
@@ -378,9 +435,9 @@ func _run_suite() -> void:
 	_assert(world_loaded.player.inventory_component.has_item("eclipse_fragment") == true, "Player nhặt thành công Mảnh Nguyệt Thực vào túi sau khi dọn chỗ")
 
 	# -------------------------------------------------------------
-	# CATEGORY 16: Tương thích ngược phiên bản Save 1.0.0 (M3.2)
+	# CATEGORY 17: Tương thích ngược phiên bản Save 1.0.0 (M3.2)
 	# -------------------------------------------------------------
-	print("\n--- CATEGORY 16: Tương thích ngược phiên bản Save 1.0.0 (M3.2) ---")
+	print("\n--- CATEGORY 17: Tương thích ngược phiên bản Save 1.0.0 (M3.2) ---")
 	var m3_old_save_content := "{\"save_version\":\"1.0.0\",\"player\":{\"position_x\":200.0,\"position_y\":630.0,\"current_health\":100.0,\"current_mana\":60.0},\"gold\":50,\"inventory\":[],\"equipment\":{},\"quest\":{\"state\":3,\"current_amount\":3}}"
 	var test_file := FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
 	test_file.store_string(m3_old_save_content)
@@ -408,12 +465,12 @@ func _run_suite() -> void:
 	SaveManager.custom_save_path = ""
 
 	print("\n==================================================")
-	print(" [NOCTELYRA M4.1] KẾT QUẢ KIỂM THỬ TỔNG HỢP:")
+	print(" [NOCTELYRA M4 FINAL] KẾT QUẢ KIỂM THỬ TỔNG HỢP:  ")
 	print(" Tổng số test: %d | Đạt: %d | Thất bại: %d" % [tests_run, tests_run - failures, failures])
 	print("==================================================")
 
 	if failures == 0:
-		print(">>> ALL M4.1 STABILIZATION TESTS PASSED 100%! <<<")
+		print(">>> ALL M4 FINAL TESTS PASSED 100%! <<<")
 		quit(0)
 	else:
 		print(">>> SOME TESTS FAILED! <<<")
