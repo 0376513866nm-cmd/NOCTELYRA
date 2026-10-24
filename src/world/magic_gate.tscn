@@ -31,7 +31,7 @@ offset_right = 150.0
 offset_bottom = 200.0
 theme_override_font_sizes/font_size = 13
 text = "[PHONG ẤN CỔ TỰ]
-Cần hoàn thành nhiệm vụ Elyra!"
+Cần hoàn thành nhiệm vụ Eiran!"
 horizontal_alignment = 1
 
 [node name="LeftPillar" type="ColorRect" parent="."]

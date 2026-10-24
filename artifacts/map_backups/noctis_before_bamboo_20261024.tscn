@@ -1,0 +1,991 @@
+[gd_scene load_steps=46 format=3 uid="uid://c7v1n8m3q2k4"]
+
+[ext_resource type="Script" path="res://src/world/noctis_forest.gd" id="1_world"]
+[ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://d2k4m8n1p5q7" path="res://src/actors/npc/npc.tscn" id="3_npc"]
+[ext_resource type="PackedScene" uid="uid://b7y2n4m8q1wa" path="res://src/actors/enemy/enemy.tscn" id="4_enemy"]
+[ext_resource type="PackedScene" uid="uid://d3m8k10ap2q5" path="res://src/ui/game_ui.tscn" id="5_ui"]
+[ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="6_pause"]
+[ext_resource type="Script" path="res://src/quest/quest_manager.gd" id="7_quest"]
+[ext_resource type="Script" path="res://src/interaction/interaction_coordinator.gd" id="8_interact_coord"]
+[ext_resource type="PackedScene" uid="uid://b5nan2q8v3k1" path="res://src/loot/item_pickup.tscn" id="9_pickup"]
+[ext_resource type="PackedScene" uid="uid://m1g8k4p2q7wa" path="res://src/world/magic_gate.tscn" id="10_gate"]
+[ext_resource type="PackedScene" uid="uid://c4k2m8p1q7v5" path="res://src/boss/boss_lunareth.tscn" id="11_boss"]
+[ext_resource type="PackedScene" uid="uid://c60p01y4k8v2" path="res://src/world/zone_portal.tscn" id="12_portal"]
+[ext_resource type="Script" path="res://src/world/zone_spawn_point.gd" id="13_spawn"]
+[ext_resource type="Texture2D" uid="uid://bcfphi5kt3lgf" path="res://assets/environment/noctis_moon.png" id="15_moon"]
+[ext_resource type="Texture2D" uid="uid://bvqp47od1rt0l" path="res://assets/environment/noctis_mountains.png" id="16_mountains"]
+[ext_resource type="Texture2D" uid="uid://3pk2exriwvf1" path="res://assets/environment/noctis_forest_far.png" id="17_forest"]
+[ext_resource type="Script" path="res://src/world/distant_birds.gd" id="18_birds"]
+[ext_resource type="PackedScene" uid="uid://b7v4k2nap1q8" path="res://src/world/moonlight_cottage.tscn" id="19_cottage"]
+[ext_resource type="PackedScene" uid="uid://m5y1p8k3q2v4" path="res://src/world/sanctuary_garden.tscn" id="20_garden"]
+[ext_resource type="PackedScene" uid="uid://c3m7k8p2v1ra" path="res://src/actors/pets/pet_moss_fox.tscn" id="21_fox"]
+[ext_resource type="PackedScene" uid="uid://d3y8p1m4k2v7" path="res://src/actors/pets/pet_moon_bird.tscn" id="22_bat"]
+[ext_resource type="Script" path="res://src/world/day_night_cycle.gd" id="23_daynight"]
+[ext_resource type="Texture2D" uid="uid://dv3y1k23ajai2" path="res://assets/environment/ground_meadow_tile.png" id="24_ground_tex"]
+[ext_resource type="Script" path="res://src/world/fore_grass_overlay.gd" id="25_foregrass"]
+[ext_resource type="Texture2D" uid="uid://i01vlmldvu6p" path="res://assets/environment/sky_day.png" id="26_sky_day"]
+[ext_resource type="Texture2D" uid="uid://di88qfmcoxjxe" path="res://assets/environment/sky_night.png" id="27_sky_night"]
+[ext_resource type="Texture2D" uid="uid://ndsmxc8v1ol" path="res://assets/environment/noctis_valley_backdrop_v1.png" id="28_hills"]
+[ext_resource type="Script" path="res://src/actors/player/player_movement_data.gd" id="28_msavv"]
+[ext_resource type="Texture2D" uid="uid://ckf67gotjv6rh" path="res://assets/environment/mossy_rock.png" id="29_rock"]
+[ext_resource type="Texture2D" uid="uid://c6wviadcfr28e" path="res://assets/environment/fern_cluster.png" id="30_fern"]
+[ext_resource type="Texture2D" uid="uid://cmcdsgyxxuhqk" path="res://assets/environment/wild_flower_bush.png" id="31_bush"]
+[ext_resource type="Script" path="res://src/world/noctis_terrain.gd" id="32_terrain"]
+[ext_resource type="Script" path="res://src/world/legacy_geometry_cleanup.gd" id="33_cleanup"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(6800, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terrace1"]
+size = Vector2(360, 90)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terrace2"]
+size = Vector2(380, 135)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terrace3"]
+size = Vector2(460, 185)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terrace4"]
+size = Vector2(360, 130)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terrace5"]
+size = Vector2(280, 85)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arena_dais"]
+size = Vector2(700, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(80, 1000)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plat"]
+size = Vector2(280, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arena_barrier"]
+size = Vector2(40, 400)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_arena_trigger"]
+size = Vector2(60, 300)
+
+[sub_resource type="Resource" id="Resource_i727k"]
+resource_local_to_scene = true
+script = ExtResource("28_msavv")
+move_speed = 270.0
+acceleration = 1800.0
+friction = 1600.0
+air_acceleration = 1200.0
+air_friction = 300.0
+gravity = 1100.0
+jump_velocity = -490.0
+double_jump_velocity = -450.0
+max_jumps = 2
+dash_speed = 800.0
+dash_duration = 0.2
+dash_cooldown = 0.8
+
+[node name="NoctisForest" type="Node2D"]
+process_mode = 1
+script = ExtResource("1_world")
+
+[node name="PauseController" type="Node" parent="." node_paths=PackedStringArray("pause_menu")]
+process_mode = 3
+script = ExtResource("6_pause")
+pause_menu = NodePath("../GameUI/PauseMenu")
+
+[node name="InteractionCoordinator" type="Node" parent="." node_paths=PackedStringArray("game_ui")]
+script = ExtResource("8_interact_coord")
+game_ui = NodePath("../GameUI")
+
+[node name="QuestManager" type="Node" parent="."]
+script = ExtResource("7_quest")
+
+[node name="WorldCanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.32, 0.35, 0.52, 1)
+
+[node name="DayNightCycle" type="Node2D" parent="." node_paths=PackedStringArray("canvas_modulate", "sky_day_tex", "sky_night_tex", "sun_node", "moon_node", "stars_node", "clouds_node", "hills_node", "mountains_node")]
+script = ExtResource("23_daynight")
+canvas_modulate = NodePath("../WorldCanvasModulate")
+sky_day_tex = NodePath("../ParallaxBackground/LayerSky/SkyDayTex")
+sky_night_tex = NodePath("../ParallaxBackground/LayerSky/SkyNightTex")
+sun_node = NodePath("../ParallaxBackground/LayerSky/Sun")
+moon_node = NodePath("../ParallaxBackground/LayerMoon/Moon")
+stars_node = NodePath("../ParallaxBackground/LayerSky/Starfield")
+clouds_node = NodePath("../ParallaxBackground/LayerClouds")
+hills_node = NodePath("../ParallaxBackground/LayerHills/HillsTex")
+mountains_node = NodePath("../ParallaxBackground/LayerMountains/MountainsTex")
+
+[node name="GameUI" parent="." instance=ExtResource("5_ui")]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+layer = -1
+
+[node name="LayerSky" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.01, 0.01)
+motion_mirroring = Vector2(1920, 0)
+
+[node name="SkyNightTex" type="TextureRect" parent="ParallaxBackground/LayerSky"]
+offset_left = -300.0
+offset_top = -300.0
+offset_right = 1620.0
+offset_bottom = 780.0
+texture = ExtResource("27_sky_night")
+
+[node name="SkyDayTex" type="TextureRect" parent="ParallaxBackground/LayerSky"]
+offset_left = -300.0
+offset_top = -300.0
+offset_right = 1620.0
+offset_bottom = 780.0
+texture = ExtResource("26_sky_day")
+
+[node name="SkyTex" type="Control" parent="ParallaxBackground/LayerSky"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Starfield" type="CPUParticles2D" parent="ParallaxBackground/LayerSky"]
+position = Vector2(960, 100)
+amount = 55
+lifetime = 3.5
+preprocess = 3.0
+emission_shape = 3
+emission_rect_extents = Vector2(960, 260)
+gravity = Vector2(0, 0)
+scale_amount_max = 2.5
+color = Color(1, 1, 1, 0.85)
+
+[node name="Sun" type="Node2D" parent="ParallaxBackground/LayerSky"]
+position = Vector2(960, 100)
+
+[node name="SunCorona" type="Polygon2D" parent="ParallaxBackground/LayerSky/Sun"]
+color = Color(1, 0.8, 0.35, 0.32)
+polygon = PackedVector2Array(-55, 0, -42, -35, 0, -55, 42, -35, 55, 0, 42, 35, 0, 55, -42, 35)
+
+[node name="SunDisc" type="Polygon2D" parent="ParallaxBackground/LayerSky/Sun"]
+color = Color(1, 0.96, 0.82, 1)
+polygon = PackedVector2Array(-32, 0, -24, -22, 0, -32, 24, -22, 32, 0, 24, 22, 0, 32, -24, 22)
+
+[node name="LayerMoon" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.03, 0.02)
+motion_mirroring = Vector2(2400, 0)
+
+[node name="Moon" type="Sprite2D" parent="ParallaxBackground/LayerMoon"]
+position = Vector2(500, 150)
+scale = Vector2(1.2, 1.2)
+texture = ExtResource("15_moon")
+
+[node name="DistantRuinTower" type="Polygon2D" parent="ParallaxBackground/LayerMoon"]
+position = Vector2(1050, 240)
+color = Color(0.12, 0.1, 0.22, 0.55)
+polygon = PackedVector2Array(-18, 50, -18, -10, -14, -10, -14, -22, -8, -22, -8, -10, 8, -10, 8, -32, 14, -32, 14, -10, 18, -10, 18, 50)
+
+[node name="LayerClouds" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.05, 0.02)
+motion_mirroring = Vector2(2048, 0)
+
+[node name="Cloud1" type="Polygon2D" parent="ParallaxBackground/LayerClouds"]
+position = Vector2(300, 140)
+color = Color(1, 1, 1, 0.16)
+polygon = PackedVector2Array(-80, 0, -50, -25, 0, -35, 60, -20, 90, 0, 60, 20, -30, 22)
+
+[node name="Cloud2" type="Polygon2D" parent="ParallaxBackground/LayerClouds"]
+position = Vector2(1100, 180)
+color = Color(1, 1, 1, 0.13)
+polygon = PackedVector2Array(-100, 0, -60, -30, 10, -38, 80, -22, 120, 0, 80, 22, -40, 24)
+
+[node name="Cloud3" type="Polygon2D" parent="ParallaxBackground/LayerClouds"]
+position = Vector2(1700, 110)
+color = Color(1, 1, 1, 0.15)
+polygon = PackedVector2Array(-70, 0, -40, -22, 10, -30, 50, -18, 80, 0, 50, 18, -30, 20)
+
+[node name="LayerBirds" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.08, 0.05)
+
+[node name="DistantBirds" type="Node2D" parent="ParallaxBackground/LayerBirds"]
+script = ExtResource("18_birds")
+
+[node name="LayerMountains" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.12, 0.07)
+motion_mirroring = Vector2(2048, 0)
+
+[node name="MountainsTex" type="TextureRect" parent="ParallaxBackground/LayerMountains"]
+visible = false
+offset_left = -200.0
+offset_top = 180.0
+offset_right = 1848.0
+offset_bottom = 680.0
+texture = ExtResource("16_mountains")
+stretch_mode = 1
+
+[node name="LayerHills" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.18, 0.09)
+
+[node name="HillsTex" type="TextureRect" parent="ParallaxBackground/LayerHills"]
+offset_left = -8.0
+offset_top = -352.0
+offset_right = 2692.0
+offset_bottom = 588.0
+texture = ExtResource("28_hills")
+
+[node name="LayerForestFar" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.24, 0.12)
+motion_mirroring = Vector2(2048, 0)
+
+[node name="ForestFarTex" type="TextureRect" parent="ParallaxBackground/LayerForestFar"]
+visible = false
+offset_left = -200.0
+offset_top = 220.0
+offset_right = 1848.0
+offset_bottom = 720.0
+texture = ExtResource("17_forest")
+stretch_mode = 1
+
+[node name="LayerForestMid" type="ParallaxLayer" parent="ParallaxBackground"]
+visible = false
+motion_scale = Vector2(0.38, 0.18)
+motion_mirroring = Vector2(2400, 0)
+
+[node name="TreeSilhouette1" type="Polygon2D" parent="ParallaxBackground/LayerForestMid"]
+position = Vector2(400, 630)
+color = Color(0.08, 0.12, 0.18, 0.65)
+polygon = PackedVector2Array(-25, 0, -20, -180, -45, -260, -30, -340, 0, -380, 30, -340, 45, -260, 20, -180, 25, 0)
+
+[node name="TreeSilhouette2" type="Polygon2D" parent="ParallaxBackground/LayerForestMid"]
+position = Vector2(1300, 630)
+color = Color(0.07, 0.11, 0.16, 0.6)
+polygon = PackedVector2Array(-22, 0, -18, -160, -40, -240, -25, -310, 0, -350, 25, -310, 40, -240, 18, -160, 22, 0)
+
+[node name="TreeSilhouette3" type="Polygon2D" parent="ParallaxBackground/LayerForestMid"]
+position = Vector2(2100, 630)
+color = Color(0.08, 0.12, 0.18, 0.65)
+polygon = PackedVector2Array(-28, 0, -22, -190, -50, -280, -35, -360, 0, -400, 35, -360, 50, -280, 22, -190, 28, 0)
+
+[node name="LayerCanopyForeground" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.85, 0.25)
+motion_mirroring = Vector2(2400, 0)
+
+[node name="UpperCanopyBranch1" type="Polygon2D" parent="ParallaxBackground/LayerCanopyForeground"]
+position = Vector2(200, 40)
+color = Color(0.06, 0.08, 0.13, 0.7)
+polygon = PackedVector2Array(-100, -80, 120, -60, 320, -30, 260, 20, 180, 0, 80, -20, -40, -10, -100, -30)
+
+[node name="UpperCanopyBranch2" type="Polygon2D" parent="ParallaxBackground/LayerCanopyForeground"]
+position = Vector2(1400, 30)
+color = Color(0.06, 0.08, 0.13, 0.7)
+polygon = PackedVector2Array(-80, -70, 150, -50, 350, -20, 280, 25, 200, 5, 90, -15, -30, -5, -80, -25)
+
+[node name="Background_Zone2_Forest" type="Node2D" parent="."]
+visible = false
+
+[node name="FogLayer" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 1800.0
+offset_top = 450.0
+offset_right = 4200.0
+offset_bottom = 680.0
+color = Color(0.12, 0.08, 0.22, 0.25)
+
+[node name="DarkTree1" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 2200.0
+offset_top = 350.0
+offset_right = 2270.0
+offset_bottom = 630.0
+color = Color(0.08, 0.07, 0.14, 0.85)
+
+[node name="DarkTree2" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 3000.0
+offset_top = 320.0
+offset_right = 3080.0
+offset_bottom = 630.0
+color = Color(0.08, 0.07, 0.14, 0.85)
+
+[node name="DarkTree3" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 3700.0
+offset_top = 340.0
+offset_right = 3790.0
+offset_bottom = 630.0
+color = Color(0.08, 0.07, 0.14, 0.85)
+
+[node name="PurpleCrystal1" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 2450.0
+offset_top = 590.0
+offset_right = 2475.0
+offset_bottom = 630.0
+color = Color(0.7, 0.2, 0.9, 0.85)
+
+[node name="PurpleCrystal2" type="ColorRect" parent="Background_Zone2_Forest"]
+offset_left = 3300.0
+offset_top = 585.0
+offset_right = 3330.0
+offset_bottom = 630.0
+color = Color(0.65, 0.15, 0.85, 0.85)
+
+[node name="Background_Zone3_Arena" type="Node2D" parent="."]
+visible = false
+
+[node name="ArenaHaze" type="ColorRect" parent="Background_Zone3_Arena"]
+offset_left = 4200.0
+offset_top = 450.0
+offset_right = 6500.0
+offset_bottom = 680.0
+color = Color(0.15, 0.06, 0.25, 0.3)
+
+[node name="ArenaPillarLeft" type="ColorRect" parent="Background_Zone3_Arena"]
+offset_left = 4350.0
+offset_top = 320.0
+offset_right = 4410.0
+offset_bottom = 630.0
+color = Color(0.12, 0.08, 0.22, 0.9)
+
+[node name="ArenaPillarRight" type="ColorRect" parent="Background_Zone3_Arena"]
+offset_left = 6050.0
+offset_top = 320.0
+offset_right = 6110.0
+offset_bottom = 630.0
+color = Color(0.12, 0.08, 0.22, 0.9)
+
+[node name="ArenaAltar" type="ColorRect" parent="Background_Zone3_Arena"]
+offset_left = 5150.0
+offset_top = 580.0
+offset_right = 5350.0
+offset_bottom = 630.0
+color = Color(0.2, 0.12, 0.35, 1)
+
+[node name="Geometry" type="Node2D" parent="."]
+script = ExtResource("33_cleanup")
+
+[node name="NoctisTerrain" type="StaticBody2D" parent="Geometry"]
+z_index = -2
+collision_mask = 0
+script = ExtResource("32_terrain")
+
+[node name="Ground" type="StaticBody2D" parent="Geometry"]
+z_index = -2
+position = Vector2(3100, 680)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="Bedrock" type="ColorRect" parent="Geometry/Ground"]
+offset_left = -3400.0
+offset_top = -50.0
+offset_right = 3400.0
+offset_bottom = 50.0
+color = Color(0.1, 0.12, 0.17, 1)
+
+[node name="VisualGround" type="TextureRect" parent="Geometry/Ground"]
+offset_left = -3400.0
+offset_top = -50.0
+offset_right = 3400.0
+offset_bottom = 90.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="ForeGrassOverlay" type="Node2D" parent="Geometry"]
+position = Vector2(0, 630)
+script = ExtResource("25_foregrass")
+
+[node name="Terraces" type="Node2D" parent="Geometry"]
+z_index = -1
+
+[node name="Terrace1_HerbGarden" type="StaticBody2D" parent="Geometry/Terraces"]
+position = Vector2(880, 680)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Terraces/Terrace1_HerbGarden"]
+position = Vector2(0, -45)
+shape = SubResource("RectangleShape2D_terrace1")
+
+[node name="Bedrock" type="ColorRect" parent="Geometry/Terraces/Terrace1_HerbGarden"]
+offset_left = -180.0
+offset_top = -90.0
+offset_right = 180.0
+color = Color(0.12, 0.14, 0.19, 1)
+
+[node name="StoneFacade" type="ColorRect" parent="Geometry/Terraces/Terrace1_HerbGarden"]
+offset_left = -180.0
+offset_top = -90.0
+offset_right = -162.0
+offset_bottom = -50.0
+color = Color(0.24, 0.22, 0.3, 1)
+
+[node name="StoneAccent" type="ColorRect" parent="Geometry/Terraces/Terrace1_HerbGarden/StoneFacade"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 8.0
+offset_right = 16.0
+offset_bottom = 22.0
+color = Color(0.32, 0.35, 0.42, 1)
+
+[node name="VisualTop" type="TextureRect" parent="Geometry/Terraces/Terrace1_HerbGarden"]
+offset_left = -180.0
+offset_top = -90.0
+offset_right = 180.0
+offset_bottom = 30.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="Terrace2_HillOverlook" type="StaticBody2D" parent="Geometry/Terraces"]
+position = Vector2(1250, 680)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Terraces/Terrace2_HillOverlook"]
+position = Vector2(0, -67.5)
+shape = SubResource("RectangleShape2D_terrace2")
+
+[node name="Bedrock" type="ColorRect" parent="Geometry/Terraces/Terrace2_HillOverlook"]
+offset_left = -190.0
+offset_top = -135.0
+offset_right = 190.0
+color = Color(0.12, 0.14, 0.19, 1)
+
+[node name="StoneFacade" type="ColorRect" parent="Geometry/Terraces/Terrace2_HillOverlook"]
+offset_left = -190.0
+offset_top = -135.0
+offset_right = -172.0
+offset_bottom = -90.0
+color = Color(0.24, 0.22, 0.3, 1)
+
+[node name="VisualTop" type="TextureRect" parent="Geometry/Terraces/Terrace2_HillOverlook"]
+offset_left = -190.0
+offset_top = -135.0
+offset_right = 190.0
+offset_bottom = -15.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="Terrace3_MoonBluff" type="StaticBody2D" parent="Geometry/Terraces"]
+position = Vector2(1670, 680)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Terraces/Terrace3_MoonBluff"]
+position = Vector2(0, -92.5)
+shape = SubResource("RectangleShape2D_terrace3")
+
+[node name="Bedrock" type="ColorRect" parent="Geometry/Terraces/Terrace3_MoonBluff"]
+offset_left = -230.0
+offset_top = -185.0
+offset_right = 230.0
+color = Color(0.12, 0.14, 0.19, 1)
+
+[node name="StoneFacade" type="ColorRect" parent="Geometry/Terraces/Terrace3_MoonBluff"]
+offset_left = -230.0
+offset_top = -185.0
+offset_right = -210.0
+offset_bottom = -135.0
+color = Color(0.24, 0.22, 0.3, 1)
+
+[node name="VisualTop" type="TextureRect" parent="Geometry/Terraces/Terrace3_MoonBluff"]
+offset_left = -230.0
+offset_top = -185.0
+offset_right = 230.0
+offset_bottom = -65.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="Terrace4_Descent1" type="StaticBody2D" parent="Geometry/Terraces"]
+position = Vector2(2080, 680)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Terraces/Terrace4_Descent1"]
+position = Vector2(0, -65)
+shape = SubResource("RectangleShape2D_terrace4")
+
+[node name="Bedrock" type="ColorRect" parent="Geometry/Terraces/Terrace4_Descent1"]
+offset_left = -180.0
+offset_top = -130.0
+offset_right = 180.0
+color = Color(0.12, 0.14, 0.19, 1)
+
+[node name="VisualTop" type="TextureRect" parent="Geometry/Terraces/Terrace4_Descent1"]
+offset_left = -180.0
+offset_top = -130.0
+offset_right = 180.0
+offset_bottom = -10.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="Terrace5_Descent2" type="StaticBody2D" parent="Geometry/Terraces"]
+position = Vector2(2400, 680)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Terraces/Terrace5_Descent2"]
+position = Vector2(0, -42.5)
+shape = SubResource("RectangleShape2D_terrace5")
+
+[node name="Bedrock" type="ColorRect" parent="Geometry/Terraces/Terrace5_Descent2"]
+offset_left = -140.0
+offset_top = -85.0
+offset_right = 140.0
+color = Color(0.12, 0.14, 0.19, 1)
+
+[node name="VisualTop" type="TextureRect" parent="Geometry/Terraces/Terrace5_Descent2"]
+offset_left = -140.0
+offset_top = -85.0
+offset_right = 140.0
+offset_bottom = 35.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="ArenaRaisedDais" type="StaticBody2D" parent="Geometry/Terraces"]
+position = Vector2(5250, 680)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Terraces/ArenaRaisedDais"]
+position = Vector2(0, -50)
+shape = SubResource("RectangleShape2D_arena_dais")
+
+[node name="Bedrock" type="ColorRect" parent="Geometry/Terraces/ArenaRaisedDais"]
+offset_left = -350.0
+offset_top = -100.0
+offset_right = 350.0
+color = Color(0.15, 0.12, 0.22, 1)
+
+[node name="VisualTop" type="TextureRect" parent="Geometry/Terraces/ArenaRaisedDais"]
+offset_left = -350.0
+offset_top = -100.0
+offset_right = 350.0
+offset_bottom = 20.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="MeadowScenery" type="Node2D" parent="Geometry"]
+position = Vector2(0, 630)
+
+[node name="Rock1" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(80, -32)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("29_rock")
+
+[node name="Fern1" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(110, -34)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("30_fern")
+
+[node name="Bush1" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(360, -32)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("31_bush")
+
+[node name="Fern2" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(395, -34)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("30_fern")
+
+[node name="Rock2" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(495, -30)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("29_rock")
+
+[node name="Bush2" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(740, -32)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("31_bush")
+
+[node name="Fern3" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(1050, -34)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("30_fern")
+
+[node name="Rock3" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(1480, -34)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("29_rock")
+
+[node name="Bush3" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(1950, -32)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("31_bush")
+
+[node name="Fern4" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(2350, -34)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("30_fern")
+
+[node name="Rock4" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(2850, -34)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("29_rock")
+
+[node name="Bush4" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(3350, -32)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("31_bush")
+
+[node name="Fern5" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(3750, -34)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("30_fern")
+
+[node name="Rock5" type="Sprite2D" parent="Geometry/MeadowScenery"]
+position = Vector2(4250, -34)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("29_rock")
+
+[node name="LeftWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(-40, 320)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="RightWall" type="StaticBody2D" parent="Geometry"]
+position = Vector2(6350, 320)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Platform1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(850, 460)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform1"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="Undercarriage" type="ColorRect" parent="Geometry/Platform1"]
+offset_left = -125.0
+offset_top = 2.0
+offset_right = 125.0
+offset_bottom = 18.0
+color = Color(0.18, 0.2, 0.26, 0.95)
+
+[node name="EdgeBracketL" type="ColorRect" parent="Geometry/Platform1"]
+offset_left = -132.0
+offset_top = -6.0
+offset_right = -124.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="EdgeBracketR" type="ColorRect" parent="Geometry/Platform1"]
+offset_left = 124.0
+offset_top = -6.0
+offset_right = 132.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="VisualPlat" type="TextureRect" parent="Geometry/Platform1"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 20.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="Platform2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2300, 440)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform2"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="Undercarriage" type="ColorRect" parent="Geometry/Platform2"]
+offset_left = -125.0
+offset_top = 2.0
+offset_right = 125.0
+offset_bottom = 18.0
+color = Color(0.18, 0.2, 0.26, 0.95)
+
+[node name="EdgeBracketL" type="ColorRect" parent="Geometry/Platform2"]
+offset_left = -132.0
+offset_top = -6.0
+offset_right = -124.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="EdgeBracketR" type="ColorRect" parent="Geometry/Platform2"]
+offset_left = 124.0
+offset_top = -6.0
+offset_right = 132.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="VisualPlat" type="TextureRect" parent="Geometry/Platform2"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 20.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="Platform3" type="StaticBody2D" parent="Geometry"]
+position = Vector2(2800, 380)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform3"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="Undercarriage" type="ColorRect" parent="Geometry/Platform3"]
+offset_left = -125.0
+offset_top = 2.0
+offset_right = 125.0
+offset_bottom = 18.0
+color = Color(0.18, 0.2, 0.26, 0.95)
+
+[node name="EdgeBracketL" type="ColorRect" parent="Geometry/Platform3"]
+offset_left = -132.0
+offset_top = -6.0
+offset_right = -124.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="EdgeBracketR" type="ColorRect" parent="Geometry/Platform3"]
+offset_left = 124.0
+offset_top = -6.0
+offset_right = 132.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="VisualPlat" type="TextureRect" parent="Geometry/Platform3"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 20.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="Platform4" type="StaticBody2D" parent="Geometry"]
+position = Vector2(3400, 470)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Platform4"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="Undercarriage" type="ColorRect" parent="Geometry/Platform4"]
+offset_left = -125.0
+offset_top = 2.0
+offset_right = 125.0
+offset_bottom = 18.0
+color = Color(0.18, 0.2, 0.26, 0.95)
+
+[node name="EdgeBracketL" type="ColorRect" parent="Geometry/Platform4"]
+offset_left = -132.0
+offset_top = -6.0
+offset_right = -124.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="EdgeBracketR" type="ColorRect" parent="Geometry/Platform4"]
+offset_left = 124.0
+offset_top = -6.0
+offset_right = 132.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="VisualPlat" type="TextureRect" parent="Geometry/Platform4"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 20.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="ArenaPlatform1" type="StaticBody2D" parent="Geometry"]
+position = Vector2(4800, 460)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ArenaPlatform1"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="Undercarriage" type="ColorRect" parent="Geometry/ArenaPlatform1"]
+offset_left = -125.0
+offset_top = 2.0
+offset_right = 125.0
+offset_bottom = 18.0
+color = Color(0.18, 0.2, 0.26, 0.95)
+
+[node name="EdgeBracketL" type="ColorRect" parent="Geometry/ArenaPlatform1"]
+offset_left = -132.0
+offset_top = -6.0
+offset_right = -124.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="EdgeBracketR" type="ColorRect" parent="Geometry/ArenaPlatform1"]
+offset_left = 124.0
+offset_top = -6.0
+offset_right = 132.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="VisualPlat" type="TextureRect" parent="Geometry/ArenaPlatform1"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 20.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="ArenaPlatform2" type="StaticBody2D" parent="Geometry"]
+position = Vector2(5500, 460)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ArenaPlatform2"]
+shape = SubResource("RectangleShape2D_plat")
+one_way_collision = true
+
+[node name="Undercarriage" type="ColorRect" parent="Geometry/ArenaPlatform2"]
+offset_left = -125.0
+offset_top = 2.0
+offset_right = 125.0
+offset_bottom = 18.0
+color = Color(0.18, 0.2, 0.26, 0.95)
+
+[node name="EdgeBracketL" type="ColorRect" parent="Geometry/ArenaPlatform2"]
+offset_left = -132.0
+offset_top = -6.0
+offset_right = -124.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="EdgeBracketR" type="ColorRect" parent="Geometry/ArenaPlatform2"]
+offset_left = 124.0
+offset_top = -6.0
+offset_right = 132.0
+offset_bottom = 16.0
+color = Color(0.24, 0.22, 0.32, 1)
+
+[node name="VisualPlat" type="TextureRect" parent="Geometry/ArenaPlatform2"]
+offset_left = -130.0
+offset_top = -12.0
+offset_right = 130.0
+offset_bottom = 20.0
+texture = ExtResource("24_ground_tex")
+stretch_mode = 1
+
+[node name="ArenaBarrier" type="StaticBody2D" parent="Geometry"]
+visible = false
+position = Vector2(4300, 630)
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/ArenaBarrier"]
+position = Vector2(0, -200)
+shape = SubResource("RectangleShape2D_arena_barrier")
+disabled = true
+
+[node name="VisualFog" type="ColorRect" parent="Geometry/ArenaBarrier"]
+offset_left = -20.0
+offset_top = -400.0
+offset_right = 20.0
+color = Color(0.85, 0.2, 0.7, 0.8)
+
+[node name="MagicGate" parent="." instance=ExtResource("10_gate")]
+position = Vector2(4200, 606)
+
+[node name="ArenaTrigger" type="Area2D" parent="."]
+position = Vector2(4400, 606)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ArenaTrigger"]
+position = Vector2(0, -150)
+shape = SubResource("RectangleShape2D_arena_trigger")
+
+[node name="MoonlightCottage" parent="." instance=ExtResource("19_cottage")]
+position = Vector2(267, 623)
+
+[node name="SanctuaryGarden" parent="." instance=ExtResource("20_garden")]
+
+[node name="PetMossFox" parent="." instance=ExtResource("21_fox")]
+position = Vector2(430, 631)
+
+[node name="PetMoonBird" parent="." instance=ExtResource("22_bat")]
+position = Vector2(285, 485)
+
+[node name="NPC_Elyra" parent="." instance=ExtResource("3_npc")]
+position = Vector2(574, 637)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(180, 632)
+movement_data = SubResource("Resource_i727k")
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
+remote_path = NodePath("../../Camera2D")
+
+[node name="CorruptedEnemy1" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
+position = Vector2(2400, 620)
+enemy_id = "enemy_forest_1"
+
+[node name="CorruptedEnemy2" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
+position = Vector2(3050, 600)
+enemy_id = "enemy_forest_2"
+
+[node name="CorruptedEnemy3" parent="." groups=["enemies"] instance=ExtResource("4_enemy")]
+position = Vector2(3700, 624)
+enemy_id = "enemy_forest_3"
+
+[node name="BossLunareth" parent="." instance=ExtResource("11_boss")]
+position = Vector2(5300, 590)
+
+[node name="TestPickup_Potion" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(320, 642)
+item_id = "health_potion"
+amount = 2
+pickup_id = "pickup_village_potion_1"
+
+[node name="TestPickup_Sword" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(420, 642)
+item_id = "moonsteel_sword"
+pickup_id = "pickup_village_sword_1"
+
+[node name="TestPickup_Amulet" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(680, 642)
+item_id = "moon_amulet"
+pickup_id = "pickup_village_amulet_1"
+
+[node name="ForestPickup_Shard1" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(850, 585)
+pickup_id = "pickup_forest_shard_1"
+
+[node name="ForestPickup_Shard2" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(1250, 584)
+pickup_id = "pickup_forest_shard_2"
+
+[node name="ForestPickup_Shard3" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(1670, 564)
+pickup_id = "pickup_forest_shard_3"
+
+[node name="ForestPickup_Shard4" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(2300, 593)
+pickup_id = "pickup_forest_shard_4"
+
+[node name="ForestPickup_Shard5" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(2800, 572)
+pickup_id = "pickup_forest_shard_5"
+
+[node name="ForestPickup_Shard6" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(3400, 596)
+pickup_id = "pickup_forest_shard_6"
+
+[node name="ForestPickup_Shard7" parent="." instance=ExtResource("9_pickup")]
+position = Vector2(3950, 596)
+pickup_id = "pickup_forest_shard_7"
+
+[node name="SpawnDefault" type="Node2D" parent="."]
+position = Vector2(180, 632)
+script = ExtResource("13_spawn")
+
+[node name="SpawnFromElyndra" type="Node2D" parent="."]
+position = Vector2(5700, 620)
+script = ExtResource("13_spawn")
+spawn_point_id = "spawn_from_elyndra"
+facing_direction = -1
+
+[node name="MoonveilPortal" parent="." instance=ExtResource("12_portal")]
+position = Vector2(5850, 630)
+portal_id = "moonveil_portal"
+portal_name = "Moonveil Portal"
+lock_reason = "Cổng ma pháp chưa được khai mở. Hãy thanh tẩy Linh Lộc Lunareth trước!"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(180, 632)
+limit_left = 0
+limit_top = -300
+limit_right = 6300
+limit_bottom = 720
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0

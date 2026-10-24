@@ -1,0 +1,128 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3m7k8p2v1q9"]
+
+[ext_resource type="Script" path="res://src/actors/pets/pet_moss_fox.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/pets/moss_fox_mam_v1.png" id="2_fox_art"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fox"]
+radius = 12.0
+
+[node name="PetMossFox" type="CharacterBody2D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -12)
+shape = SubResource("CircleShape2D_fox")
+
+[node name="GroundShadow" type="Polygon2D" parent="."]
+z_index = -1
+color = Color(0, 0, 0, 0.42)
+polygon = PackedVector2Array(-18, -2, -14, -5, 0, -6, 14, -5, 18, -2, 18, 2, 14, 5, 0, 6, -14, 5, -18, 2)
+
+[node name="VisualRoot" type="Node2D" parent="."]
+visible = false
+position = Vector2(0, 0)
+
+[node name="ArtRoot" type="Node2D" parent="."]
+
+[node name="MossFoxArt" type="Sprite2D" parent="ArtRoot"]
+position = Vector2(0, -36)
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("2_fox_art")
+
+[node name="PawBack" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.85, 0.88, 0.95, 1)
+polygon = PackedVector2Array(-14, 0, -8, 0, -8, -8, -14, -8)
+
+[node name="PawFront" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.85, 0.88, 0.95, 1)
+polygon = PackedVector2Array(6, 0, 12, 0, 12, -8, 6, -8)
+
+[node name="Body" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.96, 0.97, 1, 1)
+polygon = PackedVector2Array(-16, -6, -14, -18, -4, -22, 10, -20, 15, -12, 12, -4, -4, -4)
+
+[node name="MossBack" type="Polygon2D" parent="VisualRoot"]
+color = Color(0.32, 0.58, 0.38, 0.9)
+polygon = PackedVector2Array(-10, -18, -2, -22, 6, -21, 2, -17, -6, -16)
+
+[node name="StarFlower" type="Polygon2D" parent="VisualRoot"]
+position = Vector2(2, -22)
+color = Color(0.5, 0.95, 0.85, 1)
+polygon = PackedVector2Array(0, -4, 3, -1, 3, 2, 0, 4, -3, 2, -3, -1)
+
+[node name="Head" type="Polygon2D" parent="VisualRoot"]
+position = Vector2(12, -16)
+color = Color(0.96, 0.97, 1, 1)
+polygon = PackedVector2Array(-4, -8, 4, -10, 12, -4, 14, 0, 8, 4, 0, 2, -4, -4)
+
+[node name="EarLeft" type="Polygon2D" parent="VisualRoot/Head"]
+position = Vector2(2, -9)
+color = Color(0.95, 0.95, 1, 1)
+polygon = PackedVector2Array(-3, 0, 0, -9, 3, 0)
+
+[node name="EarTipGlow" type="Polygon2D" parent="VisualRoot/Head/EarLeft"]
+position = Vector2(0, -7)
+color = Color(0.4, 0.9, 0.8, 1)
+polygon = PackedVector2Array(-1, 1, 0, -2, 1, 1)
+
+[node name="Nose" type="ColorRect" parent="VisualRoot/Head"]
+offset_left = 12.0
+offset_top = -1.0
+offset_right = 14.0
+offset_bottom = 1.0
+color = Color(0.25, 0.18, 0.22, 1)
+
+[node name="Eye" type="ColorRect" parent="VisualRoot/Head"]
+offset_left = 5.0
+offset_top = -4.0
+offset_right = 7.0
+offset_bottom = -2.0
+color = Color(0.18, 0.15, 0.25, 1)
+
+[node name="Tail" type="Polygon2D" parent="VisualRoot"]
+position = Vector2(-15, -12)
+color = Color(0.95, 0.97, 1, 1)
+polygon = PackedVector2Array(0, 0, -8, -4, -18, -12, -24, -8, -20, 2, -10, 4, 0, 2)
+
+[node name="TailGlowTip" type="Polygon2D" parent="VisualRoot/Tail"]
+position = Vector2(-20, -5)
+color = Color(0.45, 0.9, 0.85, 0.85)
+polygon = PackedVector2Array(0, -3, -5, -4, -4, 3, 2, 3)
+
+[node name="PromptLabel" type="Label" parent="."]
+offset_left = -50.0
+offset_top = -46.0
+offset_right = 50.0
+offset_bottom = -28.0
+theme_override_colors/font_color = Color(1, 0.9, 0.6, 1)
+theme_override_font_sizes/font_size = 11
+text = "[E] Vuốt ve Mầm"
+horizontal_alignment = 1
+
+[node name="SpeechBubble" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -110.0
+offset_top = -105.0
+offset_right = 110.0
+offset_bottom = -45.0
+
+[node name="Panel" type="PanelContainer" parent="SpeechBubble"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="SpeechBubble/Panel"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.95, 0.9, 1)
+theme_override_font_sizes/font_size = 11
+text = "Mầm khẽ cọ đầu vào chân bạn..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2

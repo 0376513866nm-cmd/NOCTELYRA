@@ -14,6 +14,12 @@ script = ExtResource("1_pickup")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_pickup")
 
+[node name="GroundShadow" type="Polygon2D" parent="."]
+z_index = -1
+position = Vector2(0, 22)
+color = Color(0, 0, 0, 0.35)
+polygon = PackedVector2Array(-14, -2, -10, -4, 0, -5, 10, -4, 14, -2, 14, 2, 10, 4, 0, 5, -10, 4, -14, 2)
+
 [node name="IconSprite" type="Sprite2D" parent="."]
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("2_icon")

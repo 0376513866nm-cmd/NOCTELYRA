@@ -9,12 +9,14 @@ signal retry_requested()
 signal victory_dismissed()
 
 @onready var hud: Control = $HUD
-@onready var hp_bar: ProgressBar = $HUD/TopLeftBars/HPBar
-@onready var mp_bar: ProgressBar = $HUD/TopLeftBars/MPBar
-@onready var hp_label: Label = $HUD/TopLeftBars/HPBar/HPLabel
-@onready var mp_label: Label = $HUD/TopLeftBars/MPBar/MPLabel
-@onready var state_label: Label = $HUD/StateLabel
-@onready var gold_label: Label = $HUD/GoldPanel/GoldLabel
+@onready var hp_bar: ProgressBar = find_child("HPBar", true, false) as ProgressBar
+@onready var mp_bar: ProgressBar = find_child("MPBar", true, false) as ProgressBar
+@onready var hp_label: Label = find_child("HPLabel", true, false) as Label
+@onready var mp_label: Label = find_child("MPLabel", true, false) as Label
+@onready var state_label: Label = find_child("StateLabel", true, false) as Label
+@onready var gold_label: Label = find_child("GoldLabel", true, false) as Label
+@onready var coord_label: Label = find_child("CoordLabel", true, false) as Label
+@onready var settings_gear_btn: Button = find_child("SettingsGearBtn", true, false) as Button
 @onready var quest_title_label: Label = $HUD/QuestPanel/VBox/QuestTitle
 @onready var quest_progress_label: Label = $HUD/QuestPanel/VBox/QuestProgress
 @onready var notification_label: Label = $HUD/NotificationLabel
@@ -63,7 +65,8 @@ signal victory_dismissed()
 
 # Sidebar Nodes
 @onready var sidebar_toggle_btn: Button = get_node_or_null("HUD/SidebarToggleBtn") as Button
-@onready var sidebar: Control = get_node_or_null("Sidebar") as Control
+@onready var sidebar: Control = get_node_or_null("Sidebar")
+@onready var touch_controls: Control = get_node_or_null("HUD/TouchControls") as Control
 @onready var sidebar_close_btn: Button = get_node_or_null("Sidebar/MainVBox/HeaderHBox/CloseBtn") as Button
 @onready var tab_btn_stats: Button = get_node_or_null("Sidebar/MainVBox/TabBar/TabBtn_Stats") as Button
 @onready var tab_btn_quests: Button = get_node_or_null("Sidebar/MainVBox/TabBar/TabBtn_Quests") as Button
@@ -75,20 +78,27 @@ signal victory_dismissed()
 @onready var panel_inventory: Control = get_node_or_null("Sidebar/MainVBox/ContentContainer/InventoryPanel") as Control
 @onready var panel_settings: Control = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel") as Control
 
-@onready var sidebar_race_label: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/RaceLabel") as Label
-@onready var sidebar_level_label: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/LevelExpLabel") as Label
-@onready var sidebar_exp_bar: ProgressBar = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/ExpBar") as ProgressBar
-@onready var sidebar_exp_label: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/ExpLabel") as Label
-@onready var sidebar_stat_hp: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/StatHP") as Label
-@onready var sidebar_stat_mp: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/StatMP") as Label
-@onready var sidebar_stat_atk: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/StatATK") as Label
-@onready var sidebar_stat_regen: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/StatRegen") as Label
-@onready var sidebar_stat_speed: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/StatSpeed") as Label
-@onready var sidebar_stat_magic: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/StatMagic") as Label
-@onready var sidebar_equip_weapon: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/EquipWeapon") as Label
-@onready var sidebar_equip_armor: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/EquipArmor") as Label
-@onready var sidebar_equip_acc: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/EquipAccessory") as Label
-@onready var sidebar_open_sheet_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel/OpenSheetBtn") as Button
+@onready var sidebar_race_label: Label = find_child("RaceLabel", true, false) as Label
+@onready var sidebar_level_label: Label = find_child("LevelExpLabel", true, false) as Label
+@onready var sidebar_exp_bar: ProgressBar = find_child("ExpBar", true, false) as ProgressBar
+@onready var sidebar_exp_label: Label = find_child("ExpLabel", true, false) as Label
+@onready var sidebar_stat_hp: Label = find_child("StatHP", true, false) as Label
+@onready var sidebar_stat_mp: Label = find_child("StatMP", true, false) as Label
+@onready var sidebar_stat_atk: Label = find_child("StatATK", true, false) as Label
+@onready var sidebar_stat_regen: Label = find_child("StatRegen", true, false) as Label
+@onready var sidebar_stat_speed: Label = find_child("StatSpeed", true, false) as Label
+@onready var sidebar_stat_magic: Label = find_child("StatMagic", true, false) as Label
+@onready var sidebar_equip_weapon: Label = find_child("EquipWeapon", true, false) as Label
+@onready var sidebar_equip_armor: Label = find_child("EquipArmor", true, false) as Label
+@onready var sidebar_equip_acc: Label = find_child("EquipAccessory", true, false) as Label
+@onready var sidebar_open_sheet_btn: Button = find_child("OpenSheetBtn", true, false) as Button
+@onready var sidebar_shard_label: Label = find_child("SpellUpgradeShardCount", true, false) as Label
+@onready var sidebar_upgrade_moon_btn: Button = _get_spell_btn("SpellItem_Moon")
+@onready var sidebar_upgrade_ember_btn: Button = _get_spell_btn("SpellItem_Ember")
+@onready var sidebar_upgrade_frost_btn: Button = _get_spell_btn("SpellItem_Frost")
+@onready var sidebar_spell_moon_lbl: Label = _get_spell_lbl("SpellItem_Moon")
+@onready var sidebar_spell_ember_lbl: Label = _get_spell_lbl("SpellItem_Ember")
+@onready var sidebar_spell_frost_lbl: Label = _get_spell_lbl("SpellItem_Frost")
 
 @onready var sidebar_quest_title: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/QuestsPanel/SidebarQuestTitle") as Label
 @onready var sidebar_quest_status: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/QuestsPanel/SidebarQuestStatus") as Label
@@ -107,8 +117,12 @@ signal victory_dismissed()
 @onready var sidebar_fullscreen_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SidebarFullscreenBtn") as Button
 @onready var sidebar_save_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SystemBtnsHBox/SidebarSaveBtn") as Button
 @onready var sidebar_quit_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SystemBtnsHBox/SidebarQuitBtn") as Button
+@onready var sidebar_hybrid_controls_btn: Button = find_child("SidebarHybridControlsBtn", true, false) as Button
+@onready var sidebar_day_night_btn: Button = find_child("SidebarDayNightBtn", true, false) as Button
+@onready var time_btn: Button = get_node_or_null("HUD/TimePanel/TimeBtn") as Button
 
 var _current_sidebar_tab: int = 0
+var _was_touch_controls_visible: bool = false
 
 @onready var zone_label: Label = $HUD/ZoneLabel
 @onready var zone_banner: Control = $ZoneBanner
@@ -124,6 +138,18 @@ var _ui_close_grace_cooldown: float = 0.0
 var _warning_timer: float = 0.0
 var _announcement_timer: float = 0.0
 var _zone_banner_timer: float = 0.0
+var _connected_spellbook: SpellbookComponent = null
+
+
+func _apply_safe_insets() -> void:
+	var top_left_bars: Control = get_node_or_null("HUD/TopLeftBars") as Control
+	if top_left_bars:
+		top_left_bars.offset_left = 24.0
+		top_left_bars.offset_right = 280.0
+
+	var sidebar_node: Control = get_node_or_null("Sidebar") as Control
+	if sidebar_node:
+		sidebar_node.offset_left = -440.0
 
 func _ready() -> void:
 	if character_sheet_ui == null:
@@ -170,11 +196,30 @@ func _ready() -> void:
 		fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
 	if victory_continue_btn:
 		victory_continue_btn.pressed.connect(_on_victory_continue_pressed)
+	add_to_group("game_ui")
+	_apply_safe_insets()
+	get_viewport().size_changed.connect(_apply_safe_insets)
 
 	# Nạp cấu hình cài đặt và cập nhật UI
 	# Kết nối các nút trong Sidebar
+	# Nạp cài đặt trước để kiểm tra trạng thái phím ảo Hybrid
+	SettingsManager.load_settings()
+
+	# Thiết lập hiển thị điều khiển theo nền tảng:
+	var is_mobile := OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios") or OS.has_feature("web_android") or OS.has_feature("web_ios")
+	var initial_touch_visible: bool = is_mobile or SettingsManager.hybrid_controls_enabled
+	set_touch_controls_visible(initial_touch_visible)
+
 	if sidebar_toggle_btn:
 		sidebar_toggle_btn.pressed.connect(toggle_sidebar)
+		sidebar_toggle_btn.visible = not initial_touch_visible
+	if settings_gear_btn:
+		settings_gear_btn.pressed.connect(toggle_sidebar)
+	if sidebar_hybrid_controls_btn:
+		sidebar_hybrid_controls_btn.pressed.connect(toggle_touch_controls)
+
+	if touch_controls and touch_controls.has_signal("menu_pressed"):
+		touch_controls.menu_pressed.connect(toggle_sidebar)
 	if sidebar_close_btn:
 		sidebar_close_btn.pressed.connect(close_sidebar)
 	if tab_btn_stats:
@@ -187,6 +232,12 @@ func _ready() -> void:
 		tab_btn_settings.pressed.connect(func(): switch_sidebar_tab(3))
 	if sidebar_open_sheet_btn:
 		sidebar_open_sheet_btn.pressed.connect(open_character_sheet)
+	if sidebar_upgrade_moon_btn:
+		sidebar_upgrade_moon_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("moon_bolt"))
+	if sidebar_upgrade_ember_btn:
+		sidebar_upgrade_ember_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("ember_bloom"))
+	if sidebar_upgrade_frost_btn:
+		sidebar_upgrade_frost_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("frost_shard"))
 	if sidebar_open_journal_btn:
 		sidebar_open_journal_btn.pressed.connect(open_quest_journal)
 	if sidebar_open_inv_btn:
@@ -205,6 +256,10 @@ func _ready() -> void:
 		sidebar_save_btn.pressed.connect(_on_save_pressed)
 	if sidebar_quit_btn:
 		sidebar_quit_btn.pressed.connect(_on_quit_pressed)
+	if sidebar_day_night_btn:
+		sidebar_day_night_btn.pressed.connect(_on_toggle_day_night_pressed)
+	if time_btn:
+		time_btn.pressed.connect(_on_toggle_day_night_pressed)
 
 	switch_sidebar_tab(0)
 
@@ -212,6 +267,14 @@ func _ready() -> void:
 	_update_settings_ui()
 
 func _process(delta: float) -> void:
+	_check_connect_spellbook()
+
+	var active_sc := _get_active_scene()
+	if active_sc and coord_label:
+		var p = active_sc.get_node_or_null("Player") as Node2D
+		if p:
+			coord_label.text = "[Bìa Rừng Noctis] X: %d - Y: %d" % [int(p.global_position.x), int(p.global_position.y)]
+
 	if _notif_timer > 0.0:
 		_notif_timer -= delta
 		if _notif_timer <= 0.0 and notification_label:
@@ -239,6 +302,20 @@ func _process(delta: float) -> void:
 			zone_banner.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
+	# Phím F1: Bật / Tắt phím ảo cảm ứng (Hybrid Controls)
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F1:
+		toggle_touch_controls()
+		if get_viewport():
+			get_viewport().set_input_as_handled()
+		return
+
+	# Chạm màn hình bất kỳ khi đang mở hội thoại để xem câu tiếp theo hoặc đóng
+	if is_dialogue_open():
+		if (event is InputEventScreenTouch and event.pressed) or (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
+			advance_dialogue()
+			get_viewport().set_input_as_handled()
+			return
+
 	# Bật/tắt Sidebar bằng phím Tab hoặc M
 	if event.is_action_pressed("toggle_sidebar") or (event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_TAB or event.keycode == KEY_M)):
 		if not is_dialogue_open():
@@ -340,10 +417,11 @@ func show_dialogue(speaker: String, lines: Array[String], action: String = "none
 func _display_current_line() -> void:
 	if _current_dialogue_idx < _dialogue_lines.size():
 		dialogue_text.text = _dialogue_lines[_current_dialogue_idx]
+		var is_mobile := OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
 		if _current_dialogue_idx == _dialogue_lines.size() - 1:
-			dialogue_hint.text = "[E để đóng]"
+			dialogue_hint.text = "[Chạm / E để đóng]" if is_mobile else "[E để đóng]"
 		else:
-			dialogue_hint.text = "[E để tiếp tục]"
+			dialogue_hint.text = "[Chạm / E để tiếp tục]" if is_mobile else "[E để tiếp tục]"
 
 func advance_dialogue() -> void:
 	_current_dialogue_idx += 1
@@ -551,11 +629,11 @@ func update_quest_info(quest: QuestData) -> void:
 	if quest_progress_label:
 		match quest.current_state:
 			QuestData.State.NOT_STARTED:
-				quest_progress_label.text = "Tiến độ: Chưa nhận (Gặp Elyra)"
+				quest_progress_label.text = "Tiến độ: Chưa nhận (Gặp Eiran)"
 			QuestData.State.ACTIVE:
 				quest_progress_label.text = "Tiêu diệt sinh vật: %d/%d" % [quest.current_amount, quest.target_amount]
 			QuestData.State.READY_TO_TURN_IN:
-				quest_progress_label.text = "Tiến độ: 3/3 (Về gặp Elyra nhận thưởng!)"
+				quest_progress_label.text = "Tiến độ: 3/3 (Về gặp Eiran nhận thưởng!)"
 			QuestData.State.COMPLETED:
 				quest_progress_label.text = "Trạng thái: Hoàn thành! (Cổng Đấu trường đã mở)"
 	update_quest_journal_ui()
@@ -729,6 +807,8 @@ func _update_settings_ui() -> void:
 	if sidebar_fullscreen_btn:
 		sidebar_fullscreen_btn.text = fs_text
 
+	_update_hybrid_controls_ui()
+
 func is_sidebar_open() -> bool:
 	return sidebar != null and sidebar.visible
 
@@ -738,10 +818,15 @@ func open_sidebar(tab_idx: int = -1) -> void:
 		if tab_idx >= 0:
 			switch_sidebar_tab(tab_idx)
 		_refresh_sidebar_content()
+	if touch_controls:
+		_was_touch_controls_visible = touch_controls.visible
+		touch_controls.visible = false
 
 func close_sidebar() -> void:
 	if sidebar:
 		sidebar.visible = false
+	if touch_controls:
+		touch_controls.visible = _was_touch_controls_visible
 
 func toggle_sidebar() -> void:
 	if is_sidebar_open():
@@ -819,6 +904,17 @@ func _refresh_sidebar_content() -> void:
 			if sidebar_stat_magic:
 				sidebar_stat_magic.text = "✨ Hệ Số Phép Thuật: %.1fx" % stats.final_magic_multiplier
 
+		# Cập nhật thông tin ma pháp & nâng cấp trong Sidebar
+		var sb: SpellbookComponent = player.get_node_or_null("SpellbookComponent") as SpellbookComponent
+		var inv: InventoryComponent = player.get_node_or_null("InventoryComponent") as InventoryComponent
+		if sb and inv:
+			var shards = inv.get_item_count("mana_shard")
+			if sidebar_shard_label:
+				sidebar_shard_label.text = "💎 Tinh Thể Ma Lực hiện có: %d" % shards
+			_update_sidebar_spell_row("moon_bolt", sidebar_spell_moon_lbl, sidebar_upgrade_moon_btn, sb, shards)
+			_update_sidebar_spell_row("ember_bloom", sidebar_spell_ember_lbl, sidebar_upgrade_ember_btn, sb, shards)
+			_update_sidebar_spell_row("frost_shard", sidebar_spell_frost_lbl, sidebar_upgrade_frost_btn, sb, shards)
+
 		if player.equipment_component:
 			var eq = player.equipment_component
 			if sidebar_equip_weapon:
@@ -842,3 +938,117 @@ func _refresh_sidebar_content() -> void:
 		sidebar_quest_title.text = quest_title_label.text
 	if quest_progress_label and sidebar_quest_progress:
 		sidebar_quest_progress.text = quest_progress_label.text
+
+func _on_sidebar_upgrade_spell(spell_id: String) -> void:
+	var scene = _get_active_scene()
+	if scene == null:
+		return
+	var player = scene.get_node_or_null("Player")
+	if player:
+		var sb: SpellbookComponent = player.get_node_or_null("SpellbookComponent") as SpellbookComponent
+		var inv: InventoryComponent = player.get_node_or_null("InventoryComponent") as InventoryComponent
+		if sb and inv:
+			var res = sb.upgrade_spell(spell_id, inv, scene)
+			if res.has("message"):
+				show_notification(res["message"])
+			_refresh_sidebar_content()
+
+func _update_sidebar_spell_row(spell_id: String, lbl: Label, btn: Button, sb: SpellbookComponent, shards: int) -> void:
+	var spell = SpellDatabase.get_spell(spell_id)
+	if spell == null or lbl == null or btn == null:
+		return
+	var lvl = sb.get_spell_level(spell_id)
+	var dmg = sb.get_spell_damage(spell_id)
+	var prefix = "✦" if spell_id == "moon_bolt" else ("🔥" if spell_id == "ember_bloom" else "❄")
+	lbl.text = "%s %s (Lv %d): %.0f DMG" % [prefix, spell.display_name, lvl, dmg]
+
+	var cost = spell.get_upgrade_cost(lvl)
+	if cost <= 0 or lvl >= 3:
+		btn.text = "TỐI ĐA (MAX)"
+		btn.disabled = true
+	else:
+		btn.text = "Lên Lv %d (%d 💎)" % [lvl + 1, cost]
+		btn.disabled = (shards < cost)
+
+func _get_spell_btn(item_name: String) -> Button:
+	var item = find_child(item_name, true, false)
+	if item:
+		return item.get_node_or_null("UpgradeBtn") as Button
+	return null
+
+func _get_spell_lbl(item_name: String) -> Label:
+	var item = find_child(item_name, true, false)
+	if item:
+		return item.get_node_or_null("Label") as Label
+	return null
+
+func toggle_touch_controls() -> void:
+	var cur_vis: bool = touch_controls.visible if touch_controls else false
+	set_touch_controls_visible(not cur_vis)
+	SettingsManager.save_settings()
+	var state_str: String = "BẬT" if (touch_controls and touch_controls.visible) else "TẮT"
+	show_notification("Phím ảo cảm ứng (Hybrid): " + state_str)
+
+func set_touch_controls_visible(show: bool) -> void:
+	SettingsManager.hybrid_controls_enabled = show
+	_was_touch_controls_visible = show
+	if touch_controls:
+		touch_controls.visible = show
+		if show and touch_controls.has_method("_sync_current_spell_icon"):
+			touch_controls._sync_current_spell_icon()
+	if sidebar_toggle_btn:
+		sidebar_toggle_btn.visible = not show
+	if spell_hotbar:
+		spell_hotbar.visible = not show
+	_update_hybrid_controls_ui()
+
+func _update_hybrid_controls_ui() -> void:
+	if sidebar_hybrid_controls_btn:
+		var is_on: bool = touch_controls.visible if touch_controls else false
+		sidebar_hybrid_controls_btn.text = "BẬT" if is_on else "TẮT"
+
+func _check_connect_spellbook() -> void:
+	if _connected_spellbook and is_instance_valid(_connected_spellbook):
+		return
+	var scene := _get_active_scene()
+	if scene:
+		var p = scene.get_node_or_null("Player") as Player
+		if p and p.spellbook_component:
+			_connected_spellbook = p.spellbook_component
+			if not _connected_spellbook.spell_selected.is_connected(_on_player_spell_selected):
+				_connected_spellbook.spell_selected.connect(_on_player_spell_selected)
+
+func _on_player_spell_selected(spell_id: String) -> void:
+	var spell := SpellDatabase.get_spell(spell_id)
+	if spell:
+		var prefix := "🌙"
+		var key_num := "1"
+		if spell_id == "ember_bloom":
+			prefix = "🔥"
+			key_num = "2"
+		elif spell_id == "frost_shard":
+			prefix = "❄️"
+			key_num = "3"
+		show_notification("%s Đã đổi ma pháp: %s (Phím %s / Cuộn chuột)" % [prefix, spell.display_name, key_num])
+
+	if touch_controls and touch_controls.has_method("set_selected_spell"):
+		touch_controls.set_selected_spell(spell_id)
+
+func _on_toggle_day_night_pressed() -> void:
+	var dnc = get_tree().get_first_node_in_group("day_night_cycle")
+	if dnc:
+		dnc.toggle_time_phase()
+		show_notification("%s Đã đổi thời khắc: %s (%s)" % [dnc.get_phase_icon(), dnc.get_phase_name(), dnc.get_time_string()])
+
+func update_time_display(time_str: String, phase: String, icon: String) -> void:
+	var p_name := phase
+	match phase:
+		"dawn": p_name = "Bình Minh"
+		"day":  p_name = "Ngày"
+		"dusk": p_name = "Hoàng Hôn"
+		_:      p_name = "Đêm"
+	var text_fmt := "%s %s %s" % [icon, time_str, p_name]
+	if time_btn:
+		time_btn.text = text_fmt
+	if sidebar_day_night_btn:
+		sidebar_day_night_btn.text = "%s Đổi Thời Gian (%s)" % [icon, text_fmt]

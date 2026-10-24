@@ -75,3 +75,13 @@ func consume_mana(amount: float) -> bool:
 
 func is_alive() -> bool:
 	return current_health > 0.0
+
+func heal(amount: float) -> void:
+	if current_health > 0.0 and amount > 0.0:
+		current_health = min(max_health, current_health + amount)
+		emit_signal("health_changed", current_health, max_health)
+
+func restore_mana(amount: float) -> void:
+	if amount > 0.0:
+		current_mana = min(max_mana, current_mana + amount)
+		emit_signal("mana_changed", current_mana, max_mana)

@@ -53,6 +53,24 @@ func select_spell_by_index(idx: int) -> bool:
 func select_spell_by_hotkey(hotkey_num: int) -> bool:
 	return select_spell_by_index(hotkey_num - 1)
 
+func cycle_next_spell() -> bool:
+	if known_spells.is_empty():
+		return false
+	var cur_idx: int = known_spells.find(selected_spell_id)
+	if cur_idx == -1:
+		cur_idx = 0
+	var next_idx: int = (cur_idx + 1) % known_spells.size()
+	return select_spell(known_spells[next_idx])
+
+func cycle_prev_spell() -> bool:
+	if known_spells.is_empty():
+		return false
+	var cur_idx: int = known_spells.find(selected_spell_id)
+	if cur_idx == -1:
+		cur_idx = 0
+	var prev_idx: int = (cur_idx - 1 + known_spells.size()) % known_spells.size()
+	return select_spell(known_spells[prev_idx])
+
 func get_selected_spell() -> SpellDefinition:
 	return SpellDatabase.get_spell(selected_spell_id)
 

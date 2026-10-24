@@ -49,7 +49,7 @@ func register_enemy_kill(enemy: Node) -> void:
 	if current_quest.current_amount >= current_quest.target_amount:
 		current_quest.current_state = QuestData.State.READY_TO_TURN_IN
 		emit_signal("quest_ready_to_turn_in", current_quest)
-		emit_signal("notification_posted", "Nhiệm vụ hoàn tất! Hãy về gặp Elyra để nhận thưởng.")
+		emit_signal("notification_posted", "Nhiệm vụ hoàn tất! Hãy về gặp Eiran để nhận thưởng.")
 
 func complete_quest(player_health: HealthComponent = null) -> bool:
 	if current_quest == null or current_quest.current_state != QuestData.State.READY_TO_TURN_IN:

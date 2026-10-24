@@ -78,6 +78,23 @@ func setup_signals() -> void:
 	if arena_trigger and not arena_trigger.body_entered.is_connected(_on_arena_trigger_entered):
 		arena_trigger.body_entered.connect(_on_arena_trigger_entered)
 
+	# Kết nối Day/Night Cycle với GameUI
+	var dnc = get_node_or_null("DayNightCycle")
+	if dnc and game_ui:
+		dnc.time_updated.connect(func(_h, time_str, phase, icon):
+			if game_ui and is_instance_valid(game_ui) and game_ui.has_method("update_time_display"):
+				game_ui.update_time_display(time_str, phase, icon)
+		)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_L:
+			var dnc = get_node_or_null("DayNightCycle")
+			if dnc:
+				dnc.toggle_time_phase()
+				if game_ui:
+					game_ui.show_notification("%s Đã đổi thời khắc: %s (%s)" % [dnc.get_phase_icon(), dnc.get_phase_name(), dnc.get_time_string()])
+
 func setup_ui() -> void:
 	super.setup_ui()
 	# Đồng bộ trạng thái mở cổng theo nhiệm vụ

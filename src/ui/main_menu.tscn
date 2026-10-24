@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://dm9k4v2p1y5q"]
+[gd_scene load_steps=2 format=3 uid="uid://dnak4v2p1y5q"]
 
 [ext_resource type="Script" path="res://src/ui/main_menu.gd" id="1_menu"]
 
@@ -148,8 +148,8 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 12
 text = "Đã có bản lưu tiến trình cũ. Bắt đầu chơi mới sẽ ghi đè bản lưu này. Bạn có chắc chắn không?"
-autowrap_mode = 2
 horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="HBox" type="HBoxContainer" parent="ConfirmDialog/Panel"]
 layout_mode = 1

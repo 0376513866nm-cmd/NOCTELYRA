@@ -111,7 +111,7 @@ text = "[Chưa nhận]"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.75, 0.75, 0.85, 1)
 theme_override_font_sizes/font_size = 13
-text = "Người giao: Elyra | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
+text = "Người giao: Eiran | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
 
 [node name="DescLabel" type="Label" parent="Panel/ScrollContainer/QuestList/MainQuestCard/VBox"]
 layout_mode = 2

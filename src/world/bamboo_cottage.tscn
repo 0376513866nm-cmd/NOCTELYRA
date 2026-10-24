@@ -1,0 +1,56 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/world/moonlight_cottage.gd" id="1"]
+[ext_resource type="Script" path="res://src/world/bamboo_prop.gd" id="2"]
+[ext_resource type="Texture2D" path="res://src/world/soft_lantern_light.tres" id="3"]
+
+[sub_resource type="RectangleShape2D" id="Sanctuary"]
+size = Vector2(460, 200)
+
+[sub_resource type="Gradient" id="SmokeGradient"]
+colors = PackedColorArray(0.8, 0.84, 0.73, 0.3, 0.8, 0.84, 0.73, 0)
+
+[node name="MoonlightCottage" type="Node2D"]
+script = ExtResource("1")
+
+[node name="CottageArt" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(0, 9)
+script = ExtResource("2")
+kind = 0
+
+[node name="WarmWindowLight" type="PointLight2D" parent="."]
+position = Vector2(-73, -82)
+texture = ExtResource("3")
+texture_scale = 3.4
+color = Color(1, 0.8, 0.45, 1)
+energy = 0.1
+
+[node name="PorchLanternLight" type="PointLight2D" parent="."]
+position = Vector2(113, -108)
+texture = ExtResource("3")
+texture_scale = 3.0
+color = Color(1, 0.8, 0.45, 1)
+energy = 0.1
+
+[node name="SmokeParticles" type="CPUParticles2D" parent="."]
+position = Vector2(105, -219)
+amount = 9
+lifetime = 4.0
+preprocess = 3.0
+direction = Vector2(0.25, -1)
+spread = 15.0
+gravity = Vector2(4, -5)
+initial_velocity_min = 8.0
+initial_velocity_max = 13.0
+scale_amount_min = 2.5
+scale_amount_max = 6.0
+color_ramp = SubResource("SmokeGradient")
+
+[node name="SanctuaryArea" type="Area2D" parent="."]
+position = Vector2(0, -70)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SanctuaryArea"]
+shape = SubResource("Sanctuary")

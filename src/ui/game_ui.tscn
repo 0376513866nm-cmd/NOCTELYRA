@@ -1,10 +1,55 @@
-[gd_scene load_steps=5 format=3 uid="uid://d3m8k1y9p2q5"]
+[gd_scene load_steps=12 format=3 uid="uid://d3m8k1y9p2q5"]
 
 [ext_resource type="Script" path="res://src/ui/game_ui.gd" id="1_ui"]
 [ext_resource type="PackedScene" uid="uid://c7m9x4v1q5p2" path="res://src/inventory/inventory_ui.tscn" id="2_inv_ui"]
 [ext_resource type="PackedScene" uid="uid://c6j2y5m4k8p1" path="res://src/ui/spell_hotbar.tscn" id="3_spell_hotbar"]
 [ext_resource type="PackedScene" uid="uid://b7q5k2m8p4x9" path="res://src/ui/quest_journal_ui.tscn" id="4_journal_ui"]
 [ext_resource type="PackedScene" uid="uid://c8k1sheet4y8z" path="res://src/ui/character_sheet_ui.tscn" id="5_sheet_ui"]
+[ext_resource type="PackedScene" uid="uid://c8m9touch3x7p4" path="res://src/ui/touch_controls.tscn" id="6_touch_ui"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/player/hero_avatar.png" id="7_avatar"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_capsule"]
+bg_color = Color(0.10, 0.14, 0.20, 0.90)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.68, 0.28, 0.95)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_fill"]
+bg_color = Color(0.95, 0.35, 0.18, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_bg"]
+bg_color = Color(0.25, 0.08, 0.05, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mp_fill"]
+bg_color = Color(0.18, 0.70, 0.95, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mp_bg"]
+bg_color = Color(0.05, 0.18, 0.28, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="GameUI" type="CanvasLayer"]
 script = ExtResource("1_ui")
@@ -18,87 +63,158 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TopLeftBars" type="VBoxContainer" parent="HUD"]
+[node name="PlayerCapsule" type="Panel" parent="HUD"]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 20.0
-offset_right = 280.0
-offset_bottom = 80.0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 370.0
+offset_bottom = 104.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_capsule")
 
-[node name="HPBar" type="ProgressBar" parent="HUD/TopLeftBars"]
-custom_minimum_size = Vector2(0, 24)
+[node name="AvatarFrame" type="TextureRect" parent="HUD/PlayerCapsule"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("7_avatar")
+expand_mode = 1
+
+[node name="LevelPill" type="Panel" parent="HUD/PlayerCapsule"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 66.0
+offset_right = 66.0
+offset_bottom = 84.0
+
+[node name="LevelLabel" type="Label" parent="HUD/PlayerCapsule/LevelPill"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
+text = "Lv. 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NameLabel" type="Label" parent="HUD/PlayerCapsule"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 6.0
+offset_right = 230.0
+offset_bottom = 26.0
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 0.92, 0.55, 1)
+text = "Lữ Khách (Hero)"
+
+[node name="BarsVBox" type="VBoxContainer" parent="HUD/PlayerCapsule"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 28.0
+offset_right = 340.0
+offset_bottom = 66.0
+theme_override_constants/separation = 3
+
+[node name="HPBar" type="ProgressBar" parent="HUD/PlayerCapsule/BarsVBox"]
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_hp_fill")
+theme_override_styles/background = SubResource("StyleBoxFlat_hp_bg")
 max_value = 100.0
 value = 100.0
 show_percentage = false
 
-[node name="HPLabel" type="Label" parent="HUD/TopLeftBars/HPBar"]
+[node name="HPLabel" type="Label" parent="HUD/PlayerCapsule/BarsVBox/HPBar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "HP: 100/100"
+theme_override_font_sizes/font_size = 10
+text = "HP: 100 / 100"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MPBar" type="ProgressBar" parent="HUD/TopLeftBars"]
-custom_minimum_size = Vector2(0, 20)
+[node name="MPBar" type="ProgressBar" parent="HUD/PlayerCapsule/BarsVBox"]
+custom_minimum_size = Vector2(0, 14)
 layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_mp_fill")
+theme_override_styles/background = SubResource("StyleBoxFlat_mp_bg")
 max_value = 60.0
 value = 60.0
 show_percentage = false
 
-[node name="MPLabel" type="Label" parent="HUD/TopLeftBars/MPBar"]
+[node name="MPLabel" type="Label" parent="HUD/PlayerCapsule/BarsVBox/MPBar"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "MP: 60/60"
+theme_override_font_sizes/font_size = 10
+text = "MP: 60 / 60"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="BottomRow" type="HBoxContainer" parent="HUD/PlayerCapsule"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 68.0
+offset_right = 340.0
+offset_bottom = 84.0
+theme_override_constants/separation = 12
+
+[node name="CoordLabel" type="Label" parent="HUD/PlayerCapsule/BottomRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.75, 0.85, 0.95, 0.85)
+text = "[Bìa Rừng Noctis] X: 180 - Y: 630"
+
+[node name="GoldLabel" type="Label" parent="HUD/PlayerCapsule/BottomRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+text = "💰 0 G"
 
 [node name="StateLabel" type="Label" parent="HUD"]
+visible = false
 layout_mode = 0
-offset_left = 24.0
-offset_top = 85.0
-offset_right = 240.0
-offset_bottom = 110.0
+offset_left = 18.0
+offset_top = 108.0
+offset_right = 180.0
+offset_bottom = 128.0
 text = "State: IDLE"
 
-[node name="SidebarToggleBtn" type="Button" parent="HUD"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -170.0
-offset_top = 20.0
-offset_right = -24.0
-offset_bottom = 54.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 14
-text = "☰ MENU (Tab)"
-
-[node name="GoldPanel" type="Panel" parent="HUD"]
+[node name="SettingsGearBtn" type="Button" parent="HUD"]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 115.0
-offset_right = 160.0
-offset_bottom = 145.0
+offset_left = 378.0
+offset_top = 18.0
+offset_right = 418.0
+offset_bottom = 58.0
+theme_override_font_sizes/font_size = 18
+text = "⚙️"
 
-[node name="GoldLabel" type="Label" parent="HUD/GoldPanel"]
+[node name="TimePanel" type="Panel" parent="HUD"]
+layout_mode = 0
+offset_left = 378.0
+offset_top = 64.0
+offset_right = 495.0
+offset_bottom = 98.0
+
+[node name="TimeBtn" type="Button" parent="HUD/TimePanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Vàng: 0 G"
-horizontal_alignment = 1
-vertical_alignment = 1
+theme_override_font_sizes/font_size = 11
+text = "☀️ 11:30 Ngày"
+flat = true
+
+[node name="SidebarToggleBtn" type="Button" parent="HUD"]
+visible = false
+layout_mode = 0
+offset_left = 378.0
+offset_top = 18.0
+offset_right = 418.0
+offset_bottom = 58.0
 
 [node name="QuestPanel" type="Panel" parent="HUD"]
 visible = false
@@ -147,7 +263,7 @@ text = "Nhiệm vụ: Ánh Sáng Bị Nuốt Chửng"
 
 [node name="QuestProgress" type="Label" parent="HUD/QuestPanel/VBox"]
 layout_mode = 2
-text = "Tiến độ: Chưa nhận (Gặp Elyra)"
+text = "Tiến độ: Chưa nhận (Gặp Eiran)"
 
 [node name="BossBarPanel" type="Control" parent="HUD"]
 visible = false
@@ -279,10 +395,11 @@ grow_vertical = 0
 text = "Controls:
 - A / D: Di chuyển | Space: Nhảy / Nhảy đôi | Shift: Lướt
 - J: Tấn công | K: Dùng phép (MP) | 1, 2, 3: Chọn phép | U: Nâng cấp
-- E: Tương tác với NPC (Elyra)
+- E: Tương tác với NPC (Eiran)
 - I: Mở Túi đồ & Trang bị | Esc: Tạm dừng"
 
 [node name="SpellHotbar" parent="HUD" instance=ExtResource("3_spell_hotbar")]
+visible = false
 layout_mode = 1
 
 [node name="DialogueBox" type="Control" parent="."]
@@ -316,7 +433,7 @@ offset_left = 24.0
 offset_top = 15.0
 offset_right = 300.0
 offset_bottom = 40.0
-text = "Elyra"
+text = "Eiran"
 
 [node name="DialogueText" type="Label" parent="DialogueBox/Panel"]
 layout_mode = 0
@@ -733,6 +850,10 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Đóng Cài Đặt (Áp dụng)"
 
+[node name="TouchControls" parent="HUD" instance=ExtResource("6_touch_ui")]
+visible = false
+layout_mode = 1
+
 [node name="InventoryUI" parent="." instance=ExtResource("2_inv_ui")]
 visible = false
 
@@ -880,91 +1001,160 @@ toggle_mode = true
 text = "⚙️ Cài Đặt"
 
 [node name="ContentContainer" type="Control" parent="Sidebar/MainVBox"]
+clip_contents = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="StatsPanel" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer"]
+[node name="StatsPanel" type="ScrollContainer" parent="Sidebar/MainVBox/ContentContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 7
 
-[node name="RaceLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="RaceLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
 text = "Chủng tộc: Nhân Loại (Human)"
 
-[node name="LevelExpLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="LevelExpLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "Cấp độ: Lv 1 — Tiến độ EXP"
 
-[node name="ExpBar" type="ProgressBar" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="ExpBar" type="ProgressBar" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
 max_value = 60.0
 value = 0.0
 
-[node name="ExpLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="ExpLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 text = "0 / 60 EXP (0%)"
 horizontal_alignment = 2
 
-[node name="HSeparator1" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="HSeparator1" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 
-[node name="StatHP" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="StatHP" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "❤️ Sinh Lực (HP): 100 / 100"
 
-[node name="StatMP" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="StatMP" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "💧 Nội Khí (MP): 60 / 60"
 
-[node name="StatATK" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="StatATK" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "⚔️ Sức Tấn Công (ATK): 25"
 
-[node name="StatRegen" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="StatRegen" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "🌀 Hồi Phục: 5.0 MP/s"
 
-[node name="StatSpeed" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="StatSpeed" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "⚡ Tốc Độ Di Chuyển: 270 px/s"
 
-[node name="StatMagic" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="StatMagic" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "✨ Hệ Số Phép Thuật: 1.0x"
 
-[node name="HSeparator2" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="HSeparator2" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 
-[node name="EquipTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="EquipTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.6, 1)
 text = "🛡️ TRANG BỊ HIỆN TẠI:"
 
-[node name="EquipWeapon" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="EquipWeapon" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "• Vũ khí: Chưa trang bị"
 
-[node name="EquipArmor" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="EquipArmor" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "• Giáp: Chưa trang bị"
 
-[node name="EquipAccessory" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="EquipAccessory" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 layout_mode = 2
 text = "• Phụ kiện: Chưa trang bị"
 
-[node name="OpenSheetBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
+[node name="OpenSheetBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
 custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 text = "Mở Bảng Nhân Vật Đầy Đủ (C)"
 
+[node name="HSeparator3" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
+layout_mode = 2
+
+[node name="SpellUpgradeTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.75, 1, 1)
+text = "🔮 MA PHÁP & NÂNG CẤP:"
+
+[node name="SpellUpgradeShardCount" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "💎 Tinh Thể Ma Lực hiện có: 0"
+
+[node name="SpellUpgradeContainer" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SpellItem_Moon" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer/SpellItem_Moon"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "✦ Nguyệt Quang Đạn (Lv 1)"
+
+[node name="UpgradeBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer/SpellItem_Moon"]
+custom_minimum_size = Vector2(130, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Lên Lv 2 (3 💎)"
+
+[node name="SpellItem_Ember" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer/SpellItem_Ember"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "🔥 Tinh Hỏa Bùng Nổ (Lv 1)"
+
+[node name="UpgradeBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer/SpellItem_Ember"]
+custom_minimum_size = Vector2(130, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Lên Lv 2 (3 💎)"
+
+[node name="SpellItem_Frost" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer/SpellItem_Frost"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "❄ Hàn Tinh Tiễn (Lv 1)"
+
+[node name="UpgradeBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/StatsPanel/VBox/SpellUpgradeContainer/SpellItem_Frost"]
+custom_minimum_size = Vector2(130, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Lên Lv 2 (3 💎)"
 [node name="QuestsPanel" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer"]
 visible = false
 layout_mode = 1
@@ -993,12 +1183,12 @@ text = "Trạng thái: Chưa nhận nhiệm vụ"
 [node name="SidebarQuestDesc" type="Label" parent="Sidebar/MainVBox/ContentContainer/QuestsPanel"]
 layout_mode = 2
 autowrap_mode = 2
-text = "Hướng dẫn: Tiến về phía trước gặp Trưởng lão Elyra cạnh Cổ Tinh Thạch để nhận nhiệm vụ đầu tiên và bảo vệ khu rừng."
+text = "Hướng dẫn: Tiến về phía trước gặp Người Giữ Đèn Eiran để nhận nhiệm vụ đầu tiên và bảo vệ khu rừng."
 
 [node name="SidebarQuestProgress" type="Label" parent="Sidebar/MainVBox/ContentContainer/QuestsPanel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 1, 0.7, 1)
-text = "Tiến độ: Gặp Elyra (Nhấn E)"
+text = "Tiến độ: Gặp Eiran (Nhấn E)"
 
 [node name="HSeparator" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/QuestsPanel"]
 layout_mode = 2
@@ -1061,11 +1251,28 @@ text = "• A / D hoặc ← / → : Di chuyển trái / phải
 • Shift : Lướt nhanh né đòn (Dash)
 • J : Đánh thường cận chiến (Slash)
 • K : Dùng ma pháp (Tiêu hao MP)
-• 1, 2, 3 : Chuyển đổi loại ma pháp
+• 1, 2, 3 hoặc Cuộn Chuột : Chuyển đổi loại ma pháp
 • U : Nâng cấp kỹ năng đang chọn
-• E : Tương tác với NPC (Elyra) / Cổng
+• E : Tương tác với NPC (Eiran) / Cổng
+• F1 : Bật / Tắt phím ảo cảm ứng (Hybrid Controls)
 • Tab / M : Ẩn / Hiện Bảng Điều Khiển
 • Esc : Tạm dừng game"
+
+[node name="HybridControlsHBox" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HybridTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/HybridControlsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.4, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "📱 Phím Ảo Cảm Ứng (F1):"
+
+[node name="SidebarHybridControlsBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/HybridControlsHBox"]
+custom_minimum_size = Vector2(105, 32)
+layout_mode = 2
+text = "TẮT"
 
 [node name="HSeparator" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
 layout_mode = 2
@@ -1115,6 +1322,18 @@ layout_mode = 2
 text = "Toàn Màn Hình: TẮT"
 
 [node name="HSeparator3" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+layout_mode = 2
+
+[node name="DayNightSectionLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+layout_mode = 2
+text = "Thời Khắc & Ánh Sáng Thế Giới"
+
+[node name="SidebarDayNightBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "🌙 Chuyển Thời Gian (Phím L)"
+
+[node name="HSeparator4" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
 layout_mode = 2
 
 [node name="SystemBtnsHBox" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]

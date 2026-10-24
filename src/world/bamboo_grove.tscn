@@ -1,0 +1,554 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://src/world/bamboo_forest_layer.gd" id="1"]
+[ext_resource type="Script" path="res://src/world/bamboo_prop.gd" id="2"]
+[ext_resource type="Script" path="res://src/world/distant_birds.gd" id="3"]
+
+[sub_resource type="Gradient" id="DayGradient"]
+offsets = PackedFloat32Array(0, 0.4, 0.7, 1)
+colors = PackedColorArray(0.56, 0.72, 0.64, 1, 0.75, 0.83, 0.66, 1, 0.91, 0.88, 0.68, 1, 0.65, 0.76, 0.57, 1)
+
+[sub_resource type="GradientTexture2D" id="DaySky"]
+gradient = SubResource("DayGradient")
+width = 32
+height = 512
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="NightGradient"]
+colors = PackedColorArray(0.08, 0.17, 0.2, 1, 0.23, 0.35, 0.34, 1)
+
+[sub_resource type="GradientTexture2D" id="NightSky"]
+gradient = SubResource("NightGradient")
+width = 32
+height = 512
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="FireflyGradient"]
+colors = PackedColorArray(1, 0.94, 0.62, 0, 1, 0.94, 0.62, 0.75, 1, 0.94, 0.62, 0)
+
+[node name="BambooGrove" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+layer = -1
+
+[node name="LayerSky" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.02, 0.02)
+
+[node name="SkyNightTex" type="TextureRect" parent="ParallaxBackground/LayerSky"]
+offset_left = -1800.0
+offset_top = -700.0
+offset_right = 11000.0
+offset_bottom = 1600.0
+texture = SubResource("NightSky")
+mouse_filter = 2
+
+[node name="SkyDayTex" type="TextureRect" parent="ParallaxBackground/LayerSky"]
+offset_left = -1800.0
+offset_top = -700.0
+offset_right = 11000.0
+offset_bottom = 1600.0
+texture = SubResource("DaySky")
+mouse_filter = 2
+
+[node name="Sun" type="Node2D" parent="ParallaxBackground/LayerSky"]
+[node name="Disc" type="Polygon2D" parent="ParallaxBackground/LayerSky/Sun"]
+color = Color(1, 0.96, 0.73, 0.65)
+polygon = PackedVector2Array(-24, 0, -17, -17, 0, -24, 17, -17, 24, 0, 17, 17, 0, 24, -17, 17)
+
+[node name="Starfield" type="CPUParticles2D" parent="ParallaxBackground/LayerSky"]
+position = Vector2(1200, 50)
+amount = 32
+lifetime = 5.0
+preprocess = 5.0
+emission_shape = 3
+emission_rect_extents = Vector2(1800, 350)
+gravity = Vector2(0, 0)
+color = Color(0.9, 0.94, 0.72, 0.55)
+scale_amount_min = 0.5
+scale_amount_max = 1.5
+
+[node name="LayerMoon" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.03, 0.03)
+[node name="Moon" type="Node2D" parent="ParallaxBackground/LayerMoon"]
+[node name="Disc" type="Polygon2D" parent="ParallaxBackground/LayerMoon/Moon"]
+color = Color(0.83, 0.92, 0.81, 0.8)
+polygon = PackedVector2Array(-18, 0, -13, -13, 0, -18, 13, -13, 18, 0, 13, 13, 0, 18, -13, 13)
+
+[node name="LayerMountains" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.12, 0.10)
+[node name="MountainsTex" type="Node2D" parent="ParallaxBackground/LayerMountains"]
+script = ExtResource("1")
+spacing = 48.0
+stalk_width = 8.0
+base_y = 560.0
+tint = Color(0.52, 0.65, 0.51, 1)
+leaf_tint = Color(0.51, 0.65, 0.50, 1)
+
+[node name="LayerForestFar" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.24, 0.12)
+
+[node name="ForestHaze" type="ColorRect" parent="ParallaxBackground/LayerForestFar"]
+offset_left = -1800.0
+offset_top = -700.0
+offset_right = 11000.0
+offset_bottom = 1600.0
+color = Color(0.7, 0.8, 0.58, 0.08)
+mouse_filter = 2
+
+[node name="LayerHills" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.32, 0.20)
+[node name="HillsTex" type="Node2D" parent="ParallaxBackground/LayerHills"]
+script = ExtResource("1")
+random_seed = 1931
+spacing = 77.0
+stalk_width = 13.0
+base_y = 625.0
+tint = Color(0.35, 0.51, 0.36, 1)
+leaf_tint = Color(0.34, 0.51, 0.35, 1)
+
+[node name="LayerForestMid" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.62, 0.35)
+[node name="BambooNear" type="Node2D" parent="ParallaxBackground/LayerForestMid"]
+script = ExtResource("1")
+random_seed = 2306
+spacing = 147.0
+stalk_width = 19.0
+base_y = 675.0
+tint = Color(0.22, 0.37, 0.26, 1)
+leaf_tint = Color(0.23, 0.39, 0.25, 1)
+
+[node name="LayerCanopyForeground" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.8, 0.4)
+[node name="Canopy" type="Node2D" parent="ParallaxBackground/LayerCanopyForeground"]
+script = ExtResource("1")
+layer_kind = 2
+leaf_tint = Color(0.15, 0.29, 0.2, 1)
+
+[node name="LayerClouds" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.07, 0.03)
+
+[node name="LayerBirds" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.08, 0.05)
+[node name="DistantBirds" type="Node2D" parent="ParallaxBackground/LayerBirds"]
+script = ExtResource("3")
+
+[node name="ForestFloor" type="Node2D" parent="."]
+z_index = -12
+script = ExtResource("1")
+layer_kind = 1
+
+[node name="FallingBambooLeaves" type="Node2D" parent="."]
+z_index = 2
+script = ExtResource("1")
+layer_kind = 3
+
+[node name="Fireflies" type="CPUParticles2D" parent="."]
+position = Vector2(3000, 450)
+amount = 44
+lifetime = 7.0
+preprocess = 4.0
+emission_shape = 3
+emission_rect_extents = Vector2(3300, 170)
+direction = Vector2(0, -1)
+spread = 90.0
+gravity = Vector2(0, -2)
+initial_velocity_min = 3.0
+initial_velocity_max = 8.0
+scale_amount_min = 0.8
+scale_amount_max = 1.8
+color_ramp = SubResource("FireflyGradient")
+
+[node name="HomeGardenFence" type="Node2D" parent="."]
+z_index = -3
+position = Vector2(350, 626)
+script = ExtResource("2")
+kind = 1
+variant = 0
+fence_width = 620.0
+
+[node name="HomeTeaBench" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(447, 632)
+scale = Vector2(0.85, 0.85)
+script = ExtResource("2")
+kind = 5
+variant = 0
+
+[node name="HomeStoneLantern" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(695, 632)
+scale = Vector2(0.78, 0.78)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="HomeBambooCluster" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(30, 632)
+scale = Vector2(1.1, 1.1)
+script = ExtResource("2")
+kind = 6
+variant = 0
+
+[node name="GardenRocks" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(756, 632)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="GardenFern" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(711, 632)
+scale = Vector2(0.8, 0.8)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="TrailSign" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(786, 632)
+scale = Vector2(0.8, 0.8)
+script = ExtResource("2")
+kind = 7
+variant = 0
+
+[node name="StoneLantern1070" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1070, 612)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="StoneLantern1770" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1770, 592)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="StoneLantern2260" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(2260, 620)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="StoneLantern2910" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(2910, 600)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="StoneLantern3570" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(3570, 624)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="StoneLantern4040" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(4040, 624)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="StoneLantern4650" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(4650, 606)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="StoneLantern5610" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(5610, 620)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="StoneLantern6090" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(6090, 620)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 2
+variant = 0
+
+[node name="MossRock980" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(980, 612)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern980" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(942, 612)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock1395" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1395, 612)
+scale = Vector2(0.55, 0.55)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern1395" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1357, 612)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock1630" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1630, 592)
+scale = Vector2(0.8, 0.8)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern1630" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1592, 592)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock2030" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(2030, 620)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern2030" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1992, 620)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock2760" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(2760, 600)
+scale = Vector2(0.8, 0.8)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern2760" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(2722, 600)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock3240" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(3240, 600)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern3240" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(3202, 600)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock3490" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(3490, 624)
+scale = Vector2(0.65, 0.65)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern3490" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(3452, 624)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock3980" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(3980, 624)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern3980" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(3942, 624)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock4450" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(4450, 606)
+scale = Vector2(0.8, 0.8)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern4450" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(4412, 606)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock4760" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(4760, 606)
+scale = Vector2(0.55, 0.55)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern4760" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(4722, 606)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock5150" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(5150, 590)
+scale = Vector2(0.6, 0.6)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern5150" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(5112, 590)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock5740" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(5740, 620)
+scale = Vector2(0.7, 0.7)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern5740" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(5702, 620)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="MossRock6160" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(6160, 620)
+scale = Vector2(0.8, 0.8)
+script = ExtResource("2")
+kind = 3
+variant = 0
+
+[node name="Fern6160" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(6122, 620)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 4
+variant = 0
+
+[node name="BambooCluster1170" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1170, 612)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 6
+variant = 1
+
+[node name="BambooCluster1840" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1840, 592)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 6
+variant = 6
+
+[node name="BambooCluster2640" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(2640, 600)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 6
+variant = 1
+
+[node name="BambooCluster3365" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(3365, 624)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 6
+variant = 5
+
+[node name="BambooCluster4510" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(4510, 606)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 6
+variant = 2
+
+[node name="BambooCluster6000" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(6000, 620)
+scale = Vector2(0.9, 0.9)
+script = ExtResource("2")
+kind = 6
+variant = 1
+
+[node name="RestBench" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(1900, 592)
+scale = Vector2(1, 1)
+script = ExtResource("2")
+kind = 5
+variant = 0
+

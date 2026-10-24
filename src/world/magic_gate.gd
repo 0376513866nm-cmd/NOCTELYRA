@@ -2,7 +2,7 @@ class_name MagicGate
 extends StaticBody2D
 
 ## Cổng Ma Pháp chặn lối vào Đấu trường Boss Lunareth (M4)
-## Chỉ mở khóa sau khi hoàn thành và trả nhiệm vụ tiêu diệt quái vật cho Elyra.
+## Chỉ mở khóa sau khi hoàn thành và trả nhiệm vụ tiêu diệt quái vật cho Eiran.
 ## Ngăn cản tuyệt đối việc vượt qua bằng Dash hay Double Jump khi đang khóa.
 
 signal gate_opened()
@@ -42,7 +42,7 @@ func close_gate() -> void:
 	if visual_barrier:
 		visual_barrier.color = Color(0.65, 0.15, 0.85, 0.85)
 	if runes:
-		runes.text = "[PHONG ẤN CỔ TỰ]\nCần hoàn thành nhiệm vụ Elyra!"
+		runes.text = "[PHONG ẤN CỔ TỰ]\nCần hoàn thành nhiệm vụ Eiran!"
 		runes.modulate = Color(1.0, 0.6, 0.9, 1.0)
 
 func update_quest_status(quest: QuestData) -> void:
@@ -57,4 +57,4 @@ func _on_body_entered(body: Node) -> void:
 	if body is Player and not is_open:
 		var cur_scene = get_tree().current_scene if get_tree() else null
 		if cur_scene and "game_ui" in cur_scene and cur_scene.game_ui:
-			cur_scene.game_ui.show_notification("Cổng Ma Pháp bị phong ấn! Hãy hoàn thành nhiệm vụ của Elyra để giải trừ.")
+			cur_scene.game_ui.show_notification("Cổng Ma Pháp bị phong ấn! Hãy hoàn thành nhiệm vụ của Eiran để giải trừ.")

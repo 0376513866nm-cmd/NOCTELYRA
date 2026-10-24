@@ -75,7 +75,7 @@ func _refresh_main_quest(quest_mgr: QuestManager) -> void:
 		main_title_label.text = "Nhiệm Vụ Chính: Thanh Tẩy Rừng Noctis"
 		main_badge_label.text = "[Chưa nhận]"
 		main_badge_label.modulate = Color(0.7, 0.7, 0.7)
-		main_npc_label.text = "Người giao: Elyra | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
+		main_npc_label.text = "Người giao: Eiran | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
 		main_desc_label.text = "Tiêu diệt sinh vật ma hóa để bảo vệ Làng Ánh Nguyệt và mở Cổng Ma Thuật."
 		main_progress_label.text = "Mục tiêu: Tiêu diệt 3 sinh vật ma hóa (0/3)"
 		main_reward_label.text = "Phần thưởng: 50 Vàng, Hồi phục toàn bộ HP & MP"
@@ -83,7 +83,7 @@ func _refresh_main_quest(quest_mgr: QuestManager) -> void:
 
 	var q = quest_mgr.current_quest
 	main_title_label.text = "Nhiệm Vụ Chính: " + q.title
-	main_npc_label.text = "Người giao: Elyra | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
+	main_npc_label.text = "Người giao: Eiran | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
 	main_desc_label.text = q.description
 	main_reward_label.text = "Phần thưởng: %d Vàng, Hồi phục toàn bộ HP & MP" % q.reward_gold
 
@@ -91,7 +91,7 @@ func _refresh_main_quest(quest_mgr: QuestManager) -> void:
 		QuestData.State.NOT_STARTED:
 			main_badge_label.text = "[Chưa nhận]"
 			main_badge_label.modulate = Color(0.7, 0.7, 0.7)
-			main_progress_label.text = "Mục tiêu: Tiêu diệt 3 sinh vật ma hóa (Chưa nhận - gặp Elyra)"
+			main_progress_label.text = "Mục tiêu: Tiêu diệt 3 sinh vật ma hóa (Chưa nhận - gặp Eiran)"
 		QuestData.State.ACTIVE:
 			main_badge_label.text = "[Đang thực hiện]"
 			main_badge_label.modulate = Color(1.0, 0.85, 0.3)
@@ -99,7 +99,7 @@ func _refresh_main_quest(quest_mgr: QuestManager) -> void:
 		QuestData.State.READY_TO_TURN_IN:
 			main_badge_label.text = "[Sẵn sàng trả]"
 			main_badge_label.modulate = Color(0.3, 0.9, 1.0)
-			main_progress_label.text = "Mục tiêu: %d/%d sinh vật ma hóa (Gặp Elyra nhận thưởng!)" % [q.current_amount, q.target_amount]
+			main_progress_label.text = "Mục tiêu: %d/%d sinh vật ma hóa (Gặp Eiran nhận thưởng!)" % [q.current_amount, q.target_amount]
 		QuestData.State.COMPLETED:
 			main_badge_label.text = "[Đã hoàn thành]"
 			main_badge_label.modulate = Color(0.4, 1.0, 0.4)

@@ -10,6 +10,7 @@ enum State {
 	RUN,
 	JUMP,
 	FALL,
+	LAND,
 	DASH,
 	DEAD
 }
@@ -29,6 +30,8 @@ enum State {
 @onready var quest_journal_component: QuestJournalComponent = $QuestJournalComponent
 @onready var progression_component: PlayerProgressionComponent = $PlayerProgressionComponent
 @onready var player_stats_component: PlayerStatsComponent = $PlayerStatsComponent
+@onready var ground_shadow: Polygon2D = get_node_or_null("GroundShadow")
+var _shadow_ray: RayCast2D = null
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -40,6 +43,7 @@ var spawn_position: Vector2 = Vector2.ZERO
 var cast_anim_timer: float = 0.0
 var attack_anim_timer: float = 0.0
 var hurt_recoil_timer: float = 0.0
+var land_timer: float = 0.0
 
 var race_id: String:
 	get:
@@ -258,11 +262,27 @@ func _physics_process(delta: float) -> void:
 				_process_air_movement(delta)
 				if is_on_floor():
 					_restore_jumps()
-					var dir := _get_input_direction()
+					_change_state(State.LAND)
+
+		State.LAND:
+			_restore_jumps()
+			land_timer -= delta
+			if _check_dash():
+				pass
+			elif _check_jump():
+				pass
+			elif not is_on_floor():
+				_change_state(State.FALL)
+			else:
+				_process_ground_movement(delta)
+				var dir := _get_input_direction()
+				if land_timer <= 0.0:
 					if dir != 0.0 or abs(velocity.x) > 10.0:
 						_change_state(State.RUN)
 					else:
 						_change_state(State.IDLE)
+				elif dir != 0.0 and land_timer <= 0.12:
+					_change_state(State.RUN)
 
 		State.IDLE:
 			_restore_jumps()
@@ -291,10 +311,35 @@ func _physics_process(delta: float) -> void:
 					_change_state(State.IDLE)
 
 	move_and_slide()
+	_update_ground_shadow()
 
 	# Khôi phục số lần nhảy khi đang chạm đất
 	if is_on_floor() and current_state != State.JUMP and current_state != State.DEAD:
 		_restore_jumps()
+
+func _update_ground_shadow() -> void:
+	if ground_shadow == null:
+		return
+	if is_on_floor():
+		ground_shadow.position.y = 0.0
+		ground_shadow.scale = Vector2.ONE
+		ground_shadow.modulate.a = 0.45
+	else:
+		if _shadow_ray == null:
+			_shadow_ray = RayCast2D.new()
+			_shadow_ray.target_position = Vector2(0, 360)
+			_shadow_ray.collision_mask = 1
+			add_child(_shadow_ray)
+		_shadow_ray.force_raycast_update()
+		if _shadow_ray.is_colliding():
+			var hit_y: float = _shadow_ray.get_collision_point().y - global_position.y
+			ground_shadow.position.y = hit_y
+			var dist: float = maxf(0.0, hit_y)
+			var factor: float = clampf(1.0 - (dist / 280.0), 0.35, 1.0)
+			ground_shadow.scale = Vector2(factor, factor * 0.8)
+			ground_shadow.modulate.a = 0.45 * factor
+		else:
+			ground_shadow.modulate.a = 0.0
 
 func _handle_combat_inputs() -> void:
 	if combat_component == null:
@@ -318,6 +363,23 @@ func _handle_combat_inputs() -> void:
 		combat_component.perform_attack(facing_direction)
 	elif Input.is_action_just_pressed("cast_spell"):
 		combat_component.cast_spell(self, facing_direction, health_component)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if current_state == State.DEAD:
+		return
+	if event is InputEventMouseButton and event.pressed:
+		var sb := spellbook_component
+		if sb == null:
+			sb = get_node_or_null("SpellbookComponent") as SpellbookComponent
+		if sb:
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				sb.cycle_prev_spell()
+				if get_viewport():
+					get_viewport().set_input_as_handled()
+			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				sb.cycle_next_spell()
+				if get_viewport():
+					get_viewport().set_input_as_handled()
 
 func _upgrade_current_spell() -> void:
 	var sb := spellbook_component
@@ -424,6 +486,12 @@ func _restore_jumps() -> void:
 
 func _change_state(new_state: State) -> void:
 	current_state = new_state
+	if new_state == State.LAND:
+		var is_moving: bool = _get_input_direction() != 0.0 or abs(velocity.x) > 30.0
+		if is_moving:
+			land_timer = 0.08
+		else:
+			land_timer = 0.25
 	var state_name := _get_state_name(current_state)
 	emit_signal("state_changed", state_name)
 
@@ -476,14 +544,33 @@ func _refresh_current_animation() -> void:
 				anim_player.advance(0.0)
 		State.JUMP:
 			anim_player.speed_scale = 1.0
-			if anim_player.has_animation("jump"):
+			if jumps_left == 0 and anim_player.has_animation("double_jump"):
+				anim_player.play("double_jump")
+				anim_player.advance(0.0)
+			elif anim_player.has_animation("jump"):
 				anim_player.play("jump")
+				anim_player.advance(0.0)
 			else:
 				_play_fallback_air_visual()
 		State.FALL:
 			anim_player.speed_scale = 1.0
-			if anim_player.has_animation("fall"):
+			if jumps_left == movement_data.max_jumps - 1 and anim_player.has_animation("jump_fall"):
+				anim_player.play("jump_fall")
+				anim_player.advance(0.0)
+			elif anim_player.has_animation("fall"):
 				anim_player.play("fall")
+				anim_player.advance(0.0)
+			else:
+				_play_fallback_air_visual()
+		State.LAND:
+			var is_moving: bool = _get_input_direction() != 0.0 or abs(velocity.x) > 30.0
+			if is_moving:
+				anim_player.speed_scale = 3.0
+			else:
+				anim_player.speed_scale = 1.0
+			if anim_player.has_animation("land"):
+				anim_player.play("land")
+				anim_player.advance(0.0)
 			else:
 				_play_fallback_air_visual()
 		State.DASH:
@@ -572,6 +659,9 @@ func _check_double_jump() -> bool:
 		velocity.y = movement_data.double_jump_velocity
 		jumps_left -= 1
 		_change_state(State.JUMP)
+		if anim_player and anim_player.has_animation("double_jump"):
+			anim_player.play("double_jump")
+			anim_player.advance(0.0)
 		return true
 	return false
 
@@ -600,6 +690,7 @@ func _get_state_name(state: State) -> String:
 		State.RUN: return "RUN"
 		State.JUMP: return "JUMP"
 		State.FALL: return "FALL"
+		State.LAND: return "LAND"
 		State.DASH: return "DASH"
 		State.DEAD: return "DEAD"
 		_: return "UNKNOWN"

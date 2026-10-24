@@ -504,7 +504,7 @@ polygon = PackedVector2Array(-28, -2, -22, -6, 0, -8, 22, -6, 28, -2, 28, 2, 22,
 script = ExtResource("5_visual")
 
 [node name="SpriteRoot" type="Node2D" parent="VisualRoot"]
-position = Vector2(0, -41)
+position = Vector2(0, -32)
 scale = Vector2(-0.32, 0.32)
 
 [node name="IdleSprite" type="Sprite2D" parent="VisualRoot/SpriteRoot"]

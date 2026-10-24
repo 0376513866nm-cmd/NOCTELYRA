@@ -59,6 +59,11 @@ offset_right = 25.0
 offset_bottom = 30.0
 color = Color(1, 0.15, 0.35, 0.6)
 
+[node name="GroundShadow" type="Polygon2D" parent="."]
+z_index = -1
+color = Color(0, 0, 0, 0.45)
+polygon = PackedVector2Array(-55, -4, -40, -10, 0, -12, 40, -10, 55, -4, 55, 4, 40, 10, 0, 12, -40, 10, -55, 4)
+
 [node name="BossVisual" type="Node2D" parent="."]
 script = ExtResource("5_visual")
 

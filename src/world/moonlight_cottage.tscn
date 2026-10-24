@@ -1,0 +1,421 @@
+[gd_scene load_steps=9 format=3 uid="uid://b7v4k2nap1q8"]
+
+[ext_resource type="Script" path="res://src/world/moonlight_cottage.gd" id="1_cottage"]
+[ext_resource type="Texture2D" uid="uid://bqivdfe676bpi" path="res://assets/environment/moonlight_cottage_v1.png" id="2_cottage_art"]
+
+[sub_resource type="Gradient" id="Gradient_light"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_light"]
+gradient = SubResource("Gradient_light")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_smoke"]
+colors = PackedColorArray(0.85, 0.9, 0.95, 0.45, 0.65, 0.7, 0.8, 0)
+
+[sub_resource type="Gradient" id="Gradient_fire"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(1, 0.85, 0.3, 1, 1, 0.45, 0.1, 0.85, 0.6, 0.1, 0.05, 0)
+
+[sub_resource type="Gradient" id="Gradient_sparks"]
+colors = PackedColorArray(1, 0.9, 0.4, 1, 1, 0.35, 0.05, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sanctuary"]
+size = Vector2(460, 200)
+
+[node name="MoonlightCottage" type="Node2D"]
+script = ExtResource("1_cottage")
+
+[node name="CottageArt" type="Sprite2D" parent="."]
+z_index = -2
+position = Vector2(20, -154)
+scale = Vector2(0.38, 0.38)
+texture = ExtResource("2_cottage_art")
+
+[node name="WarmWindowLight" type="PointLight2D" parent="."]
+position = Vector2(65, -145)
+color = Color(1, 0.85, 0.45, 1)
+energy = 0.45
+texture = SubResource("GradientTexture2D_light")
+
+[node name="PorchLanternLight" type="PointLight2D" parent="."]
+position = Vector2(42, -100)
+color = Color(1, 0.78, 0.35, 1)
+energy = 0.5
+texture = SubResource("GradientTexture2D_light")
+
+[node name="CampfireLight" type="PointLight2D" parent="."]
+position = Vector2(175, -15)
+color = Color(1, 0.65, 0.25, 1)
+energy = 0.65
+texture = SubResource("GradientTexture2D_light")
+texture_scale = 1.2
+
+[node name="AncientGuardianTree" type="Node2D" parent="."]
+visible = false
+z_index = -3
+
+[node name="Trunk" type="Polygon2D" parent="AncientGuardianTree"]
+color = Color(0.12, 0.1, 0.16, 1)
+polygon = PackedVector2Array(-220, 0, -180, -90, -170, -220, -150, -320, -110, -380, -70, -340, -110, -260, -125, -120, -110, 0)
+
+[node name="MossHighlight" type="Polygon2D" parent="AncientGuardianTree"]
+color = Color(0.18, 0.32, 0.25, 0.85)
+polygon = PackedVector2Array(-180, -90, -170, -220, -150, -320, -135, -280, -145, -160, -130, -50, -140, 0, -165, 0)
+
+[node name="CanopyBackdrop" type="Polygon2D" parent="AncientGuardianTree"]
+color = Color(0.08, 0.14, 0.18, 0.9)
+polygon = PackedVector2Array(-320, -340, -260, -420, -140, -460, -40, -440, 60, -410, -10, -340, -120, -330, -240, -310)
+
+[node name="Chimney" type="Node2D" parent="."]
+z_index = -1
+position = Vector2(146, -197)
+
+[node name="ChimneyBody" type="ColorRect" parent="Chimney"]
+visible = false
+offset_left = -16.0
+offset_top = -80.0
+offset_right = 16.0
+offset_bottom = 20.0
+color = Color(0.2, 0.19, 0.25, 1)
+
+[node name="ChimneyCap" type="ColorRect" parent="Chimney"]
+visible = false
+offset_left = -20.0
+offset_top = -86.0
+offset_right = 20.0
+offset_bottom = -78.0
+color = Color(0.14, 0.13, 0.18, 1)
+
+[node name="SmokeParticles" type="CPUParticles2D" parent="Chimney"]
+position = Vector2(0, -88)
+amount = 14
+lifetime = 3.6
+randomness = 0.3
+direction = Vector2(0.35, -1)
+spread = 18.0
+gravity = Vector2(15, -12)
+initial_velocity_min = 18.0
+initial_velocity_max = 28.0
+scale_amount_min = 6.0
+scale_amount_max = 14.0
+color_ramp = SubResource("Gradient_smoke")
+
+[node name="HouseStructure" type="Node2D" parent="."]
+visible = false
+
+[node name="FoundationStone" type="ColorRect" parent="HouseStructure"]
+offset_left = -110.0
+offset_top = -24.0
+offset_right = 95.0
+color = Color(0.16, 0.18, 0.22, 1)
+
+[node name="TimberWalls" type="ColorRect" parent="HouseStructure"]
+offset_left = -105.0
+offset_top = -140.0
+offset_right = 90.0
+offset_bottom = -24.0
+color = Color(0.22, 0.16, 0.14, 1)
+
+[node name="WoodPlankLines" type="Line2D" parent="HouseStructure"]
+points = PackedVector2Array(-105, -105, 90, -105, -105, -70, 90, -70, -105, -35, 90, -35)
+width = 1.8
+default_color = Color(0.15, 0.1, 0.08, 0.7)
+
+[node name="GableRoof" type="Polygon2D" parent="HouseStructure"]
+color = Color(0.16, 0.14, 0.22, 1)
+polygon = PackedVector2Array(-135, -135, -15, -215, 120, -135, 115, -125, -15, -195, -130, -125)
+
+[node name="RoofMoss" type="Polygon2D" parent="HouseStructure/GableRoof"]
+color = Color(0.25, 0.42, 0.3, 0.85)
+polygon = PackedVector2Array(-130, -132, -50, -185, -20, -202, -15, -195, -60, -165, -115, -128)
+
+[node name="WarmWindow" type="Node2D" parent="HouseStructure"]
+position = Vector2(-30, -82)
+
+[node name="Frame" type="ColorRect" parent="HouseStructure/WarmWindow"]
+offset_left = -24.0
+offset_top = -32.0
+offset_right = 24.0
+offset_bottom = 26.0
+color = Color(0.18, 0.12, 0.09, 1)
+
+[node name="GlowGlass" type="ColorRect" parent="HouseStructure/WarmWindow"]
+offset_left = -20.0
+offset_top = -28.0
+offset_right = 20.0
+offset_bottom = 22.0
+color = Color(1, 0.85, 0.45, 0.95)
+
+[node name="WindowCrossH" type="ColorRect" parent="HouseStructure/WarmWindow"]
+offset_left = -20.0
+offset_top = -4.0
+offset_right = 20.0
+offset_bottom = -1.0
+color = Color(0.25, 0.15, 0.1, 0.9)
+
+[node name="WindowCrossV" type="ColorRect" parent="HouseStructure/WarmWindow"]
+offset_left = -2.0
+offset_top = -28.0
+offset_right = 1.0
+offset_bottom = 22.0
+color = Color(0.25, 0.15, 0.1, 0.9)
+
+[node name="WindowWarmHalo" type="Polygon2D" parent="HouseStructure/WarmWindow"]
+color = Color(1, 0.82, 0.35, 0.08)
+polygon = PackedVector2Array(-24, 26, 24, 26, 65, 82, -65, 82)
+
+[node name="Door" type="Node2D" parent="HouseStructure"]
+position = Vector2(45, -50)
+
+[node name="DoorFrame" type="ColorRect" parent="HouseStructure/Door"]
+offset_left = -22.0
+offset_top = -42.0
+offset_right = 22.0
+offset_bottom = 50.0
+color = Color(0.15, 0.11, 0.09, 1)
+
+[node name="DoorPlanks" type="ColorRect" parent="HouseStructure/Door"]
+offset_left = -18.0
+offset_top = -38.0
+offset_right = 18.0
+offset_bottom = 50.0
+color = Color(0.32, 0.22, 0.16, 1)
+
+[node name="DoorHandle" type="ColorRect" parent="HouseStructure/Door"]
+offset_left = 10.0
+offset_top = 2.0
+offset_right = 14.0
+offset_bottom = 12.0
+color = Color(0.85, 0.72, 0.3, 1)
+
+[node name="MoonSigil" type="Label" parent="HouseStructure/Door"]
+offset_left = -12.0
+offset_top = -32.0
+offset_right = 12.0
+offset_bottom = -10.0
+theme_override_colors/font_color = Color(0.9, 0.85, 0.5, 0.85)
+theme_override_font_sizes/font_size = 14
+text = "🌙"
+horizontal_alignment = 1
+
+[node name="PorchVeranda" type="Node2D" parent="HouseStructure"]
+
+[node name="DeckFloor" type="ColorRect" parent="HouseStructure/PorchVeranda"]
+offset_left = 15.0
+offset_top = -14.0
+offset_right = 110.0
+color = Color(0.28, 0.19, 0.14, 1)
+
+[node name="DeckStep" type="ColorRect" parent="HouseStructure/PorchVeranda"]
+offset_left = 65.0
+offset_top = -7.0
+offset_right = 115.0
+color = Color(0.22, 0.15, 0.11, 1)
+
+[node name="Pillar" type="ColorRect" parent="HouseStructure/PorchVeranda"]
+offset_left = 98.0
+offset_top = -125.0
+offset_right = 105.0
+offset_bottom = -14.0
+color = Color(0.22, 0.15, 0.11, 1)
+
+[node name="PorchLantern" type="Node2D" parent="HouseStructure/PorchVeranda"]
+position = Vector2(92, -105)
+
+[node name="Chain" type="Line2D" parent="HouseStructure/PorchVeranda/PorchLantern"]
+points = PackedVector2Array(0, -18, 0, 0)
+width = 1.5
+default_color = Color(0.4, 0.4, 0.45, 1)
+
+[node name="LanternBody" type="ColorRect" parent="HouseStructure/PorchVeranda/PorchLantern"]
+offset_left = -6.0
+offset_right = 6.0
+offset_bottom = 15.0
+color = Color(1, 0.82, 0.35, 1)
+
+[node name="LanternRoof" type="Polygon2D" parent="HouseStructure/PorchVeranda/PorchLantern"]
+color = Color(0.2, 0.18, 0.22, 1)
+polygon = PackedVector2Array(-9, 0, 0, -6, 9, 0)
+
+[node name="PorchLightHalo" type="Polygon2D" parent="HouseStructure/PorchVeranda/PorchLantern"]
+color = Color(1, 0.78, 0.3, 0.09)
+polygon = PackedVector2Array(-40, 15, 40, 15, 55, 105, -55, 105)
+
+[node name="CrystalWindchime" type="Node2D" parent="HouseStructure/PorchVeranda"]
+position = Vector2(25, -120)
+
+[node name="ChimeString" type="Line2D" parent="HouseStructure/PorchVeranda/CrystalWindchime"]
+points = PackedVector2Array(0, 0, 0, 16)
+width = 1.0
+default_color = Color(0.6, 0.8, 1, 0.8)
+
+[node name="ChimeCrystal" type="Polygon2D" parent="HouseStructure/PorchVeranda/CrystalWindchime"]
+color = Color(0.6, 0.9, 1, 0.9)
+polygon = PackedVector2Array(0, 16, -3, 22, 0, 28, 3, 22)
+
+[node name="BatPerch" type="Node2D" parent="HouseStructure/PorchVeranda"]
+position = Vector2(75, -145)
+
+[node name="BranchWood" type="Line2D" parent="HouseStructure/PorchVeranda/BatPerch"]
+points = PackedVector2Array(0, 0, 16, -4, 26, -2)
+width = 3.5
+default_color = Color(0.35, 0.22, 0.15, 1)
+
+[node name="BranchMoss" type="Polygon2D" parent="HouseStructure/PorchVeranda/BatPerch"]
+color = Color(0.25, 0.45, 0.3, 0.85)
+polygon = PackedVector2Array(8, -3, 14, -6, 20, -4, 18, -2, 12, -2)
+
+[node name="YardDecor" type="Node2D" parent="."]
+
+[node name="FirewoodStack" type="Node2D" parent="YardDecor"]
+position = Vector2(-115, 0)
+
+[node name="Log1" type="ColorRect" parent="YardDecor/FirewoodStack"]
+offset_left = -22.0
+offset_top = -12.0
+offset_right = 6.0
+color = Color(0.36, 0.24, 0.16, 1)
+
+[node name="Log2" type="ColorRect" parent="YardDecor/FirewoodStack"]
+offset_left = -18.0
+offset_top = -22.0
+offset_right = 2.0
+offset_bottom = -12.0
+color = Color(0.42, 0.28, 0.18, 1)
+
+[node name="HerbBasket" type="ColorRect" parent="YardDecor"]
+offset_left = 112.0
+offset_top = -16.0
+offset_right = 126.0
+color = Color(0.48, 0.38, 0.25, 1)
+
+[node name="HerbSprig" type="Label" parent="YardDecor/HerbBasket"]
+layout_mode = 0
+offset_left = -2.0
+offset_top = -10.0
+offset_right = 16.0
+offset_bottom = 8.0
+theme_override_font_sizes/font_size = 9
+text = "🌿"
+
+[node name="Boots" type="ColorRect" parent="YardDecor"]
+offset_left = 22.0
+offset_top = -14.0
+offset_right = 32.0
+offset_bottom = -4.0
+color = Color(0.18, 0.12, 0.1, 1)
+
+[node name="CozyCampfire" type="Node2D" parent="."]
+position = Vector2(210, 0)
+
+[node name="AshBed" type="Polygon2D" parent="CozyCampfire"]
+color = Color(0.15, 0.14, 0.18, 0.95)
+polygon = PackedVector2Array(-25, 0, -18, -6, 18, -6, 25, 0)
+
+[node name="Stones" type="Polygon2D" parent="CozyCampfire"]
+color = Color(0.25, 0.24, 0.3, 1)
+polygon = PackedVector2Array(-28, 0, -20, -10, -12, -4, 0, -8, 14, -5, 22, -10, 28, 0)
+
+[node name="FireParticles" type="CPUParticles2D" parent="CozyCampfire"]
+position = Vector2(0, -6)
+amount = 18
+lifetime = 0.8
+randomness = 0.2
+direction = Vector2(0, -1)
+spread = 22.0
+gravity = Vector2(0, -35)
+initial_velocity_min = 25.0
+initial_velocity_max = 45.0
+scale_amount_min = 4.0
+scale_amount_max = 9.0
+color_ramp = SubResource("Gradient_fire")
+
+[node name="Sparks" type="CPUParticles2D" parent="CozyCampfire"]
+position = Vector2(0, -8)
+lifetime = 1.4
+direction = Vector2(0.2, -1)
+spread = 35.0
+gravity = Vector2(10, -40)
+initial_velocity_min = 30.0
+initial_velocity_max = 60.0
+scale_amount_min = 1.5
+scale_amount_max = 3.0
+color_ramp = SubResource("Gradient_sparks")
+
+[node name="CampfireHalo" type="Polygon2D" parent="CozyCampfire"]
+color = Color(1, 0.55, 0.15, 0.22)
+polygon = PackedVector2Array(-55, 0, -35, -28, 0, -40, 35, -28, 55, 0)
+
+[node name="Tripod" type="Line2D" parent="CozyCampfire"]
+points = PackedVector2Array(-16, 0, 0, -32, 16, 0)
+width = 2.0
+default_color = Color(0.3, 0.28, 0.35, 1)
+
+[node name="Kettle" type="ColorRect" parent="CozyCampfire"]
+offset_left = -7.0
+offset_top = -24.0
+offset_right = 7.0
+offset_bottom = -12.0
+color = Color(0.65, 0.38, 0.2, 1)
+
+[node name="TeaTable" type="Node2D" parent="."]
+position = Vector2(150, 0)
+
+[node name="TableLegs" type="Line2D" parent="TeaTable"]
+points = PackedVector2Array(-14, 0, -14, -18, 14, -18, 14, 0)
+width = 2.5
+default_color = Color(0.32, 0.22, 0.16, 1)
+
+[node name="TableTop" type="ColorRect" parent="TeaTable"]
+offset_left = -18.0
+offset_top = -22.0
+offset_right = 18.0
+offset_bottom = -17.0
+color = Color(0.42, 0.28, 0.2, 1)
+
+[node name="TeaCup1" type="ColorRect" parent="TeaTable"]
+offset_left = -10.0
+offset_top = -28.0
+offset_right = -4.0
+offset_bottom = -22.0
+color = Color(0.9, 0.88, 0.82, 1)
+
+[node name="TeaCup2" type="ColorRect" parent="TeaTable"]
+offset_left = 4.0
+offset_top = -28.0
+offset_right = 10.0
+offset_bottom = -22.0
+color = Color(0.9, 0.88, 0.82, 1)
+
+[node name="TeaSteam" type="CPUParticles2D" parent="TeaTable"]
+position = Vector2(0, -29)
+amount = 4
+lifetime = 1.8
+direction = Vector2(0, -1)
+spread = 15.0
+gravity = Vector2(4, -10)
+initial_velocity_min = 8.0
+initial_velocity_max = 14.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color = Color(0.95, 0.95, 1, 0.4)
+
+[node name="Chair" type="Line2D" parent="TeaTable"]
+position = Vector2(-28, 0)
+points = PackedVector2Array(0, 0, 0, -14, 8, -14, 8, -26)
+width = 2.2
+default_color = Color(0.35, 0.24, 0.18, 1)
+
+[node name="SanctuaryArea" type="Area2D" parent="."]
+position = Vector2(70, -60)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SanctuaryArea"]
+position = Vector2(-56, -24)
+shape = SubResource("RectangleShape2D_sanctuary")

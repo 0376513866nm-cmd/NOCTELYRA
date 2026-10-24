@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://d2k4m8n1p5q7"]
+[gd_scene load_steps=8 format=3 uid="uid://d2k4m8n1p5q7"]
 
 [ext_resource type="Script" path="res://src/actors/npc/npc.gd" id="1_npc"]
 [ext_resource type="Script" path="res://src/interaction/interaction_component.gd" id="2_interact"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npc/eiran_warden_v1.png" id="3_elyra"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_npc"]
 radius = 16.0
@@ -9,6 +10,28 @@ height = 70.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
 radius = 65.0
+
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(0, 0), Vector2(0, -1.5), Vector2(0, 0), Vector2(0, -0.75)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_elyra"]
+_data = {
+"idle": SubResource("Animation_idle")
+}
 
 [node name="NPC" type="CharacterBody2D"]
 collision_layer = 0
@@ -19,42 +42,30 @@ script = ExtResource("1_npc")
 position = Vector2(0, -35)
 shape = SubResource("CapsuleShape2D_npc")
 
+[node name="GroundShadow" type="Polygon2D" parent="."]
+z_index = -1
+color = Color(0, 0, 0, 0.42)
+polygon = PackedVector2Array(-22, -2, -16, -5, 0, -6, 16, -5, 22, -2, 22, 2, 16, 5, 0, 6, -16, 5, -22, 2)
+
 [node name="VisualRoot" type="Node2D" parent="."]
 
-[node name="Robe" type="ColorRect" parent="VisualRoot"]
-offset_left = -16.0
-offset_top = -65.0
-offset_right = 16.0
-offset_bottom = 0.0
-color = Color(0.25, 0.45, 0.85, 1)
+[node name="EiranSprite" type="Sprite2D" parent="VisualRoot"]
+position = Vector2(0, -43)
+scale = Vector2(0.065, 0.065)
+texture = ExtResource("3_elyra")
 
-[node name="Hair" type="ColorRect" parent="VisualRoot"]
-offset_left = -14.0
-offset_top = -78.0
-offset_right = 14.0
-offset_bottom = -60.0
-color = Color(0.9, 0.85, 0.65, 1)
-
-[node name="StaffGem" type="ColorRect" parent="VisualRoot"]
-offset_left = 18.0
-offset_top = -85.0
-offset_right = 26.0
-offset_bottom = -75.0
-color = Color(0.4, 0.9, 1, 1)
-
-[node name="StaffPole" type="ColorRect" parent="VisualRoot"]
-offset_left = 21.0
-offset_top = -75.0
-offset_right = 23.0
-offset_bottom = 0.0
-color = Color(0.6, 0.45, 0.3, 1)
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_elyra")
+}
+autoplay = "idle"
 
 [node name="NameTag" type="Label" parent="."]
 offset_left = -40.0
 offset_top = -105.0
 offset_right = 40.0
 offset_bottom = -82.0
-text = "Elyra"
+text = "Eiran"
 horizontal_alignment = 1
 
 [node name="PromptLabel" type="Label" parent="."]

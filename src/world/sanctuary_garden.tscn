@@ -1,0 +1,184 @@
+[gd_scene load_steps=3 format=3 uid="uid://m5y1p8k3q2v4"]
+
+[sub_resource type="Gradient" id="Gradient_leaves"]
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(0.4, 0.85, 0.65, 0.9, 0.3, 0.7, 0.55, 0.75, 0.2, 0.5, 0.4, 0)
+
+[sub_resource type="Gradient" id="Gradient_fireflies"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 0.95, 0.5, 0, 1, 0.9, 0.45, 0.9, 0.4, 0.9, 0.8, 0)
+
+[node name="SanctuaryGarden" type="Node2D"]
+
+[node name="FallingLeavesParticles" type="CPUParticles2D" parent="."]
+position = Vector2(500, 250)
+amount = 26
+lifetime = 9.0
+randomness = 0.4
+emission_shape = 3
+emission_rect_extents = Vector2(900, 150)
+direction = Vector2(0.85, 0.55)
+spread = 25.0
+gravity = Vector2(10, 18)
+initial_velocity_min = 25.0
+initial_velocity_max = 48.0
+angular_velocity_min = -60.0
+angular_velocity_max = 60.0
+scale_amount_min = 2.5
+scale_amount_max = 5.5
+color_ramp = SubResource("Gradient_leaves")
+
+[node name="FirefliesParticles" type="CPUParticles2D" parent="."]
+position = Vector2(750, 560)
+amount = 20
+lifetime = 4.5
+emission_shape = 3
+emission_rect_extents = Vector2(650, 80)
+direction = Vector2(0, -1)
+spread = 80.0
+gravity = Vector2(0, -8)
+initial_velocity_min = 8.0
+initial_velocity_max = 18.0
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color_ramp = SubResource("Gradient_fireflies")
+
+[node name="StoneWell" type="Node2D" parent="."]
+position = Vector2(780, 630)
+
+[node name="BaseStones" type="Polygon2D" parent="StoneWell"]
+color = Color(0.2, 0.22, 0.28, 1)
+polygon = PackedVector2Array(-24, 0, -22, -26, 22, -26, 24, 0)
+
+[node name="StoneMortar1" type="Line2D" parent="StoneWell"]
+points = PackedVector2Array(-20, -12, 20, -12)
+width = 1.5
+default_color = Color(0.14, 0.15, 0.18, 0.8)
+
+[node name="StoneMortar2" type="Line2D" parent="StoneWell"]
+points = PackedVector2Array(-8, -24, -8, -12, 8, -12, 8, 0)
+width = 1.2
+default_color = Color(0.14, 0.15, 0.18, 0.8)
+
+[node name="WellRim" type="ColorRect" parent="StoneWell"]
+offset_left = -26.0
+offset_top = -29.0
+offset_right = 26.0
+offset_bottom = -25.0
+color = Color(0.32, 0.36, 0.42, 1)
+
+[node name="WaterGlow" type="ColorRect" parent="StoneWell"]
+offset_left = -18.0
+offset_top = -25.0
+offset_right = 18.0
+offset_bottom = -21.0
+color = Color(0.35, 0.8, 0.95, 0.7)
+
+[node name="WellPosts" type="Line2D" parent="StoneWell"]
+points = PackedVector2Array(-18, -26, -18, -65, 18, -65, 18, -26)
+width = 2.4
+default_color = Color(0.28, 0.2, 0.15, 1)
+
+[node name="WellRoof" type="Polygon2D" parent="StoneWell"]
+color = Color(0.22, 0.16, 0.2, 1)
+polygon = PackedVector2Array(-28, -65, 0, -82, 28, -65, 24, -60, 0, -74, -24, -60)
+
+[node name="BucketRope" type="Line2D" parent="StoneWell"]
+points = PackedVector2Array(0, -65, 0, -42)
+width = 1.2
+default_color = Color(0.5, 0.4, 0.3, 1)
+
+[node name="Bucket" type="Polygon2D" parent="StoneWell"]
+position = Vector2(0, -38)
+color = Color(0.38, 0.26, 0.18, 1)
+polygon = PackedVector2Array(-5, 0, 5, 0, 4, -8, -4, -8)
+
+[node name="GlimmeringPond" type="Node2D" parent="."]
+position = Vector2(1060, 630)
+
+[node name="WaterBed" type="Polygon2D" parent="GlimmeringPond"]
+color = Color(0.08, 0.14, 0.26, 0.95)
+polygon = PackedVector2Array(-95, 0, -75, -8, 0, -12, 75, -8, 95, 0, 0, 5)
+
+[node name="WaterGlowLayer" type="Polygon2D" parent="GlimmeringPond"]
+color = Color(0.25, 0.75, 0.9, 0.35)
+polygon = PackedVector2Array(-85, 0, -65, -6, 0, -10, 65, -6, 85, 0)
+
+[node name="Lilypad1" type="Polygon2D" parent="GlimmeringPond"]
+position = Vector2(-35, -4)
+color = Color(0.22, 0.58, 0.38, 0.9)
+polygon = PackedVector2Array(-8, 0, -4, -4, 4, -4, 8, 0, 4, 3, -4, 3)
+
+[node name="LilypadFlower" type="Polygon2D" parent="GlimmeringPond/Lilypad1"]
+position = Vector2(0, -2)
+color = Color(0.85, 0.95, 1, 0.95)
+polygon = PackedVector2Array(0, -3, 2, 0, 0, 2, -2, 0)
+
+[node name="Lilypad2" type="Polygon2D" parent="GlimmeringPond"]
+position = Vector2(40, -5)
+color = Color(0.22, 0.58, 0.38, 0.9)
+polygon = PackedVector2Array(-7, 0, -3, -3, 3, -3, 7, 0, 3, 3, -3, 3)
+
+[node name="PondBorderStones" type="Polygon2D" parent="GlimmeringPond"]
+color = Color(0.22, 0.24, 0.3, 0.9)
+polygon = PackedVector2Array(-102, 0, -90, -5, -80, -2, -65, -9, -50, -6, 50, -6, 65, -9, 80, -2, 90, -5, 102, 0, 85, 2, -85, 2)
+
+[node name="MoonlitHerbPatch" type="Node2D" parent="."]
+position = Vector2(650, 630)
+
+[node name="Fern1" type="Line2D" parent="MoonlitHerbPatch"]
+points = PackedVector2Array(0, 0, 4, -14, 12, -24, 20, -28)
+width = 2.0
+default_color = Color(0.3, 0.75, 0.55, 0.9)
+
+[node name="Fern2" type="Line2D" parent="MoonlitHerbPatch"]
+points = PackedVector2Array(0, 0, -4, -12, -10, -20, -16, -24)
+width = 2.0
+default_color = Color(0.3, 0.75, 0.55, 0.9)
+
+[node name="BellFlower1" type="Polygon2D" parent="MoonlitHerbPatch"]
+position = Vector2(16, -26)
+color = Color(0.65, 0.85, 1, 0.95)
+polygon = PackedVector2Array(0, 0, -4, -6, 4, -6)
+
+[node name="BellFlower2" type="Polygon2D" parent="MoonlitHerbPatch"]
+position = Vector2(-12, -22)
+color = Color(0.75, 0.55, 0.95, 0.95)
+polygon = PackedVector2Array(0, 0, -3, -5, 3, -5)
+
+[node name="StoneLanternPost" type="Node2D" parent="."]
+position = Vector2(1350, 630)
+
+[node name="PostPole" type="ColorRect" parent="StoneLanternPost"]
+offset_left = -3.0
+offset_top = -48.0
+offset_right = 3.0
+offset_bottom = 0.0
+color = Color(0.24, 0.25, 0.3, 1)
+
+[node name="PostLantern" type="Polygon2D" parent="StoneLanternPost"]
+position = Vector2(0, -54)
+color = Color(0.95, 0.8, 0.45, 0.9)
+polygon = PackedVector2Array(-6, 0, 0, -8, 6, 0, 4, 8, -4, 8)
+
+[node name="LanternCap" type="Polygon2D" parent="StoneLanternPost"]
+position = Vector2(0, -62)
+color = Color(0.18, 0.18, 0.22, 1)
+polygon = PackedVector2Array(-10, 0, 0, -6, 10, 0)
+
+[node name="BoundaryMonolith" type="Node2D" parent="."]
+position = Vector2(1750, 630)
+
+[node name="StonePillar" type="Polygon2D" parent="BoundaryMonolith"]
+color = Color(0.16, 0.14, 0.24, 1)
+polygon = PackedVector2Array(-14, 0, -10, -110, 0, -125, 10, -110, 14, 0)
+
+[node name="RuneCarving1" type="Line2D" parent="BoundaryMonolith"]
+points = PackedVector2Array(0, -35, -4, -45, 4, -55, 0, -65)
+width = 1.8
+default_color = Color(0.75, 0.4, 0.9, 0.85)
+
+[node name="RuneCarving2" type="Line2D" parent="BoundaryMonolith"]
+points = PackedVector2Array(-3, -80, 0, -86, 3, -80, 0, -74, -3, -80)
+width = 1.5
+default_color = Color(0.6, 0.85, 1, 0.85)

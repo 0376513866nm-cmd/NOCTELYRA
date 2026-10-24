@@ -1,3 +1,4 @@
+@tool
 class_name ItemPickup
 extends Area2D
 
@@ -8,6 +9,11 @@ extends Area2D
 @export var amount: int = 1
 @export var pickup_id: String = ""
 @export var is_dynamic: bool = false
+@export var compact_visuals: bool = false:
+	set(value):
+		compact_visuals = value
+		if is_node_ready():
+			_apply_compact_visuals()
 
 @onready var icon_sprite: Sprite2D = $IconSprite
 @onready var label: Label = $Label
@@ -18,10 +24,14 @@ var _anim_time: float = 0.0
 var is_picked_up: bool = false
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		_apply_compact_visuals()
+		return
 	collision_layer = 0
 	collision_mask = 2 # Player trên Layer 2
 	_base_y = position.y
 	_update_visuals()
+	_apply_compact_visuals()
 	body_entered.connect(_on_body_entered)
 
 	if is_dynamic:
@@ -49,8 +59,24 @@ func _update_visuals() -> void:
 				label.text = def.display_name
 		if icon_sprite and def.icon:
 			icon_sprite.texture = def.icon
+	_apply_compact_visuals()
+
+func _apply_compact_visuals() -> void:
+	if not compact_visuals or not icon_sprite:
+		return
+	if icon_sprite.texture:
+		var size: Vector2 = icon_sprite.texture.get_size()
+		icon_sprite.scale = Vector2.ONE * (22.0 / maxf(size.x, size.y))
+	if label:
+		label.visible = false
+	var shadow := get_node_or_null("GroundShadow") as Node2D
+	if shadow:
+		shadow.scale = Vector2(0.55, 0.55)
+		shadow.position.y = 12.0
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	# Hiệu ứng trôi nổi nhẹ nhàng (bobbing effect)
 	_anim_time += delta * 3.5
 	position.y = _base_y + sin(_anim_time) * 4.0
