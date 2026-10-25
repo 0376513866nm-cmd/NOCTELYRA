@@ -34,10 +34,12 @@ func _process(delta: float) -> void:
 
 
 var _batch = preload("res://src/world/canvas_shape_batch.gd").new()
+var _texture_batch = preload("res://src/world/bamboo_atlas_brush.gd").new()
 
 
 func _draw() -> void:
 	_batch.clear()
+	_texture_batch.clear()
 	_rng.seed = random_seed
 	match layer_kind:
 		0: _draw_bamboo_forest()
@@ -46,57 +48,21 @@ func _draw() -> void:
 		3: _draw_drifting_leaves()
 
 	_batch.submit(self)
+	_texture_batch.submit(self)
 
 
 func _draw_bamboo_forest() -> void:
-	# Extend the culms behind the shared forest floor instead of covering their
-	# roots with opaque banks on every parallax plane (which looked like walls).
+	# The same PNG pieces are assembled into many silhouettes on each depth plane.
 	var x: float = -1400.0
+	var alpha: float = clampf((stalk_width - 4.0) / 17.0, 0.22, 0.92)
 	while x < extent:
-		x += _rng.randf_range(spacing * 0.55, spacing * 1.65)
+		x += _rng.randf_range(spacing * 0.7, spacing * 1.55)
 		var origin := Vector2(x, base_y + _rng.randf_range(-24.0, 24.0))
 		var height: float = _rng.randf_range(670.0, 1150.0)
-		var width: float = stalk_width * _rng.randf_range(0.55, 1.3)
-		var lean: float = _rng.randf_range(-0.065, 0.065)
-		if animate_wind:
-			lean += sin(_clock * 0.7 + x * 0.008) * 0.004
-		_batch.set_transform(origin, lean)
-		var col: Color = tint.lightened(_rng.randf_range(-0.06, 0.06))
-		_batch.rect(Rect2(-width * 0.5, -1, width, 1201), col)
-		_batch.style_box(_capsule_style(col, width * 0.4), Rect2(-width * 0.5, -height, width, height))
-		_batch.rect(Rect2(-width * 0.22, -height + 6.0, maxf(1.0, width * 0.18), height + 1194.0), col.lightened(0.18))
-		var joint: float = 32.0
-		while joint < height:
-			_batch.line(Vector2(-width * 0.58, -joint), Vector2(width * 0.58, -joint), col.darkened(0.24), maxf(1.0, width * 0.12), true)
-			_batch.line(Vector2(-width * 0.48, -joint - 2.0), Vector2(width * 0.48, -joint - 2.0), col.lightened(0.27), 1.3, true)
-			if joint > 170.0 and _rng.randf() < 0.33:
-				var side: float = -1.0 if _rng.randf() < 0.5 else 1.0
-				var tip := Vector2(side * _rng.randf_range(40.0, 85.0), -joint - _rng.randf_range(20.0, 48.0))
-				_batch.line(Vector2(0, -joint), tip, col.darkened(0.12), 2.0, true)
-				_leaf_fan(tip, side, leaf_tint, _rng.randf_range(0.65, 1.1))
-			joint += _rng.randf_range(63.0, 100.0)
-		_batch.set_transform(Vector2.ZERO)
-
-
-func _capsule_style(col: Color, radius: float) -> StyleBoxFlat:
-	var style := StyleBoxFlat.new()
-	style.bg_color = col
-	style.corner_radius_top_left = int(radius)
-	style.corner_radius_top_right = int(radius)
-	return style
-
-
-func _leaf_fan(origin: Vector2, side: float, color: Color, size: float) -> void:
-	var twig := Vector2(side * 59.0, -18.0) * size
-	_batch.line(origin, origin + twig, color.darkened(0.08), maxf(0.7, size), true)
-	for i in range(8):
-		var at: Vector2 = origin + twig * (0.16 + float(i) * 0.105)
-		var upward: bool = i % 2 == 0
-		var direction := Vector2(side * (0.7 if upward else 1.0), -0.85 if upward else 0.65).normalized()
-		var length: float = (24.0 + sin(float(i) * 1.9) * 7.0) * size
-		var normal := direction.orthogonal() * 2.5 * size
-		var mid: Vector2 = at + direction * length * 0.5
-		_batch.polygon(PackedVector2Array([at, mid + normal, at + direction * length, mid - normal * 0.7]), color.lightened(float(i % 3) * 0.035))
+		var width: float = stalk_width * _rng.randf_range(0.65, 1.25)
+		var lean: float = _rng.randf_range(-0.075, 0.075)
+		var color := Color(0.87, 0.95, 0.84, alpha)
+		_texture_batch.culm(origin, height, width, lean, _rng, color, 1200.0)
 
 
 func _draw_forest_floor() -> void:
@@ -122,12 +88,11 @@ func _draw_forest_floor() -> void:
 
 
 func _draw_canopy() -> void:
-	for i in range(-7, 92):
-		var x: float = float(i) * 110.0 + _rng.randf_range(-30.0, 30.0)
-		var y: float = -110.0 + _rng.randf_range(-90, 70)
-		for cluster in range(5):
-			var at := Vector2(x + float(cluster) * 29.0, y + sin(float(cluster)) * 40.0)
-			_leaf_fan(at, -1.0 if cluster % 2 == 0 else 1.0, leaf_tint, 2.9)
+	for i in range(-7, 65):
+		var x: float = float(i) * 160.0 + _rng.randf_range(-35, 35)
+		var at := Vector2(x, -105.0 + _rng.randf_range(-45, 35))
+		_texture_batch.foliage(at, -1, 1.1, -0.25, _rng, Color(0.50, 0.67, 0.48, 0.92))
+		_texture_batch.foliage(at + Vector2(75, 10), 1, 1.0, 0.3, _rng, Color(0.57, 0.71, 0.48, 0.92))
 
 
 func _draw_drifting_leaves() -> void:

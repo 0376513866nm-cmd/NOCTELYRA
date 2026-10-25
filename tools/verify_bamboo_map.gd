@@ -59,9 +59,25 @@ func _verify() -> void:
 	await process_frame
 	var lamp := world.get_node("BambooGrove/StoneLantern1070/LanternLight") as PointLight2D
 	_check(lamp.energy > 0.5, "Stone lanterns illuminate at night")
+	await process_frame
+	var fireflies = world.get_node("BambooGrove/Fireflies")
+	_check(fireflies.visible and fireflies.emitting and fireflies.modulate.a > 0.95, "Fireflies glow and emit at night")
+	var low_swarms: bool = not fireflies.emission_points.is_empty()
+	for point: Vector2 in fireflies.emission_points:
+		var at := terrain.to_local(fireflies.to_global(point))
+		var clearance: float = terrain.surface_y_at(at.x) - at.y
+		low_swarms = low_swarms and clearance >= 39.9 and clearance <= 56.1
+	_check(low_swarms, "Firefly swarms originate 40-56 px above the moss terrain")
 	cycle.set_time_phase("day")
 	await process_frame
 	_check(lamp.energy < 0.05, "Stone lanterns dim in daylight")
+	await process_frame
+	_check(not fireflies.visible and not fireflies.emitting, "Fireflies hide and stop emitting in daylight")
+	cycle.current_hour = 18.5
+	cycle.is_paused = true
+	await process_frame
+	await process_frame
+	_check(fireflies.modulate.a > 0.0 and fireflies.modulate.a < 1.0, "Fireflies fade gradually at dusk")
 	var pickup := world.get_node_or_null("ForestPickup_Shard2")
 	_check(pickup != null and not pickup.get_node("Label").visible, "Ground loot labels do not cover scenery")
 	var icon := pickup.get_node("IconSprite") as Sprite2D

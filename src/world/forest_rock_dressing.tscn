@@ -1,0 +1,158 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_00.tres" id="0"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_02.tres" id="2"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_09.tres" id="9"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_19.tres" id="19"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_14.tres" id="14"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_08.tres" id="8"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_12.tres" id="12"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_16.tres" id="16"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_13.tres" id="13"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_22.tres" id="22"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_05.tres" id="5"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_17.tres" id="17"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_06.tres" id="6"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_21.tres" id="21"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_11.tres" id="11"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_15.tres" id="15"]
+[ext_resource type="Texture2D" path="res://assets/environment/modular_forest/rock_23.tres" id="23"]
+
+[node name="ForestRockDressing" type="Node2D"]
+z_index = -2
+
+[node name="HomePebble" type="Sprite2D" parent="."]
+position = Vector2(655, 632)
+scale = Vector2(0.26087, 0.26087)
+texture = ExtResource("0")
+centered = false
+offset = Vector2(-58.5, -71)
+flip_h = true
+
+[node name="HomeFlatStone" type="Sprite2D" parent="."]
+position = Vector2(760, 632)
+scale = Vector2(0.38356, 0.38356)
+texture = ExtResource("2")
+centered = false
+offset = Vector2(-123, -75)
+flip_h = false
+
+[node name="FirstRiseBoulders" type="Sprite2D" parent="."]
+position = Vector2(1100, 612)
+scale = Vector2(0.26961, 0.26961)
+texture = ExtResource("9")
+centered = false
+offset = Vector2(-176.5, -206)
+flip_h = false
+
+[node name="FirstRisePebble" type="Sprite2D" parent="."]
+position = Vector2(1350, 612)
+scale = Vector2(0.26471, 0.26471)
+texture = ExtResource("19")
+centered = false
+offset = Vector2(-53.5, -70)
+flip_h = true
+
+[node name="FernTerraceRocks" type="Sprite2D" parent="."]
+position = Vector2(1645, 592)
+scale = Vector2(0.35912, 0.35912)
+texture = ExtResource("14")
+centered = false
+offset = Vector2(-141, -183)
+flip_h = false
+
+[node name="StandingStone" type="Sprite2D" parent="."]
+position = Vector2(1840, 592)
+scale = Vector2(0.54726, 0.54726)
+texture = ExtResource("8")
+centered = false
+offset = Vector2(-69, -203)
+flip_h = false
+
+[node name="LowLandingRocks" type="Sprite2D" parent="."]
+position = Vector2(2090, 620)
+scale = Vector2(0.3268, 0.3268)
+texture = ExtResource("12")
+centered = false
+offset = Vector2(-155.5, -155)
+flip_h = true
+
+[node name="DeepTrailFlatStone" type="Sprite2D" parent="."]
+position = Vector2(2460, 620)
+scale = Vector2(0.28571, 0.28571)
+texture = ExtResource("16")
+centered = false
+offset = Vector2(-143.5, -114)
+flip_h = false
+
+[node name="DeepGroveBoulder" type="Sprite2D" parent="."]
+position = Vector2(2780, 600)
+scale = Vector2(0.39773, 0.39773)
+texture = ExtResource("13")
+centered = false
+offset = Vector2(-163, -178)
+flip_h = false
+
+[node name="DeepGrovePebbles" type="Sprite2D" parent="."]
+position = Vector2(3150, 600)
+scale = Vector2(0.29008, 0.29008)
+texture = ExtResource("22")
+centered = false
+offset = Vector2(-119, -133)
+flip_h = true
+
+[node name="SlenderMossStone" type="Sprite2D" parent="."]
+position = Vector2(3520, 624)
+scale = Vector2(0.39583, 0.39583)
+texture = ExtResource("5")
+centered = false
+offset = Vector2(-100.5, -242)
+flip_h = false
+
+[node name="FernClusterStone" type="Sprite2D" parent="."]
+position = Vector2(3900, 624)
+scale = Vector2(0.35461, 0.35461)
+texture = ExtResource("17")
+centered = false
+offset = Vector2(-129, -143)
+flip_h = false
+
+[node name="OldTrailSlate" type="Sprite2D" parent="."]
+position = Vector2(4440, 606)
+scale = Vector2(0.34351, 0.34351)
+texture = ExtResource("6")
+centered = false
+offset = Vector2(-164, -133)
+flip_h = true
+
+[node name="ArenaApproachBoulder" type="Sprite2D" parent="."]
+position = Vector2(4750, 606)
+scale = Vector2(0.50279, 0.50279)
+texture = ExtResource("21")
+centered = false
+offset = Vector2(-115, -181)
+flip_h = false
+
+[node name="ArenaMossyStone" type="Sprite2D" parent="."]
+position = Vector2(5150, 590)
+scale = Vector2(0.37572, 0.37572)
+texture = ExtResource("11")
+centered = false
+offset = Vector2(-173.5, -175)
+flip_h = false
+
+[node name="FinalGrovePebbles" type="Sprite2D" parent="."]
+position = Vector2(5690, 620)
+scale = Vector2(0.25714, 0.25714)
+texture = ExtResource("15")
+centered = false
+offset = Vector2(-106, -107)
+flip_h = true
+
+[node name="EndGroveStone" type="Sprite2D" parent="."]
+position = Vector2(6100, 620)
+scale = Vector2(0.44737, 0.44737)
+texture = ExtResource("23")
+centered = false
+offset = Vector2(-88, -192)
+flip_h = false

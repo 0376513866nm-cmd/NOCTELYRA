@@ -1,0 +1,10435 @@
+{
+	"cases": [
+		{
+			"bumped_step": false,
+			"case": "step 20px right",
+			"peak_above_base": 36.32421875,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 180.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 181.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 183,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 185,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 187.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 190.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 194,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 198,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 202.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 207,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 211.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 216,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 220.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 225,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 229.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 234,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 238.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 243,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 247.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 252,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 256.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 261,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 265.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 23,
+					"vy": -273.495880126953,
+					"x": 270.033081054688,
+					"y": 625.408203125
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 24,
+					"vy": -255.162551879883,
+					"x": 274.533081054688,
+					"y": 621.155517578125
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 25,
+					"vy": -236.829223632813,
+					"x": 279.033081054688,
+					"y": 617.208374023438
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 26,
+					"vy": -218.495895385742,
+					"x": 283.533081054688,
+					"y": 613.566772460938
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 27,
+					"vy": -200.162567138672,
+					"x": 288.033081054688,
+					"y": 610.230712890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 28,
+					"vy": -181.829238891602,
+					"x": 292.533081054688,
+					"y": 607.2001953125
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 29,
+					"vy": -163.495910644531,
+					"x": 297.033081054688,
+					"y": 604.475280761719
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 30,
+					"vy": -145.162582397461,
+					"x": 301.533081054688,
+					"y": 602.055908203125
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 31,
+					"vy": -126.829246520996,
+					"x": 306.033081054688,
+					"y": 599.942077636719
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 32,
+					"vy": -108.495910644531,
+					"x": 310.533081054688,
+					"y": 598.1337890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 33,
+					"vy": -90.1625747680664,
+					"x": 315.033081054688,
+					"y": 596.631103515625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 34,
+					"vy": -71.8292388916016,
+					"x": 319.533081054688,
+					"y": 595.433959960938
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 35,
+					"vy": -53.495906829834,
+					"x": 324.033081054688,
+					"y": 594.542358398438
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 36,
+					"vy": -35.1625747680664,
+					"x": 328.533081054688,
+					"y": 593.956298828125
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 37,
+					"vy": -16.8292407989502,
+					"x": 333.033081054688,
+					"y": 593.67578125
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 38,
+					"vy": 1.50409257411957,
+					"x": 337.533081054688,
+					"y": 593.700866699219
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 39,
+					"vy": 19.8374252319336,
+					"x": 342.033081054688,
+					"y": 594.031494140625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 40,
+					"vy": 38.1707572937012,
+					"x": 346.533081054688,
+					"y": 594.667663574219
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 41,
+					"vy": 56.5040893554688,
+					"x": 351.033081054688,
+					"y": 595.609375
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 42,
+					"vy": 74.8374252319336,
+					"x": 355.533081054688,
+					"y": 596.856689453125
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 43,
+					"vy": 93.1707611083984,
+					"x": 360.033081054688,
+					"y": 598.409545898438
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 44,
+					"vy": 111.504096984863,
+					"x": 364.533081054688,
+					"y": 600.267944335938
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 45,
+					"vy": 129.837432861328,
+					"x": 369.033081054688,
+					"y": 602.431884765625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 46,
+					"vy": 148.170761108398,
+					"x": 373.533081054688,
+					"y": 604.9013671875
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 47,
+					"vy": 166.504089355469,
+					"x": 378.033081054688,
+					"y": 607.676452636719
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 48,
+					"vy": 0,
+					"x": 382.533081054688,
+					"y": 609.933654785156
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 49,
+					"vy": 0,
+					"x": 387.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 50,
+					"vy": 0,
+					"x": 391.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 51,
+					"vy": 0,
+					"x": 396.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 52,
+					"vy": 0,
+					"x": 400.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 53,
+					"vy": 0,
+					"x": 405.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 409.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 414.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 418.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 423.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 427.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 432.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 436.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 441.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 445.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 450.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 454.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 459.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 463.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 468.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 472.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 477.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 481.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 486.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 490.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 495.033050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 499.533050537109,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 504.033050537109,
+					"y": 610.511962890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 508.548797607422,
+					"y": 612.465087890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 513.080139160156,
+					"y": 612.465087890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 78,
+					"vy": 0,
+					"x": 517.580139160156,
+					"y": 612.465087890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 79,
+					"vy": 18.3333339691162,
+					"x": 522.080139160156,
+					"y": 612.770629882813
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 80,
+					"vy": 36.6666679382324,
+					"x": 526.580139160156,
+					"y": 613.381713867188
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 81,
+					"vy": 55,
+					"x": 531.080139160156,
+					"y": 614.298400878906
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 82,
+					"vy": 73.3333358764648,
+					"x": 535.580139160156,
+					"y": 615.520629882813
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 83,
+					"vy": 91.6666717529297,
+					"x": 540.080139160156,
+					"y": 617.048400878906
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 84,
+					"vy": 110.000007629395,
+					"x": 544.580139160156,
+					"y": 618.881713867188
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 85,
+					"vy": 128.333343505859,
+					"x": 549.080139160156,
+					"y": 621.020629882813
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 86,
+					"vy": 146.66667175293,
+					"x": 553.580139160156,
+					"y": 623.465087890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 87,
+					"vy": 165,
+					"x": 558.080139160156,
+					"y": 626.215087890625
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 88,
+					"vy": 183.33332824707,
+					"x": 562.580139160156,
+					"y": 629.270629882813
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 89,
+					"vy": 0,
+					"x": 567.080139160156,
+					"y": 629.933471679688
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "LAND",
+					"tick": 90,
+					"vy": 0,
+					"x": 571.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 91,
+					"vy": 0,
+					"x": 576.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 92,
+					"vy": 0,
+					"x": 580.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 93,
+					"vy": 0,
+					"x": 585.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 94,
+					"vy": 0,
+					"x": 589.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 95,
+					"vy": 0,
+					"x": 594.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 96,
+					"vy": 0,
+					"x": 598.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 97,
+					"vy": 0,
+					"x": 603.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 98,
+					"vy": 0,
+					"x": 607.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 99,
+					"vy": 0,
+					"x": 612.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 100,
+					"vy": 0,
+					"x": 616.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 101,
+					"vy": 0,
+					"x": 621.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 102,
+					"vy": 0,
+					"x": 625.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 103,
+					"vy": 0,
+					"x": 630.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 104,
+					"vy": 0,
+					"x": 634.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 639.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 643.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 648.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 652.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 657.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 661.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 666.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 670.580139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 675.080139160156,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 679.580139160156,
+					"y": 629.933837890625
+				}
+			],
+			"takeoff_gap": 34.4669189453125
+		},
+		{
+			"bumped_step": false,
+			"case": "step 20px left",
+			"peak_above_base": 36.32421875,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 619.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 618.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 617,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 615,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 612.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 609.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 606,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 602,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 597.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 593,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 588.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 584,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 579.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 575,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 570.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 566,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 561.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 557,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 552.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 548,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 543.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 539,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 534.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "AUTO_HOP",
+					"tick": 23,
+					"vy": -273.495880126953,
+					"x": 529.966918945313,
+					"y": 625.408203125
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 24,
+					"vy": -255.162551879883,
+					"x": 525.466918945313,
+					"y": 621.155517578125
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 25,
+					"vy": -236.829223632813,
+					"x": 520.966918945313,
+					"y": 617.208374023438
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 26,
+					"vy": -218.495895385742,
+					"x": 516.466918945313,
+					"y": 613.566772460938
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 27,
+					"vy": -200.162567138672,
+					"x": 511.966918945313,
+					"y": 610.230712890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 28,
+					"vy": -181.829238891602,
+					"x": 507.466918945313,
+					"y": 607.2001953125
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 29,
+					"vy": -163.495910644531,
+					"x": 502.966918945313,
+					"y": 604.475280761719
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 30,
+					"vy": -145.162582397461,
+					"x": 498.466918945313,
+					"y": 602.055908203125
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 31,
+					"vy": -126.829246520996,
+					"x": 493.966918945313,
+					"y": 599.942077636719
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 32,
+					"vy": -108.495910644531,
+					"x": 489.466918945313,
+					"y": 598.1337890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 33,
+					"vy": -90.1625747680664,
+					"x": 484.966918945313,
+					"y": 596.631103515625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 34,
+					"vy": -71.8292388916016,
+					"x": 480.466918945313,
+					"y": 595.433959960938
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 35,
+					"vy": -53.495906829834,
+					"x": 475.966918945313,
+					"y": 594.542358398438
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 36,
+					"vy": -35.1625747680664,
+					"x": 471.466918945313,
+					"y": 593.956298828125
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 37,
+					"vy": -16.8292407989502,
+					"x": 466.966918945313,
+					"y": 593.67578125
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 38,
+					"vy": 1.50409257411957,
+					"x": 462.466918945313,
+					"y": 593.700866699219
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 39,
+					"vy": 19.8374252319336,
+					"x": 457.966918945313,
+					"y": 594.031494140625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 40,
+					"vy": 38.1707572937012,
+					"x": 453.466918945313,
+					"y": 594.667663574219
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 41,
+					"vy": 56.5040893554688,
+					"x": 448.966918945313,
+					"y": 595.609375
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 42,
+					"vy": 74.8374252319336,
+					"x": 444.466918945313,
+					"y": 596.856689453125
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 43,
+					"vy": 93.1707611083984,
+					"x": 439.966918945313,
+					"y": 598.409545898438
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 44,
+					"vy": 111.504096984863,
+					"x": 435.466918945313,
+					"y": 600.267944335938
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 45,
+					"vy": 129.837432861328,
+					"x": 430.966918945313,
+					"y": 602.431884765625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 46,
+					"vy": 148.170761108398,
+					"x": 426.466918945313,
+					"y": 604.9013671875
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 47,
+					"vy": 166.504089355469,
+					"x": 421.966918945313,
+					"y": 607.676452636719
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 48,
+					"vy": 0,
+					"x": 417.466918945313,
+					"y": 609.933654785156
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 49,
+					"vy": 0,
+					"x": 412.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 50,
+					"vy": 0,
+					"x": 408.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 51,
+					"vy": 0,
+					"x": 403.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 52,
+					"vy": 0,
+					"x": 399.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 53,
+					"vy": 0,
+					"x": 394.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 390.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 385.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 381.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 376.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 372.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 367.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 363.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 358.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 354.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 349.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 345.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 340.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 336.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 331.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 327.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 322.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 318.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 313.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 309.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 304.966949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 300.466949462891,
+					"y": 609.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 295.966949462891,
+					"y": 610.511962890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 291.451232910156,
+					"y": 612.465087890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 286.919860839844,
+					"y": 612.465087890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "FALL",
+					"tick": 78,
+					"vy": 0,
+					"x": 282.419860839844,
+					"y": 612.465087890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 79,
+					"vy": 18.3333339691162,
+					"x": 277.919860839844,
+					"y": 612.770629882813
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 80,
+					"vy": 36.6666679382324,
+					"x": 273.419860839844,
+					"y": 613.381713867188
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 81,
+					"vy": 55,
+					"x": 268.919860839844,
+					"y": 614.298400878906
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 82,
+					"vy": 73.3333358764648,
+					"x": 264.419860839844,
+					"y": 615.520629882813
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 83,
+					"vy": 91.6666717529297,
+					"x": 259.919860839844,
+					"y": 617.048400878906
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 84,
+					"vy": 110.000007629395,
+					"x": 255.419860839844,
+					"y": 618.881713867188
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 85,
+					"vy": 128.333343505859,
+					"x": 250.919860839844,
+					"y": 621.020629882813
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 86,
+					"vy": 146.66667175293,
+					"x": 246.419860839844,
+					"y": 623.465087890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 87,
+					"vy": 165,
+					"x": 241.919860839844,
+					"y": 626.215087890625
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 88,
+					"vy": 183.33332824707,
+					"x": 237.419860839844,
+					"y": 629.270629882813
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 89,
+					"vy": 0,
+					"x": 232.918045043945,
+					"y": 629.935974121094
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "LAND",
+					"tick": 90,
+					"vy": 0,
+					"x": 228.418121337891,
+					"y": 629.930480957031
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 91,
+					"vy": 0,
+					"x": 223.918121337891,
+					"y": 629.930480957031
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 92,
+					"vy": 0,
+					"x": 219.418121337891,
+					"y": 629.930480957031
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 93,
+					"vy": 0,
+					"x": 214.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 94,
+					"vy": 0,
+					"x": 210.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 95,
+					"vy": 0,
+					"x": 205.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 96,
+					"vy": 0,
+					"x": 201.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 97,
+					"vy": 0,
+					"x": 196.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 98,
+					"vy": 0,
+					"x": 192.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 99,
+					"vy": 0,
+					"x": 187.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 100,
+					"vy": 0,
+					"x": 183.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 101,
+					"vy": 0,
+					"x": 178.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 102,
+					"vy": 0,
+					"x": 174.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 103,
+					"vy": 0,
+					"x": 169.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 104,
+					"vy": 0,
+					"x": 165.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 160.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 156.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 151.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 147.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 142.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 138.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 133.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 129.418121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 124.918121337891,
+					"y": 629.924865722656
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 120.418121337891,
+					"y": 629.924865722656
+				}
+			],
+			"takeoff_gap": 34.4669189453125
+		},
+		{
+			"bumped_step": true,
+			"case": "step 40px right",
+			"peak_above_base": 56.9376831054688,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 180.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 181.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 183,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 185,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 187.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 190.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 194,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 198,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 202.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 207,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 211.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 216,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 220.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 225,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 229.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 234,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 238.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 243,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 247.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 252,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 256.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 261,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 265.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 23,
+					"vy": -344.673767089844,
+					"x": 270.032104492188,
+					"y": 624.214416503906
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 24,
+					"vy": -326.340423583984,
+					"x": 274.532104492188,
+					"y": 618.775390625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 25,
+					"vy": -308.007080078125,
+					"x": 279.032104492188,
+					"y": 613.641967773438
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 26,
+					"vy": -289.673736572266,
+					"x": 283.532104492188,
+					"y": 608.814086914063
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 27,
+					"vy": -271.340393066406,
+					"x": 283.925262451172,
+					"y": 604.291748046875
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 28,
+					"vy": -253.007064819336,
+					"x": 284.258605957031,
+					"y": 600.074951171875
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 29,
+					"vy": -234.673736572266,
+					"x": 284.925262451172,
+					"y": 596.163696289063
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 30,
+					"vy": -216.340408325195,
+					"x": 285.925262451172,
+					"y": 592.558044433594
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 31,
+					"vy": -198.007080078125,
+					"x": 287.258605957031,
+					"y": 589.257934570313
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 32,
+					"vy": -179.673751831055,
+					"x": 288.925262451172,
+					"y": 586.263366699219
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 33,
+					"vy": -161.340423583984,
+					"x": 290.925262451172,
+					"y": 583.574340820313
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 34,
+					"vy": -143.007095336914,
+					"x": 293.258605957031,
+					"y": 581.19091796875
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 35,
+					"vy": -124.673759460449,
+					"x": 295.925262451172,
+					"y": 579.113037109375
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 36,
+					"vy": -106.340423583984,
+					"x": 298.925262451172,
+					"y": 577.340698242188
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 37,
+					"vy": -88.0070877075195,
+					"x": 302.258605957031,
+					"y": 575.873901367188
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 38,
+					"vy": -69.6737518310547,
+					"x": 305.925262451172,
+					"y": 574.712646484375
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 39,
+					"vy": -51.3404197692871,
+					"x": 309.925262451172,
+					"y": 573.856994628906
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 40,
+					"vy": -33.0070877075195,
+					"x": 314.258605957031,
+					"y": 573.306884765625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 41,
+					"vy": -14.6737546920776,
+					"x": 318.758605957031,
+					"y": 573.062316894531
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 42,
+					"vy": 3.65957856178284,
+					"x": 323.258605957031,
+					"y": 573.123291015625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 43,
+					"vy": 21.9929122924805,
+					"x": 327.758605957031,
+					"y": 573.489868164063
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 44,
+					"vy": 40.326244354248,
+					"x": 332.258605957031,
+					"y": 574.161987304688
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 45,
+					"vy": 58.6595764160156,
+					"x": 336.758605957031,
+					"y": 575.1396484375
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 46,
+					"vy": 76.9929122924805,
+					"x": 341.258605957031,
+					"y": 576.4228515625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 47,
+					"vy": 95.3262481689453,
+					"x": 345.758605957031,
+					"y": 578.011596679688
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 48,
+					"vy": 113.65958404541,
+					"x": 350.258605957031,
+					"y": 579.905944824219
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 49,
+					"vy": 131.992919921875,
+					"x": 354.758605957031,
+					"y": 582.105834960938
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 50,
+					"vy": 150.326248168945,
+					"x": 359.258605957031,
+					"y": 584.611267089844
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 51,
+					"vy": 168.659576416016,
+					"x": 363.758605957031,
+					"y": 587.422241210938
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "AUTO_HOP",
+					"tick": 52,
+					"vy": 0,
+					"x": 368.258605957031,
+					"y": 589.933715820313
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 53,
+					"vy": 0,
+					"x": 372.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 377.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 381.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 386.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 390.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 395.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 399.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 404.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 408.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 413.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 417.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 422.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 426.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 431.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 435.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 440.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 444.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 449.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 453.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 458.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 462.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 467.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 471.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 476.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 480.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 78,
+					"vy": 0,
+					"x": 485.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 79,
+					"vy": 0,
+					"x": 489.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 80,
+					"vy": 0,
+					"x": 494.258605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 81,
+					"vy": 0,
+					"x": 498.758605957031,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 82,
+					"vy": 0,
+					"x": 503.258605957031,
+					"y": 590.324462890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 83,
+					"vy": 0,
+					"x": 507.770202636719,
+					"y": 592.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 84,
+					"vy": 0,
+					"x": 512.3017578125,
+					"y": 592.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 85,
+					"vy": 0,
+					"x": 516.8017578125,
+					"y": 592.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 86,
+					"vy": 18.3333339691162,
+					"x": 521.3017578125,
+					"y": 592.317504882813
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 87,
+					"vy": 36.6666679382324,
+					"x": 525.8017578125,
+					"y": 592.928588867188
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 88,
+					"vy": 55,
+					"x": 530.3017578125,
+					"y": 593.845275878906
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 89,
+					"vy": 73.3333358764648,
+					"x": 534.8017578125,
+					"y": 595.067504882813
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 90,
+					"vy": 91.6666717529297,
+					"x": 539.3017578125,
+					"y": 596.595275878906
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 91,
+					"vy": 110.000007629395,
+					"x": 543.8017578125,
+					"y": 598.428588867188
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 92,
+					"vy": 128.333343505859,
+					"x": 548.3017578125,
+					"y": 600.567504882813
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 93,
+					"vy": 146.66667175293,
+					"x": 552.8017578125,
+					"y": 603.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 94,
+					"vy": 165,
+					"x": 557.3017578125,
+					"y": 605.761962890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 95,
+					"vy": 183.33332824707,
+					"x": 561.8017578125,
+					"y": 608.817504882813
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 96,
+					"vy": 201.666656494141,
+					"x": 566.3017578125,
+					"y": 612.178588867188
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 97,
+					"vy": 219.999984741211,
+					"x": 570.8017578125,
+					"y": 615.845275878906
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 98,
+					"vy": 238.333312988281,
+					"x": 575.3017578125,
+					"y": 619.817504882813
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 99,
+					"vy": 256.666656494141,
+					"x": 579.8017578125,
+					"y": 624.095275878906
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "FALL",
+					"tick": 100,
+					"vy": 275,
+					"x": 584.3017578125,
+					"y": 628.678588867188
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "FALL",
+					"tick": 101,
+					"vy": 0,
+					"x": 588.8017578125,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "LAND",
+					"tick": 102,
+					"vy": 0,
+					"x": 593.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 103,
+					"vy": 0,
+					"x": 597.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 104,
+					"vy": 0,
+					"x": 602.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 606.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 611.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 615.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 620.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 624.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 629.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 633.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 638.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 642.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 647.3017578125,
+					"y": 629.933837890625
+				}
+			],
+			"takeoff_gap": 34.4678955078125
+		},
+		{
+			"bumped_step": true,
+			"case": "step 40px left",
+			"peak_above_base": 56.9376831054688,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 619.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 618.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 617,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 615,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 612.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 609.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 606,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 602,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 597.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 593,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 588.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 584,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 579.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 575,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 570.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 566,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 561.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 557,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 552.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 548,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 543.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 539,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 534.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 23,
+					"vy": -344.673767089844,
+					"x": 529.967895507813,
+					"y": 624.214416503906
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 24,
+					"vy": -326.340423583984,
+					"x": 525.467895507813,
+					"y": 618.775390625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 25,
+					"vy": -308.007080078125,
+					"x": 520.967895507813,
+					"y": 613.641967773438
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 26,
+					"vy": -289.673736572266,
+					"x": 516.467895507813,
+					"y": 608.814086914063
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 27,
+					"vy": -271.340393066406,
+					"x": 516.07470703125,
+					"y": 604.291748046875
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 28,
+					"vy": -253.007064819336,
+					"x": 515.741394042969,
+					"y": 600.074951171875
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 29,
+					"vy": -234.673736572266,
+					"x": 515.07470703125,
+					"y": 596.163696289063
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 30,
+					"vy": -216.340408325195,
+					"x": 514.07470703125,
+					"y": 592.558044433594
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 31,
+					"vy": -198.007080078125,
+					"x": 512.741394042969,
+					"y": 589.257934570313
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 32,
+					"vy": -179.673751831055,
+					"x": 511.074737548828,
+					"y": 586.263366699219
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 33,
+					"vy": -161.340423583984,
+					"x": 509.074737548828,
+					"y": 583.574340820313
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 34,
+					"vy": -143.007095336914,
+					"x": 506.741394042969,
+					"y": 581.19091796875
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 35,
+					"vy": -124.673759460449,
+					"x": 504.074737548828,
+					"y": 579.113037109375
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 36,
+					"vy": -106.340423583984,
+					"x": 501.074737548828,
+					"y": 577.340698242188
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 37,
+					"vy": -88.0070877075195,
+					"x": 497.741394042969,
+					"y": 575.873901367188
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 38,
+					"vy": -69.6737518310547,
+					"x": 494.074737548828,
+					"y": 574.712646484375
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 39,
+					"vy": -51.3404197692871,
+					"x": 490.074737548828,
+					"y": 573.856994628906
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 40,
+					"vy": -33.0070877075195,
+					"x": 485.741394042969,
+					"y": 573.306884765625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 41,
+					"vy": -14.6737546920776,
+					"x": 481.241394042969,
+					"y": 573.062316894531
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 42,
+					"vy": 3.65957856178284,
+					"x": 476.741394042969,
+					"y": 573.123291015625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 43,
+					"vy": 21.9929122924805,
+					"x": 472.241394042969,
+					"y": 573.489868164063
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 44,
+					"vy": 40.326244354248,
+					"x": 467.741394042969,
+					"y": 574.161987304688
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 45,
+					"vy": 58.6595764160156,
+					"x": 463.241394042969,
+					"y": 575.1396484375
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 46,
+					"vy": 76.9929122924805,
+					"x": 458.741394042969,
+					"y": 576.4228515625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 47,
+					"vy": 95.3262481689453,
+					"x": 454.241394042969,
+					"y": 578.011596679688
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 48,
+					"vy": 113.65958404541,
+					"x": 449.741394042969,
+					"y": 579.905944824219
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 49,
+					"vy": 131.992919921875,
+					"x": 445.241394042969,
+					"y": 582.105834960938
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 50,
+					"vy": 150.326248168945,
+					"x": 440.741394042969,
+					"y": 584.611267089844
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 51,
+					"vy": 168.659576416016,
+					"x": 436.241394042969,
+					"y": 587.422241210938
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 52,
+					"vy": 0,
+					"x": 431.741394042969,
+					"y": 589.933715820313
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 53,
+					"vy": 0,
+					"x": 427.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 422.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 418.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 413.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 409.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 404.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 400.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 395.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 391.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 386.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 382.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 377.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 373.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 368.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 364.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 359.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 355.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 350.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 346.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 341.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 337.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 332.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 328.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 323.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 319.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 78,
+					"vy": 0,
+					"x": 314.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 79,
+					"vy": 0,
+					"x": 310.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 80,
+					"vy": 0,
+					"x": 305.741394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 81,
+					"vy": 0,
+					"x": 301.241394042969,
+					"y": 589.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 82,
+					"vy": 0,
+					"x": 296.741394042969,
+					"y": 590.324462890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 83,
+					"vy": 0,
+					"x": 292.229797363281,
+					"y": 592.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 84,
+					"vy": 0,
+					"x": 287.698211669922,
+					"y": 592.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 85,
+					"vy": 0,
+					"x": 283.198211669922,
+					"y": 592.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 86,
+					"vy": 18.3333339691162,
+					"x": 278.698211669922,
+					"y": 592.317504882813
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 87,
+					"vy": 36.6666679382324,
+					"x": 274.198211669922,
+					"y": 592.928588867188
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 88,
+					"vy": 55,
+					"x": 269.698211669922,
+					"y": 593.845275878906
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 89,
+					"vy": 73.3333358764648,
+					"x": 265.198211669922,
+					"y": 595.067504882813
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 90,
+					"vy": 91.6666717529297,
+					"x": 260.698211669922,
+					"y": 596.595275878906
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 91,
+					"vy": 110.000007629395,
+					"x": 256.198211669922,
+					"y": 598.428588867188
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 92,
+					"vy": 128.333343505859,
+					"x": 251.698211669922,
+					"y": 600.567504882813
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 93,
+					"vy": 146.66667175293,
+					"x": 247.198211669922,
+					"y": 603.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 94,
+					"vy": 165,
+					"x": 242.698211669922,
+					"y": 605.761962890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 95,
+					"vy": 183.33332824707,
+					"x": 238.198211669922,
+					"y": 608.817504882813
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 96,
+					"vy": 201.666656494141,
+					"x": 233.698211669922,
+					"y": 612.178588867188
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 97,
+					"vy": 219.999984741211,
+					"x": 229.198211669922,
+					"y": 615.845275878906
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 98,
+					"vy": 238.333312988281,
+					"x": 224.698211669922,
+					"y": 619.817504882813
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 99,
+					"vy": 256.666656494141,
+					"x": 220.198211669922,
+					"y": 624.095275878906
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "FALL",
+					"tick": 100,
+					"vy": 275,
+					"x": 215.698211669922,
+					"y": 628.678588867188
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "FALL",
+					"tick": 101,
+					"vy": 0,
+					"x": 211.191696166992,
+					"y": 629.939819335938
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "LAND",
+					"tick": 102,
+					"vy": 0,
+					"x": 206.69172668457,
+					"y": 629.933715820313
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 103,
+					"vy": 0,
+					"x": 202.191665649414,
+					"y": 629.925231933594
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 104,
+					"vy": 0,
+					"x": 197.691665649414,
+					"y": 629.925231933594
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 193.191665649414,
+					"y": 629.925231933594
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 188.691665649414,
+					"y": 629.925231933594
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 184.191665649414,
+					"y": 629.925231933594
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 179.691665649414,
+					"y": 629.924133300781
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 175.191665649414,
+					"y": 629.924133300781
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 170.691665649414,
+					"y": 629.924133300781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 166.191665649414,
+					"y": 629.924133300781
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 161.691665649414,
+					"y": 629.924133300781
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 157.191665649414,
+					"y": 629.924133300781
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 152.691665649414,
+					"y": 629.924133300781
+				}
+			],
+			"takeoff_gap": 34.4678955078125
+		},
+		{
+			"bumped_step": true,
+			"case": "step 48px right",
+			"peak_above_base": 63.6537475585938,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 180.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 181.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 183,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 185,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 187.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 190.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 194,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 198,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 202.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 207,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 211.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 216,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 220.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 225,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 229.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 234,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 238.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 243,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 247.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 252,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 256.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 261,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 265.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 23,
+					"vy": -365,
+					"x": 270.031646728516,
+					"y": 623.873901367188
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 24,
+					"vy": -346.666656494141,
+					"x": 274.531646728516,
+					"y": 618.096130371094
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 25,
+					"vy": -328.333312988281,
+					"x": 279.031646728516,
+					"y": 612.623901367188
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 26,
+					"vy": -309.999969482422,
+					"x": 283.531646728516,
+					"y": 607.457214355469
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 27,
+					"vy": -291.666625976563,
+					"x": 283.925231933594,
+					"y": 602.596130371094
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 28,
+					"vy": -273.333282470703,
+					"x": 283.92529296875,
+					"y": 598.040588378906
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 29,
+					"vy": -254.999954223633,
+					"x": 284.258605957031,
+					"y": 593.790710449219
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 30,
+					"vy": -236.666625976563,
+					"x": 284.925262451172,
+					"y": 589.846252441406
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 31,
+					"vy": -218.333297729492,
+					"x": 285.925262451172,
+					"y": 586.207336425781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 32,
+					"vy": -199.999969482422,
+					"x": 287.258605957031,
+					"y": 582.8740234375
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 33,
+					"vy": -181.666641235352,
+					"x": 288.925262451172,
+					"y": 579.846252441406
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 34,
+					"vy": -163.333312988281,
+					"x": 290.925262451172,
+					"y": 577.1240234375
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 35,
+					"vy": -144.999984741211,
+					"x": 293.258605957031,
+					"y": 574.707336425781
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 36,
+					"vy": -126.666648864746,
+					"x": 295.925262451172,
+					"y": 572.596252441406
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 37,
+					"vy": -108.333312988281,
+					"x": 298.925262451172,
+					"y": 570.790710449219
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 38,
+					"vy": -89.9999771118164,
+					"x": 302.258605957031,
+					"y": 569.290710449219
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 39,
+					"vy": -71.6666412353516,
+					"x": 305.925262451172,
+					"y": 568.096252441406
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 40,
+					"vy": -53.333309173584,
+					"x": 309.925262451172,
+					"y": 567.207336425781
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 41,
+					"vy": -34.9999771118164,
+					"x": 314.258605957031,
+					"y": 566.6240234375
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 42,
+					"vy": -16.6666431427002,
+					"x": 318.758605957031,
+					"y": 566.346252441406
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 43,
+					"vy": 1.66669023036957,
+					"x": 323.258605957031,
+					"y": 566.3740234375
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 44,
+					"vy": 20.0000228881836,
+					"x": 327.758605957031,
+					"y": 566.707336425781
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 45,
+					"vy": 38.3333549499512,
+					"x": 332.258605957031,
+					"y": 567.346252441406
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 46,
+					"vy": 56.6666870117188,
+					"x": 336.758605957031,
+					"y": 568.290710449219
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 47,
+					"vy": 75.0000228881836,
+					"x": 341.258605957031,
+					"y": 569.540710449219
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 48,
+					"vy": 93.3333587646484,
+					"x": 345.758605957031,
+					"y": 571.096252441406
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 49,
+					"vy": 111.666694641113,
+					"x": 350.258605957031,
+					"y": 572.957336425781
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 50,
+					"vy": 130.000030517578,
+					"x": 354.758605957031,
+					"y": 575.1240234375
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 51,
+					"vy": 148.333358764648,
+					"x": 359.258605957031,
+					"y": 577.596252441406
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 52,
+					"vy": 166.666687011719,
+					"x": 363.758605957031,
+					"y": 580.3740234375
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "AUTO_HOP",
+					"tick": 53,
+					"vy": 0,
+					"x": 368.258605957031,
+					"y": 581.93359375
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 372.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 377.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 381.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 386.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 390.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 395.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 399.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 404.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 408.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 413.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 417.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 422.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 426.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 431.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 435.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 440.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 444.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 449.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 453.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 458.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 462.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 467.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 471.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 476.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 78,
+					"vy": 0,
+					"x": 480.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 79,
+					"vy": 0,
+					"x": 485.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 80,
+					"vy": 0,
+					"x": 489.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 81,
+					"vy": 0,
+					"x": 494.258575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 82,
+					"vy": 0,
+					"x": 498.758575439453,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 83,
+					"vy": 0,
+					"x": 503.258575439453,
+					"y": 582.324462890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 84,
+					"vy": 0,
+					"x": 507.770202636719,
+					"y": 584.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 85,
+					"vy": 0,
+					"x": 512.3017578125,
+					"y": 584.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 86,
+					"vy": 0,
+					"x": 516.8017578125,
+					"y": 584.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 87,
+					"vy": 18.3333339691162,
+					"x": 521.3017578125,
+					"y": 584.317504882813
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 88,
+					"vy": 36.6666679382324,
+					"x": 525.8017578125,
+					"y": 584.928588867188
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 89,
+					"vy": 55,
+					"x": 530.3017578125,
+					"y": 585.845275878906
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 90,
+					"vy": 73.3333358764648,
+					"x": 534.8017578125,
+					"y": 587.067504882813
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 91,
+					"vy": 91.6666717529297,
+					"x": 539.3017578125,
+					"y": 588.595275878906
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 92,
+					"vy": 110.000007629395,
+					"x": 543.8017578125,
+					"y": 590.428588867188
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 93,
+					"vy": 128.333343505859,
+					"x": 548.3017578125,
+					"y": 592.567504882813
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 94,
+					"vy": 146.66667175293,
+					"x": 552.8017578125,
+					"y": 595.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 95,
+					"vy": 165,
+					"x": 557.3017578125,
+					"y": 597.761962890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 96,
+					"vy": 183.33332824707,
+					"x": 561.8017578125,
+					"y": 600.817504882813
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 97,
+					"vy": 201.666656494141,
+					"x": 566.3017578125,
+					"y": 604.178588867188
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 98,
+					"vy": 219.999984741211,
+					"x": 570.8017578125,
+					"y": 607.845275878906
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 99,
+					"vy": 238.333312988281,
+					"x": 575.3017578125,
+					"y": 611.817504882813
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 100,
+					"vy": 256.666656494141,
+					"x": 579.8017578125,
+					"y": 616.095275878906
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "FALL",
+					"tick": 101,
+					"vy": 275,
+					"x": 584.3017578125,
+					"y": 620.678588867188
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "FALL",
+					"tick": 102,
+					"vy": 293.333343505859,
+					"x": 588.8017578125,
+					"y": 625.567504882813
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "FALL",
+					"tick": 103,
+					"vy": 0,
+					"x": 593.3017578125,
+					"y": 629.933654785156
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "LAND",
+					"tick": 104,
+					"vy": 0,
+					"x": 597.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 602.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 606.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 611.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 615.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 620.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 624.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 629.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 633.8017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 638.3017578125,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 642.8017578125,
+					"y": 629.933837890625
+				}
+			],
+			"takeoff_gap": 34.4683532714844
+		},
+		{
+			"bumped_step": true,
+			"case": "step 48px left",
+			"peak_above_base": 63.6537475585938,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 619.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 618.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 617,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 615,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 612.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 609.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 606,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 602,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 597.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 593,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 588.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 584,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 579.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 575,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 570.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 566,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 561.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 557,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 552.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 548,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 543.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 539,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 534.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "AUTO_HOP",
+					"tick": 23,
+					"vy": -365,
+					"x": 529.968383789063,
+					"y": 623.873901367188
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 24,
+					"vy": -346.666656494141,
+					"x": 525.468383789063,
+					"y": 618.096130371094
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "AUTO_HOP",
+					"tick": 25,
+					"vy": -328.333312988281,
+					"x": 520.968383789063,
+					"y": 612.623901367188
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 26,
+					"vy": -309.999969482422,
+					"x": 516.468383789063,
+					"y": 607.457214355469
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 27,
+					"vy": -291.666625976563,
+					"x": 516.074768066406,
+					"y": 602.596130371094
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "AUTO_HOP",
+					"tick": 28,
+					"vy": -273.333282470703,
+					"x": 516.07470703125,
+					"y": 598.040588378906
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 29,
+					"vy": -254.999954223633,
+					"x": 515.741394042969,
+					"y": 593.790710449219
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "AUTO_HOP",
+					"tick": 30,
+					"vy": -236.666625976563,
+					"x": 515.07470703125,
+					"y": 589.846252441406
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 31,
+					"vy": -218.333297729492,
+					"x": 514.07470703125,
+					"y": 586.207336425781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "AUTO_HOP",
+					"tick": 32,
+					"vy": -199.999969482422,
+					"x": 512.741394042969,
+					"y": 582.8740234375
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 33,
+					"vy": -181.666641235352,
+					"x": 511.074737548828,
+					"y": 579.846252441406
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 34,
+					"vy": -163.333312988281,
+					"x": 509.074737548828,
+					"y": 577.1240234375
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "AUTO_HOP",
+					"tick": 35,
+					"vy": -144.999984741211,
+					"x": 506.741394042969,
+					"y": 574.707336425781
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 36,
+					"vy": -126.666648864746,
+					"x": 504.074737548828,
+					"y": 572.596252441406
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "AUTO_HOP",
+					"tick": 37,
+					"vy": -108.333312988281,
+					"x": 501.074737548828,
+					"y": 570.790710449219
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 38,
+					"vy": -89.9999771118164,
+					"x": 497.741394042969,
+					"y": 569.290710449219
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 39,
+					"vy": -71.6666412353516,
+					"x": 494.074737548828,
+					"y": 568.096252441406
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "AUTO_HOP",
+					"tick": 40,
+					"vy": -53.333309173584,
+					"x": 490.074737548828,
+					"y": 567.207336425781
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 41,
+					"vy": -34.9999771118164,
+					"x": 485.741394042969,
+					"y": 566.6240234375
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "AUTO_HOP",
+					"tick": 42,
+					"vy": -16.6666431427002,
+					"x": 481.241394042969,
+					"y": 566.346252441406
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 43,
+					"vy": 1.66669023036957,
+					"x": 476.741394042969,
+					"y": 566.3740234375
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 44,
+					"vy": 20.0000228881836,
+					"x": 472.241394042969,
+					"y": 566.707336425781
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "AUTO_HOP",
+					"tick": 45,
+					"vy": 38.3333549499512,
+					"x": 467.741394042969,
+					"y": 567.346252441406
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 46,
+					"vy": 56.6666870117188,
+					"x": 463.241394042969,
+					"y": 568.290710449219
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "AUTO_HOP",
+					"tick": 47,
+					"vy": 75.0000228881836,
+					"x": 458.741394042969,
+					"y": 569.540710449219
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 48,
+					"vy": 93.3333587646484,
+					"x": 454.241394042969,
+					"y": 571.096252441406
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 49,
+					"vy": 111.666694641113,
+					"x": 449.741394042969,
+					"y": 572.957336425781
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "AUTO_HOP",
+					"tick": 50,
+					"vy": 130.000030517578,
+					"x": 445.241394042969,
+					"y": 575.1240234375
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 51,
+					"vy": 148.333358764648,
+					"x": 440.741394042969,
+					"y": 577.596252441406
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 52,
+					"vy": 166.666687011719,
+					"x": 436.241394042969,
+					"y": 580.3740234375
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "AUTO_HOP",
+					"tick": 53,
+					"vy": 0,
+					"x": 431.741394042969,
+					"y": 581.93359375
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 427.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 422.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 418.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 413.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 409.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 404.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 400.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 395.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 391.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 386.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 382.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 377.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 373.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 368.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 364.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 359.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 355.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 350.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 346.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 341.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 337.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 332.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 328.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 323.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 78,
+					"vy": 0,
+					"x": 319.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 79,
+					"vy": 0,
+					"x": 314.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 80,
+					"vy": 0,
+					"x": 310.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 81,
+					"vy": 0,
+					"x": 305.741424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 82,
+					"vy": 0,
+					"x": 301.241424560547,
+					"y": 581.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 83,
+					"vy": 0,
+					"x": 296.741424560547,
+					"y": 582.324462890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 84,
+					"vy": 0,
+					"x": 292.229797363281,
+					"y": 584.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 85,
+					"vy": 0,
+					"x": 287.698211669922,
+					"y": 584.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 86,
+					"vy": 0,
+					"x": 283.198211669922,
+					"y": 584.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 87,
+					"vy": 18.3333339691162,
+					"x": 278.698211669922,
+					"y": 584.317504882813
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 88,
+					"vy": 36.6666679382324,
+					"x": 274.198211669922,
+					"y": 584.928588867188
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 89,
+					"vy": 55,
+					"x": 269.698211669922,
+					"y": 585.845275878906
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 90,
+					"vy": 73.3333358764648,
+					"x": 265.198211669922,
+					"y": 587.067504882813
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 91,
+					"vy": 91.6666717529297,
+					"x": 260.698211669922,
+					"y": 588.595275878906
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 92,
+					"vy": 110.000007629395,
+					"x": 256.198211669922,
+					"y": 590.428588867188
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 93,
+					"vy": 128.333343505859,
+					"x": 251.698211669922,
+					"y": 592.567504882813
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 94,
+					"vy": 146.66667175293,
+					"x": 247.198211669922,
+					"y": 595.011962890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "FALL",
+					"tick": 95,
+					"vy": 165,
+					"x": 242.698211669922,
+					"y": 597.761962890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 96,
+					"vy": 183.33332824707,
+					"x": 238.198211669922,
+					"y": 600.817504882813
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "FALL",
+					"tick": 97,
+					"vy": 201.666656494141,
+					"x": 233.698211669922,
+					"y": 604.178588867188
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 98,
+					"vy": 219.999984741211,
+					"x": 229.198211669922,
+					"y": 607.845275878906
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 99,
+					"vy": 238.333312988281,
+					"x": 224.698211669922,
+					"y": 611.817504882813
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "FALL",
+					"tick": 100,
+					"vy": 256.666656494141,
+					"x": 220.198211669922,
+					"y": 616.095275878906
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "FALL",
+					"tick": 101,
+					"vy": 275,
+					"x": 215.698211669922,
+					"y": 620.678588867188
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "FALL",
+					"tick": 102,
+					"vy": 293.333343505859,
+					"x": 211.198211669922,
+					"y": 625.567504882813
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "FALL",
+					"tick": 103,
+					"vy": 0,
+					"x": 206.698181152344,
+					"y": 629.933654785156
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "LAND",
+					"tick": 104,
+					"vy": 0,
+					"x": 202.198120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 197.698120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 193.198120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 188.698120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 184.198120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 179.698120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 175.198120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 170.698120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 166.198120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 161.698120117188,
+					"y": 629.934326171875
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 157.198120117188,
+					"y": 629.934326171875
+				}
+			],
+			"takeoff_gap": 34.4683837890625
+		},
+		{
+			"bumped_step": false,
+			"case": "drop 20px right",
+			"peak_above_base": 20,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 400.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 401.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 403,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 405,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 407.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 410.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 414,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 418,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 422.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 427,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 431.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 436,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 440.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 445,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 449.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 454,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 458.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 463,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 467.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 472,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 476.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 481,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 485.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 23,
+					"vy": 0,
+					"x": 490,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 24,
+					"vy": 0,
+					"x": 494.5,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 25,
+					"vy": 0,
+					"x": 499,
+					"y": 610
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 26,
+					"vy": 0,
+					"x": 503.5,
+					"y": 610.3671875
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 27,
+					"vy": 0,
+					"x": 508.010711669922,
+					"y": 612.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 28,
+					"vy": 0,
+					"x": 512.543334960938,
+					"y": 612.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "FALL",
+					"tick": 29,
+					"vy": 0,
+					"x": 517.043334960938,
+					"y": 612.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "FALL",
+					"tick": 30,
+					"vy": 18.3333339691162,
+					"x": 521.543334960938,
+					"y": 612.453979492188
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "FALL",
+					"tick": 31,
+					"vy": 36.6666679382324,
+					"x": 526.043334960938,
+					"y": 613.065063476563
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "FALL",
+					"tick": 32,
+					"vy": 55,
+					"x": 530.543334960938,
+					"y": 613.981750488281
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "FALL",
+					"tick": 33,
+					"vy": 73.3333358764648,
+					"x": 535.043334960938,
+					"y": 615.203979492188
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "FALL",
+					"tick": 34,
+					"vy": 91.6666717529297,
+					"x": 539.543334960938,
+					"y": 616.731750488281
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "FALL",
+					"tick": 35,
+					"vy": 110.000007629395,
+					"x": 544.043334960938,
+					"y": 618.565063476563
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "FALL",
+					"tick": 36,
+					"vy": 128.333343505859,
+					"x": 548.543334960938,
+					"y": 620.703979492188
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "FALL",
+					"tick": 37,
+					"vy": 146.66667175293,
+					"x": 553.043334960938,
+					"y": 623.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 38,
+					"vy": 165,
+					"x": 557.543334960938,
+					"y": 625.8984375
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 39,
+					"vy": 183.33332824707,
+					"x": 562.043334960938,
+					"y": 628.953979492188
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 40,
+					"vy": 0,
+					"x": 566.543334960938,
+					"y": 629.933349609375
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "LAND",
+					"tick": 41,
+					"vy": 0,
+					"x": 571.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 42,
+					"vy": 0,
+					"x": 575.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 43,
+					"vy": 0,
+					"x": 580.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 44,
+					"vy": 0,
+					"x": 584.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 45,
+					"vy": 0,
+					"x": 589.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 46,
+					"vy": 0,
+					"x": 593.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 47,
+					"vy": 0,
+					"x": 598.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 48,
+					"vy": 0,
+					"x": 602.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 49,
+					"vy": 0,
+					"x": 607.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 50,
+					"vy": 0,
+					"x": 611.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 51,
+					"vy": 0,
+					"x": 616.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 52,
+					"vy": 0,
+					"x": 620.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 53,
+					"vy": 0,
+					"x": 625.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 629.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 634.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 638.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 643.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 647.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 652.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 656.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 661.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 665.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 670.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 674.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 679.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 683.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 688.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 692.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 697.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 701.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 706.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 710.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 715.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 719.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 724.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 728.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 733.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 78,
+					"vy": 0,
+					"x": 737.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 79,
+					"vy": 0,
+					"x": 742.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 80,
+					"vy": 0,
+					"x": 746.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 81,
+					"vy": 0,
+					"x": 751.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 82,
+					"vy": 0,
+					"x": 755.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 83,
+					"vy": 0,
+					"x": 760.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 84,
+					"vy": 0,
+					"x": 764.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 85,
+					"vy": 0,
+					"x": 769.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 86,
+					"vy": 0,
+					"x": 773.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 87,
+					"vy": 0,
+					"x": 778.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 88,
+					"vy": 0,
+					"x": 782.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 89,
+					"vy": 0,
+					"x": 787.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 90,
+					"vy": 0,
+					"x": 791.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 91,
+					"vy": 0,
+					"x": 796.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 92,
+					"vy": 0,
+					"x": 800.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 93,
+					"vy": 0,
+					"x": 805.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 94,
+					"vy": 0,
+					"x": 809.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 95,
+					"vy": 0,
+					"x": 814.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 96,
+					"vy": 0,
+					"x": 818.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 97,
+					"vy": 0,
+					"x": 823.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 98,
+					"vy": 0,
+					"x": 827.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 99,
+					"vy": 0,
+					"x": 832.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 100,
+					"vy": 0,
+					"x": 836.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 101,
+					"vy": 0,
+					"x": 841.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 102,
+					"vy": 0,
+					"x": 845.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 103,
+					"vy": 0,
+					"x": 850.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 104,
+					"vy": 0,
+					"x": 854.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 859.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 863.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 868.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 872.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 877.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 881.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 886.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 890.543334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 895.043334960938,
+					"y": 629.933837890625
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 899.543334960938,
+					"y": 629.933837890625
+				}
+			],
+			"takeoff_gap": -1
+		},
+		{
+			"bumped_step": false,
+			"case": "drop 40px right",
+			"peak_above_base": 40,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 400.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 401.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 403,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 405,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 407.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 410.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 414,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 418,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 422.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 427,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 431.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 436,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 440.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 445,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 449.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 454,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 458.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 463,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 467.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 472,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 476.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 481,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 485.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 23,
+					"vy": 0,
+					"x": 490,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 24,
+					"vy": 0,
+					"x": 494.5,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 25,
+					"vy": 0,
+					"x": 499,
+					"y": 590
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 26,
+					"vy": 0,
+					"x": 503.5,
+					"y": 590.3671875
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 27,
+					"vy": 0,
+					"x": 508.010711669922,
+					"y": 592.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 28,
+					"vy": 0,
+					"x": 512.543334960938,
+					"y": 592.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "FALL",
+					"tick": 29,
+					"vy": 0,
+					"x": 517.043334960938,
+					"y": 592.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "FALL",
+					"tick": 30,
+					"vy": 18.3333339691162,
+					"x": 521.543334960938,
+					"y": 592.453979492188
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "FALL",
+					"tick": 31,
+					"vy": 36.6666679382324,
+					"x": 526.043334960938,
+					"y": 593.065063476563
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "FALL",
+					"tick": 32,
+					"vy": 55,
+					"x": 530.543334960938,
+					"y": 593.981750488281
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "FALL",
+					"tick": 33,
+					"vy": 73.3333358764648,
+					"x": 535.043334960938,
+					"y": 595.203979492188
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "FALL",
+					"tick": 34,
+					"vy": 91.6666717529297,
+					"x": 539.543334960938,
+					"y": 596.731750488281
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "FALL",
+					"tick": 35,
+					"vy": 110.000007629395,
+					"x": 544.043334960938,
+					"y": 598.565063476563
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "FALL",
+					"tick": 36,
+					"vy": 128.333343505859,
+					"x": 548.543334960938,
+					"y": 600.703979492188
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "FALL",
+					"tick": 37,
+					"vy": 146.66667175293,
+					"x": 553.043334960938,
+					"y": 603.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 38,
+					"vy": 165,
+					"x": 557.543334960938,
+					"y": 605.8984375
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 39,
+					"vy": 183.33332824707,
+					"x": 562.043334960938,
+					"y": 608.953979492188
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 40,
+					"vy": 201.666656494141,
+					"x": 566.543334960938,
+					"y": 612.315063476563
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 41,
+					"vy": 219.999984741211,
+					"x": 571.043334960938,
+					"y": 615.981750488281
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 42,
+					"vy": 238.333312988281,
+					"x": 575.543334960938,
+					"y": 619.953979492188
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 43,
+					"vy": 256.666656494141,
+					"x": 580.043334960938,
+					"y": 624.231750488281
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 44,
+					"vy": 275,
+					"x": 584.543334960938,
+					"y": 628.815063476563
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 45,
+					"vy": 0,
+					"x": 589.043334960938,
+					"y": 629.932434082031
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "LAND",
+					"tick": 46,
+					"vy": 0,
+					"x": 593.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 47,
+					"vy": 0,
+					"x": 598.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 48,
+					"vy": 0,
+					"x": 602.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 49,
+					"vy": 0,
+					"x": 607.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 50,
+					"vy": 0,
+					"x": 611.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 51,
+					"vy": 0,
+					"x": 616.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 52,
+					"vy": 0,
+					"x": 620.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 53,
+					"vy": 0,
+					"x": 625.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 629.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 634.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 638.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 643.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 647.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 652.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 656.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 661.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 665.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 670.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 674.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 679.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 683.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 688.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 692.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 697.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 701.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 706.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 710.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 715.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 719.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 724.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 728.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 733.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 78,
+					"vy": 0,
+					"x": 737.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 79,
+					"vy": 0,
+					"x": 742.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 80,
+					"vy": 0,
+					"x": 746.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 81,
+					"vy": 0,
+					"x": 751.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 82,
+					"vy": 0,
+					"x": 755.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 83,
+					"vy": 0,
+					"x": 760.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 84,
+					"vy": 0,
+					"x": 764.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 85,
+					"vy": 0,
+					"x": 769.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 86,
+					"vy": 0,
+					"x": 773.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 87,
+					"vy": 0,
+					"x": 778.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 88,
+					"vy": 0,
+					"x": 782.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 89,
+					"vy": 0,
+					"x": 787.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 90,
+					"vy": 0,
+					"x": 791.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 91,
+					"vy": 0,
+					"x": 796.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 92,
+					"vy": 0,
+					"x": 800.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 93,
+					"vy": 0,
+					"x": 805.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 94,
+					"vy": 0,
+					"x": 809.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 95,
+					"vy": 0,
+					"x": 814.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 96,
+					"vy": 0,
+					"x": 818.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 97,
+					"vy": 0,
+					"x": 823.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 98,
+					"vy": 0,
+					"x": 827.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 99,
+					"vy": 0,
+					"x": 832.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 100,
+					"vy": 0,
+					"x": 836.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 101,
+					"vy": 0,
+					"x": 841.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 102,
+					"vy": 0,
+					"x": 845.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 103,
+					"vy": 0,
+					"x": 850.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 104,
+					"vy": 0,
+					"x": 854.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 859.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 863.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 868.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 872.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 877.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 881.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 886.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 890.543212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 895.043212890625,
+					"y": 629.931945800781
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 899.543212890625,
+					"y": 629.931945800781
+				}
+			],
+			"takeoff_gap": -1
+		},
+		{
+			"bumped_step": false,
+			"case": "drop 70px right",
+			"peak_above_base": 70,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 400.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 401.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 403,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 405,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 407.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 410.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 414,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 418,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 422.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 427,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 431.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 436,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 440.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 445,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 449.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 454,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 458.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 463,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 467.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 472,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 476.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 481,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 485.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 23,
+					"vy": 0,
+					"x": 490,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 24,
+					"vy": 0,
+					"x": 494.5,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 25,
+					"vy": 0,
+					"x": 499,
+					"y": 560
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 26,
+					"vy": 0,
+					"x": 503.5,
+					"y": 560.3671875
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 27,
+					"vy": 0,
+					"x": 508.010681152344,
+					"y": 562.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 28,
+					"vy": 0,
+					"x": 512.543273925781,
+					"y": 562.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "FALL",
+					"tick": 29,
+					"vy": 0,
+					"x": 517.043273925781,
+					"y": 562.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "FALL",
+					"tick": 30,
+					"vy": 18.3333339691162,
+					"x": 521.543273925781,
+					"y": 562.453979492188
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "FALL",
+					"tick": 31,
+					"vy": 36.6666679382324,
+					"x": 526.043273925781,
+					"y": 563.065063476563
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "FALL",
+					"tick": 32,
+					"vy": 55,
+					"x": 530.543273925781,
+					"y": 563.981750488281
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "FALL",
+					"tick": 33,
+					"vy": 73.3333358764648,
+					"x": 535.043273925781,
+					"y": 565.203979492188
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "FALL",
+					"tick": 34,
+					"vy": 91.6666717529297,
+					"x": 539.543273925781,
+					"y": 566.731750488281
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "FALL",
+					"tick": 35,
+					"vy": 110.000007629395,
+					"x": 544.043273925781,
+					"y": 568.565063476563
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "FALL",
+					"tick": 36,
+					"vy": 128.333343505859,
+					"x": 548.543273925781,
+					"y": 570.703979492188
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "FALL",
+					"tick": 37,
+					"vy": 146.66667175293,
+					"x": 553.043273925781,
+					"y": 573.1484375
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 38,
+					"vy": 165,
+					"x": 557.543273925781,
+					"y": 575.8984375
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "FALL",
+					"tick": 39,
+					"vy": 183.33332824707,
+					"x": 562.043273925781,
+					"y": 578.953979492188
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 40,
+					"vy": 201.666656494141,
+					"x": 566.543273925781,
+					"y": 582.315063476563
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 41,
+					"vy": 219.999984741211,
+					"x": 571.043273925781,
+					"y": 585.981750488281
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "FALL",
+					"tick": 42,
+					"vy": 238.333312988281,
+					"x": 575.543273925781,
+					"y": 589.953979492188
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 43,
+					"vy": 256.666656494141,
+					"x": 580.043273925781,
+					"y": 594.231750488281
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 44,
+					"vy": 275,
+					"x": 584.543273925781,
+					"y": 598.815063476563
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "FALL",
+					"tick": 45,
+					"vy": 293.333343505859,
+					"x": 589.043273925781,
+					"y": 603.703979492188
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "FALL",
+					"tick": 46,
+					"vy": 311.666687011719,
+					"x": 593.543273925781,
+					"y": 608.8984375
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 47,
+					"vy": 330.000030517578,
+					"x": 598.043273925781,
+					"y": 614.3984375
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 48,
+					"vy": 348.333374023438,
+					"x": 602.543273925781,
+					"y": 620.203979492188
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "FALL",
+					"tick": 49,
+					"vy": 366.666717529297,
+					"x": 607.043273925781,
+					"y": 626.315063476563
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "FALL",
+					"tick": 50,
+					"vy": 0,
+					"x": 611.541198730469,
+					"y": 629.931457519531
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "LAND",
+					"tick": 51,
+					"vy": 0,
+					"x": 616.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 52,
+					"vy": 0,
+					"x": 620.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 53,
+					"vy": 0,
+					"x": 625.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 629.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 634.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 638.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 643.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 647.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 652.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 656.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 661.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 665.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 670.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 674.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 679.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 683.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 688.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 692.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 697.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 701.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 706.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 710.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 715.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 719.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 724.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 728.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 733.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 78,
+					"vy": 0,
+					"x": 737.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 79,
+					"vy": 0,
+					"x": 742.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 80,
+					"vy": 0,
+					"x": 746.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 81,
+					"vy": 0,
+					"x": 751.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 82,
+					"vy": 0,
+					"x": 755.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 83,
+					"vy": 0,
+					"x": 760.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 84,
+					"vy": 0,
+					"x": 764.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 85,
+					"vy": 0,
+					"x": 769.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 86,
+					"vy": 0,
+					"x": 773.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 87,
+					"vy": 0,
+					"x": 778.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 88,
+					"vy": 0,
+					"x": 782.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 89,
+					"vy": 0,
+					"x": 787.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 90,
+					"vy": 0,
+					"x": 791.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 91,
+					"vy": 0,
+					"x": 796.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 92,
+					"vy": 0,
+					"x": 800.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 93,
+					"vy": 0,
+					"x": 805.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 94,
+					"vy": 0,
+					"x": 809.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 95,
+					"vy": 0,
+					"x": 814.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 96,
+					"vy": 0,
+					"x": 818.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 97,
+					"vy": 0,
+					"x": 823.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 98,
+					"vy": 0,
+					"x": 827.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 99,
+					"vy": 0,
+					"x": 832.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 100,
+					"vy": 0,
+					"x": 836.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 101,
+					"vy": 0,
+					"x": 841.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 102,
+					"vy": 0,
+					"x": 845.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 103,
+					"vy": 0,
+					"x": 850.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 104,
+					"vy": 0,
+					"x": 854.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 859.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 863.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 868.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 872.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 877.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 881.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 886.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 890.541259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 895.041259765625,
+					"y": 629.933776855469
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 899.541259765625,
+					"y": 629.933776855469
+				}
+			],
+			"takeoff_gap": -1
+		},
+		{
+			"bumped_step": false,
+			"case": "step 120px right",
+			"peak_above_base": 0,
+			"samples": [
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 0,
+					"vy": 0,
+					"x": 180.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 1,
+					"vy": 0,
+					"x": 181.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 2,
+					"vy": 0,
+					"x": 183,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 3,
+					"vy": 0,
+					"x": 185,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 4,
+					"vy": 0,
+					"x": 187.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 5,
+					"vy": 0,
+					"x": 190.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 6,
+					"vy": 0,
+					"x": 194,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 7,
+					"vy": 0,
+					"x": 198,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 8,
+					"vy": 0,
+					"x": 202.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 9,
+					"vy": 0,
+					"x": 207,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 10,
+					"vy": 0,
+					"x": 211.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 11,
+					"vy": 0,
+					"x": 216,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 12,
+					"vy": 0,
+					"x": 220.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 13,
+					"vy": 0,
+					"x": 225,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 14,
+					"vy": 0,
+					"x": 229.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 15,
+					"vy": 0,
+					"x": 234,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 16,
+					"vy": 0,
+					"x": 238.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 17,
+					"vy": 0,
+					"x": 243,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 18,
+					"vy": 0,
+					"x": 247.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 19,
+					"vy": 0,
+					"x": 252,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 20,
+					"vy": 0,
+					"x": 256.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 21,
+					"vy": 0,
+					"x": 261,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 22,
+					"vy": 0,
+					"x": 265.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 23,
+					"vy": 0,
+					"x": 270,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 24,
+					"vy": 0,
+					"x": 274.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 25,
+					"vy": 0,
+					"x": 279,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 26,
+					"vy": 0,
+					"x": 283.5,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 27,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 28,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 29,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 30,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 31,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 32,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 33,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 34,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 35,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 36,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 37,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 38,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 39,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 40,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 41,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 42,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 43,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 44,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 45,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 46,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 47,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 48,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 49,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 50,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 51,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 52,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 53,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 54,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 55,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 56,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 57,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 58,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 59,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 60,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 61,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 62,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 63,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 64,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 65,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 66,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 67,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 68,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 69,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 70,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 71,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 72,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 73,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 74,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 75,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 76,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 14,
+					"state": "RUN",
+					"tick": 77,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 78,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 79,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 15,
+					"state": "RUN",
+					"tick": 80,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 81,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 0,
+					"state": "RUN",
+					"tick": 82,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 83,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 1,
+					"state": "RUN",
+					"tick": 84,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 85,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 86,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 2,
+					"state": "RUN",
+					"tick": 87,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 88,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 89,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 3,
+					"state": "RUN",
+					"tick": 90,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 91,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 92,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 4,
+					"state": "RUN",
+					"tick": 93,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 5,
+					"state": "RUN",
+					"tick": 94,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 95,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 96,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 6,
+					"state": "RUN",
+					"tick": 97,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 98,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 99,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 7,
+					"state": "RUN",
+					"tick": 100,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 101,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 8,
+					"state": "RUN",
+					"tick": 102,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 103,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 104,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 9,
+					"state": "RUN",
+					"tick": 105,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 106,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 10,
+					"state": "RUN",
+					"tick": 107,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 108,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 11,
+					"state": "RUN",
+					"tick": 109,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 110,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 111,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 12,
+					"state": "RUN",
+					"tick": 112,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 113,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				},
+				{
+					"animation": "run",
+					"frame": 13,
+					"state": "RUN",
+					"tick": 114,
+					"vy": 0,
+					"x": 283.9921875,
+					"y": 630
+				}
+			],
+			"takeoff_gap": -1
+		}
+	],
+	"failures": 4
+}

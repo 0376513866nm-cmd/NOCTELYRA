@@ -5,6 +5,7 @@ extends Node2D
 @export_enum("Cottage", "Fence", "Stone lantern", "Mossy rocks", "Fern patch", "Tea bench", "Bamboo clump", "Trail sign") var kind: int = 3:
 	set(value):
 		kind = value
+		_update_bamboo_material()
 		queue_redraw()
 @export var variant: int = 0:
 	set(value):
@@ -21,12 +22,13 @@ var _rest_rotation: float = 0.0
 
 
 func _ready() -> void:
+	_update_bamboo_material()
 	_rest_rotation = rotation
 	if kind == 2 and not Engine.is_editor_hint():
 		var light := PointLight2D.new()
 		light.name = "LanternLight"
 		light.texture = preload("res://src/world/soft_lantern_light.tres")
-		light.position = Vector2(0, -61)
+		light.position = Vector2(0.0, -46.5)
 		light.color = Color("#ffd58d")
 		light.energy = 0.2
 		light.texture_scale = 4.2
@@ -40,11 +42,22 @@ func _process(delta: float) -> void:
 		rotation = _rest_rotation + sin(_wind_time * 0.8 + float(variant)) * 0.006
 
 
+const _LANTERN_TEX: Texture2D = preload("res://assets/asset/ChatGPT Image Oct 25, 2026, 09_46_53 AM.png")
+const _BAMBOO_MATERIAL: ShaderMaterial = preload("res://src/world/foreground_bamboo.tres")
+
+func _update_bamboo_material() -> void:
+	if kind == 6:
+		material = _BAMBOO_MATERIAL
+	elif material == _BAMBOO_MATERIAL:
+		material = null
+
 var _batch = preload("res://src/world/canvas_shape_batch.gd").new()
+var _texture_batch = preload("res://src/world/bamboo_atlas_brush.gd").new()
 
 
 func _draw() -> void:
 	_batch.clear()
+	_texture_batch.clear()
 	match kind:
 		0: _cottage()
 		1: _fence()
@@ -56,6 +69,7 @@ func _draw() -> void:
 		7: _sign()
 
 	_batch.submit(self)
+	_texture_batch.submit(self)
 
 
 func _poly(points: Array, color: String) -> void:
@@ -138,16 +152,23 @@ func _fence_at(at: Vector2, width: float) -> void:
 
 
 func _lantern() -> void:
-	_oval(Vector2(0, 0), 25, Color(0.12, 0.19, 0.13, 0.18))
-	_poly([Vector2(-20, 0), Vector2(-14, -9), Vector2(14, -9), Vector2(20, 0)], "#777f6c")
-	_batch.rect(Rect2(-7, -43, 14, 34), Color("#89917a"))
-	_batch.rect(Rect2(-17, -79, 34, 36), Color("#66715e"))
-	_batch.rect(Rect2(-11, -74, 22, 26), Color("#ebc77d"))
-	_batch.rect(Rect2(-2, -74, 4, 26), Color("#7c7858"))
-	_poly([Vector2(-26, -79), Vector2(-17, -89), Vector2(0, -100), Vector2(17, -89), Vector2(26, -79)], "#4e6650")
-	_batch.line(Vector2(-25, -80), Vector2(25, -80), Color("#9aaa76"), 3, true)
-	_batch.circle(Vector2(0, -101), 4, Color("#899877"))
-	_leaf_cluster(Vector2(-15, -5), Color("#55764b"), 10)
+	# Contact shadow underneath the mossy stone base
+	_oval(Vector2(0, 0), 24.0, Color(0.12, 0.19, 0.13, 0.28), 0.35)
+	_batch.submit(self)
+	_batch.clear()
+
+	if _LANTERN_TEX:
+		var scale_factor: float = 0.05
+		var w: float = _LANTERN_TEX.get_width() * scale_factor
+		var h: float = _LANTERN_TEX.get_height() * scale_factor
+		var base_x: float = 512.0 * scale_factor
+		var base_y: float = 1450.0 * scale_factor
+		if variant == 1:
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2(-1.0, 1.0))
+			draw_texture_rect(_LANTERN_TEX, Rect2(-base_x, -base_y, w, h), false, Color(0.64, 0.68, 0.65))
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		else:
+			draw_texture_rect(_LANTERN_TEX, Rect2(-base_x, -base_y, w, h), false, Color(0.64, 0.68, 0.65))
 
 
 func _rocks() -> void:
@@ -184,29 +205,15 @@ func _bench() -> void:
 
 
 func _bamboo() -> void:
-	for i in range(5):
-		var x: float = float(i - 2) * 18
-		var height: float = 220.0 + sin(float(i + variant) * 1.7) * 60.0
-		_batch.line(Vector2(x, 0), Vector2(x + float(i - 2) * 8, -height), Color("#376344"), 12, true)
-		_batch.line(Vector2(x - 3, 0), Vector2(x - 3 + float(i - 2) * 8, -height), Color("#6e9350"), 3, true)
-		for joint in range(1, 5):
-			var y: float = -float(joint) * height / 5.0
-			var sx: float = x + float(i - 2) * 8 * (-y / height)
-			_batch.line(Vector2(sx - 7, y), Vector2(sx + 7, y), Color("#a2ae69"), 2, true)
-			if joint >= 2:
-				_bamboo_spray(Vector2(sx, y), -1.0 if (i + joint) % 2 else 1.0)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7100 + variant * 139
+	var count: int = 4 + variant % 4
+	for i in range(count):
+		var x: float = (float(i) - float(count - 1) * 0.5) * rng.randf_range(13, 19)
+		var height: float = rng.randf_range(190, 295)
+		var lean: float = x * 0.0018 + rng.randf_range(-0.04, 0.04)
+		_texture_batch.culm(Vector2(x, 0), height, rng.randf_range(9, 13), lean, rng)
 	_ferns()
-
-
-func _bamboo_spray(at: Vector2, side: float) -> void:
-	var twig := Vector2(side * 46.0, -17.0)
-	_batch.line(at, at + twig, Color("#527849"), 1.2, true)
-	for leaf in range(6):
-		var start: Vector2 = at + twig * (0.15 + float(leaf) * 0.15)
-		var direction := Vector2(side * 0.8, -0.9 if leaf % 2 else 0.6).normalized()
-		var mid: Vector2 = start + direction * 11.0
-		var normal := direction.orthogonal() * 2.3
-		_batch.polygon(PackedVector2Array([start, mid + normal, start + direction * 25.0, mid - normal]), Color("#47754a") if leaf % 2 else Color("#658c52"))
 
 
 func _sign() -> void:

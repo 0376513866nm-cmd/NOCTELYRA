@@ -1,0 +1,77 @@
+{
+	"arguments": [
+		"--script",
+		"res://tools/benchmark_bamboo_map.gd"
+	],
+	"renderer": "NVIDIA GeForce RTX 3050 Laptop GPU",
+	"resolution": "1440x720",
+	"samples": [
+		{
+			"case": "home_day",
+			"draw_calls": 148,
+			"fps": 659.6,
+			"frames": 2309,
+			"mean_ms": 1.52,
+			"p95_ms": 1.91,
+			"p99_ms": 2.24,
+			"primitives": 45828,
+			"process_ms": 6.92
+		},
+		{
+			"case": "forest_day",
+			"draw_calls": 131,
+			"fps": 679.1,
+			"frames": 2377,
+			"mean_ms": 1.47,
+			"p95_ms": 1.8,
+			"p99_ms": 2.06,
+			"primitives": 45807,
+			"process_ms": 2.58
+		},
+		{
+			"case": "wide_night",
+			"draw_calls": 176,
+			"fps": 615.2,
+			"frames": 2154,
+			"mean_ms": 1.63,
+			"p95_ms": 2,
+			"p99_ms": 2.33,
+			"primitives": 46920,
+			"process_ms": 2.9
+		},
+		{
+			"case": "home_no_lights",
+			"draw_calls": 161,
+			"fps": 657.9,
+			"frames": 2303,
+			"mean_ms": 1.52,
+			"p95_ms": 1.85,
+			"p99_ms": 2.15,
+			"primitives": 46010,
+			"process_ms": 2.65
+		},
+		{
+			"case": "home_no_backdrop",
+			"draw_calls": 139,
+			"fps": 712.8,
+			"frames": 2495,
+			"mean_ms": 1.4,
+			"p95_ms": 1.73,
+			"p99_ms": 2.02,
+			"primitives": 17263,
+			"process_ms": 2.39
+		},
+		{
+			"case": "home_no_grove",
+			"draw_calls": 126,
+			"fps": 720.3,
+			"frames": 2522,
+			"mean_ms": 1.39,
+			"p95_ms": 1.77,
+			"p99_ms": 2.17,
+			"primitives": 10647,
+			"process_ms": 4.59
+		}
+	],
+	"vsync": false
+}

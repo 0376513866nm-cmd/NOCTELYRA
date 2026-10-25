@@ -94,6 +94,10 @@ func _update_lighting(delta: float) -> void:
 		hills_node.modulate = hill_col
 	if mountains_node:
 		mountains_node.modulate = hill_col
+	# Near parallax layers have a separate canvas from the world CanvasModulate.
+	# Texture-based bamboo must also dim at night, rather than remain lime green.
+	for foliage in get_tree().get_nodes_in_group("day_night_foliage"):
+		foliage.modulate = hill_col
 
 	# Cập nhật vị trí và độ rực của Mặt Trời
 	if sun_node:

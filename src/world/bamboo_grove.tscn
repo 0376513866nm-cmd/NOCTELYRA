@@ -1,8 +1,12 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://src/world/bamboo_forest_layer.gd" id="1"]
 [ext_resource type="Script" path="res://src/world/bamboo_prop.gd" id="2"]
 [ext_resource type="Script" path="res://src/world/distant_birds.gd" id="3"]
+[ext_resource type="PackedScene" path="res://src/world/forest_rock_dressing.tscn" id="4_rocks"]
+[ext_resource type="Script" path="res://src/world/night_fireflies.gd" id="5_fireflies"]
+[ext_resource type="Texture2D" path="res://assets/asset/9973fe0f9e0308ecc1eed6baae953fa8-Photoroom.png" id="6_moon"]
+[ext_resource type="Texture2D" path="res://assets/asset/Untitled65_20261025100349.png" id="7_sun"]
 
 [sub_resource type="Gradient" id="DayGradient"]
 offsets = PackedFloat32Array(0, 0.4, 0.7, 1)
@@ -26,7 +30,31 @@ fill_from = Vector2(0, 0)
 fill_to = Vector2(0, 1)
 
 [sub_resource type="Gradient" id="FireflyGradient"]
-colors = PackedColorArray(1, 0.94, 0.62, 0, 1, 0.94, 0.62, 0.75, 1, 0.94, 0.62, 0)
+offsets = PackedFloat32Array(0, 0.15, 0.30, 0.48, 0.63, 0.80, 1)
+colors = PackedColorArray(0.8, 1, 0.38, 0, 0.9, 1, 0.55, 0.9, 0.8, 1, 0.38, 0.12, 0.95, 1, 0.65, 1, 0.8, 1, 0.38, 0.14, 0.9, 1, 0.55, 0.8, 0.8, 1, 0.38, 0)
+
+[sub_resource type="Gradient" id="FireflyGlow"]
+offsets = PackedFloat32Array(0, 0.12, 0.28, 0.65, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.95, 1, 1, 1, 0.3, 1, 1, 1, 0.04, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="FireflyTexture"]
+gradient = SubResource("FireflyGlow")
+width = 32
+height = 32
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CanvasItemMaterial" id="FireflyMaterial"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CelestialMaterial"]
+light_mode = 1
+
+[sub_resource type="Gradient" id="StarTwinkle"]
+offsets = PackedFloat32Array(0, 0.15, 0.38, 0.60, 0.85, 1)
+colors = PackedColorArray(0.8, 0.9, 1, 0, 0.8, 0.9, 1, 0.5, 1, 0.98, 0.84, 0.85, 0.8, 0.9, 1, 0.4, 0.9, 0.95, 1, 0.7, 0.8, 0.9, 1, 0)
 
 [node name="BambooGrove" type="Node2D"]
 
@@ -53,28 +81,33 @@ texture = SubResource("DaySky")
 mouse_filter = 2
 
 [node name="Sun" type="Node2D" parent="ParallaxBackground/LayerSky"]
-[node name="Disc" type="Polygon2D" parent="ParallaxBackground/LayerSky/Sun"]
-color = Color(1, 0.96, 0.73, 0.65)
-polygon = PackedVector2Array(-24, 0, -17, -17, 0, -24, 17, -17, 24, 0, 17, 17, 0, 24, -17, 17)
+[node name="Disc" type="Sprite2D" parent="ParallaxBackground/LayerSky/Sun"]
+material = SubResource("CelestialMaterial")
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("7_sun")
+offset = Vector2(-12, -7)
 
 [node name="Starfield" type="CPUParticles2D" parent="ParallaxBackground/LayerSky"]
-position = Vector2(1200, 50)
-amount = 32
-lifetime = 5.0
-preprocess = 5.0
+material = SubResource("FireflyMaterial")
+position = Vector2(3150, 140)
+amount = 1000
+lifetime = 12.0
+preprocess = 12.0
+texture = SubResource("FireflyTexture")
 emission_shape = 3
-emission_rect_extents = Vector2(1800, 350)
+emission_rect_extents = Vector2(3250, 340)
 gravity = Vector2(0, 0)
-color = Color(0.9, 0.94, 0.72, 0.55)
-scale_amount_min = 0.5
-scale_amount_max = 1.5
+color_ramp = SubResource("StarTwinkle")
+scale_amount_min = 0.12
+scale_amount_max = 0.26
 
 [node name="LayerMoon" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.03, 0.03)
 [node name="Moon" type="Node2D" parent="ParallaxBackground/LayerMoon"]
-[node name="Disc" type="Polygon2D" parent="ParallaxBackground/LayerMoon/Moon"]
-color = Color(0.83, 0.92, 0.81, 0.8)
-polygon = PackedVector2Array(-18, 0, -13, -13, 0, -18, 13, -13, 18, 0, 13, 13, 0, 18, -13, 13)
+[node name="Disc" type="Sprite2D" parent="ParallaxBackground/LayerMoon/Moon"]
+material = SubResource("CelestialMaterial")
+scale = Vector2(0.24, 0.24)
+texture = ExtResource("6_moon")
 
 [node name="LayerMountains" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.12, 0.10)
@@ -110,7 +143,7 @@ leaf_tint = Color(0.34, 0.51, 0.35, 1)
 
 [node name="LayerForestMid" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.62, 0.35)
-[node name="BambooNear" type="Node2D" parent="ParallaxBackground/LayerForestMid"]
+[node name="BambooNear" type="Node2D" parent="ParallaxBackground/LayerForestMid" groups=["day_night_foliage"]]
 script = ExtResource("1")
 random_seed = 2306
 spacing = 147.0
@@ -121,7 +154,7 @@ leaf_tint = Color(0.23, 0.39, 0.25, 1)
 
 [node name="LayerCanopyForeground" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2(0.8, 0.4)
-[node name="Canopy" type="Node2D" parent="ParallaxBackground/LayerCanopyForeground"]
+[node name="Canopy" type="Node2D" parent="ParallaxBackground/LayerCanopyForeground" groups=["day_night_foliage"]]
 script = ExtResource("1")
 layer_kind = 2
 leaf_tint = Color(0.15, 0.29, 0.2, 1)
@@ -140,25 +173,16 @@ script = ExtResource("1")
 layer_kind = 1
 
 [node name="FallingBambooLeaves" type="Node2D" parent="."]
+visible = false
 z_index = 2
 script = ExtResource("1")
 layer_kind = 3
 
-[node name="Fireflies" type="CPUParticles2D" parent="."]
-position = Vector2(3000, 450)
-amount = 44
-lifetime = 7.0
-preprocess = 4.0
-emission_shape = 3
-emission_rect_extents = Vector2(3300, 170)
-direction = Vector2(0, -1)
-spread = 90.0
-gravity = Vector2(0, -2)
-initial_velocity_min = 3.0
-initial_velocity_max = 8.0
-scale_amount_min = 0.8
-scale_amount_max = 1.8
-color_ramp = SubResource("FireflyGradient")
+[node name="Fireflies" type="Node2D" parent="."]
+z_index = 1
+position = Vector2(0, 0)
+script = ExtResource("5_fireflies")
+texture = SubResource("FireflyTexture")
 
 [node name="HomeGardenFence" type="Node2D" parent="."]
 z_index = -3
@@ -193,6 +217,7 @@ kind = 6
 variant = 0
 
 [node name="GardenRocks" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(756, 632)
 scale = Vector2(0.65, 0.65)
@@ -209,6 +234,7 @@ kind = 4
 variant = 0
 
 [node name="TrailSign" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(786, 632)
 scale = Vector2(0.8, 0.8)
@@ -289,6 +315,7 @@ kind = 2
 variant = 0
 
 [node name="MossRock980" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(980, 612)
 scale = Vector2(0.65, 0.65)
@@ -305,6 +332,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock1395" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(1395, 612)
 scale = Vector2(0.55, 0.55)
@@ -321,6 +349,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock1630" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(1630, 592)
 scale = Vector2(0.8, 0.8)
@@ -337,6 +366,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock2030" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(2030, 620)
 scale = Vector2(0.65, 0.65)
@@ -353,6 +383,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock2760" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(2760, 600)
 scale = Vector2(0.8, 0.8)
@@ -369,6 +400,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock3240" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(3240, 600)
 scale = Vector2(0.5, 0.5)
@@ -385,6 +417,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock3490" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(3490, 624)
 scale = Vector2(0.65, 0.65)
@@ -401,6 +434,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock3980" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(3980, 624)
 scale = Vector2(0.5, 0.5)
@@ -417,6 +451,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock4450" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(4450, 606)
 scale = Vector2(0.8, 0.8)
@@ -433,6 +468,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock4760" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(4760, 606)
 scale = Vector2(0.55, 0.55)
@@ -449,6 +485,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock5150" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(5150, 590)
 scale = Vector2(0.6, 0.6)
@@ -465,6 +502,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock5740" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(5740, 620)
 scale = Vector2(0.7, 0.7)
@@ -481,6 +519,7 @@ kind = 4
 variant = 0
 
 [node name="MossRock6160" type="Node2D" parent="."]
+visible = false
 z_index = -1
 position = Vector2(6160, 620)
 scale = Vector2(0.8, 0.8)
@@ -551,4 +590,6 @@ scale = Vector2(1, 1)
 script = ExtResource("2")
 kind = 5
 variant = 0
+
+[node name="ForestRockDressing" parent="." instance=ExtResource("4_rocks")]
 

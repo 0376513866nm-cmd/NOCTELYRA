@@ -12,7 +12,8 @@ enum State {
 	FALL,
 	LAND,
 	DASH,
-	DEAD
+	DEAD,
+	AUTO_HOP
 }
 
 @export var movement_data: PlayerMovementData
@@ -31,6 +32,7 @@ enum State {
 @onready var progression_component: PlayerProgressionComponent = $PlayerProgressionComponent
 @onready var player_stats_component: PlayerStatsComponent = $PlayerStatsComponent
 @onready var ground_shadow: Polygon2D = get_node_or_null("GroundShadow")
+@onready var hop_sprite: Sprite2D = get_node_or_null("SpriteRoot/HopSprite") as Sprite2D
 var _shadow_ray: RayCast2D = null
 
 var current_state: State = State.IDLE
@@ -44,6 +46,8 @@ var cast_anim_timer: float = 0.0
 var attack_anim_timer: float = 0.0
 var hurt_recoil_timer: float = 0.0
 var land_timer: float = 0.0
+var auto_step_cooldown: float = 0.0
+var _low_drop_active: bool = false
 
 var race_id: String:
 	get:
@@ -83,6 +87,7 @@ func get_race_base_modulate() -> Color:
 func _ready() -> void:
 	_ensure_isolated_movement_data()
 	spawn_position = global_position
+	floor_snap_length = 4.0
 	_ensure_m8_components()
 	_change_state(State.IDLE)
 
@@ -185,6 +190,9 @@ func _physics_process(delta: float) -> void:
 	# Luôn giảm thời gian hồi chiêu Dash độc lập
 	if dash_cooldown_timer > 0.0:
 		dash_cooldown_timer -= delta
+
+	if auto_step_cooldown > 0.0:
+		auto_step_cooldown -= delta
 
 	if hurt_recoil_timer > 0.0:
 		hurt_recoil_timer -= delta
@@ -292,6 +300,8 @@ func _physics_process(delta: float) -> void:
 				pass
 			elif not is_on_floor():
 				_change_state(State.FALL)
+			elif _check_auto_step(delta):
+				pass
 			else:
 				_process_ground_movement(delta)
 				if abs(velocity.x) > 10.0:
@@ -305,12 +315,31 @@ func _physics_process(delta: float) -> void:
 				pass
 			elif not is_on_floor():
 				_change_state(State.FALL)
+			elif _check_auto_step(delta):
+				pass
 			else:
 				_process_ground_movement(delta)
 				if abs(velocity.x) <= 10.0 and _get_input_direction() == 0.0:
 					_change_state(State.IDLE)
 
+		State.AUTO_HOP:
+			# Short ledges keep the run cycle while physics clears the step.
+			_apply_gravity(delta)
+			_process_air_movement(delta)
+			if _check_dash():
+				pass
+			elif _check_jump():
+				pass
+			elif is_on_floor() and velocity.y >= 0.0:
+				_restore_jumps()
+				var dir := _get_input_direction()
+				if dir != 0.0 or abs(velocity.x) > 10.0:
+					_change_state(State.RUN)
+				else:
+					_change_state(State.IDLE)
+
 	move_and_slide()
+	_sync_low_step_animation()
 	_update_ground_shadow()
 
 	# Khôi phục số lần nhảy khi đang chạm đất
@@ -486,9 +515,15 @@ func _restore_jumps() -> void:
 
 func _change_state(new_state: State) -> void:
 	current_state = new_state
+	if new_state == State.AUTO_HOP:
+		_low_drop_active = true
+	elif new_state not in [State.FALL, State.LAND]:
+		_low_drop_active = false
 	if new_state == State.LAND:
 		var is_moving: bool = _get_input_direction() != 0.0 or abs(velocity.x) > 30.0
-		if is_moving:
+		if _low_drop_active:
+			land_timer = 0.06 if is_moving else 0.10
+		elif is_moving:
 			land_timer = 0.08
 		else:
 			land_timer = 0.25
@@ -554,15 +589,24 @@ func _refresh_current_animation() -> void:
 				_play_fallback_air_visual()
 		State.FALL:
 			anim_player.speed_scale = 1.0
-			if jumps_left == movement_data.max_jumps - 1 and anim_player.has_animation("jump_fall"):
+			# Nếu rơi tự do từ bậc/thềm thấp (chưa bấm nhảy và mặt đất bên dưới <= 70px)
+			if jumps_left == movement_data.max_jumps and _is_near_ground(70.0):
+				_low_drop_active = true
+				_play_low_step_animation()
+			elif jumps_left == movement_data.max_jumps - 1 and anim_player.has_animation("jump_fall"):
+				_low_drop_active = false
 				anim_player.play("jump_fall")
 				anim_player.advance(0.0)
 			elif anim_player.has_animation("fall"):
+				_low_drop_active = false
 				anim_player.play("fall")
 				anim_player.advance(0.0)
 			else:
 				_play_fallback_air_visual()
 		State.LAND:
+			if _low_drop_active:
+				_play_low_step_animation()
+				return
 			var is_moving: bool = _get_input_direction() != 0.0 or abs(velocity.x) > 30.0
 			if is_moving:
 				anim_player.speed_scale = 3.0
@@ -573,6 +617,8 @@ func _refresh_current_animation() -> void:
 				anim_player.advance(0.0)
 			else:
 				_play_fallback_air_visual()
+		State.AUTO_HOP:
+			_play_low_step_animation()
 		State.DASH:
 			anim_player.speed_scale = 1.0
 			if anim_player.has_animation("dash"):
@@ -616,6 +662,34 @@ func _play_fallback_dash_visual() -> void:
 		anim_player.play("run")
 		anim_player.seek(0.48, true)
 		anim_player.pause()
+
+func _ground_distance(max_dist: float = 256.0) -> float:
+	var space_state := get_world_2d().direct_space_state
+	if not space_state:
+		return -1.0
+	var query := PhysicsRayQueryParameters2D.create(global_position, global_position + Vector2(0, max_dist), collision_mask)
+	query.exclude = [get_rid()]
+	var hit := space_state.intersect_ray(query)
+	return maxf(0.0, hit.position.y - global_position.y) if not hit.is_empty() else -1.0
+
+func _is_near_ground(max_dist: float = 70.0) -> bool:
+	return _ground_distance(max_dist) >= 0.0
+
+func _play_low_step_animation() -> void:
+	# Keep the current run cycle across a short ledge instead of switching bodies.
+	var animation: StringName = &"run" if _get_input_direction() != 0.0 or absf(velocity.x) > 10.0 else &"idle"
+	if not anim_player.has_animation(animation):
+		return
+	anim_player.speed_scale = 1.0
+	if anim_player.assigned_animation != animation or not anim_player.is_playing():
+		anim_player.play(animation)
+		anim_player.advance(0.0)
+
+func _sync_low_step_animation() -> void:
+	if anim_player == null or attack_anim_timer > 0.0 or cast_anim_timer > 0.0:
+		return
+	if current_state == State.AUTO_HOP or (_low_drop_active and current_state in [State.FALL, State.LAND]):
+		_play_low_step_animation()
 
 func _get_input_direction() -> float:
 	return Input.get_axis("move_left", "move_right")
@@ -671,6 +745,79 @@ func _check_dash() -> bool:
 		return true
 	return false
 
+func _check_auto_step(delta: float) -> bool:
+	if movement_data == null or not movement_data.auto_step_enabled:
+		return false
+	if auto_step_cooldown > 0.0:
+		return false
+
+	var dir := _get_input_direction()
+	if is_zero_approx(dir):
+		dir = signf(velocity.x)
+	if is_zero_approx(dir):
+		return false
+
+	var face_sign := signf(dir)
+	var space_state := get_world_2d().direct_space_state
+	if not space_state:
+		return false
+
+	# See the ledge before the capsule reaches it, including at higher run speeds.
+	var body_radius := 16.0
+	if collision_shape.shape is CapsuleShape2D:
+		body_radius = collision_shape.shape.radius * absf(collision_shape.scale.x)
+	var scan_distance := maxf(movement_data.auto_step_lookahead, body_radius + movement_data.move_speed * 0.4)
+	var foot_start := global_position + Vector2(0, -6.0)
+	var foot_end := foot_start + Vector2(face_sign * scan_distance, 0)
+	var foot_query := PhysicsRayQueryParameters2D.create(foot_start, foot_end, collision_mask)
+	foot_query.exclude = [get_rid()]
+	var foot_hit := space_state.intersect_ray(foot_query)
+
+	if foot_hit.is_empty():
+		return false
+
+	var edge_distance: float = absf(foot_hit.position.x - global_position.x)
+	var probe_distance: float = edge_distance + 4.0
+	var probe_height: float = movement_data.auto_step_max_height + 8.0
+	# Limit the upper ray to this ledge, so a farther wall does not hide a low step.
+	var high_start := global_position + Vector2(0, -probe_height)
+	var high_end := high_start + Vector2(face_sign * probe_distance, 0)
+	var high_query := PhysicsRayQueryParameters2D.create(high_start, high_end, collision_mask)
+	high_query.exclude = [get_rid()]
+	var high_hit := space_state.intersect_ray(high_query)
+
+	if not high_hit.is_empty():
+		return false # Vật cản quá cao, người chơi phải chủ động bấm Space nhảy!
+
+	var down_start := global_position + Vector2(face_sign * probe_distance, -probe_height)
+	var down_end := down_start + Vector2(0, probe_height + 6.0)
+	var down_query := PhysicsRayQueryParameters2D.create(down_start, down_end, collision_mask)
+	down_query.exclude = [get_rid()]
+	var down_hit := space_state.intersect_ray(down_query)
+
+	if down_hit.is_empty():
+		return false
+
+	var ledge_top_y: float = down_hit.position.y
+	var step_height: float = global_position.y - ledge_top_y
+
+	if step_height >= movement_data.auto_step_min_height and step_height <= movement_data.auto_step_max_height:
+		var gravity := maxf(movement_data.gravity, 1.0)
+		var launch_speed := minf(absf(movement_data.auto_step_jump_velocity), sqrt(2.0 * gravity * (step_height + 14.0)))
+		var clear_height: float = step_height + 4.0
+		var discriminant := launch_speed * launch_speed - 2.0 * gravity * clear_height
+		if discriminant <= 0.0:
+			return false
+		if edge_distance > movement_data.auto_step_takeoff_distance:
+			return false
+		velocity.y = -launch_speed
+		velocity.x = face_sign * movement_data.move_speed
+		auto_step_cooldown = 0.45
+		_change_state(State.AUTO_HOP)
+		return true
+
+	return false
+
 func _set_facing(dir: int) -> void:
 	if dir == 0 or dir == facing_direction:
 		return
@@ -693,4 +840,5 @@ func _get_state_name(state: State) -> String:
 		State.LAND: return "LAND"
 		State.DASH: return "DASH"
 		State.DEAD: return "DEAD"
+		State.AUTO_HOP: return "AUTO_HOP"
 		_: return "UNKNOWN"

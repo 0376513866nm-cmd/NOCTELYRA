@@ -99,7 +99,10 @@ func _validate_art(node: Node) -> bool:
 		var source: String = node.get_script().resource_path.get_file()
 		if source in ["bamboo_forest_layer.gd", "bamboo_prop.gd", "noctis_terrain.gd"]:
 			var batch = node.get("_batch")
-			if batch == null or batch.get("_mesh") == null:
+			var textured = node.get("_texture_batch")
+			var has_shapes: bool = batch != null and batch.get("_mesh") != null
+			var has_textures: bool = textured != null and textured.get("_mesh") != null
+			if not has_shapes and not has_textures:
 				print("Missing artwork: ", node.get_path())
 				return false
 	for child in node.get_children():

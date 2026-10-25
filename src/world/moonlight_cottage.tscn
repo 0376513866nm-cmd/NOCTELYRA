@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://b7v4k2nap1q8"]
 
 [ext_resource type="Script" path="res://src/world/moonlight_cottage.gd" id="1_cottage"]
-[ext_resource type="Texture2D" uid="uid://bqivdfe676bpi" path="res://assets/environment/moonlight_cottage_v1.png" id="2_cottage_art"]
+[ext_resource type="Texture2D" path="res://assets/environment/moonlight_bamboo_cottage.png" id="2_cottage_art"]
 
 [sub_resource type="Gradient" id="Gradient_light"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
