@@ -57,9 +57,14 @@ func _update_buttons() -> void:
 
 func _on_continue_pressed() -> void:
 	if SaveManager.has_save():
+		ZoneManager.reset_session()
+		get_tree().paused = false
 		SaveManager.should_load_on_start = true
 		var target_scene := SaveManager.get_save_zone_scene_path()
-		get_tree().change_scene_to_file(target_scene)
+		var error := get_tree().change_scene_to_file(target_scene)
+		if error != OK:
+			SaveManager.should_load_on_start = false
+			push_error("Could not continue saved game: " + error_string(error))
 
 func _on_new_game_pressed() -> void:
 	if SaveManager.has_save():

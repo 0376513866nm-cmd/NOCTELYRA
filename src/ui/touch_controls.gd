@@ -72,6 +72,27 @@ func _ready() -> void:
 	resized.connect(_on_viewport_resized)
 	get_viewport().size_changed.connect(_on_viewport_resized)
 	_sync_current_spell_icon()
+	visibility_changed.connect(_on_controls_visibility_changed)
+
+func _on_controls_visibility_changed() -> void:
+	if not is_visible_in_tree():
+		release_all_actions()
+
+func release_all_actions() -> void:
+	_reset_joystick()
+	_cast_touch_id = -1
+	_cast_hold_timer = 0.0
+	_is_spell_menu_open = false
+	for button in buttons:
+		if button.is_pressed and not button.action.is_empty() and button.id not in ["menu", "interact"]:
+			Input.action_release(button.action)
+		button.touch_id = -1
+		button.is_pressed = false
+		button.scale_anim = 1.0
+	queue_redraw()
+
+func _exit_tree() -> void:
+	release_all_actions()
 
 func _on_viewport_resized() -> void:
 	_setup_layout()
@@ -318,7 +339,10 @@ func _process(delta: float) -> void:
 			queue_redraw()
 
 func _input(event: InputEvent) -> void:
-	if not visible:
+	if not is_visible_in_tree():
+		return
+	# Handle the real pointer once, not its emulated mouse/touch duplicate.
+	if event.device == InputEvent.DEVICE_ID_EMULATION:
 		return
 
 	# Xử lý Cảm ứng màn hình (Touch) hoặc Giả lập chuột (Mouse)
@@ -337,6 +361,7 @@ func _handle_touch_event(touch_id: int, pos: Vector2, is_pressed: bool) -> void:
 	if is_pressed:
 		# 1. Kiểm tra riêng nút Phép (hỗ trợ Chạm nhanh để bắn, Ấn giữ để đổi chiêu)
 		if pos.distance_to(btn_cast.center) <= btn_cast.radius * 1.35:
+			get_viewport().set_input_as_handled()
 			_cast_touch_id = touch_id
 			_cast_hold_timer = 0.0
 			_cast_touch_pos = pos
@@ -357,6 +382,8 @@ func _handle_touch_event(touch_id: int, pos: Vector2, is_pressed: bool) -> void:
 			# Hitbox rộng rãi (tối thiểu 46px) giúp ngón tay chạm chuẩn xác
 			var hit_radius := maxf(btn.radius * 1.45, 46.0)
 			if pos.distance_to(btn.center) <= hit_radius:
+				# Consume BEFORE opening a panel at the same coordinates as this press.
+				get_viewport().set_input_as_handled()
 				btn.touch_id = touch_id
 				btn.is_pressed = true
 				btn.scale_anim = 0.88
@@ -373,6 +400,7 @@ func _handle_touch_event(touch_id: int, pos: Vector2, is_pressed: bool) -> void:
 		# Đế cố định vững chắc, không bao giờ bay lên giữa màn hình
 		if pos.x < 360.0 and pos.y > size.y * 0.45:
 			if _joystick_touch_id == -1:
+				get_viewport().set_input_as_handled()
 				_joystick_touch_id = touch_id
 				joystick_center = joystick_base_pos
 				_update_joystick(pos)

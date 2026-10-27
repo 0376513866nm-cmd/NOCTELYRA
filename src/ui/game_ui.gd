@@ -214,7 +214,9 @@ func _ready() -> void:
 		sidebar_toggle_btn.pressed.connect(toggle_sidebar)
 		sidebar_toggle_btn.visible = not initial_touch_visible
 	if settings_gear_btn:
-		settings_gear_btn.pressed.connect(toggle_sidebar)
+		# One menu entry: touch MENU in hybrid mode, HUD MENU otherwise.
+		settings_gear_btn.visible = false
+		settings_gear_btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if sidebar_hybrid_controls_btn:
 		sidebar_hybrid_controls_btn.pressed.connect(toggle_touch_controls)
 
@@ -263,7 +265,6 @@ func _ready() -> void:
 
 	switch_sidebar_tab(0)
 
-	SettingsManager.load_settings()
 	_update_settings_ui()
 
 func _process(delta: float) -> void:
@@ -795,11 +796,11 @@ func _update_settings_ui() -> void:
 	if zoom_label:
 		zoom_label.text = zoom_pct_str
 	if zoom_slider and not is_equal_approx(zoom_slider.value, cur_z):
-		zoom_slider.value = cur_z
+		zoom_slider.set_value_no_signal(cur_z)
 	if sidebar_zoom_label:
 		sidebar_zoom_label.text = zoom_pct_str
 	if sidebar_zoom_slider and not is_equal_approx(sidebar_zoom_slider.value, cur_z):
-		sidebar_zoom_slider.value = cur_z
+		sidebar_zoom_slider.set_value_no_signal(cur_z)
 
 	var fs_text = "Toàn Màn Hình: BẬT" if SettingsManager.is_fullscreen else "Toàn Màn Hình: TẮT"
 	if fullscreen_btn:
@@ -813,20 +814,26 @@ func is_sidebar_open() -> bool:
 	return sidebar != null and sidebar.visible
 
 func open_sidebar(tab_idx: int = -1) -> void:
+	var was_open := is_sidebar_open()
 	if sidebar:
 		sidebar.visible = true
 		if tab_idx >= 0:
 			switch_sidebar_tab(tab_idx)
 		_refresh_sidebar_content()
 	if touch_controls:
-		_was_touch_controls_visible = touch_controls.visible
+		if not was_open:
+			_was_touch_controls_visible = touch_controls.visible
 		touch_controls.visible = false
+	if sidebar_toggle_btn:
+		sidebar_toggle_btn.visible = false
 
 func close_sidebar() -> void:
 	if sidebar:
 		sidebar.visible = false
 	if touch_controls:
 		touch_controls.visible = _was_touch_controls_visible
+	if sidebar_toggle_btn:
+		sidebar_toggle_btn.visible = not _was_touch_controls_visible
 
 func toggle_sidebar() -> void:
 	if is_sidebar_open():
@@ -922,14 +929,14 @@ func _refresh_sidebar_content() -> void:
 				if not eq.equipped_weapon.is_empty() and ItemDatabase.has_item(eq.equipped_weapon):
 					var w_def = ItemDatabase.get_item(eq.equipped_weapon)
 					if w_def:
-						w_name = w_def.item_name
+						w_name = w_def.display_name
 				sidebar_equip_weapon.text = "• Vũ khí: %s" % w_name
 			if sidebar_equip_acc:
 				var a_name = "Chưa trang bị"
 				if not eq.equipped_accessory.is_empty() and ItemDatabase.has_item(eq.equipped_accessory):
 					var a_def = ItemDatabase.get_item(eq.equipped_accessory)
 					if a_def:
-						a_name = a_def.item_name
+						a_name = a_def.display_name
 				sidebar_equip_acc.text = "• Phụ kiện: %s" % a_name
 			if sidebar_equip_armor:
 				sidebar_equip_armor.text = "• Giáp: Áo Choàng Cơ Bản"

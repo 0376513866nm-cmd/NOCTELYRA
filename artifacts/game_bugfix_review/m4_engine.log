@@ -1,0 +1,138 @@
+Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
+
+==================================================
+ [NOCTELYRA M4 FINAL] TEST SUITE STARTING         
+==================================================
+USER WARNING: Camera2D overridden to physics process mode due to use of physics interpolation.
+   at: _update_process_callback (scene/2d/camera_2d.cpp:92)
+
+--- CATEGORY 1: Khởi tạo Boss & Vị trí Cổng Ma Pháp X=4200 ---
+  [PASS] Boss Lunareth tồn tại trong scene
+  [PASS] HP tối đa của Boss là 320
+  [PASS] HP hiện tại của Boss là 320/320
+  [PASS] Boss ban đầu ở trạng thái DORMANT
+  [PASS] Boss bắt đầu ở Phase 1
+  [PASS] Trận chiến Boss chưa bắt đầu
+  [PASS] Cổng Ma Pháp tồn tại trong scene
+  [PASS] Cổng Ma Pháp nằm chính xác tại tọa độ X=4200 (thực tế: 4200.0)
+  [PASS] Cổng Ma Pháp đang ở trạng thái KHÓA
+  [PASS] Va chạm vật lý của Cổng Ma Pháp đang BẬT
+
+--- CATEGORY 2: Cổng vẫn khóa khi nhiệm vụ ở READY_TO_TURN_IN ---
+  [PASS] Cổng Ma Pháp VẪN KHÓA khi nhiệm vụ ở READY_TO_TURN_IN (chưa trả quest)
+  [PASS] Va chạm vật lý vẫn BẬT khi ở READY_TO_TURN_IN
+
+--- CATEGORY 3: Kiểm thử va chạm vật lý thực tế của Cổng tại X=4200 (Dash & Double Jump) ---
+  [PASS] Dash bị chặn đứng hoàn toàn bởi Cổng tại X=4200 (Player dừng tại X: 4123.9 <= 4175)
+  [PASS] Player tuyệt đối không thể vượt qua Cổng khi đang khóa bằng Dash
+  [PASS] Nhảy đôi trên không vẫn bị Cổng tại X=4200 chặn hoàn toàn (Player dừng tại X: 4159.6 <= 4175)
+  [PASS] Player tuyệt đối không thể vượt qua Cổng khi đang khóa bằng Double Jump
+
+--- CATEGORY 4: Cổng Ma Pháp CHỈ MỞ khi nhiệm vụ chuyển sang COMPLETED ---
+  [PASS] Cổng Ma Pháp đã MỞ khi nhiệm vụ đạt COMPLETED
+  [PASS] Va chạm vật lý đã TẮT để cho phép người chơi đi qua
+  [PASS] Player đi xuyên qua cổng đã mở tại X=4200 thành công (X: 4270.3 > 4220)
+
+--- CATEGORY 5: Kích hoạt Đấu trường & Rào chắn Arena khóa lại ---
+  [PASS] Cờ boss_battle_started kích hoạt
+  [PASS] Boss chuyển sang thức tỉnh
+  [PASS] Rào chắn đấu trường khóa chặt Player bên trong
+  [PASS] Thanh HUD Boss hiển thị trên màn hình
+
+--- CATEGORY 6: Thời gian Telegraph thực tế (Charge 0.7s, Shockwave 0.9s) ---
+  [PASS] Thời gian cảnh báo đòn Húc thực tế là 0.70s (yêu cầu >= 0.6s)
+  [PASS] Hitbox húc TẮT trong thời gian Telegraph
+  [PASS] Vùng cảnh báo đòn húc hiển thị
+  [PASS] Thời gian cảnh báo đòn Chấn Ba thực tế là 0.90s (yêu cầu >= 0.8s)
+  [PASS] Vòng ma pháp cảnh báo chấn ba hiển thị
+
+--- CATEGORY 7: Va chạm vật lý thực tế qua Godot Physics Server (Horn Charge) ---
+  [PASS] Sát thương Horn Charge đúng 20.0
+  [PASS] Godot Physics Engine tự động phát hiện va chạm: Player mất 20 HP (100 -> 80)
+  [PASS] Godot Physics chống sát thương trùng khi chồng lấn liên tục (HP giữ nguyên 80.0)
+
+--- CATEGORY 8: Va chạm vật lý thực tế & Thuộc tính Projectile BossShockwave ---
+  [PASS] Tốc độ sóng chấn ba Phase 1 là 380 px/s
+  [PASS] Sát thương sóng chấn ba đúng 25 DMG
+  [PASS] BossShockwave nằm trong group 'boss_projectiles'
+  [PASS] Màu sắc sóng Phase 1 là tông Lam Nguyệt (Cyan/Blue)
+  [PASS] Tốc độ sóng chấn ba Phase 2 tăng lên 440 px/s
+  [PASS] Màu sắc sóng Phase 2 là tông Hắc Nguyệt (Dark Violet)
+  [PASS] Godot Physics tự động phát hiện va chạm Shockwave: Player mất 25 HP (80 -> 55)
+  [PASS] Shockwave tự hủy sau khi va chạm vật lý trúng Player
+
+--- CATEGORY 9: Miễn sát thương tuyệt đối trong toàn bộ 1.3s Phase Transition ---
+  [PASS] Boss đã kích hoạt Phase 2 khi HP <= 160
+  [PASS] Boss đang trong trạng thái PHASE_TRANSITION
+  [PASS] Boss bật cờ bất tử khi bắt đầu chuyển phase
+  [PASS] Đòn đánh bị từ chối ở đầu chuyển phase (taken == false)
+  [PASS] HP vẫn giữ nguyên 160.0 không đổi
+  [PASS] Boss VẪN BẤT TỬ ở giữa quá trình chuyển phase (t = 0.6s)
+  [PASS] Đòn đánh bị từ chối ở giữa chuyển phase (không bị HealthComponent._process tắt sớm)
+  [PASS] HP vẫn được bảo toàn nguyên vẹn 160.0
+
+--- CATEGORY 10: Boss nhận sát thương trở lại bình thường sau khi chuyển Phase xong ---
+  [PASS] Sau 1.3s, Boss kết thúc chuyển phase và sang RECOVERY
+  [PASS] Cờ bất tử đã được gỡ bỏ an toàn, không bị bất tử vĩnh viễn
+  [PASS] Boss nhận sát thương thành công sau khi hoàn tất chuyển phase
+  [PASS] HP giảm chính xác còn 135.0 (160 - 25)
+  [PASS] Phase 2 chỉ kích hoạt duy nhất một lần, không lặp lại
+
+--- CATEGORY 11: Retry từ Phase 2 đưa màu sắc và trạng thái về chuẩn Phase 1 ---
+  [PASS] Boss Visual hiện đang là Phase 2 (màu tím)
+  [PASS] Boss logic trở về Phase 1 sau Retry
+  [PASS] Boss AI trở về DORMANT sau Retry
+  [PASS] HP Boss hồi phục đầy đủ 320/320
+  [PASS] Boss Visual trở về Phase 1 sau Retry
+  [PASS] Boss Visual state trở về IDLE
+  [PASS] Hitbox tấn công tắt sau Retry
+  [PASS] Hurtbox CollisionShape được khôi phục bật sau Retry
+
+--- CATEGORY 12: Dọn dẹp sạch sẽ projectile khi Retry & Thanh Tẩy ---
+  [PASS] Có projectile boss đang tồn tại
+  [PASS] Không còn bất kỳ projectile Boss nào sót lại sau khi Retry
+
+--- CATEGORY 13: Bảo vệ Save System (Chặn lưu khi đang giao tranh Boss) ---
+  [PASS] Hệ thống nhận diện trận đánh Boss đang diễn ra
+USER WARNING: SaveManager: Không thể lưu game trong khi trận đánh Boss đang diễn ra!
+   at: push_warning (core/variant/variant_utility.cpp:1112)
+  [PASS] SaveManager TỪ CHỐI lưu game khi đang giao chiến với Boss
+
+--- CATEGORY 14: Đánh bại Boss, Autosave sau chiến thắng & Thưởng 100 Vàng + Mảnh Nguyệt Thực ---
+  [PASS] Boss chuyển sang trạng thái DEFEATED
+  [PASS] Cờ boss_defeated được xác lập
+  [PASS] Nhận chính xác 100 Vàng thưởng (0 -> 100)
+  [PASS] Nhận Mảnh Nguyệt Thực vào túi đồ
+  [PASS] Chiến đấu đã kết thúc, không còn chặn lưu
+  [PASS] Autosave sau chiến thắng chạy thành công hoàn hảo
+
+--- CATEGORY 15: Save/Continue sau khi đánh bại Lunareth (Bảo toàn DEFEATED, không nhân đôi Vàng/Vật phẩm, không có Boss thứ 2) ---
+  [PASS] Trạng thái boss_defeated vẫn là true sau khi Continue
+  [PASS] Boss vẫn ở trạng thái DEFEATED sau khi Continue
+  [PASS] Vàng không bị tăng thêm lần nữa (100 G)
+  [PASS] Mảnh Nguyệt Thực không bị nhân đôi (đúng 1 mảnh)
+  [PASS] Cơ chế chống nhận thưởng lặp: Vàng giữ nguyên sau khi gọi lại grant_boss_reward()
+  [PASS] Cơ chế chống nhận thưởng lặp: Vật phẩm không bị trao lần 2
+  [PASS] Chỉ duy nhất 1 thực thể Boss tồn tại trong scene (không xuất hiện Boss thứ hai)
+
+--- CATEGORY 16: Túi đồ đầy -> Thưởng rơi mặt đất và khôi phục nguyên vẹn sau Save/Load ---
+  [PASS] Mảnh Nguyệt Thực rơi trên mặt đất khi túi đồ đầy
+  [PASS] Định danh pickup_id ổn định: drop_boss_eclipse_fragment
+  [PASS] Lưu game chứa vật phẩm thưởng trên mặt đất thành công
+  [PASS] Mảnh Nguyệt Thực rơi trên đất được PHỤC HỒI CHÍNH XÁC sau khi tải game
+  [PASS] Player nhặt thành công Mảnh Nguyệt Thực vào túi sau khi dọn chỗ
+
+--- CATEGORY 17: Tương thích ngược phiên bản Save 1.0.0 (M3.2) ---
+  [PASS] has_save() chấp nhận bản lưu schema cũ v1.0.0
+  [PASS] load_game() nạp thành công bản lưu v1.0.0 không lỗi
+  [PASS] Boss mặc định chưa thanh tẩy trong bản lưu cũ
+
+--- KIỂM TRA AN TOÀN DỮ LIỆU: File save thật không bị ảnh hưởng ---
+  [PASS] File save thật vẫn tồn tại nguyên vẹn
+  [PASS] Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI
+
+==================================================
+ [NOCTELYRA M4 FINAL] KẾT QUẢ KIỂM THỬ TỔNG HỢP:  
+ Tổng số test: 87 | Đạt: 87 | Thất bại: 0
+==================================================
+>>> ALL M4 FINAL TESTS PASSED 100%! <<<

@@ -31,9 +31,10 @@ func _ready() -> void:
 	setup_ui()
 
 	# 1. Tải Save nếu người chơi nhấn Continue từ Main Menu
+	var loaded_save := false
 	if SaveManager.should_load_on_start:
 		SaveManager.should_load_on_start = false
-		SaveManager.load_game(self)
+		loaded_save = SaveManager.load_game(self)
 	elif ZoneManager.session_player_data.is_empty():
 		# Khởi tạo game mới với chủng tộc đã chọn (Milestone M8)
 		if player and player.player_stats_component:
@@ -47,7 +48,7 @@ func _ready() -> void:
 				p_h.emit_signal("mana_changed", p_h.current_mana, p_h.max_mana)
 
 	# 2. Xử lý chuyển cảnh hoặc áp dụng trạng thái từ ZoneManager
-	ZoneManager.on_zone_entered(self)
+	ZoneManager.on_zone_entered(self, not loaded_save)
 
 	# 3. Đồng bộ lại UI & Camera ngay sau khi nạp Save hoặc chuyển vùng
 	setup_ui()
@@ -112,7 +113,9 @@ func setup_signals() -> void:
 	# Kết nối tất cả Enemy trong khu vực
 	if get_tree():
 		for e in get_tree().get_nodes_in_group("enemies"):
-			if e is Enemy:
+			if e is Enemy and is_ancestor_of(e):
+				if not e.enemy_respawned.is_connected(_on_enemy_respawned):
+					e.enemy_respawned.connect(_on_enemy_respawned)
 				if not e.enemy_defeated.is_connected(_on_enemy_defeated):
 					e.enemy_defeated.connect(_on_enemy_defeated)
 				if player and player.quest_journal_component:
@@ -219,8 +222,12 @@ func _on_enemy_defeated(enemy_node: Node) -> void:
 		var e_type: String = str(enemy_node.enemy_type_id) if "enemy_type_id" in enemy_node else "corrupted_wolf"
 		var exp_val: int = ExpDatabase.get_enemy_exp(e_type)
 		var e_id_str: String = str(enemy_node.enemy_id) if ("enemy_id" in enemy_node and not str(enemy_node.enemy_id).is_empty()) else str(enemy_node.get_instance_id())
-		var source_id: String = "enemy:" + e_id_str
+		var source_id: String = enemy_node.get_exp_source_id() if enemy_node is Enemy else "enemy:" + e_id_str
 		player.progression_component.add_exp(exp_val, source_id)
+
+func _on_enemy_respawned(enemy_node: Node) -> void:
+	if enemy_node is Enemy:
+		defeated_enemy_ids.erase(enemy_node.enemy_id)
 
 func get_dropped_pickups_data() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -239,6 +246,9 @@ func get_dropped_pickups_data() -> Array[Dictionary]:
 	return result
 
 func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_defeated_ids: Array) -> void:
+	# Callers may pass the world's own arrays; do not clear their input by alias.
+	p_collected_ids = p_collected_ids.duplicate()
+	p_defeated_ids = p_defeated_ids.duplicate()
 	collected_pickup_ids.clear()
 	for id in p_collected_ids:
 		collected_pickup_ids.append(str(id))
@@ -279,7 +289,7 @@ func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_def
 	for e in enemies:
 		if is_ancestor_of(e) and e is Enemy and not e.enemy_id.is_empty():
 			if e.enemy_id in defeated_enemy_ids:
-				e.queue_free()
+				e.restore_defeated_state()
 
 func clear_player_projectiles() -> void:
 	if get_tree():

@@ -215,7 +215,7 @@ func _physics_process(delta: float) -> void:
 
 	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ, sổ nhiệm vụ hoặc thông tin nhân vật thì tạm ngừng nhận input
 	var ui: GameUI = _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or (ui.has_method("is_ui_cooling_down") and ui.is_ui_cooling_down()) or ui.is_inventory_open() or ui.is_quest_journal_open() or (ui.has_method("is_character_sheet_open") and ui.is_character_sheet_open())):
+	if ui and (ui.is_sidebar_open() or ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or (ui.has_method("is_ui_cooling_down") and ui.is_ui_cooling_down()) or ui.is_inventory_open() or ui.is_quest_journal_open() or (ui.has_method("is_character_sheet_open") and ui.is_character_sheet_open())):
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
 		if not is_on_floor():
 			velocity.y += movement_data.gravity * delta
@@ -395,6 +395,9 @@ func _handle_combat_inputs() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if current_state == State.DEAD:
+		return
+	var ui := _get_game_ui()
+	if ui and (ui.is_sidebar_open() or ui.is_inventory_open() or ui.is_quest_journal_open() or ui.is_character_sheet_open() or ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_ui_cooling_down()):
 		return
 	if event is InputEventMouseButton and event.pressed:
 		var sb := spellbook_component

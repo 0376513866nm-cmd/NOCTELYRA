@@ -17,6 +17,10 @@ extends Node2D
 @export var tint: Color = Color("#35644d")
 @export var leaf_tint: Color = Color("#39714e")
 @export var animate_wind: bool = false
+@export_range(1, 150, 1) var falling_leaf_count: int = 64
+@export_range(0.2, 2.0, 0.05) var leaf_motion_scale: float = 1.0
+@export_range(0.3, 2.0, 0.05) var falling_leaf_size: float = 1.0
+@export_range(0.1, 1.0, 0.05) var falling_leaf_opacity: float = 0.85
 
 var _clock: float = 0.0
 var _tick: float = 0.0
@@ -27,6 +31,9 @@ func _process(delta: float) -> void:
 	if Engine.is_editor_hint() or not (animate_wind or layer_kind == 3):
 		return
 	_clock += delta
+	if layer_kind == 3:
+		queue_redraw()
+		return
 	_tick += delta
 	if _tick > 0.05:
 		_tick = 0.0
@@ -96,11 +103,25 @@ func _draw_canopy() -> void:
 
 
 func _draw_drifting_leaves() -> void:
-	for i in range(72):
+	var terrain: Node2D = null
+	if get_parent() and get_parent().get_parent():
+		terrain = get_parent().get_parent().get_node_or_null("Geometry/NoctisTerrain") as Node2D
+	for i in range(falling_leaf_count):
 		var offset: float = float(i) * 1.731
-		var x: float = fposmod(float(i) * 127.0 + _clock * 14.0, 7000.0) - 300.0
-		var y: float = fposmod(offset * 119.0 + _clock * (18.0 + float(i % 7)), 1050.0) - 420.0
-		x += sin(_clock * 0.8 + offset) * 25.0
-		_batch.set_transform(Vector2(x, y), sin(_clock + offset) * 1.0 + offset, Vector2(1, 0.45 + absf(sin(_clock + offset)) * 0.55))
-		_batch.polygon(PackedVector2Array([Vector2(-6, 0), Vector2(-1, -2), Vector2(7, 0), Vector2(-1, 2)]), Color("#b4c37b") if i % 3 else Color("#dfca80"))
+		var time := _clock * leaf_motion_scale
+		var x := fposmod(float(i) * 643.71 + float(random_seed % 101) * 19.0 + time * (10.0 + float(i % 5) * 2.0), 6800.0) - 150.0
+		x += sin(time * 0.85 + offset) * 24.0 + sin(time * 0.39 + offset * 2.0) * 12.0
+		var floor_y := 620.0
+		if terrain and terrain.has_method("surface_y_at"):
+			var terrain_x: float = terrain.to_local(to_global(Vector2(x, 0))).x
+			floor_y = to_local(terrain.to_global(Vector2(terrain_x, terrain.surface_y_at(terrain_x)))).y
+		var y := fposmod(offset * 119.0 + time * (24.0 + float(i % 7) * 3.0), floor_y + 220.0) - 220.0
+		var alpha := smoothstep(-180.0, -80.0, y) * (1.0 - smoothstep(floor_y - 48.0, floor_y - 5.0, y)) * falling_leaf_opacity
+		var size := falling_leaf_size * (0.75 + float(i % 4) * 0.14)
+		var tilt := sin(time * 1.4 + offset) * 0.7 + offset
+		var flip := 0.25 + absf(sin(time * 1.8 + offset)) * 0.75
+		_batch.set_transform(Vector2(x, y), tilt, Vector2(size, size * flip))
+		var color := Color("#8da56b") if i % 4 else Color("#c1b578")
+		color.a = alpha
+		_batch.polygon(PackedVector2Array([Vector2(-7, 0), Vector2(-2, -1.6), Vector2(2, -1.0), Vector2(8, 0), Vector2(1, 1.7), Vector2(-3, 1.0)]), color)
 		_batch.set_transform(Vector2.ZERO)

@@ -129,6 +129,9 @@ func _run_suite() -> void:
 	quest_mgr.current_quest.current_state = QuestData.State.COMPLETED
 	gate.update_quest_status(quest_mgr.current_quest)
 	_assert(gate.is_open == true, "Cổng Ma Pháp đã MỞ khi nhiệm vụ đạt COMPLETED")
+	# Physics changes made from combat/area signals are committed after the callback.
+	await physics_frame
+	await process_frame
 	_assert(gate_col.disabled == true, "Va chạm vật lý đã TẮT để cho phép người chơi đi qua")
 
 	# Cho Player đi qua vị trí cổng đã mở
@@ -144,6 +147,8 @@ func _run_suite() -> void:
 	print("\n--- CATEGORY 5: Kích hoạt Đấu trường & Rào chắn Arena khóa lại ---")
 	player.global_position = Vector2(4450.0, 630.0)
 	world._on_arena_trigger_entered(player)
+	await physics_frame
+	await process_frame
 
 	_assert(world.boss_battle_started == true, "Cờ boss_battle_started kích hoạt")
 	_assert(boss.current_state == BossLunarethScript.State.INTRO or boss.current_state == BossLunarethScript.State.APPROACH, "Boss chuyển sang thức tỉnh")
@@ -170,6 +175,9 @@ func _run_suite() -> void:
 	# CATEGORY 7: Va chạm vật lý thực tế qua Godot Physics cho Horn Charge (20 DMG)
 	# -------------------------------------------------------------
 	print("\n--- CATEGORY 7: Va chạm vật lý thực tế qua Godot Physics Server (Horn Charge) ---")
+	# The preceding category selected MOON_SHOCKWAVE to test its telegraph.
+	# Select the charge explicitly so stray shockwaves cannot affect this collision test.
+	boss.current_attack = BossLunarethScript.AttackType.HORN_CHARGE
 	boss._change_state(BossLunarethScript.State.ATTACK)
 	_assert(boss.charge_hitbox.damage == 20.0, "Sát thương Horn Charge đúng 20.0")
 

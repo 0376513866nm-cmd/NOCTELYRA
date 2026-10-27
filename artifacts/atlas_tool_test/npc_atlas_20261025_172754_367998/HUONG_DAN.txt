@@ -1,0 +1,11 @@
+KẾT QUẢ
+frames/: PNG trong suốt, cùng khung cắt và kích thước.
+npc_idle_atlas.png: atlas có đệm 2px.
+npc_idle.tres: SpriteFrames, hoạt ảnh idle chạy xuôi ở 8 FPS (hoặc FPS đã chọn).
+
+DÙNG TRONG GODOT
+1. Chép cả npc_idle_atlas.png và npc_idle.tres vào cùng một thư mục trong project.
+2. Gán npc_idle.tres vào Sprite Frames của AnimatedSprite2D; chọn idle và bật Autoplay.
+3. Đặt Centered = Off, Offset X = -nửa chiều rộng khung, Offset Y = -chiều cao khung; chỉnh Scale cho vừa NPC.
+4. Ẩn ảnh NPC cũ. Nếu video đã có nhịp thở thì tắt track nhún VisualRoot để tránh chồng chuyển động.
+Ảnh gốc không bị thay đổi. Có thể chỉnh ngưỡng nếu mất chi tiết sáng sát mép; nền trắng bao kín trong nhân vật được giữ lại.

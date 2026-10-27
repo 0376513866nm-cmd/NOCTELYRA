@@ -1,0 +1,202 @@
+{
+	"boss": {
+		"activated": false,
+		"defeated": true,
+		"reward_claimed": true
+	},
+	"collected_pickup_ids": [],
+	"current_zone_id": "noctis_forest",
+	"defeated_enemy_ids": [
+		"enemy_forest_2",
+		"enemy_forest_3"
+	],
+	"dropped_pickups": [
+		{
+			"amount": 1,
+			"item_id": "mana_shard",
+			"pickup_id": "regression_drop",
+			"x": 900,
+			"y": 600.798950195313
+		},
+		{
+			"amount": 1,
+			"item_id": "mana_shard",
+			"pickup_id": "drop_en_2485806_60924",
+			"x": 2400,
+			"y": 624.842346191406
+		}
+	],
+	"equipment": {
+		"accessory": "moon_amulet",
+		"weapon": "moonsteel_sword"
+	},
+	"gold": 150,
+	"inventory": [
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		},
+		{
+			"amount": 0,
+			"item_id": ""
+		}
+	],
+	"player": {
+		"current_health": 84.8672615999999,
+		"current_mana": 83.4772220000001,
+		"position_x": 180,
+		"position_y": 632,
+		"progression": {
+			"claimed_exp_sources": [
+				"enemy:enemy_forest_1",
+				"enemy:enemy_forest_1:life:1792927195.306:2401917"
+			],
+			"current_exp": 120,
+			"level": 3
+		},
+		"race_id": "human"
+	},
+	"progression": {
+		"claimed_exp_sources": [
+			"enemy:enemy_forest_1",
+			"enemy:enemy_forest_1:life:1792927195.306:2401917"
+		],
+		"current_exp": 120,
+		"level": 3,
+		"race_id": "human"
+	},
+	"quest": {
+		"current_amount": 3,
+		"state": 3
+	},
+	"quest_journal": {
+		"_kill_history": {
+			"corrupted_wolf": [
+				"enemy_forest_1"
+			]
+		},
+		"quest_elyndra_cleansing": {
+			"counted_enemy_ids": [],
+			"current_amount": 0,
+			"reward_claimed": false,
+			"state": 0
+		},
+		"quest_vharok_embers": {
+			"counted_enemy_ids": [],
+			"current_amount": 0,
+			"reward_claimed": false,
+			"state": 0
+		}
+	},
+	"save_version": "1.5.0",
+	"spellbook": {
+		"known_spells": [
+			"moon_bolt",
+			"ember_bloom",
+			"frost_shard"
+		],
+		"selected_spell": "moon_bolt",
+		"spell_levels": {
+			"ember_bloom": 1,
+			"frost_shard": 1,
+			"moon_bolt": 1
+		}
+	},
+	"timestamp": 1792927197.636,
+	"zone_states": {
+		"elyndra_glade": {
+			"collected_pickup_ids": [],
+			"defeated_enemy_ids": [],
+			"dropped_pickups": []
+		},
+		"noctis_forest": {
+			"boss": {
+				"activated": false,
+				"defeated": true,
+				"reward_claimed": true
+			},
+			"collected_pickup_ids": [],
+			"defeated_enemy_ids": [
+				"enemy_forest_2",
+				"enemy_forest_3"
+			],
+			"dropped_pickups": [
+				{
+					"amount": 1,
+					"item_id": "mana_shard",
+					"pickup_id": "regression_drop",
+					"x": 900,
+					"y": 600.798950195313
+				},
+				{
+					"amount": 1,
+					"item_id": "mana_shard",
+					"pickup_id": "drop_en_2485806_60924",
+					"x": 2400,
+					"y": 624.842346191406
+				}
+			]
+		},
+		"vharok_outpost": {
+			"collected_pickup_ids": [],
+			"defeated_enemy_ids": [],
+			"dropped_pickups": []
+		}
+	}
+}

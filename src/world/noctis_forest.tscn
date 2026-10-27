@@ -13,14 +13,14 @@
 [ext_resource type="PackedScene" uid="uid://c4k2m8p1q7v5" path="res://src/boss/boss_lunareth.tscn" id="11_boss"]
 [ext_resource type="PackedScene" uid="uid://c60p01y4k8v2" path="res://src/world/zone_portal.tscn" id="12_portal"]
 [ext_resource type="Script" path="res://src/world/zone_spawn_point.gd" id="13_spawn"]
-[ext_resource type="PackedScene" path="res://src/world/bamboo_cottage.tscn" id="19_cottage"]
+[ext_resource type="PackedScene" uid="uid://b7v4k2nap1q8" path="res://src/world/moonlight_cottage.tscn" id="19_cottage"]
 [ext_resource type="PackedScene" uid="uid://m5y1p8k3q2v4" path="res://src/world/sanctuary_garden.tscn" id="20_garden"]
 [ext_resource type="PackedScene" uid="uid://c3m7k8p2v1ra" path="res://src/actors/pets/pet_moss_fox.tscn" id="21_fox"]
 [ext_resource type="PackedScene" uid="uid://d3y8p1m4k2v7" path="res://src/actors/pets/pet_moon_bird.tscn" id="22_bat"]
 [ext_resource type="Script" path="res://src/world/day_night_cycle.gd" id="23_daynight"]
 [ext_resource type="Script" path="res://src/actors/player/player_movement_data.gd" id="28_msavv"]
 [ext_resource type="Script" path="res://src/world/noctis_terrain.gd" id="32_terrain"]
-[ext_resource type="PackedScene" path="res://src/world/bamboo_grove.tscn" id="34_bamboo"]
+[ext_resource type="PackedScene" uid="uid://cnsny5gi28k05" path="res://src/world/bamboo_grove.tscn" id="34_bamboo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
 size = Vector2(80, 1000)
@@ -46,6 +46,12 @@ max_jumps = 2
 dash_speed = 800.0
 dash_duration = 0.2
 dash_cooldown = 0.8
+auto_step_enabled = true
+auto_step_min_height = 10.0
+auto_step_max_height = 48.0
+auto_step_jump_velocity = -365.0
+auto_step_lookahead = 96.0
+auto_step_takeoff_distance = 35.0
 
 [node name="NoctisForest" type="Node2D"]
 process_mode = 1
@@ -68,6 +74,7 @@ color = Color(0.32, 0.35, 0.52, 1)
 
 [node name="DayNightCycle" type="Node2D" parent="." node_paths=PackedStringArray("canvas_modulate", "sky_day_tex", "sky_night_tex", "sun_node", "moon_node", "stars_node", "clouds_node", "hills_node", "mountains_node")]
 script = ExtResource("23_daynight")
+day_duration = 600.0
 canvas_modulate = NodePath("../WorldCanvasModulate")
 sky_day_tex = NodePath("../BambooGrove/ParallaxBackground/LayerSky/SkyDayTex")
 sky_night_tex = NodePath("../BambooGrove/ParallaxBackground/LayerSky/SkyNightTex")
@@ -136,19 +143,20 @@ position = Vector2(0, -150)
 shape = SubResource("RectangleShape2D_arena_trigger")
 
 [node name="MoonlightCottage" parent="." instance=ExtResource("19_cottage")]
-position = Vector2(267, 623)
+z_index = -1
+position = Vector2(378, 641)
 
 [node name="SanctuaryGarden" parent="." instance=ExtResource("20_garden")]
 visible = false
 
 [node name="PetMossFox" parent="." instance=ExtResource("21_fox")]
-position = Vector2(430, 631)
+position = Vector2(430, 649)
 
 [node name="PetMoonBird" parent="." instance=ExtResource("22_bat")]
 position = Vector2(285, 485)
 
 [node name="NPC_Elyra" parent="." instance=ExtResource("3_npc")]
-position = Vector2(574, 632)
+position = Vector2(786, 635)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(180, 632)

@@ -2,6 +2,11 @@ class_name SettingsManager
 extends RefCounted
 
 const SETTINGS_FILE_PATH := "user://settings.json"
+static var custom_settings_path: String = ""
+static var _settings_loaded: bool = false
+
+static func get_settings_path() -> String:
+	return custom_settings_path if not custom_settings_path.is_empty() else SETTINGS_FILE_PATH
 
 static var camera_zoom: float = 1.0:
 	set(val):
@@ -21,23 +26,24 @@ static func apply_camera_zoom(world: Node = null) -> void:
 			cam.zoom = Vector2(camera_zoom, camera_zoom)
 
 static func zoom_in(step: float = 0.1) -> float:
-	camera_zoom = clamp(camera_zoom + step, 0.6, 2.0)
-	return camera_zoom
+	return set_zoom(camera_zoom + step)
 
 static func zoom_out(step: float = 0.1) -> float:
-	camera_zoom = clamp(camera_zoom - step, 0.6, 2.0)
-	return camera_zoom
+	return set_zoom(camera_zoom - step)
 
 static func set_zoom(val: float) -> float:
-	camera_zoom = clamp(val, 0.6, 2.0)
+	var next_zoom := clampf(val, 0.6, 2.0)
+	if not is_equal_approx(next_zoom, camera_zoom):
+		camera_zoom = next_zoom
+		save_settings()
 	return camera_zoom
 
 static func set_fullscreen(enabled: bool) -> void:
 	is_fullscreen = enabled
-	if enabled:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	else:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	var target_mode := DisplayServer.WINDOW_MODE_FULLSCREEN if enabled else DisplayServer.WINDOW_MODE_WINDOWED
+	# Loading a new area's UI must not recreate an unchanged window/swapchain.
+	if DisplayServer.window_get_mode() != target_mode:
+		DisplayServer.window_set_mode(target_mode)
 
 static func toggle_fullscreen() -> bool:
 	set_fullscreen(not is_fullscreen)
@@ -49,15 +55,19 @@ static func save_settings() -> void:
 		"is_fullscreen": is_fullscreen,
 		"hybrid_controls_enabled": hybrid_controls_enabled
 	}
-	var f := FileAccess.open(SETTINGS_FILE_PATH, FileAccess.WRITE)
+	var f := FileAccess.open(get_settings_path(), FileAccess.WRITE)
 	if f:
 		f.store_string(JSON.stringify(data, "\t"))
 		f.close()
 
-static func load_settings() -> void:
-	if not FileAccess.file_exists(SETTINGS_FILE_PATH):
+static func load_settings(force_reload: bool = false) -> void:
+	# New area UIs share the live settings; don't overwrite them with an old disk value.
+	if _settings_loaded and not force_reload:
 		return
-	var f := FileAccess.open(SETTINGS_FILE_PATH, FileAccess.READ)
+	_settings_loaded = true
+	if not FileAccess.file_exists(get_settings_path()):
+		return
+	var f := FileAccess.open(get_settings_path(), FileAccess.READ)
 	if f == null:
 		return
 	var text := f.get_as_text()

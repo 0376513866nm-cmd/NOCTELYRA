@@ -178,8 +178,8 @@ static func save_zone_state(zone_id: String, world: Node) -> void:
 		return
 
 	var state: Dictionary = {
-		"collected_pickup_ids": world.get("collected_pickup_ids") if "collected_pickup_ids" in world else [],
-		"defeated_enemy_ids": world.get("defeated_enemy_ids") if "defeated_enemy_ids" in world else [],
+		"collected_pickup_ids": world.get("collected_pickup_ids").duplicate() if "collected_pickup_ids" in world else [],
+		"defeated_enemy_ids": world.get("defeated_enemy_ids").duplicate() if "defeated_enemy_ids" in world else [],
 		"dropped_pickups": world.get_dropped_pickups_data() if world.has_method("get_dropped_pickups_data") else []
 	}
 
@@ -226,6 +226,13 @@ static func travel_to_zone(target_zone_id: String, target_spawn_id: String, curr
 		player = current_world.get_node_or_null("Player") as Player
 	if player and player.health_component and not player.health_component.is_alive():
 		return false
+	if current_world == null or not current_world.is_inside_tree():
+		return false
+	var tree := current_world.get_tree()
+	var scene_path := get_zone_scene_path(target_zone_id)
+	var packed := load(scene_path) as PackedScene
+	if packed == null:
+		return false
 
 	# 1. Lưu trạng thái thế giới hiện tại và trích xuất dữ liệu Player
 	var cur_id := get_current_zone_id(current_world)
@@ -238,19 +245,18 @@ static func travel_to_zone(target_zone_id: String, target_spawn_id: String, curr
 	current_zone_id = target_zone_id
 	current_spawn_id = target_spawn_id if not target_spawn_id.is_empty() else ZoneDefinition.get_default_spawn(target_zone_id)
 
-	# 3. Tiến hành đổi scene
-	var scene_path := get_zone_scene_path(target_zone_id)
-	var tree: SceneTree = null
-	if current_world and current_world.get_tree():
-		tree = current_world.get_tree()
+	# Input callbacks (including touch controls) must finish before their scene is freed.
+	var change_scene := func() -> void:
+		var error := tree.change_scene_to_packed(packed)
+		if error != OK:
+			is_transitioning = false
+			is_zone_traveling = false
+			current_zone_id = cur_id
+			push_error("Zone travel failed: " + error_string(error))
+	change_scene.call_deferred()
+	return true
 
-	if tree:
-		tree.change_scene_to_file(scene_path)
-		return true
-
-	return false
-
-static func on_zone_entered(world: Node) -> void:
+static func on_zone_entered(world: Node, restore_state: bool = true) -> void:
 	if world == null:
 		return
 
@@ -270,7 +276,7 @@ static func on_zone_entered(world: Node) -> void:
 		travel_cooldown = 1.5 # Grace cooldown chống ping-pong lặp tức thì
 	else:
 		# Vào khu vực thông thường: phục hồi trạng thái khu vực nếu có sẵn trong bộ nhớ
-		if zone_states.has(z_id) and not zone_states[z_id].is_empty():
+		if restore_state and zone_states.has(z_id) and not zone_states[z_id].is_empty():
 			restore_zone_state(z_id, world)
 
 	# 2. Cập nhật UI thông tin khu vực

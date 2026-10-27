@@ -66,7 +66,7 @@ var shockwave_scene: PackedScene = preload("res://src/boss/boss_shockwave.tscn")
 func _ready() -> void:
 	_initial_spawn_position = global_position
 	if charge_hitbox:
-		charge_hitbox.monitoring = false
+		charge_hitbox.set_deferred("monitoring", false)
 		charge_hitbox.visible = false
 		charge_hitbox.damage = 20.0
 		charge_hitbox.owner_node = self
@@ -222,7 +222,7 @@ func _process_attack(delta: float) -> void:
 
 func _finish_attack() -> void:
 	if charge_hitbox:
-		charge_hitbox.monitoring = false
+		charge_hitbox.set_deferred("monitoring", false)
 		charge_hitbox.visible = false
 	_change_state(State.RECOVERY)
 
@@ -271,7 +271,7 @@ func _change_state(new_state: State) -> void:
 				if charge_hitbox:
 					charge_hitbox.reset_hits()
 					charge_hitbox.damage = 20.0
-					charge_hitbox.monitoring = true
+					charge_hitbox.set_deferred("monitoring", true)
 					charge_hitbox.visible = true
 				if boss_visual and boss_visual.has_method("set_state"):
 					boss_visual.set_state(BossVisualScript.VisualState.ATTACK_CHARGE)
@@ -303,14 +303,14 @@ func _change_state(new_state: State) -> void:
 			_is_defeated = true
 			velocity = Vector2.ZERO
 			if charge_hitbox:
-				charge_hitbox.monitoring = false
+				charge_hitbox.set_deferred("monitoring", false)
 				charge_hitbox.visible = false
 			if hurtbox:
-				hurtbox.monitoring = false
-				hurtbox.monitorable = false
+				hurtbox.set_deferred("monitoring", false)
+				hurtbox.set_deferred("monitorable", false)
 				var h_col := hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
 				if h_col:
-					h_col.disabled = true
+					h_col.set_deferred("disabled", true)
 			if health_component:
 				health_component.is_invulnerable = true
 			if boss_visual and boss_visual.has_method("set_state"):
@@ -376,7 +376,7 @@ func reset_boss() -> void:
 		emit_signal("boss_health_changed", max_hp, max_hp)
 
 	if charge_hitbox:
-		charge_hitbox.monitoring = false
+		charge_hitbox.set_deferred("monitoring", false)
 		charge_hitbox.visible = false
 		charge_hitbox.reset_hits()
 
@@ -385,7 +385,7 @@ func reset_boss() -> void:
 		hurtbox.set_deferred("monitorable", true)
 		var h_col := hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if h_col:
-			h_col.disabled = false
+			h_col.set_deferred("disabled", false)
 
 	if boss_visual:
 		if boss_visual.has_method("reset_visual"):
@@ -406,14 +406,14 @@ func purify_boss() -> void:
 		health_component.current_health = 0.0
 		health_component.is_invulnerable = true
 	if charge_hitbox:
-		charge_hitbox.monitoring = false
+		charge_hitbox.set_deferred("monitoring", false)
 		charge_hitbox.visible = false
 	if hurtbox:
-		hurtbox.monitoring = false
-		hurtbox.monitorable = false
+		hurtbox.set_deferred("monitoring", false)
+		hurtbox.set_deferred("monitorable", false)
 		var h_col := hurtbox.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if h_col:
-			h_col.disabled = true
+			h_col.set_deferred("disabled", true)
 	if boss_visual and boss_visual.has_method("set_state"):
 		boss_visual.set_state(BossVisualScript.VisualState.DEFEATED)
 	emit_signal("boss_state_changed", "DEFEATED")

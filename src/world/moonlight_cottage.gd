@@ -2,7 +2,7 @@ class_name MoonlightCottage
 extends Node2D
 
 ## Ngôi Nhà Đèn Nguyệt ở rìa Rừng Noctis (The Moonlight Sanctuary Cottage)
-## Nơi trú ẩn bình yên, ấm áp của nhân vật với bếp lửa, đèn lồng và suối nguồn hồi phục.
+## PNG cottage artwork, warm lights and the sanctuary healing area.
 
 @export var heal_rate_percent: float = 0.06 # Hồi 6% HP/giây
 @export var mana_rate_percent: float = 0.10 # Hồi 10% MP/giây
@@ -10,7 +10,6 @@ extends Node2D
 @onready var sanctuary_area: Area2D = $SanctuaryArea
 @onready var warm_light: PointLight2D = get_node_or_null("WarmWindowLight") as PointLight2D
 @onready var porch_light: PointLight2D = get_node_or_null("PorchLanternLight") as PointLight2D
-@onready var campfire_light: PointLight2D = get_node_or_null("CampfireLight") as PointLight2D
 
 var _player_inside: Player = null
 var _flicker_timer: float = 0.0
@@ -43,15 +42,6 @@ func _process(delta: float) -> void:
 		warm_light.energy = lerpf(0.0, 0.45, night_factor) * flicker
 	if porch_light:
 		porch_light.energy = lerpf(0.0, 0.50, night_factor) * flicker
-	if campfire_light:
-		campfire_light.energy = lerpf(0.04, 0.65, night_factor) * (0.92 + sin(_flicker_timer * 1.4) * 0.08)
-
-	var win_halo := get_node_or_null("HouseStructure/WarmWindow/WindowWarmHalo") as CanvasItem
-	if win_halo:
-		win_halo.modulate.a = night_factor * 0.5
-	var porch_halo := get_node_or_null("HouseStructure/PorchVeranda/PorchLantern/PorchLightHalo") as CanvasItem
-	if porch_halo:
-		porch_halo.modulate.a = night_factor * 0.5
 
 	if _notif_cooldown > 0.0:
 		_notif_cooldown -= delta

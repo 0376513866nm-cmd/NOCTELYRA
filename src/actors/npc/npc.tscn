@@ -2,14 +2,11 @@
 
 [ext_resource type="Script" path="res://src/actors/npc/npc.gd" id="1_npc"]
 [ext_resource type="Script" path="res://src/interaction/interaction_component.gd" id="2_interact"]
-[ext_resource type="Texture2D" path="res://assets/sprites/npc/eiran_warden_v1.png" id="3_elyra"]
+[ext_resource type="SpriteFrames" uid="uid://c8i05vr6npci7" path="res://assets/sprites/npc/npc eiran/idle/npc_idle.tres" id="3_f2r2k"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_npc"]
 radius = 16.0
-height = 70.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
-radius = 65.0
+height = 120.0
 
 [sub_resource type="Animation" id="Animation_idle"]
 resource_name = "idle"
@@ -33,26 +30,24 @@ _data = {
 "idle": SubResource("Animation_idle")
 }
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
+radius = 81.0247
+
 [node name="NPC" type="CharacterBody2D"]
 collision_layer = 0
-collision_mask = 1
 script = ExtResource("1_npc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -35)
+position = Vector2(2, -59)
 shape = SubResource("CapsuleShape2D_npc")
 
 [node name="GroundShadow" type="Polygon2D" parent="."]
-z_index = -1
+z_index = -2
 color = Color(0, 0, 0, 0.42)
 polygon = PackedVector2Array(-22, -2, -16, -5, 0, -6, 16, -5, 22, -2, 22, 2, 16, 5, 0, 6, -16, 5, -22, 2)
 
 [node name="VisualRoot" type="Node2D" parent="."]
-
-[node name="EiranSprite" type="Sprite2D" parent="VisualRoot"]
-position = Vector2(0, -43)
-scale = Vector2(0.065, 0.065)
-texture = ExtResource("3_elyra")
+position = Vector2(0, -1.5)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -61,19 +56,19 @@ libraries = {
 autoplay = "idle"
 
 [node name="NameTag" type="Label" parent="."]
-offset_left = -40.0
-offset_top = -105.0
-offset_right = 40.0
-offset_bottom = -82.0
+offset_left = -37.0
+offset_top = -121.0
+offset_right = 43.0
+offset_bottom = -98.0
 text = "Eiran"
 horizontal_alignment = 1
 
 [node name="PromptLabel" type="Label" parent="."]
 visible = false
-offset_left = -70.0
-offset_top = -125.0
-offset_right = 70.0
-offset_bottom = -102.0
+offset_left = -68.0
+offset_top = -138.0
+offset_right = 72.0
+offset_bottom = -115.0
 text = "[E] Nói chuyện"
 horizontal_alignment = 1
 
@@ -81,5 +76,15 @@ horizontal_alignment = 1
 script = ExtResource("2_interact")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionComponent"]
-position = Vector2(0, -35)
+position = Vector2(2, -68)
 shape = SubResource("CircleShape2D_detect")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = -2
+position = Vector2(2, -51)
+scale = Vector2(0.105392, 0.101318)
+sprite_frames = ExtResource("3_f2r2k")
+animation = &"idle"
+autoplay = "idle"
+frame = 38
+frame_progress = 1.0

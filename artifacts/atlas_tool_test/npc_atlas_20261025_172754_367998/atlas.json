@@ -1,0 +1,53 @@
+{
+  "fps": 8,
+  "count": 3,
+  "frame_size": [
+    70,
+    128
+  ],
+  "columns": 3,
+  "rows": 1,
+  "gutter": 2,
+  "source_size": [
+    120,
+    160
+  ],
+  "shared_crop": [
+    22,
+    12,
+    100,
+    154
+  ],
+  "frames": [
+    {
+      "index": 1,
+      "source": "frame_1.png",
+      "region": [
+        2,
+        2,
+        70,
+        128
+      ]
+    },
+    {
+      "index": 2,
+      "source": "frame_2.png",
+      "region": [
+        76,
+        2,
+        70,
+        128
+      ]
+    },
+    {
+      "index": 3,
+      "source": "frame_3.png",
+      "region": [
+        150,
+        2,
+        70,
+        128
+      ]
+    }
+  ]
+}

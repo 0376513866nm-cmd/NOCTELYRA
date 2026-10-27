@@ -27,7 +27,7 @@ func _ready() -> void:
 func open_gate(notify: bool = true) -> void:
 	is_open = true
 	if collision_shape:
-		collision_shape.disabled = true
+		collision_shape.set_deferred("disabled", true)
 	if visual_barrier:
 		visual_barrier.color = Color(0.2, 0.8, 1.0, 0.2)
 	if runes:
@@ -38,7 +38,7 @@ func open_gate(notify: bool = true) -> void:
 func close_gate() -> void:
 	is_open = false
 	if collision_shape:
-		collision_shape.disabled = false
+		collision_shape.set_deferred("disabled", false)
 	if visual_barrier:
 		visual_barrier.color = Color(0.65, 0.15, 0.85, 0.85)
 	if runes:

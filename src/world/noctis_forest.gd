@@ -49,7 +49,7 @@ func init_references() -> void:
 		arena_barrier.visible = false
 		var b_col := arena_barrier.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if b_col:
-			b_col.disabled = true
+			b_col.set_deferred("disabled", true)
 
 func setup_signals() -> void:
 	super.setup_signals()
@@ -116,7 +116,7 @@ func start_boss_battle() -> void:
 		arena_barrier.visible = true
 		var b_col := arena_barrier.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if b_col:
-			b_col.disabled = false
+			b_col.set_deferred("disabled", false)
 
 	# Cập nhật checkpoint hồi sinh ngoài cổng đấu trường
 	if player:
@@ -156,7 +156,7 @@ func _on_boss_defeated() -> void:
 		arena_barrier.visible = false
 		var b_col := arena_barrier.get_node_or_null("CollisionShape2D") as CollisionShape2D
 		if b_col:
-			b_col.disabled = true
+			b_col.set_deferred("disabled", true)
 
 	grant_boss_reward()
 
@@ -219,7 +219,7 @@ func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> 
 			arena_barrier.visible = false
 			var b_col := arena_barrier.get_node_or_null("CollisionShape2D") as CollisionShape2D
 			if b_col:
-				b_col.disabled = true
+				b_col.set_deferred("disabled", true)
 		if magic_gate:
 			magic_gate.open_gate(false)
 		if boss_lunareth:
@@ -232,7 +232,7 @@ func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> 
 			arena_barrier.visible = false
 			var b_col := arena_barrier.get_node_or_null("CollisionShape2D") as CollisionShape2D
 			if b_col:
-				b_col.disabled = true
+				b_col.set_deferred("disabled", true)
 		if boss_lunareth:
 			boss_lunareth.reset_boss()
 		if magic_gate and quest_manager and quest_manager.current_quest:
@@ -268,7 +268,7 @@ func _on_retry_requested() -> void:
 			arena_barrier.visible = false
 			var b_col := arena_barrier.get_node_or_null("CollisionShape2D") as CollisionShape2D
 			if b_col:
-				b_col.disabled = true
+				b_col.set_deferred("disabled", true)
 		if boss_lunareth:
 			boss_lunareth.reset_boss()
 		if game_ui:

@@ -1,0 +1,34 @@
+Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
+
+USER WARNING: Camera2D overridden to physics process mode due to use of physics interpolation.
+   at: _update_process_callback (scene/2d/camera_2d.cpp:92)
+PASS Continue clears stale transition and pause state
+PASS Continue preserves actual saved gold
+PASS Continue restores each saved drop exactly once
+PASS Saved dead monster keeps its spawn for respawning
+PASS Monster respawns with active AI, health and collision restored
+PASS Respawn removes stale defeated ID from future saves
+PASS Respawn itself does not grant quest kills
+PASS New monster life grants EXP once, duplicate death grants none
+PASS Second respawn works and restores full HP
+PASS Hybrid mode has one menu entry and no duplicate gear
+PASS Regression click hits the overlapping menu/close area
+PASS One mouse click opens sidebar and does not click through to X
+PASS Separate X click closes sidebar and restores touch controls
+PASS Opening sidebar releases held movement instead of leaving it stuck
+PASS Repeated open does not lose touch control visibility
+PASS Desktop mode has one visible menu entry
+PASS Portal defers scene disposal until interaction callback returns
+PASS Duplicate portal press is rejected during transition
+PASS Portal enters Elyndra successfully
+PASS Travel preserves health and gold
+PASS Travel accepted: vharok_outpost
+PASS Travel completed: vharok_outpost
+PASS Travel accepted: elyndra_glade
+PASS Travel completed: elyndra_glade
+PASS Travel accepted: noctis_forest
+PASS Travel completed: noctis_forest
+PASS Return trip preserves defeated boss without granting reward again
+PASS Saving after return succeeds in isolated slot
+PASS Continue after multiple trips succeeds
+GAMEPLAY REGRESSIONS: 0 failures

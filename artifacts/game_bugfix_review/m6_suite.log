@@ -1,0 +1,170 @@
+Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
+
+==================================================
+ [NOCTELYRA M6.1] WORLD EXPANSION STABILIZATION TEST SUITE
+==================================================
+
+--- GROUP 1: Three Zones Valid & Loadable Scenes ---
+  [PASS] Scene Rừng Noctis (noctis_forest.tscn) nạp thành công
+  [PASS] Scene Thánh Lâm Elyndra (elyndra_glade.tscn) nạp thành công
+  [PASS] Scene Tiền Đồn Vharok (vharok_outpost.tscn) nạp thành công
+
+--- GROUP 2: Zone IDs and Spawn Points ---
+  [PASS] Zone 1 có zone_id là 'noctis_forest'
+  [PASS] Zone 2 có zone_id là 'elyndra_glade'
+  [PASS] Zone 3 có zone_id là 'vharok_outpost'
+  [PASS] Rừng Noctis có đủ SpawnDefault và SpawnFromElyndra
+  [PASS] Thánh Lâm Elyndra có đủ SpawnFromNoctis và SpawnFromVharok
+  [PASS] Tiền Đồn Vharok có SpawnFromElyndra hợp lệ
+WARNING: Camera2D overridden to physics process mode due to use of physics interpolation.
+     at: _update_process_callback (scene/2d/camera_2d.cpp:92)
+
+--- GROUP 3: Locked Moonveil Portal before Boss Defeat ---
+  [PASS] Moonveil Portal tồn tại trong scene Rừng Noctis
+  [PASS] Boss Lunareth ban đầu chưa bị đánh bại
+  [PASS] Cổng Moonveil TỪ CHỐI dịch chuyển khi Boss chưa bị hạ
+  [PASS] Lý do từ chối nhắc nhở thanh tẩy Linh Lộc Lunareth
+  [PASS] Không kích hoạt chuyển cảnh khi cổng bị khóa
+  [PASS] Khu vực hiện tại không thay đổi
+
+--- GROUP 4: Moonveil Portal Unlocks after Boss Defeat ---
+  [PASS] Cổng Moonveil MỞ KHÓA thành công sau khi Boss Lunareth bị đánh bại
+
+--- GROUP 5: Travel from Noctis to Elyndra & UI/Camera Binding ---
+  [PASS] Lệnh dịch chuyển sang Thánh Lâm Elyndra được chấp thuận
+  [PASS] Scene hiện tại đã đổi thành công sang ElyndraGlade
+  [PASS] ZoneManager.current_zone_id cập nhật là 'elyndra_glade'
+  [PASS] Player tồn tại trong Thánh Lâm Elyndra
+  [PASS] Player xuất hiện chính xác tại SpawnFromNoctis (X=280)
+  [PASS] Player quay mặt về phía trước (hướng phải)
+  [PASS] GameUI tồn tại trong Elyndra
+  [PASS] InventoryUI trong Elyndra được gắn đúng vào Player của scene
+  [PASS] SpellHotbar trong Elyndra gắn đúng vào SpellbookComponent của Player
+  [PASS] Camera2D tồn tại trong Thánh Lâm Elyndra
+  [PASS] Camera Elyndra khởi đầu tại đúng vị trí Player (X=280)
+  [PASS] Camera Elyndra bám Player chính xác khi thay đổi tọa độ (X=950)
+  [PASS] Camera Elyndra bám Player khi nhảy lên bệ đá cao
+
+--- GROUP 6: Travel from Elyndra back to Noctis ---
+  [PASS] Cổng PortalToNoctis tồn tại trong Elyndra
+  [PASS] Dịch chuyển từ Elyndra về Rừng Noctis thành công
+  [PASS] Scene hiện tại đã trở về NoctisForest
+  [PASS] Player xuất hiện chính xác tại SpawnFromElyndra (X=5700)
+  [PASS] Player quay mặt về bên trái (hướng vào làng)
+
+--- GROUP 7: Travel between Elyndra and Vharok & Camera Snap X=2120 ---
+  [PASS] Cổng PortalToVharok tồn tại trong Elyndra
+  [PASS] Dịch chuyển từ Elyndra sang Tiền Đồn Vharok thành công
+  [PASS] Scene hiện tại là VharokOutpost
+  [PASS] Player xuất hiện tại SpawnFromElyndra của Vharok (X=280)
+  [PASS] InventoryUI trong Vharok gắn đúng vào Player của scene
+  [PASS] SpellHotbar trong Vharok gắn đúng vào SpellbookComponent của Player
+  [PASS] Camera2D tồn tại trong Tiền Đồn Vharok
+  [PASS] Camera Vharok ở đúng vị trí Player tại spawn (X=280)
+  [PASS] Camera Vharok bám Player chính xác khi thay đổi tọa độ (X=1100)
+  [PASS] Cổng PortalToElyndra tồn tại trong Vharok
+  [PASS] Đã quay trở lại ElyndraGlade thành công
+  [PASS] Player xuất hiện an toàn tại SpawnFromVharok (X=2120)
+  [PASS] Camera2D tồn tại khi quay về Elyndra
+  [PASS] Camera Elyndra cập nhật NGAY LẬP TỨC tới vị trí spawn mới X=2120 (không bị trượt từ X=300)
+
+--- GROUP 8: Portal Interaction Area & Cooldown Enforcement ---
+  [PASS] Cờ travel_cooldown kích hoạt (> 0s) sau khi vừa tới khu vực mới
+  [PASS] Portal KHÔNG thể tương tác khi Player ở ngoài vùng tương tác
+  [PASS] Portal KHÔNG thể tương tác khi đang trong thời gian hồi chiêu (>0s)
+  [PASS] Portal SẴN SÀNG tương tác khi Player ở trong vùng và hết cooldown
+  [PASS] Vị trí Spawn X=2120 cách xa Portal X=2260 >= 100px, không bị chồng lấn
+
+--- GROUP 9: No Duplicate Singletons / Entities ---
+  [PASS] Chỉ duy nhất 1 instance Player tồn tại trong SceneTree
+  [PASS] Chỉ duy nhất 1 GameUI HUD tồn tại
+  [PASS] Chỉ duy nhất 1 QuestManager tồn tại
+
+--- GROUP 10: Player Stats & Inventory Preservation ---
+  [PASS] HP hiện tại bảo toàn chính xác 77.0 (không bị hồi đầy 100)
+  [PASS] MP hiện tại bảo toàn và hồi phục thụ động tự nhiên (không bị reset hồi đầy 60)
+  [PASS] Túi đồ giữ nguyên 4 Tinh thể Ma lực
+  [PASS] Vàng bảo toàn chính xác 150 G
+  [PASS] Phép đang chọn giữ nguyên là frost_shard
+  [PASS] Cấp độ Moon Bolt giữ nguyên Lv.2
+
+--- GROUP 11: World State Persistence ---
+  [PASS] Mảnh Tinh thể Ma lực đã nhặt KHÔNG xuất hiện lại khi quay về
+
+--- GROUP 12: Boss State Preserved as DEFEATED ---
+  [PASS] Trạng thái boss_defeated vẫn là true khi quay lại Rừng Noctis
+  [PASS] Boss Lunareth giữ nguyên trạng thái DEFEATED, không bị hồi sinh
+
+--- GROUP 13: Boss Reward Idempotency ---
+  [PASS] Vàng không bị trao lặp lại
+  [PASS] Mảnh Nguyệt Thực không bị trao lặp lại
+
+--- GROUP 14: Save at Vharok -> Continue Flow ---
+  [PASS] Lưu game thành công khi đang ở Tiền Đồn Vharok
+  [PASS] Bản lưu ghi nhận đúng current_zone_id là 'vharok_outpost'
+  [PASS] SaveManager.get_save_zone_id() trả về 'vharok_outpost'
+  [PASS] SaveManager.get_save_zone_scene_path() trả về scene Vharok
+  [PASS] Nạp bản lưu Continue đưa người chơi xuất hiện chính xác tại Tiền Đồn Vharok
+  [PASS] Túi đồ khôi phục chuẩn xác sau khi tải lại game
+  [PASS] Sau Continue: InventoryUI được gắn đúng vào Player mới
+  [PASS] Sau Continue: SpellHotbar gắn đúng vào Spellbook mới
+
+--- GROUP 15: Backward Compatibility v1.2.0 ---
+  [PASS] Bản lưu cũ v1.2.0 chưa có current_zone_id mặc định là 'noctis_forest'
+  [PASS] Nạp thành công bản lưu cũ v1.2.0
+  [PASS] Khôi phục đúng Vàng từ bản lưu cũ
+
+--- GROUP 16: Player Death & Respawn in New Zone ---
+  [PASS] Player tử vong trong Thánh Lâm Elyndra
+  [PASS] Game Over panel hiển thị khi chết
+  [PASS] Player hồi sinh thành công (không còn ở trạng thái DEAD)
+  [PASS] HP hồi phục đầy đủ sau Retry
+  [PASS] Player hồi sinh tại điểm Spawn an toàn của khu vực
+  [PASS] Sau Retry: InventoryUI vẫn gắn chuẩn vào Player
+  [PASS] Sau Retry: SpellHotbar vẫn gắn chuẩn vào Player
+
+--- GROUP 17: Camera Limits, Collisions & Interactables ---
+  [PASS] Camera2D của Elyndra có giới hạn chuẩn 0 -> 2400 px
+  [PASS] NPC Kaelis tồn tại trong Thánh Lâm Elyndra
+  [PASS] NPC Kaelis có danh hiệu đúng
+  [PASS] Cổ Tinh Thạch (AncientCrystal) tồn tại trong scene
+  [PASS] Tương tác với Cổ Tinh Thạch mở hộp thoại thành công
+  [PASS] Hộp thoại hiển thị người nói là 'Cổ Tinh Thạch'
+
+--- GROUP 18: Integration Test: Simulated State Portal Chain ---
+  [PASS] Integration: MagicGate X=4200 đã mở sau khi hoàn thành nhiệm vụ
+  [PASS] Integration: Moonveil Portal sẵn sàng sau khi Boss bại trận
+  [PASS] Integration: Đặt chân tới Thánh Lâm Elyndra
+  [PASS] Integration: Đặt chân tới Tiền Đồn Vharok
+
+--- GROUP 19: Genuine End-to-End Gameplay Loop ---
+  [PASS] E2E: Nhiệm vụ khởi đầu ở trạng thái NOT_STARTED
+  [PASS] E2E: Đã nhận nhiệm vụ tiêu diệt quái (ACTIVE)
+  [PASS] E2E: Quái vật CorruptedEnemy1 tồn tại
+  [PASS] E2E: Quái vật CorruptedEnemy2 tồn tại
+  [PASS] E2E: Quái vật CorruptedEnemy3 tồn tại
+  [PASS] E2E: Đã tiêu diệt đủ 3/3 quái vật
+  [PASS] E2E: Nhiệm vụ chuyển sang READY_TO_TURN_IN
+  [PASS] E2E: Nhiệm vụ đã hoàn thành (COMPLETED)
+  [PASS] E2E: MagicGate X=4200 tự động mở khóa
+  [PASS] E2E: Boss Lunareth tồn tại
+  [PASS] E2E: Trận đấu Boss chính thức bắt đầu
+  [PASS] E2E: Boss Lunareth nhận sát thương và đã kích hoạt Phase 2
+  [PASS] E2E: Boss Lunareth đã bị đánh bại hoàn toàn (boss_defeated == true)
+  [PASS] E2E: Moonveil Portal tồn tại sau đấu trường
+  [PASS] E2E: Moonveil Portal mở khóa thành công sau chiến thắng thực tế
+  [PASS] E2E: Tiến vào Thánh Lâm Elyndra thành công
+  [PASS] E2E: Gặp NPC Kaelis tại Thánh Lâm Elyndra
+  [PASS] E2E: Tiến vào Tiền Đồn Vharok thành công
+  [PASS] E2E: Gặp NPC Rhaek tại Tiền Đồn Vharok
+  [PASS] E2E: Lưu game thành công sau toàn bộ hành trình
+
+--- KIỂM TRA AN TOÀN DỮ LIỆU: File save thật không bị ảnh hưởng ---
+  [PASS] File save thật vẫn tồn tại nguyên vẹn
+  [PASS] Checksum MD5 file save thật hoàn toàn KHÔNG THAY ĐỔI
+
+==================================================
+ [NOCTELYRA M6.1] KẾT QUẢ KIỂM THỬ TỔNG HỢP:      
+ Tổng số test: 117 | Đạt: 117 | Thất bại: 0
+==================================================
+>>> ALL M6.1 STABILIZATION TESTS PASSED 100%! <<<

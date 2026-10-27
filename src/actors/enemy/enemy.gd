@@ -8,6 +8,7 @@ extends CharacterBody2D
 
 signal state_changed(new_state_name: String)
 signal enemy_defeated(enemy_node: Node)
+signal enemy_respawned(enemy_node: Node)
 
 enum State {
 	IDLE,
@@ -24,6 +25,8 @@ enum State {
 @export var enemy_type_id: String = "corrupted_wolf"
 @export var definition: EnemyDefinition = null
 @export var loot_table: LootTable = null
+@export var can_respawn: bool = true
+@export_range(1.0, 300.0, 1.0) var respawn_delay: float = 20.0
 
 # Thuộc tính cơ bản (được nạp / ghi đè từ definition)
 @export var move_speed: float = 120.0
@@ -31,6 +34,8 @@ enum State {
 @export var attack_range: float = 55.0
 @export var attack_cooldown: float = 1.2
 @export var gravity: float = 1100.0
+@export_range(8.0, 64.0, 1.0) var auto_hop_max_height: float = 48.0
+@export_range(1.0, 2.0, 0.1) var blocked_return_delay: float = 1.5
 
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -44,6 +49,12 @@ var facing_direction: int = -1
 var attack_timer: float = 0.0
 var state_timer: float = 0.0
 var _has_reported_death: bool = false
+var _respawn_timer: float = 0.0
+var _initial_collision_layer: int
+var _reward_life_id: String = ""
+var _hop_cooldown: float = 0.0
+var _blocked_time: float = 0.0
+var _aggro_retry_timer: float = 0.0
 
 var _spawn_position: Vector2 = Vector2.ZERO
 var _patrol_target_x: float = 0.0
@@ -59,6 +70,7 @@ var _slow_ratio: float = 0.0
 const EnemyProjectileScene = preload("res://src/actors/enemy/enemy_projectile.tscn")
 
 func _ready() -> void:
+	_initial_collision_layer = collision_layer
 	_spawn_position = global_position
 	_patrol_target_x = global_position.x
 
@@ -71,7 +83,7 @@ func _ready() -> void:
 
 	# 3. Kết nối linh kiện chiến đấu
 	if attack_hitbox:
-		attack_hitbox.monitoring = false
+		attack_hitbox.set_deferred("monitoring", false)
 		attack_hitbox.visible = false
 		attack_hitbox.damage = definition.attack_damage if definition else 15.0
 
@@ -105,19 +117,27 @@ func _apply_definition() -> void:
 	attack_cooldown = definition.attack_cooldown
 
 func _physics_process(delta: float) -> void:
-	# Nếu đã DEAD thì chỉ fade out và giải phóng bộ nhớ
+	# Keep the spawn and signal connections alive while a regular monster respawns.
 	if current_state == State.DEAD:
 		velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
 		state_timer -= delta
 		if visual_root:
 			visual_root.modulate.a = max(0.0, state_timer / 1.0)
 		if state_timer <= 0.0:
-			queue_free()
+			visible = false
+			if not can_respawn:
+				queue_free()
+		_respawn_timer -= delta
+		if can_respawn and _respawn_timer <= 0.0:
+			respawn()
+			return
 		move_and_slide()
 		return
 
 	if attack_timer > 0.0:
 		attack_timer -= delta
+	_hop_cooldown = maxf(0.0, _hop_cooldown - delta)
+	_aggro_retry_timer = maxf(0.0, _aggro_retry_timer - delta)
 
 	# Cập nhật hiệu ứng làm chậm (Frost Shard)
 	if _is_slowed:
@@ -143,7 +163,7 @@ func _physics_process(delta: float) -> void:
 			target_player = null
 			_is_returning = false
 			if attack_hitbox:
-				attack_hitbox.monitoring = false
+				attack_hitbox.set_deferred("monitoring", false)
 				attack_hitbox.visible = false
 			_change_state(State.IDLE)
 
@@ -169,11 +189,10 @@ func _physics_process(delta: float) -> void:
 		State.PATROL:
 			var dist_to_spawn: float = abs(global_position.x - _spawn_position.x)
 			var max_leash: float = definition.leash_distance if definition else 500.0
-			var patrol_rad: float = definition.patrol_radius if definition else 150.0
 
 			if _is_returning:
 				var dist_to_pt := _patrol_target_x - global_position.x
-				if abs(dist_to_pt) <= 16.0 or dist_to_spawn <= patrol_rad:
+				if abs(dist_to_pt) <= 12.0:
 					_is_returning = false
 					_change_state(State.IDLE)
 				else:
@@ -208,7 +227,7 @@ func _physics_process(delta: float) -> void:
 				_is_returning = true
 				_patrol_target_x = _spawn_position.x
 				_change_state(State.PATROL)
-			elif dist_to_player <= attack_range:
+			elif dist_to_player <= attack_range and _has_clear_attack_path():
 				velocity.x = move_toward(velocity.x, 0.0, 1000.0 * delta)
 				var dx: float = target_player.global_position.x - global_position.x
 				if abs(dx) > 12.0:
@@ -259,7 +278,76 @@ func _physics_process(delta: float) -> void:
 				else:
 					_change_state(State.IDLE)
 
+	var navigating := current_state in [State.CHASE, State.PATROL] and not is_flying
+	var intended_speed := velocity.x
+	var before_move := global_position
+	if navigating:
+		_try_low_hop()
 	move_and_slide()
+	if navigating and is_on_floor() and absf(intended_speed) > 5.0:
+		var progress := absf(global_position.x - before_move.x)
+		if is_on_wall() and progress < absf(intended_speed) * delta * 0.25:
+			_blocked_time += delta
+			if _blocked_time >= blocked_return_delay:
+				_abandon_blocked_path(signf(intended_speed))
+		else:
+			_blocked_time = 0.0
+	else:
+		_blocked_time = 0.0
+
+func _has_clear_attack_path() -> bool:
+	if definition and definition.is_flying:
+		return true
+	if not is_instance_valid(target_player):
+		return false
+	# A ground creature must not repeatedly lunge/shoot into a ledge between it and the target.
+	var query := PhysicsRayQueryParameters2D.create(global_position + Vector2(0, -30), target_player.global_position + Vector2(0, -42), collision_mask, [get_rid()])
+	return get_world_2d().direct_space_state.intersect_ray(query).is_empty()
+
+func _try_low_hop() -> bool:
+	if not is_on_floor() or _hop_cooldown > 0.0 or absf(velocity.x) < 5.0:
+		return false
+	var dir := signf(velocity.x)
+	var shape_node := get_node("CollisionShape2D") as CollisionShape2D
+	var half_width := shape_node.shape.get_rect().size.x * absf(global_scale.x) * 0.5
+	var reach := half_width + maxf(12.0, absf(velocity.x) * 0.14)
+	var space := get_world_2d().direct_space_state
+	var wall_query := PhysicsRayQueryParameters2D.create(global_position + Vector2(0, -4), global_position + Vector2(dir * reach, -4), collision_mask, [get_rid()])
+	var wall := space.intersect_ray(wall_query)
+	if wall.is_empty() or absf(wall.normal.x) < 0.6:
+		return false
+	var landing_x: float = wall.position.x + dir * (half_width + 4.0)
+	var top_query := PhysicsRayQueryParameters2D.create(Vector2(landing_x, global_position.y - auto_hop_max_height - 4.0), Vector2(landing_x, global_position.y - 2.0), collision_mask, [get_rid()])
+	var top := space.intersect_ray(top_query)
+	if top.is_empty():
+		return false
+	var rise: float = global_position.y - top.position.y
+	if rise < 4.0 or rise > auto_hop_max_height:
+		return false
+	var lift := Vector2(0, -rise - 10.0)
+	if test_move(global_transform, lift):
+		return false
+	if test_move(global_transform.translated(lift), Vector2(landing_x - global_position.x, 0)):
+		return false
+	velocity.y = -sqrt(2.0 * gravity * (rise + 14.0))
+	_hop_cooldown = 0.45
+	return true
+
+func _abandon_blocked_path(direction: float) -> void:
+	_blocked_time = 0.0
+	target_player = null
+	_aggro_retry_timer = 5.0
+	if _is_returning:
+		# If the return route is also inaccessible, back away on the reachable side.
+		_is_returning = false
+		_patrol_target_x = global_position.x - direction * 90.0
+	else:
+		_is_returning = true
+		_patrol_target_x = _spawn_position.x
+	_change_state(State.PATROL)
+	var retreat := signf(_patrol_target_x - global_position.x)
+	_set_facing(int(retreat))
+	velocity.x = retreat * move_speed * 0.7
 
 func _start_patrol_step() -> void:
 	_patrol_wait_timer = randf_range(2.0, 4.0)
@@ -324,7 +412,7 @@ func _change_state(new_state: State) -> void:
 		State.TELEGRAPH:
 			state_timer = definition.telegraph_duration if definition else 0.4
 			if attack_hitbox:
-				attack_hitbox.monitoring = false
+				attack_hitbox.set_deferred("monitoring", false)
 				attack_hitbox.visible = false
 
 		State.ATTACK:
@@ -339,32 +427,84 @@ func _change_state(new_state: State) -> void:
 				if attack_hitbox:
 					attack_hitbox.damage = definition.attack_damage if definition else 15.0
 					attack_hitbox.reset_hits() # Đảm bảo không gây sát thương lặp vô hạn trong 1 đòn
-					attack_hitbox.monitoring = true
+					attack_hitbox.set_deferred("monitoring", true)
 					attack_hitbox.visible = true
 					attack_hitbox.position.x = abs(attack_hitbox.position.x) * float(facing_direction)
 
 		State.RECOVERY:
 			state_timer = definition.recovery_duration if definition else 0.6
 			if attack_hitbox:
-				attack_hitbox.monitoring = false
+				attack_hitbox.set_deferred("monitoring", false)
 				attack_hitbox.visible = false
 
 		State.HURT:
 			state_timer = 0.25
 			if attack_hitbox:
-				attack_hitbox.monitoring = false
+				attack_hitbox.set_deferred("monitoring", false)
 				attack_hitbox.visible = false
 
 		State.DEAD:
 			state_timer = 1.0
+			_respawn_timer = respawn_delay
 			if attack_hitbox:
-				attack_hitbox.monitoring = false
+				attack_hitbox.set_deferred("monitoring", false)
 				attack_hitbox.visible = false
 			if hurtbox:
 				hurtbox.set_deferred("monitoring", false)
 				hurtbox.set_deferred("monitorable", false)
-			collision_layer = 0
+			set_deferred("collision_layer", 0)
 			_notify_kill_once()
+
+func restore_defeated_state() -> void:
+	if not can_respawn:
+		queue_free()
+		return
+	# A saved death starts a cooldown, without reporting another kill or dropping loot.
+	current_state = State.DEAD
+	_has_reported_death = true
+	state_timer = 0.0
+	_respawn_timer = respawn_delay
+	visible = false
+	velocity = Vector2.ZERO
+	set_deferred("collision_layer", 0)
+	attack_hitbox.set_deferred("monitoring", false)
+	attack_hitbox.visible = false
+	hurtbox.set_deferred("monitoring", false)
+	hurtbox.set_deferred("monitorable", false)
+
+func respawn() -> void:
+	global_position = _spawn_position
+	reset_physics_interpolation()
+	velocity = Vector2.ZERO
+	target_player = null
+	_is_returning = false
+	_is_slowed = false
+	_slow_timer = 0.0
+	_hop_cooldown = 0.0
+	_blocked_time = 0.0
+	_aggro_retry_timer = 0.0
+	move_speed = _base_move_speed
+	attack_timer = 0.0
+	_patrol_target_x = _spawn_position.x
+	_patrol_wait_timer = 1.0
+	_has_reported_death = false
+	_reward_life_id = str(Time.get_unix_time_from_system()) + ":" + str(Time.get_ticks_usec())
+	set_deferred("collision_layer", _initial_collision_layer)
+	hurtbox.set_deferred("monitoring", true)
+	hurtbox.set_deferred("monitorable", true)
+	health_component.current_health = health_component.max_health
+	health_component.cancel_invulnerability()
+	health_component.health_changed.emit(health_component.current_health, health_component.max_health)
+	visual_root.modulate = Color.WHITE
+	visible = true
+	# _change_state intentionally rejects transitions out of DEAD during combat.
+	current_state = State.IDLE
+	_change_state(State.IDLE)
+	enemy_respawned.emit(self)
+
+func get_exp_source_id() -> String:
+	var stable_id := enemy_id if not enemy_id.is_empty() else str(get_instance_id())
+	return "enemy:" + stable_id + (":life:" + _reward_life_id if not _reward_life_id.is_empty() else "")
 
 func _fire_projectile() -> void:
 	var spawn_parent = get_parent()
@@ -414,6 +554,8 @@ func _spawn_loot() -> void:
 					spawn_parent.add_child.call_deferred(pickup)
 
 func _find_target() -> void:
+	if _is_returning or _aggro_retry_timer > 0.0:
+		return
 	if target_player and is_instance_valid(target_player):
 		return
 	var players := get_tree().get_nodes_in_group("players") if get_tree() else []

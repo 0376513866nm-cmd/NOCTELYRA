@@ -393,7 +393,7 @@ offset_right = 450.0
 offset_bottom = -20.0
 grow_vertical = 0
 text = "Controls:
-- A / D: Di chuyển | Space: Nhảy / Nhảy đôi | Shift: Lướt
+- A / D: Di chuyển | Space: Nhảy / Nhảy đôi | Shift / X: Lướt
 - J: Tấn công | K: Dùng phép (MP) | 1, 2, 3: Chọn phép | U: Nâng cấp
 - E: Tương tác với NPC (Eiran)
 - I: Mở Túi đồ & Trang bị | Esc: Tạm dừng"
@@ -1248,7 +1248,7 @@ theme_override_font_sizes/font_size = 13
 autowrap_mode = 2
 text = "• A / D hoặc ← / → : Di chuyển trái / phải
 • Space : Nhảy / Nhảy đôi trên không
-• Shift : Lướt nhanh né đòn (Dash)
+• Shift / X : Lướt nhanh né đòn (Dash)
 • J : Đánh thường cận chiến (Slash)
 • K : Dùng ma pháp (Tiêu hao MP)
 • 1, 2, 3 hoặc Cuộn Chuột : Chuyển đổi loại ma pháp
