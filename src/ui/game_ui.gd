@@ -4,6 +4,8 @@ extends CanvasLayer
 const SettingsManager = preload("res://src/ui/settings_manager.gd")
 const SettingsUIController = preload("res://src/ui/controllers/settings_ui_controller.gd")
 const SidebarController = preload("res://src/ui/controllers/sidebar_controller.gd")
+const BossHUDClass = preload("res://src/ui/boss_hud.gd")
+const WorldOverlayUIClass = preload("res://src/ui/world_overlay_ui.gd")
 
 ## Giao diện người dùng chính (HUD, Dialogue, GameOver, PauseMenu, BossHUD, Victory) cho NOCTELYRA (M4)
 
@@ -28,16 +30,19 @@ signal hybrid_controls_changed(enabled: bool)
 @onready var settings_gear_btn: Button = find_child("SettingsGearBtn", true, false) as Button
 @onready var quest_title_label: Label = $HUD/QuestPanel/VBox/QuestTitle
 @onready var quest_progress_label: Label = $HUD/QuestPanel/VBox/QuestProgress
-@onready var notification_label: Label = $HUD/NotificationLabel
 
-# Boss UI (M4)
-@onready var boss_hud: Control = $HUD/BossBarPanel
-@onready var boss_name_label: Label = $HUD/BossBarPanel/BossNameLabel
-@onready var boss_phase_label: Label = $HUD/BossBarPanel/BossPhaseLabel
-@onready var boss_hp_bar: ProgressBar = $HUD/BossBarPanel/BossHPBar
-@onready var boss_hp_label: Label = $HUD/BossBarPanel/BossHPBar/BossHPLabel
-@onready var boss_warning_label: Label = $HUD/BossWarningBanner
-@onready var boss_announcement_label: Label = $HUD/BossAnnouncementBanner
+# Sub-scenes (Extracted components)
+@onready var boss_hud_controller: BossHUDClass = find_child("BossHUD", true, false) as BossHUDClass
+@onready var world_overlay_ui: WorldOverlayUIClass = find_child("WorldOverlayUI", true, false) as WorldOverlayUIClass
+
+# Boss UI (M4) - Compatibility accessors
+@onready var boss_hud: Control = boss_hud_controller.boss_bar_panel if boss_hud_controller else null
+@onready var boss_name_label: Label = boss_hud_controller.boss_name_label if boss_hud_controller else null
+@onready var boss_phase_label: Label = boss_hud_controller.boss_phase_label if boss_hud_controller else null
+@onready var boss_hp_bar: ProgressBar = boss_hud_controller.boss_hp_bar if boss_hud_controller else null
+@onready var boss_hp_label: Label = boss_hud_controller.boss_hp_label if boss_hud_controller else null
+@onready var boss_warning_label: Label = boss_hud_controller.boss_warning_label if boss_hud_controller else null
+@onready var boss_announcement_label: Label = boss_hud_controller.boss_announcement_label if boss_hud_controller else null
 @onready var victory_panel: Control = $VictoryPanel
 @onready var victory_title: Label = $VictoryPanel/Panel/Title
 @onready var victory_subtitle: Label = $VictoryPanel/Panel/Subtitle
@@ -138,17 +143,15 @@ signal hybrid_controls_changed(enabled: bool)
 
 var _current_sidebar_tab: int = 0
 
-@onready var zone_label: Label = $HUD/ZoneLabel
-@onready var zone_banner: Control = $ZoneBanner
-@onready var zone_banner_title: Label = $ZoneBanner/Panel/TitleLabel
-@onready var zone_banner_subtitle: Label = $ZoneBanner/Panel/SubtitleLabel
+# World Overlay UI (M6) - Compatibility accessors
+@onready var notification_label: Label = world_overlay_ui.notification_label if world_overlay_ui else null
+@onready var zone_label: Label = world_overlay_ui.zone_label if world_overlay_ui else null
+@onready var zone_banner: Control = world_overlay_ui.zone_banner if world_overlay_ui else null
+@onready var zone_banner_title: Label = world_overlay_ui.zone_banner_title if world_overlay_ui else null
+@onready var zone_banner_subtitle: Label = world_overlay_ui.zone_banner_subtitle if world_overlay_ui else null
 
-var _notif_timer: float = 0.0
 var _ui_close_grace_cooldown: float = 0.0
 var _fps_update_timer: float = 0.0
-var _warning_timer: float = 0.0
-var _announcement_timer: float = 0.0
-var _zone_banner_timer: float = 0.0
 var _connected_spellbook: SpellbookComponent = null
 var _dialogue_controller: DialogueController
 var _settings_controller: SettingsUIController
@@ -209,7 +212,29 @@ func _apply_safe_insets() -> void:
 	if sidebar_node:
 		sidebar_node.offset_left = -440.0
 
+func _sync_extracted_components() -> void:
+	if boss_hud_controller == null:
+		boss_hud_controller = find_child("BossHUD", true, false) as BossHUDClass
+	if boss_hud_controller:
+		boss_hud = boss_hud_controller.boss_bar_panel
+		boss_name_label = boss_hud_controller.boss_name_label
+		boss_phase_label = boss_hud_controller.boss_phase_label
+		boss_hp_bar = boss_hud_controller.boss_hp_bar
+		boss_hp_label = boss_hud_controller.boss_hp_label
+		boss_warning_label = boss_hud_controller.boss_warning_label
+		boss_announcement_label = boss_hud_controller.boss_announcement_label
+
+	if world_overlay_ui == null:
+		world_overlay_ui = find_child("WorldOverlayUI", true, false) as WorldOverlayUIClass
+	if world_overlay_ui:
+		zone_label = world_overlay_ui.zone_label
+		notification_label = world_overlay_ui.notification_label
+		zone_banner = world_overlay_ui.zone_banner
+		zone_banner_title = world_overlay_ui.zone_banner_title
+		zone_banner_subtitle = world_overlay_ui.zone_banner_subtitle
+
 func _ready() -> void:
+	_sync_extracted_components()
 	if character_sheet_ui == null:
 		character_sheet_ui = get_node_or_null("CharacterSheetUI") as CharacterSheetUI
 	if character_sheet_ui:
@@ -428,11 +453,6 @@ func _process(delta: float) -> void:
 		else:
 			fps_panel.visible = false
 
-	if _notif_timer > 0.0:
-		_notif_timer -= delta
-		if _notif_timer <= 0.0 and notification_label:
-			notification_label.visible = false
-
 	if _dialogue_controller:
 		_dialogue_controller.tick(delta)
 		if _dialogue_controller.is_cooling_down():
@@ -445,21 +465,6 @@ func _process(delta: float) -> void:
 		_set_input_lock("ui_cooldown", true)
 	else:
 		_set_input_lock("ui_cooldown", false)
-
-	if _warning_timer > 0.0:
-		_warning_timer -= delta
-		if _warning_timer <= 0.0 and boss_warning_label:
-			boss_warning_label.visible = false
-
-	if _announcement_timer > 0.0:
-		_announcement_timer -= delta
-		if _announcement_timer <= 0.0 and boss_announcement_label:
-			boss_announcement_label.visible = false
-
-	if _zone_banner_timer > 0.0:
-		_zone_banner_timer -= delta
-		if _zone_banner_timer <= 0.0 and zone_banner:
-			zone_banner.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _handle_debug_shortcuts(event):
@@ -837,10 +842,11 @@ func update_quest_info(_unused_arg: Variant = null) -> void:
 	update_quest_journal_ui()
 
 func show_notification(msg: String) -> void:
-	if notification_label:
+	if world_overlay_ui:
+		world_overlay_ui.show_notification(msg)
+	elif notification_label:
 		notification_label.text = msg
 		notification_label.visible = true
-		_notif_timer = 3.5
 
 func show_game_over() -> void:
 	if game_over_panel:
@@ -859,26 +865,36 @@ func _on_retry_pressed() -> void:
 # --- HỆ THỐNG GIAO DIỆN BOSS (M4) ---
 
 func show_boss_hud() -> void:
-	if boss_hud:
+	if boss_hud_controller:
+		boss_hud_controller.show_boss()
+	elif boss_hud:
 		boss_hud.visible = true
 
 func hide_boss_hud() -> void:
-	if boss_hud:
-		boss_hud.visible = false
-	if boss_warning_label:
-		boss_warning_label.visible = false
-	if boss_announcement_label:
-		boss_announcement_label.visible = false
+	if boss_hud_controller:
+		boss_hud_controller.hide_boss()
+	else:
+		if boss_hud:
+			boss_hud.visible = false
+		if boss_warning_label:
+			boss_warning_label.visible = false
+		if boss_announcement_label:
+			boss_announcement_label.visible = false
 
 func update_boss_hp(cur: float, max_v: float) -> void:
-	if boss_hp_bar:
-		boss_hp_bar.max_value = max_v
-		boss_hp_bar.value = cur
-	if boss_hp_label:
-		boss_hp_label.text = "HP: %d/%d" % [int(max(0, cur)), int(max_v)]
+	if boss_hud_controller:
+		boss_hud_controller.set_health(cur, max_v)
+	else:
+		if boss_hp_bar:
+			boss_hp_bar.max_value = max_v
+			boss_hp_bar.value = cur
+		if boss_hp_label:
+			boss_hp_label.text = "HP: %d/%d" % [int(max(0, cur)), int(max_v)]
 
 func update_boss_phase(phase: int) -> void:
-	if boss_phase_label:
+	if boss_hud_controller:
+		boss_hud_controller.set_phase(phase)
+	elif boss_phase_label:
 		if phase == 2:
 			boss_phase_label.text = "[GIAI ĐOẠN 2 - HẮC NGUYỆT]"
 			boss_phase_label.modulate = Color(1.0, 0.4, 0.9, 1.0)
@@ -887,17 +903,19 @@ func update_boss_phase(phase: int) -> void:
 			boss_phase_label.text = "[GIAI ĐOẠN 1]"
 			boss_phase_label.modulate = Color(0.4, 0.9, 1.0, 1.0)
 
-func show_boss_warning(skill_name: String, duration: float) -> void:
-	if boss_warning_label:
+func show_boss_warning(skill_name: String, duration: float = 3.0) -> void:
+	if boss_hud_controller:
+		boss_hud_controller.show_warning(skill_name, duration)
+	elif boss_warning_label:
 		boss_warning_label.text = "⚠️ CẢNH BÁO: %s!" % skill_name.to_upper()
 		boss_warning_label.visible = true
-		_warning_timer = max(0.6, duration)
 
 func show_boss_announcement(msg: String, duration: float = 2.5) -> void:
-	if boss_announcement_label:
+	if boss_hud_controller:
+		boss_hud_controller.show_announcement(msg, duration)
+	elif boss_announcement_label:
 		boss_announcement_label.text = msg
 		boss_announcement_label.visible = true
-		_announcement_timer = duration
 
 func show_victory_banner(title: String, subtitle: String) -> void:
 	hide_boss_hud()
@@ -921,20 +939,15 @@ func _on_victory_continue_pressed() -> void:
 # --- HỆ THỐNG GIAO DIỆN KHU VỰC & THẾ GIỚI (M6) ---
 
 func set_current_zone(zone_id: String) -> void:
-	if zone_label == null:
-		zone_label = get_node_or_null("HUD/ZoneLabel") as Label
-	if zone_label:
+	if world_overlay_ui:
+		world_overlay_ui.update_zone(zone_id)
+	elif zone_label:
 		zone_label.text = "📍 %s" % ZoneDefinition.get_zone_display_name(zone_id)
 
 func show_zone_banner(zone_name: String, subtitle: String = "") -> void:
-	if zone_banner == null:
-		zone_banner = get_node_or_null("ZoneBanner") as Control
-	if zone_banner_title == null:
-		zone_banner_title = get_node_or_null("ZoneBanner/Panel/TitleLabel") as Label
-	if zone_banner_subtitle == null:
-		zone_banner_subtitle = get_node_or_null("ZoneBanner/Panel/SubtitleLabel") as Label
-
-	if zone_banner:
+	if world_overlay_ui:
+		world_overlay_ui.show_zone_banner(zone_name, subtitle)
+	elif zone_banner:
 		if zone_banner_title:
 			zone_banner_title.text = zone_name
 		if zone_banner_subtitle:
@@ -942,7 +955,6 @@ func show_zone_banner(zone_name: String, subtitle: String = "") -> void:
 				subtitle = ZoneDefinition.get_zone_sub_title(ZoneManager.current_zone_id)
 			zone_banner_subtitle.text = subtitle
 		zone_banner.visible = true
-		_zone_banner_timer = 2.0
 
 # --- HỆ THỐNG CÀI ĐẶT & THU PHÓNG MÀN HÌNH (SETTINGS & ZOOM) ---
 

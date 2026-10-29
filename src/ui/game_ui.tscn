@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d3m8k1y9p2q5"]
+[gd_scene load_steps=17 format=3 uid="uid://d3m8k1y9p2q5"]
 
 [ext_resource type="Script" path="res://src/ui/game_ui.gd" id="1_ui"]
 [ext_resource type="PackedScene" uid="uid://c7m9x4v1q5p2" path="res://src/inventory/inventory_ui.tscn" id="2_inv_ui"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://b7q5k2m8p4x9" path="res://src/ui/quest_journal_ui.tscn" id="4_journal_ui"]
 [ext_resource type="PackedScene" uid="uid://c8k1sheet4y8z" path="res://src/ui/character_sheet_ui.tscn" id="5_sheet_ui"]
 [ext_resource type="PackedScene" uid="uid://c8m9touch3x7p4" path="res://src/ui/touch_controls.tscn" id="6_touch_ui"]
+[ext_resource type="PackedScene" uid="uid://b2oss_hud_scene_01" path="res://src/ui/boss_hud.tscn" id="9_boss_hud"]
+[ext_resource type="PackedScene" uid="uid://w2orld_overlay_ui_01" path="res://src/ui/world_overlay_ui.tscn" id="10_world_overlay"]
 
 [ext_resource type="Script" path="res://src/ui/touch_scroll_container.gd" id="8_touch_scroll"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/hero_avatar.png" id="7_avatar"]
@@ -275,23 +277,6 @@ text = "60 FPS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ZoneLabel" type="Label" parent="HUD"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -200.0
-offset_top = 20.0
-offset_right = 200.0
-offset_bottom = 48.0
-grow_horizontal = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 16
-text = "📍 Rừng Noctis"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="VBox" type="VBoxContainer" parent="HUD/QuestPanel"]
 layout_mode = 1
 anchors_preset = 15
@@ -312,121 +297,7 @@ text = "Nhiệm vụ: Ánh Sáng Bị Nuốt Chửng"
 layout_mode = 2
 text = "Tiến độ: Chưa nhận (Gặp Eiran)"
 
-[node name="BossBarPanel" type="Control" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -320.0
-offset_top = 20.0
-offset_right = 320.0
-offset_bottom = 85.0
-grow_horizontal = 2
-
-[node name="BossNameLabel" type="Label" parent="HUD/BossBarPanel"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -200.0
-offset_top = 0.0
-offset_right = 200.0
-offset_bottom = 24.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 15
-text = "Lunareth — Linh Lộc Nguyệt Thực"
-horizontal_alignment = 1
-
-[node name="BossPhaseLabel" type="Label" parent="HUD/BossBarPanel"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -160.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 24.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 13
-text = "[GIAI ĐOẠN 1]"
-horizontal_alignment = 2
-
-[node name="BossHPBar" type="ProgressBar" parent="HUD/BossBarPanel"]
-custom_minimum_size = Vector2(640, 24)
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -320.0
-offset_top = -24.0
-offset_right = 320.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 0
-max_value = 320.0
-value = 320.0
-show_percentage = false
-
-[node name="BossHPLabel" type="Label" parent="HUD/BossBarPanel/BossHPBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 13
-text = "HP: 320/320"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BossWarningBanner" type="Label" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -300.0
-offset_top = 100.0
-offset_right = 300.0
-offset_bottom = 135.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 0.25, 0.25, 1)
-theme_override_font_sizes/font_size = 18
-text = "⚠️ CẢNH BÁO: NGUYỆT GIÁC XUNG KÍCH!"
-horizontal_alignment = 1
-
-[node name="BossAnnouncementBanner" type="Label" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -350.0
-offset_top = 140.0
-offset_right = 350.0
-offset_bottom = 175.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(0.9, 0.4, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "LUNARETH GIẢI PHÓNG HẮC NGUYỆT MA LỰC!"
-horizontal_alignment = 1
-
-[node name="NotificationLabel" type="Label" parent="HUD"]
-visible = false
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -300.0
-offset_top = 180.0
-offset_right = 300.0
-offset_bottom = 215.0
-grow_horizontal = 2
-text = "Thông báo hệ thống"
-horizontal_alignment = 1
+[node name="BossHUD" parent="HUD" instance=ExtResource("9_boss_hud")]
 
 [node name="ControlsInfo" type="Label" parent="HUD"]
 visible = false
@@ -922,63 +793,7 @@ visible = false
 [node name="CharacterSheetUI" parent="." instance=ExtResource("5_sheet_ui")]
 visible = false
 
-[node name="ZoneBanner" type="Control" parent="."]
-visible = false
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -120.0
-offset_right = 300.0
-offset_bottom = -20.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="Panel" type="Panel" parent="ZoneBanner"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="TitleLabel" type="Label" parent="ZoneBanner/Panel"]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 16.0
-offset_bottom = 50.0
-grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 0.95, 0.7, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 22
-text = "Elyndra — Thánh Lâm Tinh Linh"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SubtitleLabel" type="Label" parent="ZoneBanner/Panel"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -42.0
-offset_bottom = -16.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.85, 0.9, 1, 0.9)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 3
-theme_override_font_sizes/font_size = 14
-text = "Vùng Đất Thánh Của Tinh Linh Tinh Mạch"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="WorldOverlayUI" parent="." instance=ExtResource("10_world_overlay")]
 
 [node name="Sidebar" type="Control" parent="."]
 visible = false
