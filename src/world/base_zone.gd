@@ -88,6 +88,14 @@ func setup_signals() -> void:
 	if game_ui:
 		if not game_ui.retry_requested.is_connected(_on_retry_requested):
 			game_ui.retry_requested.connect(_on_retry_requested)
+		if player:
+			if not game_ui.input_lock_changed.is_connected(player.set_input_blocked):
+				game_ui.input_lock_changed.connect(player.set_input_blocked)
+			if not player.player_died.is_connected(game_ui.show_game_over):
+				player.player_died.connect(game_ui.show_game_over)
+			if player.has_signal("notification_posted") and not player.notification_posted.is_connected(game_ui.show_notification):
+				player.notification_posted.connect(game_ui.show_notification)
+			game_ui.sync_locks_to_player(player)
 
 	# Kết nối QuestManager
 	if quest_manager:

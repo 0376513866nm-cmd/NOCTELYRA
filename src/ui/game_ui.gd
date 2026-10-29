@@ -7,6 +7,7 @@ const SettingsManager = preload("res://src/ui/settings_manager.gd")
 
 signal retry_requested()
 signal victory_dismissed()
+signal input_lock_changed(reason: String, blocked: bool)
 
 @onready var hud: Control = $HUD
 @onready var hp_bar: ProgressBar = find_child("HPBar", true, false) as ProgressBar
@@ -136,6 +137,51 @@ var _announcement_timer: float = 0.0
 var _zone_banner_timer: float = 0.0
 var _connected_spellbook: SpellbookComponent = null
 var _dialogue_controller: DialogueController
+var _active_ui_locks: Dictionary = {}
+var _cached_player: Node = null
+
+func _set_input_lock(reason: String, blocked: bool) -> void:
+	if blocked:
+		if _active_ui_locks.has(reason):
+			return
+		_active_ui_locks[reason] = true
+	else:
+		if not _active_ui_locks.has(reason):
+			return
+		_active_ui_locks.erase(reason)
+	emit_signal("input_lock_changed", reason, blocked)
+	var p := _get_player_ref()
+	if p and p.has_method("set_input_blocked"):
+		p.set_input_blocked(reason, blocked)
+
+func sync_locks_to_player(p: Node) -> void:
+	if p == null:
+		return
+	_cached_player = p
+	for reason in _active_ui_locks.keys():
+		if p.has_method("set_input_blocked"):
+			p.set_input_blocked(reason, true)
+
+func _get_player_ref() -> Node:
+	if _cached_player and is_instance_valid(_cached_player):
+		return _cached_player
+	var active_sc := _get_active_scene()
+	if active_sc:
+		var p = active_sc.get_node_or_null("Player")
+		if p:
+			_cached_player = p
+			return _cached_player
+	if get_tree():
+		var players = get_tree().get_nodes_in_group(GameGroups.PLAYERS)
+		if players.size() > 0:
+			_cached_player = players[0]
+			return _cached_player
+	return null
+
+func _initial_sync_player() -> void:
+	var p = _get_player_ref()
+	if p:
+		sync_locks_to_player(p)
 
 
 func _apply_safe_insets() -> void:
@@ -265,6 +311,7 @@ func _ready() -> void:
 	switch_sidebar_tab(0)
 
 	_update_settings_ui()
+	call_deferred("_initial_sync_player")
 
 func _process(delta: float) -> void:
 	_check_connect_spellbook()
@@ -282,9 +329,16 @@ func _process(delta: float) -> void:
 
 	if _dialogue_controller:
 		_dialogue_controller.tick(delta)
+		if _dialogue_controller.is_cooling_down():
+			_set_input_lock("dialogue_cooldown", true)
+		else:
+			_set_input_lock("dialogue_cooldown", false)
 
 	if _ui_close_grace_cooldown > 0.0:
 		_ui_close_grace_cooldown -= delta
+		_set_input_lock("ui_cooldown", true)
+	else:
+		_set_input_lock("ui_cooldown", false)
 
 	if _warning_timer > 0.0:
 		_warning_timer -= delta
@@ -409,6 +463,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func show_dialogue(speaker: String, lines: Array[String], action: String = "none") -> void:
 	if _dialogue_controller:
 		_dialogue_controller.show_dialogue(speaker, lines, action)
+	_set_input_lock("dialogue", true)
 
 func _display_current_line() -> void:
 	pass # Giữ API tương thích; hiển thị do DialogueController quản lý.
@@ -418,14 +473,18 @@ func advance_dialogue() -> void:
 		return
 	var action := _dialogue_controller.advance()
 	if not action.is_empty():
+		_set_input_lock("dialogue", false)
 		_ui_close_grace_cooldown = 0.25
+		_set_input_lock("ui_cooldown", true)
 		_execute_quest_action(action)
 
 func close_dialogue() -> void:
 	if _dialogue_controller == null:
 		return
 	var action := _dialogue_controller.close()
+	_set_input_lock("dialogue", false)
 	_ui_close_grace_cooldown = 0.25
+	_set_input_lock("ui_cooldown", true)
 	_execute_quest_action(action)
 
 func _execute_quest_action(action: String) -> void:
@@ -468,11 +527,14 @@ func open_inventory() -> void:
 		close_character_sheet()
 	if inventory_ui:
 		inventory_ui.open()
+	_set_input_lock("inventory", true)
 
 func close_inventory() -> void:
 	if inventory_ui:
 		inventory_ui.close()
+	_set_input_lock("inventory", false)
 	_ui_close_grace_cooldown = 0.15
+	_set_input_lock("ui_cooldown", true)
 
 func is_inventory_open() -> bool:
 	return inventory_ui != null and inventory_ui.is_open()
@@ -494,11 +556,14 @@ func open_quest_journal() -> void:
 		close_character_sheet()
 	if quest_journal_ui:
 		quest_journal_ui.open()
+	_set_input_lock("quest_journal", true)
 
 func close_quest_journal() -> void:
 	if quest_journal_ui:
 		quest_journal_ui.close()
+	_set_input_lock("quest_journal", false)
 	_ui_close_grace_cooldown = 0.15
+	_set_input_lock("ui_cooldown", true)
 
 func is_quest_journal_open() -> bool:
 	return quest_journal_ui != null and quest_journal_ui.is_open()
@@ -530,11 +595,14 @@ func open_character_sheet() -> void:
 			if players.size() > 0:
 				player = players[0] as Player
 		character_sheet_ui.open(player)
+	_set_input_lock("character_sheet", true)
 
 func close_character_sheet() -> void:
 	if character_sheet_ui:
 		character_sheet_ui.close()
+	_set_input_lock("character_sheet", false)
 	_ui_close_grace_cooldown = 0.15
+	_set_input_lock("ui_cooldown", true)
 
 func is_character_sheet_open() -> bool:
 	return character_sheet_ui != null and character_sheet_ui.is_open()
@@ -611,10 +679,12 @@ func show_notification(msg: String) -> void:
 func show_game_over() -> void:
 	if game_over_panel:
 		game_over_panel.visible = true
+	_set_input_lock("game_over", true)
 
 func hide_game_over() -> void:
 	if game_over_panel:
 		game_over_panel.visible = false
+	_set_input_lock("game_over", false)
 
 func _on_retry_pressed() -> void:
 	hide_game_over()
@@ -669,10 +739,14 @@ func show_victory_banner(title: String, subtitle: String) -> void:
 		if victory_title: victory_title.text = title
 		if victory_subtitle: victory_subtitle.text = subtitle
 		victory_panel.visible = true
+	_set_input_lock("victory", true)
 
 func hide_victory_banner() -> void:
 	if victory_panel:
 		victory_panel.visible = false
+	_set_input_lock("victory", false)
+	_ui_close_grace_cooldown = 0.25
+	_set_input_lock("ui_cooldown", true)
 
 func _on_victory_continue_pressed() -> void:
 	hide_victory_banner()
@@ -789,6 +863,7 @@ func open_sidebar(tab_idx: int = -1) -> void:
 		touch_controls.visible = false
 	if sidebar_toggle_btn:
 		sidebar_toggle_btn.visible = false
+	_set_input_lock("sidebar", true)
 
 func close_sidebar() -> void:
 	if sidebar:
@@ -797,6 +872,9 @@ func close_sidebar() -> void:
 		touch_controls.visible = _was_touch_controls_visible
 	if sidebar_toggle_btn:
 		sidebar_toggle_btn.visible = not _was_touch_controls_visible
+	_set_input_lock("sidebar", false)
+	_ui_close_grace_cooldown = 0.15
+	_set_input_lock("ui_cooldown", true)
 
 func toggle_sidebar() -> void:
 	if is_sidebar_open():

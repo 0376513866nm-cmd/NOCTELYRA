@@ -4,6 +4,7 @@ extends CharacterBody2D
 signal state_changed(new_state_name: String)
 signal player_died()
 signal player_respawned()
+signal notification_posted(message: String)
 
 enum State {
 	IDLE,
@@ -49,6 +50,24 @@ var land_timer: float = 0.0
 var auto_step_cooldown: float = 0.0
 var _low_drop_active: bool = false
 
+## Quản lý Khóa Input Độc lập theo Lý do (Reason-based Input Locking)
+var input_locks: Dictionary = {}
+
+func set_input_blocked(reason: String, blocked: bool) -> void:
+	if blocked:
+		input_locks[reason] = true
+	else:
+		input_locks.erase(reason)
+
+func is_input_blocked() -> bool:
+	return not input_locks.is_empty()
+
+func get_active_input_locks() -> Array:
+	return input_locks.keys()
+
+func clear_all_input_locks() -> void:
+	input_locks.clear()
+
 var race_id: String:
 	get:
 		if player_stats_component:
@@ -86,6 +105,7 @@ func get_race_base_modulate() -> Color:
 	return Color(1.0, 1.0, 1.0, 1.0)
 
 func _ready() -> void:
+	clear_all_input_locks()
 	_ensure_isolated_movement_data()
 	spawn_position = global_position
 	floor_snap_length = 4.0
@@ -214,12 +234,18 @@ func _physics_process(delta: float) -> void:
 			if attack_anim_timer <= 0.0:
 				_refresh_current_animation()
 
-	# Kiểm tra nếu đang mở hội thoại NPC, vừa đóng, đang mở túi đồ, sổ nhiệm vụ hoặc thông tin nhân vật thì tạm ngừng nhận input
-	var ui: GameUI = _get_game_ui()
-	if ui and (ui.is_sidebar_open() or ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or (ui.has_method("is_ui_cooling_down") and ui.is_ui_cooling_down()) or ui.is_inventory_open() or ui.is_quest_journal_open() or (ui.has_method("is_character_sheet_open") and ui.is_character_sheet_open())):
+	# Kiểm tra nếu đang bị khóa input (UI mở, đối thoại, cooldown thao tác...)
+	if is_input_blocked():
 		velocity.x = move_toward(velocity.x, 0.0, movement_data.friction * delta)
 		if not is_on_floor():
 			velocity.y += movement_data.gravity * delta
+		if is_on_floor():
+			if current_state != State.IDLE and current_state != State.AUTO_HOP:
+				_change_state(State.IDLE)
+		else:
+			if current_state != State.FALL and current_state != State.AUTO_HOP:
+				_change_state(State.FALL)
+		_update_ground_shadow()
 		move_and_slide()
 		return
 
@@ -397,8 +423,7 @@ func _handle_combat_inputs() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if current_state == State.DEAD:
 		return
-	var ui := _get_game_ui()
-	if ui and (ui.is_sidebar_open() or ui.is_inventory_open() or ui.is_quest_journal_open() or ui.is_character_sheet_open() or ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_ui_cooling_down()):
+	if is_input_blocked():
 		return
 	if event is InputEventMouseButton and event.pressed:
 		var sb := spellbook_component
@@ -427,13 +452,20 @@ func _upgrade_current_spell() -> void:
 		return
 	if get_tree().paused:
 		return
-	var ui := _get_game_ui()
-	if ui and (ui.is_dialogue_open() or ui.is_dialogue_cooling_down() or ui.is_inventory_open() or ui.is_quest_journal_open() or (ui.has_method("is_character_sheet_open") and ui.is_character_sheet_open())):
+	if is_input_blocked():
 		return
 	var world := get_tree().current_scene
 	var res := sb.upgrade_spell(sb.selected_spell_id, inv, world)
-	if ui and res.has("message"):
-		ui.show_notification(res["message"])
+	if res.has("message"):
+		_notify_ui(str(res["message"]))
+
+func _notify_ui(msg: String) -> void:
+	emit_signal("notification_posted", msg)
+	var cur = get_tree().current_scene if get_tree() else null
+	if cur:
+		var ui = cur.get_node_or_null("GameUI")
+		if ui and ui.has_method("show_notification"):
+			ui.show_notification(msg)
 
 func _on_invuln_started() -> void:
 	if sprite_root and current_state != State.DEAD:
@@ -481,11 +513,14 @@ func _on_player_died() -> void:
 	cast_anim_timer = 0.0
 	emit_signal("player_died")
 
-	var ui := _get_game_ui()
-	if ui:
-		ui.show_game_over()
+	var cur = get_tree().current_scene if get_tree() else null
+	if cur:
+		var ui = cur.get_node_or_null("GameUI")
+		if ui and ui.has_method("show_game_over"):
+			ui.show_game_over()
 
 func respawn() -> void:
+	clear_all_input_locks()
 	global_position = spawn_position
 	reset_physics_interpolation()
 	velocity = Vector2.ZERO
@@ -828,12 +863,6 @@ func _set_facing(dir: int) -> void:
 	facing_direction = dir
 	if sprite_root:
 		sprite_root.scale.x = float(facing_direction)
-
-func _get_game_ui() -> GameUI:
-	var scene = get_tree().current_scene
-	if scene:
-		return scene.get_node_or_null("GameUI") as GameUI
-	return null
 
 func _get_state_name(state: State) -> String:
 	match state:

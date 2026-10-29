@@ -39,6 +39,7 @@ func pause() -> void:
 	tree.paused = true
 	if pause_menu:
 		pause_menu.visible = true
+	_set_pause_input_lock(true)
 
 func resume() -> void:
 	var tree := get_tree()
@@ -47,3 +48,11 @@ func resume() -> void:
 	tree.paused = false
 	if pause_menu:
 		pause_menu.visible = false
+	_set_pause_input_lock(false)
+
+func _set_pause_input_lock(blocked: bool) -> void:
+	var cur_scene = get_tree().current_scene if get_tree() else null
+	if cur_scene:
+		var p = cur_scene.get_node_or_null("Player")
+		if p and p.has_method("set_input_blocked"):
+			p.set_input_blocked("pause_menu", blocked)

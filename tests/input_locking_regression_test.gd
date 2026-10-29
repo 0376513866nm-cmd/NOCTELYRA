@@ -1,0 +1,152 @@
+extends SceneTree
+
+## Regression Test for Reason-based Input Locking (M8 Phase 1)
+## Verifies that:
+## 1. Multiple UI locks do not prematurely unlock when one UI closes.
+## 2. Physics (gravity, friction, move_and_slide) continues while input is locked.
+## 3. Airborne player falls and does not freeze midair.
+## 4. GameUI opens/closes properly propagate locks to Player.
+## 5. Respawn clears locks safely.
+
+func _init() -> void:
+	call_deferred("_run_tests")
+
+func _run_tests() -> void:
+	print("--- BẮT ĐẦU INPUT LOCKING REGRESSION TEST ---")
+	
+	# --- BÀI TEST 1: Logic Dictionary Reason-based Locks ---
+	var player_scene := load("res://src/actors/player/player.tscn") as PackedScene
+	if player_scene == null:
+		_fail("Không thể tải res://src/actors/player/player.tscn")
+		return
+	var player := player_scene.instantiate() as Player
+	root.add_child(player)
+	await process_frame
+	
+	if player.is_input_blocked():
+		_fail("Player không được khóa input lúc khởi tạo")
+		return
+	
+	player.set_input_blocked("dialogue", true)
+	if not player.is_input_blocked():
+		_fail("Player phải bị khóa khi có reason dialogue")
+		return
+	
+	player.set_input_blocked("inventory", true)
+	player.set_input_blocked("dialogue", false)
+	if not player.is_input_blocked():
+		_fail("Đóng dialogue không được mở khóa nếu inventory vẫn mở!")
+		return
+	
+	player.set_input_blocked("inventory", false)
+	if player.is_input_blocked():
+		_fail("Player phải được mở khóa khi hết mọi reason")
+		return
+	print("[PASS] Bài test 1: Logic khóa/mở nhiều tầng (Overlapping Locks) OK")
+	
+	# --- BÀI TEST 2: Xóa lock khi Respawn hoặc Clear ---
+	player.set_input_blocked("temp_lock", true)
+	player.clear_all_input_locks()
+	if player.is_input_blocked():
+		_fail("clear_all_input_locks không xóa sạch locks")
+		return
+	
+	player.set_input_blocked("dead_lock", true)
+	player.respawn()
+	if player.is_input_blocked():
+		_fail("respawn không xóa sạch locks")
+		return
+	print("[PASS] Bài test 2: Reset lock khi Respawn OK")
+	
+	# --- BÀI TEST 3: Vật lý khi bị khóa (Gravity & Friction, không treo trên không) ---
+	player.position = Vector2(100.0, 100.0)
+	player.velocity = Vector2(250.0, 0.0)
+	player.set_input_blocked("pause_ui", true)
+	
+	var initial_vy := player.velocity.y
+	var initial_vx := player.velocity.x
+	
+	# Giả lập physics frame khi không ở trên sàn
+	player._physics_process(0.016)
+	
+	if player.velocity.y <= initial_vy:
+		_fail("Gravity không được áp dụng khi khóa input (nhân vật có thể bị treo lơ lửng)!")
+		return
+	if player.velocity.x >= initial_vx:
+		_fail("Friction không được áp dụng để giảm tốc độ ngang khi khóa input!")
+		return
+	if player.current_state != Player.State.FALL:
+		_fail("Player trên không khi khóa input phải chuyển về state FALL!")
+		return
+	
+	player.set_input_blocked("pause_ui", false)
+	player.queue_free()
+	await process_frame
+	print("[PASS] Bài test 3: Bảo toàn Gravity & Friction khi khóa input OK")
+	
+	# --- BÀI TEST 4: Tích hợp thực tế giữa GameUI và Player trong Scene ---
+	var forest_scene := load("res://src/world/noctis_forest.tscn") as PackedScene
+	if forest_scene == null:
+		_fail("Không thể tải res://src/world/noctis_forest.tscn")
+		return
+	var world := forest_scene.instantiate()
+	root.add_child(world)
+	await process_frame
+	await process_frame
+	
+	var scene_player := world.get_node_or_null("Player") as Player
+	var scene_ui := world.get_node_or_null("GameUI") as GameUI
+	if scene_player == null or scene_ui == null:
+		_fail("Scene noctis_forest thiếu Player hoặc GameUI")
+		return
+	
+	if scene_player.is_input_blocked():
+		_fail("Scene Player không được khóa ban đầu")
+		return
+	
+	# 4.1 Mở Inventory
+	scene_ui.open_inventory()
+	if not scene_player.is_input_blocked():
+		_fail("Mở Inventory phải khóa Player input!")
+		return
+	if not scene_player.input_locks.has("inventory"):
+		_fail("Player thiếu reason 'inventory'")
+		return
+	
+	# 4.2 Mở tiếp Dialogue trong khi Inventory đang mở
+	scene_ui.show_dialogue("Test NPC", ["Câu thoại 1"])
+	if not scene_player.input_locks.has("dialogue"):
+		_fail("Player thiếu reason 'dialogue'")
+		return
+	
+	# 4.3 Đóng Inventory -> Player vẫn phải bị khóa vì Dialogue còn mở
+	scene_ui.close_inventory()
+	if not scene_player.is_input_blocked():
+		_fail("Đóng Inventory không được mở khóa khi Dialogue còn mở!")
+		return
+	
+	# 4.4 Đóng Dialogue -> Cooldown grace bắt đầu chạy
+	scene_ui.close_dialogue()
+	if not scene_player.is_input_blocked():
+		_fail("Vừa đóng Dialogue phải có cooldown grace lock để chống bấm nhầm!")
+		return
+	
+	# Chờ hết cooldown grace (0.25s)
+	for i in range(25):
+		scene_ui._process(0.02)
+		await process_frame
+	
+	if scene_player.is_input_blocked():
+		_fail("Sau khi hết cooldown grace, Player phải được mở khóa hoàn toàn!")
+		return
+	print("[PASS] Bài test 4: Tương tác Scene GameUI <-> Player Input Locking OK")
+	
+	world.queue_free()
+	await process_frame
+	
+	print("INPUT_LOCKING_REGRESSION_TEST_OK")
+	quit(0)
+
+func _fail(msg: String) -> void:
+	push_error("LỖI TEST: " + msg)
+	quit(1)
