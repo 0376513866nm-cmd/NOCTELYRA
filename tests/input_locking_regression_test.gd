@@ -196,55 +196,104 @@ func _run_tests() -> void:
 	if scene_ui.is_dialogue_open():
 		_fail("Hội thoại NPC phải thực sự đóng sau khi advance hết các câu thoại!")
 		return
-	print("[PASS] Bài test 5: InteractionCoordinator chặn thoại khi khóa và đóng thoại hoàn chỉnh OK")
+	
+	# Vô hiệu hóa tương tác NPC của Test 5 và đưa Player ra xa để không làm nhiễu Test 6
+	if npc.interaction_component:
+		npc.interaction_component.is_player_nearby = false
+	scene_player.global_position = Vector2(8888.0, 8888.0)
 	
 	# Chờ hết dialogue cooldown sau khi đóng hội thoại
 	for i in range(20):
 		scene_ui._process(0.02)
 		await process_frame
+	print("[PASS] Bài test 5: InteractionCoordinator chặn thoại khi khóa và đóng thoại hoàn chỉnh OK")
 	
-	# --- BÀI TEST 6: Chặn tương tác Cổng/Vật thể (Portal/Interactables) khi Input Lock ---
+	# --- BÀI TEST 6: Chặn tương tác Cổ Tinh Thạch & Cổng Dịch Chuyển (Portal/Interactables) ---
+	# 6.1 Kiểm thử Vật thể Cổ Tinh Thạch (AncientCrystal)
 	var test_crystal := load("res://src/world/ancient_crystal.tscn").instantiate() as Area2D
 	world.add_child(test_crystal)
+	test_crystal.global_position = scene_player.global_position
 	test_crystal.set("_player_in_range", true)
 	
-	# Khóa input player -> Phím E KHÔNG được mở đối thoại văn tự cổ
+	# Khóa input player -> Phím E KHÔNG được kích hoạt Cổ Tinh Thạch
 	scene_player.set_input_blocked("crystal_test_lock", true)
 	coordinator._unhandled_input(ev_interact)
 	if scene_ui.is_dialogue_open():
-		_fail("Vật thể/Portal không được kích hoạt khi Player đang bị khóa input!")
+		_fail("Cổ Tinh Thạch không được kích hoạt khi Player đang bị khóa input!")
 		return
 	
-	# Mở khóa player -> Phím E kích hoạt thành công
+	# Mở khóa player -> Phím E kích hoạt thành công và CHÍNH XÁC là Cổ Tinh Thạch
 	scene_player.set_input_blocked("crystal_test_lock", false)
 	coordinator._unhandled_input(ev_interact)
 	if not scene_ui.is_dialogue_open():
-		_fail("Vật thể/Portal phải kích hoạt được khi Player không bị khóa input!")
+		_fail("Cổ Tinh Thạch phải kích hoạt được khi Player không bị khóa input!")
+		return
+	if scene_ui.dialogue_speaker == null or scene_ui.dialogue_speaker.text != "Cổ Tinh Thạch":
+		_fail("Hội thoại phải được kích hoạt bởi chính 'Cổ Tinh Thạch', không phải NPC khác!")
 		return
 	
 	scene_ui.close_dialogue()
-	for i in range(15):
+	for i in range(20):
 		scene_ui._process(0.02)
 		await process_frame
+	test_crystal.set("_player_in_range", false)
 	test_crystal.queue_free()
-	print("[PASS] Bài test 6: Chặn tương tác Cổng/Vật thể (Portal/Interactables) khi Input Lock OK")
 	
-	# --- BÀI TEST 7: TouchControls fallback tôn trọng Input Lock ---
+	# 6.2 Kiểm thử Cổng Dịch Chuyển (ZonePortal)
+	var test_portal := load("res://src/world/zone_portal.tscn").instantiate() as ZonePortal
+	world.add_child(test_portal)
+	test_portal.global_position = scene_player.global_position
+	test_portal.set("_player_in_range", true)
+	test_portal.is_locked = true
+	test_portal.lock_reason = "KIỂM THỬ KHÓA CỔNG ZONE"
+	
+	# Khi Player bị khóa input -> Phím E không được kích hoạt tương tác cổng
+	scene_player.set_input_blocked("portal_test_lock", true)
+	coordinator._unhandled_input(ev_interact)
+	if scene_ui.notification_label and scene_ui.notification_label.visible and scene_ui.notification_label.text == test_portal.lock_reason:
+		_fail("Cổng dịch chuyển không được kích hoạt tương tác khi Player đang bị khóa input!")
+		return
+	
+	# Khi Player mở khóa -> Phím E kích hoạt tương tác cổng và hiển thị lý do khóa cổng
+	scene_player.set_input_blocked("portal_test_lock", false)
+	coordinator._unhandled_input(ev_interact)
+	if scene_ui.notification_label == null or not scene_ui.notification_label.visible or scene_ui.notification_label.text != test_portal.lock_reason:
+		_fail("Cổng dịch chuyển phải kích hoạt được tương tác khi Player không bị khóa input!")
+		return
+	test_portal.queue_free()
+	print("[PASS] Bài test 6: Chặn tương tác Cổ Tinh Thạch & Cổng Dịch Chuyển khi Input Lock OK")
+	
+	# --- BÀI TEST 7: TouchControls fallback tôn trọng Input Lock (Negative & Positive) ---
 	var touch := scene_ui.touch_controls
 	if touch == null:
 		_fail("Không tìm thấy TouchControls trong GameUI!")
 		return
 	
-	scene_player.set_input_blocked("touch_lock", true)
+	# Đưa Player lại gần NPC và bật tương tác NPC
+	scene_player.global_position = npc.global_position
+	if npc.interaction_component:
+		npc.interaction_component.is_player_nearby = true
+	
 	# Tạm tháo InteractionCoordinator khỏi group để kích hoạt nhánh fallback 3, 4, 5
 	coordinator.remove_from_group(GameGroups.INTERACTION_COORDINATOR)
+	
+	# 7.1 Negative test: Khi Player bị khóa -> Touch fallback KHÔNG được mở hội thoại
+	scene_player.set_input_blocked("touch_lock", true)
 	touch._trigger_interact()
-	coordinator.add_to_group(GameGroups.INTERACTION_COORDINATOR)
 	if scene_ui.is_dialogue_open():
 		_fail("TouchControls fallback không được kích hoạt tương tác khi Player đang bị khóa input!")
 		return
+	
+	# 7.2 Positive test: Khi Player mở khóa -> Touch fallback PHẢI mở được hội thoại thành công
 	scene_player.set_input_blocked("touch_lock", false)
-	print("[PASS] Bài test 7: TouchControls fallback tôn trọng Input Lock OK")
+	touch._trigger_interact()
+	if not scene_ui.is_dialogue_open():
+		_fail("TouchControls fallback phải kích hoạt được hội thoại khi Player không bị khóa input!")
+		return
+	
+	scene_ui.close_dialogue()
+	coordinator.add_to_group(GameGroups.INTERACTION_COORDINATOR)
+	print("[PASS] Bài test 7: TouchControls fallback tôn trọng Input Lock (Cả 2 chiều Chặn & Cho phép) OK")
 	
 	# --- BÀI TEST 8: Signal Notification & Game Over kết nối đúng sang GameUI ---
 	# 8.1 Notification signal
