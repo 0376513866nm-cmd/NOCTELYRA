@@ -6,6 +6,7 @@ const SettingsUIController = preload("res://src/ui/controllers/settings_ui_contr
 const SidebarController = preload("res://src/ui/controllers/sidebar_controller.gd")
 const BossHUDClass = preload("res://src/ui/boss_hud.gd")
 const WorldOverlayUIClass = preload("res://src/ui/world_overlay_ui.gd")
+const EndScreenUIClass = preload("res://src/ui/end_screen_ui.gd")
 
 ## Giao diện người dùng chính (HUD, Dialogue, GameOver, PauseMenu, BossHUD, Victory) cho NOCTELYRA (M4)
 
@@ -34,6 +35,7 @@ signal hybrid_controls_changed(enabled: bool)
 # Sub-scenes (Extracted components)
 @onready var boss_hud_controller: BossHUDClass = find_child("BossHUD", true, false) as BossHUDClass
 @onready var world_overlay_ui: WorldOverlayUIClass = find_child("WorldOverlayUI", true, false) as WorldOverlayUIClass
+@onready var end_screen_ui: EndScreenUIClass = find_child("EndScreenUI", true, false) as EndScreenUIClass
 
 # Boss UI (M4) - Compatibility accessors
 @onready var boss_hud: Control = boss_hud_controller.boss_bar_panel if boss_hud_controller else null
@@ -43,18 +45,19 @@ signal hybrid_controls_changed(enabled: bool)
 @onready var boss_hp_label: Label = boss_hud_controller.boss_hp_label if boss_hud_controller else null
 @onready var boss_warning_label: Label = boss_hud_controller.boss_warning_label if boss_hud_controller else null
 @onready var boss_announcement_label: Label = boss_hud_controller.boss_announcement_label if boss_hud_controller else null
-@onready var victory_panel: Control = $VictoryPanel
-@onready var victory_title: Label = $VictoryPanel/Panel/Title
-@onready var victory_subtitle: Label = $VictoryPanel/Panel/Subtitle
-@onready var victory_continue_btn: Button = $VictoryPanel/Panel/ContinueBtn
+
+# End Screen UI - Compatibility accessors
+@onready var victory_panel: Control = end_screen_ui.victory_panel if end_screen_ui else null
+@onready var victory_title: Label = end_screen_ui.victory_title if end_screen_ui else null
+@onready var victory_subtitle: Label = end_screen_ui.victory_subtitle if end_screen_ui else null
+@onready var victory_continue_btn: Button = end_screen_ui.victory_continue_btn if end_screen_ui else null
+@onready var game_over_panel: Control = end_screen_ui.game_over_panel if end_screen_ui else null
+@onready var retry_button: Button = end_screen_ui.retry_button if end_screen_ui else null
 
 @onready var dialogue_box: Control = $DialogueBox
 @onready var dialogue_speaker: Label = $DialogueBox/Panel/SpeakerLabel
 @onready var dialogue_text: Label = $DialogueBox/Panel/DialogueText
 @onready var dialogue_hint: Label = $DialogueBox/Panel/NextHint
-
-@onready var game_over_panel: Control = $GameOverPanel
-@onready var retry_button: Button = $GameOverPanel/Panel/RetryBtn
 
 @onready var pause_menu: Control = $PauseMenu
 @onready var pause_panel: Panel = $PauseMenu/Panel
@@ -232,6 +235,20 @@ func _sync_extracted_components() -> void:
 		zone_banner = world_overlay_ui.zone_banner
 		zone_banner_title = world_overlay_ui.zone_banner_title
 		zone_banner_subtitle = world_overlay_ui.zone_banner_subtitle
+
+	if end_screen_ui == null:
+		end_screen_ui = find_child("EndScreenUI", true, false) as EndScreenUIClass
+	if end_screen_ui:
+		game_over_panel = end_screen_ui.game_over_panel
+		retry_button = end_screen_ui.retry_button
+		victory_panel = end_screen_ui.victory_panel
+		victory_title = end_screen_ui.victory_title
+		victory_subtitle = end_screen_ui.victory_subtitle
+		victory_continue_btn = end_screen_ui.victory_continue_btn
+		if not end_screen_ui.retry_requested.is_connected(_on_end_screen_retry_requested):
+			end_screen_ui.retry_requested.connect(_on_end_screen_retry_requested)
+		if not end_screen_ui.victory_dismissed.is_connected(_on_end_screen_victory_dismissed):
+			end_screen_ui.victory_dismissed.connect(_on_end_screen_victory_dismissed)
 
 func _ready() -> void:
 	_sync_extracted_components()
@@ -849,18 +866,26 @@ func show_notification(msg: String) -> void:
 		notification_label.visible = true
 
 func show_game_over() -> void:
-	if game_over_panel:
+	if end_screen_ui:
+		end_screen_ui.show_game_over()
+	elif game_over_panel:
 		game_over_panel.visible = true
 	_set_input_lock("game_over", true)
 
 func hide_game_over() -> void:
-	if game_over_panel:
+	if end_screen_ui:
+		end_screen_ui.hide_game_over()
+	elif game_over_panel:
 		game_over_panel.visible = false
 	_set_input_lock("game_over", false)
 
+func _on_end_screen_retry_requested() -> void:
+	_set_input_lock("game_over", false)
+	retry_requested.emit()
+
 func _on_retry_pressed() -> void:
 	hide_game_over()
-	emit_signal("retry_requested")
+	retry_requested.emit()
 
 # --- HỆ THỐNG GIAO DIỆN BOSS (M4) ---
 
@@ -919,22 +944,30 @@ func show_boss_announcement(msg: String, duration: float = 2.5) -> void:
 
 func show_victory_banner(title: String, subtitle: String) -> void:
 	hide_boss_hud()
-	if victory_panel:
+	if end_screen_ui:
+		end_screen_ui.show_victory(title, subtitle)
+	elif victory_panel:
 		if victory_title: victory_title.text = title
 		if victory_subtitle: victory_subtitle.text = subtitle
 		victory_panel.visible = true
 	_set_input_lock("victory", true)
 
 func hide_victory_banner() -> void:
-	if victory_panel:
+	if end_screen_ui:
+		end_screen_ui.hide_victory()
+	elif victory_panel:
 		victory_panel.visible = false
 	_set_input_lock("victory", false)
 	_ui_close_grace_cooldown = 0.25
 	_set_input_lock("ui_cooldown", true)
 
+func _on_end_screen_victory_dismissed() -> void:
+	hide_victory_banner()
+	victory_dismissed.emit()
+
 func _on_victory_continue_pressed() -> void:
 	hide_victory_banner()
-	emit_signal("victory_dismissed")
+	victory_dismissed.emit()
 
 # --- HỆ THỐNG GIAO DIỆN KHU VỰC & THẾ GIỚI (M6) ---
 
