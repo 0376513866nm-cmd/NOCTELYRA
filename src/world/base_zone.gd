@@ -74,19 +74,19 @@ func setup_signals() -> void:
 		if not player.state_changed.is_connected(_on_player_state_changed):
 			player.state_changed.connect(_on_player_state_changed)
 
-		var p_health: HealthComponent = player.get_node_or_null("HealthComponent")
+		var p_health := player.health_component
 		if p_health:
 			if not p_health.health_changed.is_connected(_on_player_health_changed):
 				p_health.health_changed.connect(_on_player_health_changed)
 			if not p_health.mana_changed.is_connected(_on_player_mana_changed):
 				p_health.mana_changed.connect(_on_player_mana_changed)
 
-		var p_wallet: WalletComponent = player.wallet_component if player.wallet_component else player.get_node_or_null("WalletComponent") as WalletComponent
+		var p_wallet := player.wallet_component
 		if p_wallet:
 			if not p_wallet.gold_changed.is_connected(_on_gold_changed):
 				p_wallet.gold_changed.connect(_on_gold_changed)
 
-		var p_journal: QuestJournalComponent = player.quest_journal_component if player.quest_journal_component else player.get_node_or_null("QuestJournalComponent") as QuestJournalComponent
+		var p_journal := player.quest_journal_component
 		if p_journal:
 			if not p_journal.quest_started.is_connected(_on_journal_quest_event):
 				p_journal.quest_started.connect(_on_journal_quest_event)
@@ -175,7 +175,7 @@ func setup_ui() -> void:
 			game_ui.spell_hotbar.set_spellbook(player.spellbook_component)
 
 		# 3. Cập nhật thanh HP và MP
-		var p_health: HealthComponent = player.get_node_or_null("HealthComponent")
+		var p_health := player.health_component
 		if p_health:
 			game_ui.update_player_hp(p_health.current_health, p_health.max_health)
 			game_ui.update_player_mp(p_health.current_mana, p_health.max_mana)
@@ -200,13 +200,11 @@ func setup_ui() -> void:
 func _on_player_level_up(new_level: int) -> void:
 	if game_ui:
 		game_ui.show_notification("✨ Thăng cấp! Bạn đã đạt Cấp %d!" % new_level)
-		if player:
-			var p_health: HealthComponent = player.get_node_or_null("HealthComponent")
-			if p_health:
-				game_ui.update_player_hp(p_health.current_health, p_health.max_health)
-				game_ui.update_player_mp(p_health.current_mana, p_health.max_mana)
-			if game_ui.character_sheet_ui and game_ui.character_sheet_ui.is_open():
-				game_ui.character_sheet_ui.refresh()
+		if player and player.health_component:
+			game_ui.update_player_hp(player.health_component.current_health, player.health_component.max_health)
+			game_ui.update_player_mp(player.health_component.current_mana, player.health_component.max_mana)
+		if game_ui.character_sheet_ui and game_ui.character_sheet_ui.is_open():
+			game_ui.character_sheet_ui.refresh()
 
 func _on_npc_dialogue_requested(npc: NPC, lines: Array[String], action: String) -> void:
 	if game_ui:
