@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://d3m8k1y9p2q5"]
+[gd_scene load_steps=15 format=3 uid="uid://d3m8k1y9p2q5"]
 
 [ext_resource type="Script" path="res://src/ui/game_ui.gd" id="1_ui"]
 [ext_resource type="PackedScene" uid="uid://c7m9x4v1q5p2" path="res://src/inventory/inventory_ui.tscn" id="2_inv_ui"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://c8k1sheet4y8z" path="res://src/ui/character_sheet_ui.tscn" id="5_sheet_ui"]
 [ext_resource type="PackedScene" uid="uid://c8m9touch3x7p4" path="res://src/ui/touch_controls.tscn" id="6_touch_ui"]
 
+[ext_resource type="Script" path="res://src/ui/touch_scroll_container.gd" id="8_touch_scroll"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/hero_avatar.png" id="7_avatar"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_capsule"]
@@ -1072,6 +1073,7 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
+script = ExtResource("8_touch_scroll")
 
 [node name="VBox" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer/StatsPanel"]
 layout_mode = 2
@@ -1295,6 +1297,7 @@ grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
+script = ExtResource("8_touch_scroll")
 
 [node name="VBox" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
 layout_mode = 2

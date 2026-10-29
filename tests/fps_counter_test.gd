@@ -100,6 +100,33 @@ func test_game_ui_fps_integration() -> void:
 	game_ui._on_guide_toggle_pressed()
 	assert(guide_content.visible == false, "GuideContent should collapse on toggle")
 
+	# Verify Touch Drag Scrolling on settings_panel when content overflows
+	game_ui.open_sidebar(3)
+	game_ui._on_guide_toggle_pressed() # Expand guide so content overflows panel
+	await process_frame
+	await process_frame
+	var panel_rect: Rect2 = settings_panel.get_global_rect()
+	var touch_pt: Vector2 = panel_rect.position + Vector2(panel_rect.size.x * 0.5, panel_rect.size.y * 0.5)
+
+	var t_down := InputEventScreenTouch.new()
+	t_down.index = 0
+	t_down.pressed = true
+	t_down.position = touch_pt
+	settings_panel._input(t_down)
+
+	var t_drag := InputEventScreenDrag.new()
+	t_drag.index = 0
+	t_drag.position = touch_pt + Vector2(0, -60)
+	t_drag.relative = Vector2(0, -60)
+	settings_panel._input(t_drag)
+	assert(settings_panel.scroll_vertical > 0, "settings_panel must scroll upon touch drag")
+
+	var t_up := InputEventScreenTouch.new()
+	t_up.index = 0
+	t_up.pressed = false
+	t_up.position = touch_pt + Vector2(0, -60)
+	settings_panel._input(t_up)
+
 	# Test toggling via game_ui method
 	SettingsManager.show_fps = false
 	game_ui._process(0.016)
