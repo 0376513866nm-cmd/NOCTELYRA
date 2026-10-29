@@ -77,8 +77,13 @@ static func apply(world: Node, data: Dictionary) -> bool:
 	if spellbook and data.get("spellbook", {}) is Dictionary:
 		spellbook.from_dict(data.get("spellbook", {}))
 	var journal := player.quest_journal_component
-	if journal and data.get("quest_journal", {}) is Dictionary:
-		journal.from_dict(data.get("quest_journal", {}))
+	if journal:
+		if data.has("quest_journal") and (data["quest_journal"] is Dictionary) and not data["quest_journal"].is_empty():
+			journal.from_dict(data["quest_journal"])
+		else:
+			journal._quests.clear()
+			journal._kill_history.clear()
+			journal._ensure_default_quests()
 
 	var health := player.health_component
 	if health:
@@ -112,6 +117,28 @@ static func apply(world: Node, data: Dictionary) -> bool:
 	_migrate_quest_data(data, journal, quest_manager, progression)
 	return true
 
+static func _classify_enemy_id(id_str: String) -> String:
+	var s := id_str.to_lower()
+	if s.find("mooncap") != -1:
+		return "corrupted_mooncap"
+	if s.find("wisp") != -1:
+		return "corrupted_mana_wisp"
+	if s.find("ashfang") != -1:
+		return "ashfang_wolf"
+	if s.find("lizard") != -1:
+		return "ember_lizard"
+	if s.find("wolf") != -1:
+		return "corrupted_wolf"
+	return ""
+
+static func _record_kill_history(journal: QuestJournalComponent, enemy_type: String, enemy_id: String) -> void:
+	if journal == null or enemy_type.is_empty() or enemy_id.is_empty():
+		return
+	if not journal._kill_history.has(enemy_type):
+		journal._kill_history[enemy_type] = []
+	if not enemy_id in journal._kill_history[enemy_type]:
+		journal._kill_history[enemy_type].append(enemy_id)
+
 static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent, quest_manager: QuestManager, progression: PlayerProgressionComponent) -> void:
 	if journal == null:
 		return
@@ -119,52 +146,122 @@ static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent
 	var raw_journal: Dictionary = data.get("quest_journal", {})
 	var raw_main: Dictionary = raw_journal.get("quest_noctis_purify", {})
 	var journal_main_state: int = int(raw_main.get("state", 0))
+	var journal_main_amount: int = int(raw_main.get("current_amount", 0))
 	var journal_main_claimed: bool = bool(raw_main.get("reward_claimed", false))
+	var journal_counted: Array = raw_main.get("counted_enemy_ids", [])
 
 	var legacy_dict: Dictionary = data.get("legacy_quest", data.get("quest", {}))
 	var legacy_state: int = clampi(int(legacy_dict.get("state", 0)), 0, 3)
 	var legacy_amount: int = maxi(0, int(legacy_dict.get("current_amount", 0)))
 	var legacy_killed: Array = data.get("killed_enemy_ids", data.get("defeated_enemy_ids", []))
+	var legacy_claimed: bool = bool(legacy_dict.get("reward_claimed", false)) or (legacy_state == 3)
 
-	# Quy tắc Migration an toàn:
-	# Nếu Journal trong Save Gốc chưa có tiến trình (state == 0 và chưa nhận thưởng),
-	# nhưng Legacy Quest có tiến trình (legacy_state > 0) -> Đồng bộ sang Main Quest của Journal.
-	var is_unmigrated := (journal_main_state == 0 and not journal_main_claimed)
-	if legacy_state > 0 and is_unmigrated:
-		var target_amount := mini(legacy_amount, 3)
-		var is_completed := (legacy_state == 3) # COMPLETED
-		
-		var counted_ids: Array = []
-		for k in legacy_killed:
-			counted_ids.append(str(k))
-		
-		journal._quests["quest_noctis_purify"] = {
-			"state": legacy_state,
-			"current_amount": target_amount,
-			"reward_claimed": is_completed,
-			"counted_enemy_ids": counted_ids
-		}
-		
-		# Khôi phục lịch sử diệt quái vào _kill_history của journal
-		if not counted_ids.is_empty():
-			if not journal._kill_history.has("corrupted_wolf"):
-				journal._kill_history["corrupted_wolf"] = []
-			for c_id in counted_ids:
-				if not c_id in journal._kill_history["corrupted_wolf"]:
-					journal._kill_history["corrupted_wolf"].append(c_id)
+	# 1. Phân loại và bóc tách killed_enemy_ids theo chủng loại quái
+	var wolf_candidates: Array[String] = []
+	var other_candidates: Array[String] = []
 
-	# Đồng bộ ngược lại QuestManager nếu Journal có tiến trình cao hơn
-	var j_main: Dictionary = journal._quests.get("quest_noctis_purify", {})
-	var j_state: int = int(j_main.get("state", 0))
-	var j_amount: int = int(j_main.get("current_amount", 0))
+	for k in legacy_killed:
+		var id_str := str(k).strip_edges()
+		if id_str.is_empty():
+			continue
+		var enemy_type := _classify_enemy_id(id_str)
+		if enemy_type == "corrupted_wolf":
+			if not id_str in wolf_candidates:
+				wolf_candidates.append(id_str)
+			_record_kill_history(journal, "corrupted_wolf", id_str)
+		elif not enemy_type.is_empty():
+			_record_kill_history(journal, enemy_type, id_str)
+		else:
+			if not id_str in other_candidates:
+				other_candidates.append(id_str)
+
+	# 2. Quy tắc đối chiếu và hợp nhất trạng thái (Reconciliation):
+	# Nếu một trong hai hệ thống đã hoàn thành (COMPLETED) hoặc đã nhận thưởng -> Đánh dấu COMPLETED và reward_claimed = true.
+	var is_legacy_completed := (legacy_state == 3) or legacy_claimed
+	var is_journal_completed := (journal_main_state == 3) or journal_main_claimed
+
+	var final_state: int = 0
+	var final_amount: int = 0
+	var final_claimed: bool = false
+
+	if is_legacy_completed or is_journal_completed:
+		final_state = 3 # COMPLETED
+		final_amount = 3
+		final_claimed = true
+	else:
+		final_amount = clampi(maxi(legacy_amount, journal_main_amount), 0, 3)
+		if legacy_state == 2 or journal_main_state == 2 or final_amount >= 3:
+			final_state = 2 # READY_TO_TURN_IN
+			final_amount = 3
+		elif legacy_state == 1 or journal_main_state == 1 or final_amount > 0:
+			final_state = 1 # ACTIVE
+		else:
+			final_state = 0 # NOT_STARTED
+			final_amount = 0
+		final_claimed = false
+
+	# 3. Chuẩn hóa counted_enemy_ids cho quest_noctis_purify:
+	# Đảm bảo counted_enemy_ids.size() == final_amount và không chứa quái khác loại.
+	var final_counted: Array = []
+	if final_amount > 0:
+		# 1. Ưu tiên các ID đã có sẵn trong journal_counted (nếu là wolf hoặc generic)
+		for jid in journal_counted:
+			var sjid := str(jid).strip_edges()
+			if sjid.is_empty():
+				continue
+			var ctype := _classify_enemy_id(sjid)
+			if ctype == "corrupted_wolf" or ctype == "":
+				if not sjid in final_counted:
+					final_counted.append(sjid)
+					if final_counted.size() == final_amount:
+						break
+
+		# 2. Bổ sung từ wolf_candidates đã xác thực
+		if final_counted.size() < final_amount:
+			for wid in wolf_candidates:
+				if not wid in final_counted:
+					final_counted.append(wid)
+					if final_counted.size() == final_amount:
+						break
+
+		# 3. Bổ sung từ generic candidates nếu cần
+		if final_counted.size() < final_amount:
+			for oid in other_candidates:
+				if not oid in final_counted:
+					final_counted.append(oid)
+					_record_kill_history(journal, "corrupted_wolf", oid)
+					if final_counted.size() == final_amount:
+						break
+
+		# 4. Fallback ổn định nếu không có đủ ID
+		var fallback_idx := 1
+		while final_counted.size() < final_amount:
+			var fid := "legacy_wolf_" + str(fallback_idx)
+			fallback_idx += 1
+			if not fid in final_counted:
+				final_counted.append(fid)
+				_record_kill_history(journal, "corrupted_wolf", fid)
+
+	for fc in final_counted:
+		_record_kill_history(journal, "corrupted_wolf", str(fc))
+
+	# 4. Áp dụng đồng bộ vào QuestJournalComponent
+	journal._quests["quest_noctis_purify"] = {
+		"state": final_state,
+		"current_amount": final_amount,
+		"reward_claimed": final_claimed,
+		"counted_enemy_ids": final_counted
+	}
+
+	# 5. Đồng bộ ngược lại sang QuestManager adapter
 	if quest_manager and quest_manager.current_quest:
-		if j_state > int(quest_manager.current_quest.current_state):
-			quest_manager.current_quest.current_state = j_state as QuestData.State
-			quest_manager.current_quest.current_amount = j_amount
+		quest_manager.current_quest.current_state = final_state as QuestData.State
+		quest_manager.current_quest.current_amount = final_amount
+		for fc in final_counted:
+			if not fc in quest_manager._killed_enemy_ids:
+				quest_manager._killed_enemy_ids.append(fc)
 
-	# Bảo vệ chống nhận EXP trùng lặp nếu Quest đã hoàn thành
-	var final_state: int = int(j_main.get("state", legacy_state))
-	var final_claimed: bool = bool(j_main.get("reward_claimed", false)) or (legacy_state == 3)
+	# 6. Bảo vệ chống nhận EXP trùng lặp nếu Quest đã hoàn thành
 	if (final_state == 3 or final_claimed) and progression != null:
 		if not "quest:quest_tutorial" in progression.claimed_exp_sources:
 			progression.claimed_exp_sources.append("quest:quest_tutorial")

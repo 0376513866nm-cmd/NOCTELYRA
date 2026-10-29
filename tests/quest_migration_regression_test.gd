@@ -480,6 +480,268 @@ func _run_all_tests() -> void:
 		return
 	print("[PASS] Test 7.4: Nạp Save COMPLETED tự động mở Cổng Ma Pháp & chống nhận thưởng trùng OK.")
 
+	# 7.5 (P0): Legacy COMPLETED + Journal READY_TO_TURN_IN (reward_claimed = false)
+	# Đảm bảo KHÔNG THỂ nhận thêm 50 vàng từ turn_in_quest và trạng thái phải là COMPLETED
+	var fixture_75 := {
+		"save_version": "2.0.0",
+		"timestamp": 1700000005,
+		"current_zone_id": "noctis_forest",
+		"gold": 200,
+		"player_state": {
+			"race_id": "human",
+			"level": 2,
+			"current_exp": 50,
+			"claimed_exp_sources": [],
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"gold": 200,
+			"quest_journal": {
+				"quest_noctis_purify": {
+					"state": 2, # READY_TO_TURN_IN
+					"current_amount": 3,
+					"reward_claimed": false,
+					"counted_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2", "noctis_wolf_3"]
+				}
+			},
+			"legacy_quest": {
+				"state": 3, # COMPLETED trong hệ cũ
+				"current_amount": 3
+			},
+			"killed_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2", "noctis_wolf_3"]
+		}
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(fixture_75))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp fixture 7.5!")
+		world.queue_free()
+		return
+
+	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.COMPLETED:
+		_fail("Test 7.5: Journal phải được chuyển sang COMPLETED khi Legacy đã COMPLETED!")
+		world.queue_free()
+		return
+	if not journal.is_reward_claimed("quest_noctis_purify"):
+		_fail("Test 7.5: reward_claimed phải là true khi Legacy đã COMPLETED!")
+		world.queue_free()
+		return
+	if quest_mgr.current_quest.current_state != QuestData.State.COMPLETED:
+		_fail("Test 7.5: QuestManager phải ở trạng thái COMPLETED!")
+		world.queue_free()
+		return
+	if not gate.is_open:
+		_fail("Test 7.5: Cổng Ma Pháp phải mở khi nhiệm vụ đã hoàn thành!")
+		world.queue_free()
+		return
+	if journal.can_turn_in("quest_noctis_purify"):
+		_fail("Test 7.5: can_turn_in() không được phép trả về true khi quest đã COMPLETED!")
+		world.queue_free()
+		return
+
+	# Thử trả nhiệm vụ qua Journal -> Bắt buộc thất bại và không cộng thêm vàng
+	var inv: InventoryComponent = player.get_node_or_null("InventoryComponent")
+	var turn_in_res := journal.turn_in_quest("quest_noctis_purify", inv, quest_mgr)
+	if turn_in_res.get("success", false):
+		_fail("Test 7.5: turn_in_quest() phải thất bại khi phần thưởng đã nhận trước đó!")
+		world.queue_free()
+		return
+	if player.wallet_component.gold != 200:
+		_fail("Test 7.5: Vàng bị tăng thêm sau khi cố trả nhiệm vụ đã hoàn thành! Hiện có: " + str(player.wallet_component.gold))
+		world.queue_free()
+		return
+	print("[PASS] Test 7.5: Legacy COMPLETED + Journal READY chưa nhận thưởng -> Chống nhận thưởng trùng 100% OK.")
+
+	# 7.6 (P1): Legacy ACTIVE 2/3 + Journal ACTIVE 1/3 (cùng state nhưng lệch tiến độ)
+	var fixture_76 := {
+		"save_version": "2.0.0",
+		"timestamp": 1700000006,
+		"current_zone_id": "noctis_forest",
+		"gold": 125,
+		"player_state": {
+			"race_id": "human",
+			"level": 2,
+			"current_exp": 20,
+			"claimed_exp_sources": [],
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"gold": 125,
+			"quest_journal": {
+				"quest_noctis_purify": {
+					"state": 1, # ACTIVE
+					"current_amount": 1,
+					"reward_claimed": false,
+					"counted_enemy_ids": ["noctis_wolf_1"]
+				}
+			},
+			"legacy_quest": {
+				"state": 1, # ACTIVE
+				"current_amount": 2
+			},
+			"killed_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2"]
+		}
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(fixture_76))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp fixture 7.6!")
+		world.queue_free()
+		return
+
+	if journal.get_quest_progress("quest_noctis_purify") != 2 or journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.ACTIVE:
+		_fail("Test 7.6: Tiến độ của Journal phải được nâng lên 2/3 theo tiến độ cao hơn!")
+		world.queue_free()
+		return
+	if quest_mgr.current_quest.current_amount != 2:
+		_fail("Test 7.6: QuestManager phải giữ nguyên 2/3!")
+		world.queue_free()
+		return
+	if gate.is_open:
+		_fail("Test 7.6: Cổng Ma Pháp phải đóng khi ACTIVE 2/3!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.6: Legacy ACTIVE 2/3 + Journal ACTIVE 1/3 -> Đồng bộ chuẩn xác theo tiến độ cao nhất OK.")
+
+	# 7.7 (P1): Legacy READY 3/3 + Journal ACTIVE 2/3 -> Nâng cả hai lên READY 3/3
+	var fixture_77 := {
+		"save_version": "2.0.0",
+		"timestamp": 1700000007,
+		"current_zone_id": "noctis_forest",
+		"gold": 125,
+		"player_state": {
+			"race_id": "human",
+			"level": 2,
+			"current_exp": 30,
+			"claimed_exp_sources": [],
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"gold": 125,
+			"quest_journal": {
+				"quest_noctis_purify": {
+					"state": 1, # ACTIVE
+					"current_amount": 2,
+					"reward_claimed": false,
+					"counted_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2"]
+				}
+			},
+			"legacy_quest": {
+				"state": 2, # READY_TO_TURN_IN
+				"current_amount": 3
+			},
+			"killed_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2", "noctis_wolf_3"]
+		}
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(fixture_77))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp fixture 7.7!")
+		world.queue_free()
+		return
+
+	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN or journal.get_quest_progress("quest_noctis_purify") != 3:
+		_fail("Test 7.7: Journal phải đạt READY_TO_TURN_IN 3/3!")
+		world.queue_free()
+		return
+	if quest_mgr.current_quest.current_state != QuestData.State.READY_TO_TURN_IN or quest_mgr.current_quest.current_amount != 3:
+		_fail("Test 7.7: QuestManager phải đạt READY_TO_TURN_IN 3/3!")
+		world.queue_free()
+		return
+	if gate.is_open:
+		_fail("Test 7.7: Cổng Ma Pháp phải giữ khóa khi READY_TO_TURN_IN!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.7: Legacy READY 3/3 + Journal ACTIVE 2/3 -> Không mất tiến trình, đồng bộ READY 3/3 OK.")
+
+	# 7.8 (P1): Danh sách quái đã diệt chứa nhiều loại (2 wolves + 1 mooncap)
+	var fixture_78 := {
+		"save_version": "2.0.0",
+		"timestamp": 1700000008,
+		"current_zone_id": "noctis_forest",
+		"gold": 125,
+		"player_state": {
+			"race_id": "human",
+			"level": 2,
+			"current_exp": 40,
+			"claimed_exp_sources": [],
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"gold": 125,
+			"quest_journal": {
+				"quest_noctis_purify": {
+					"state": 1,
+					"current_amount": 2,
+					"reward_claimed": false,
+					"counted_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2"]
+				}
+			},
+			"legacy_quest": {
+				"state": 1,
+				"current_amount": 2
+			},
+			"killed_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2", "elyndra_mooncap_1"]
+		}
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(fixture_78))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp fixture 7.8!")
+		world.queue_free()
+		return
+
+	if journal.get_quest_progress("quest_noctis_purify") != 2:
+		_fail("Test 7.8: Tiến trình quest sói phải là 2, nhận: " + str(journal.get_quest_progress("quest_noctis_purify")))
+		world.queue_free()
+		return
+	var counted_78: Array = journal._quests["quest_noctis_purify"].get("counted_enemy_ids", [])
+	if counted_78.size() != 2:
+		_fail("Test 7.8: Số lượng counted_enemy_ids phải bằng 2, nhận: " + str(counted_78.size()))
+		world.queue_free()
+		return
+	if "elyndra_mooncap_1" in counted_78:
+		_fail("Test 7.8: Quái mooncap không được lọt vào counted_enemy_ids của quest_noctis_purify!")
+		world.queue_free()
+		return
+	if not ("elyndra_mooncap_1" in journal._kill_history.get("corrupted_mooncap", [])):
+		_fail("Test 7.8: Quái mooncap phải được ghi nhận vào _kill_history['corrupted_mooncap']!")
+		world.queue_free()
+		return
+
+	# Tạo mock Enemy sói để kiểm tra tiêu diệt quái thứ 3
+	var mock_wolf := Enemy.new()
+	mock_wolf.enemy_type_id = "corrupted_wolf"
+	mock_wolf.enemy_id = "noctis_wolf_3"
+	journal.register_enemy_kill(mock_wolf)
+	mock_wolf.free()
+
+	if journal.get_quest_progress("quest_noctis_purify") != 3:
+		_fail("Test 7.8: Sau khi diệt sói thứ 3, tiến trình phải là 3/3! Nhận: " + str(journal.get_quest_progress("quest_noctis_purify")))
+		world.queue_free()
+		return
+	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN:
+		_fail("Test 7.8: Trạng thái quest phải là READY_TO_TURN_IN sau khi hoàn thành mục tiêu!")
+		world.queue_free()
+		return
+
+	# Tạo mock Enemy mooncap để kiểm tra xem có làm lệch quest sói không
+	var mock_mooncap := Enemy.new()
+	mock_mooncap.enemy_type_id = "corrupted_mooncap"
+	mock_mooncap.enemy_id = "elyndra_mooncap_2"
+	journal.register_enemy_kill(mock_mooncap)
+	mock_mooncap.free()
+
+	if journal.get_quest_progress("quest_noctis_purify") != 3:
+		_fail("Test 7.8: Diệt quái mooncap không được làm biến đổi số lượng của quest sói!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.8: Chuẩn hóa dữ liệu quái đã giết (bóc tách wolf vs mooncap, chống đếm sai) OK.")
+
 	# --- TEST 8: TÍNH TOÀN VẸN VÀ IDEMPOTENT CỦA SAVE v2.0.0 (Save -> Load -> Save -> Load) ---
 	quest_mgr.current_quest.current_state = QuestData.State.ACTIVE
 	quest_mgr.current_quest.current_amount = 2
