@@ -98,12 +98,13 @@ func _refresh_main_quest(quest_mgr: QuestManager) -> void:
 func _prepare_side_quest_cards() -> void:
 	_side_quest_cards.clear()
 	var available_cards: Array[PanelContainer] = [first_side_quest_card, second_side_quest_card]
-	var definitions := ContentRegistry.catalog().quests
+	var side_definitions: Array[QuestDefinition] = []
+	for d in ContentRegistry.catalog().quests:
+		if d and not d.is_main_quest:
+			side_definitions.append(d)
 
-	for index in definitions.size():
-		var definition := definitions[index]
-		if definition == null:
-			continue
+	for index in side_definitions.size():
+		var definition := side_definitions[index]
 		var card: PanelContainer
 		if index < available_cards.size():
 			card = available_cards[index]
@@ -114,13 +115,13 @@ func _prepare_side_quest_cards() -> void:
 		card.visible = true
 		_side_quest_cards[definition.quest_id] = card
 
-	for index in range(definitions.size(), available_cards.size()):
+	for index in range(side_definitions.size(), available_cards.size()):
 		available_cards[index].visible = false
 
 func _refresh_catalog_quests(player: Player) -> void:
 	var journal: QuestJournalComponent = player.quest_journal_component if player else null
 	for definition in ContentRegistry.catalog().quests:
-		if definition == null:
+		if definition == null or definition.is_main_quest:
 			continue
 		var card := _side_quest_cards.get(definition.quest_id) as PanelContainer
 		if card == null:

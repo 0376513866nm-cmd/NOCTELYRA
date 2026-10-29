@@ -280,7 +280,7 @@ func _run_all_tests() -> void:
 			return
 	print("[PASS] Test 6: Trả nhiệm vụ chính hồi phục đầy đủ 100% HP và MP OK.")
 
-	# --- TEST 7: KIỂM THỬ FIXTURE SAVE CŨ (v1.5.0) NẠP TRỰC TIẾP VÀO WALLETCOMPONENT ---
+	# --- TEST 7: KIỂM THỬ FIXTURE SAVE CŨ (v1.5.0) NẠP TRỰC TIẾP VÀO WALLET VÀ QUESTMANAGER ---
 	var legacy_fixture := {
 		"save_version": "1.5.0",
 		"timestamp": 1700000000,
@@ -317,9 +317,71 @@ func _run_all_tests() -> void:
 		_fail("Save v1.5.0 không nạp đúng 125 vàng (Wallet: %d, QM: %d)!" % [player.wallet_component.gold, quest_mgr.gold])
 		world.queue_free()
 		return
-	print("[PASS] Test 7: Nạp Save v1.5.0 khôi phục vàng vào WalletComponent và QuestManager OK.")
+	if quest_mgr.current_quest.current_state != QuestData.State.ACTIVE:
+		_fail("Save v1.5.0 không khôi phục trạng thái ACTIVE (nhận: %d)!" % quest_mgr.current_quest.current_state)
+		world.queue_free()
+		return
+	if quest_mgr.current_quest.current_amount != 2:
+		_fail("Save v1.5.0 không khôi phục đúng tiến độ quái 2/3 (nhận: %d)!" % quest_mgr.current_quest.current_amount)
+		world.queue_free()
+		return
+	if not ("corrupted_1" in quest_mgr._killed_enemy_ids and "corrupted_2" in quest_mgr._killed_enemy_ids):
+		_fail("Save v1.5.0 không khôi phục danh sách killed_enemy_ids!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.1: Nạp Save v1.5.0 ACTIVE (2/3 quái, killed_enemy_ids) khôi phục chính xác 100%.")
+
+	# 7.2 Kiểm tra Save với READY_TO_TURN_IN (3/3 quái) -> Cổng phải ĐÓNG
+	legacy_fixture["quest"]["state"] = 2 # READY_TO_TURN_IN
+	legacy_fixture["quest"]["current_amount"] = 3
+	legacy_fixture["defeated_enemy_ids"] = ["corrupted_1", "corrupted_2", "corrupted_3"]
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(legacy_fixture))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp file save v1.5.0 READY_TO_TURN_IN!")
+		world.queue_free()
+		return
+	if quest_mgr.current_quest.current_state != QuestData.State.READY_TO_TURN_IN or quest_mgr.current_quest.current_amount != 3:
+		_fail("Khôi phục trạng thái READY_TO_TURN_IN 3/3 thất bại!")
+		world.queue_free()
+		return
+	gate.update_quest_status(quest_mgr.current_quest)
+	if gate.is_open:
+		_fail("Cổng MagicGate KHÔNG ĐƯỢC MỞ khi nạp save READY_TO_TURN_IN!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.2: Nạp Save v1.5.0 READY_TO_TURN_IN giữ nguyên khóa Cổng Ma Pháp OK.")
+
+	# 7.3 Kiểm tra Save với COMPLETED -> Cổng phải MỞ
+	legacy_fixture["quest"]["state"] = 3 # COMPLETED
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(legacy_fixture))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp file save v1.5.0 COMPLETED!")
+		world.queue_free()
+		return
+	if quest_mgr.current_quest.current_state != QuestData.State.COMPLETED:
+		_fail("Khôi phục trạng thái COMPLETED thất bại!")
+		world.queue_free()
+		return
+	gate.update_quest_status(quest_mgr.current_quest)
+	if not gate.is_open:
+		_fail("Cổng MagicGate PHẢI MỞ khi nạp save COMPLETED!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.3: Nạp Save v1.5.0 COMPLETED mở Cổng Ma Pháp OK.")
 
 	# --- TEST 8: TÍNH TOÀN VẸN VÀ IDEMPOTENT CỦA SAVE v2.0.0 ---
+	# Đặt trạng thái ACTIVE 2/3 để test lưu/nạp Idempotent
+	quest_mgr.current_quest.current_state = QuestData.State.ACTIVE
+	quest_mgr.current_quest.current_amount = 2
+	quest_mgr._killed_enemy_ids = ["corrupted_1", "corrupted_2"]
+	player.wallet_component.set_gold(125)
+
 	if not SaveManager.save_game(world):
 		_fail("Ghi đè save v2.0.0 thất bại!")
 		world.queue_free()
@@ -334,25 +396,33 @@ func _run_all_tests() -> void:
 		_fail("Dữ liệu vàng bị biến dạng sau khi lưu và nạp lại v2.0.0!")
 		world.queue_free()
 		return
-	print("[PASS] Test 8: Tính Idempotent của Save/Load v2.0.0 bảo toàn hoàn hảo OK.")
+	if quest_mgr.current_quest.current_state != QuestData.State.ACTIVE or quest_mgr.current_quest.current_amount != 2:
+		_fail("Tiến trình quest bị biến dạng sau khi lưu và nạp lại v2.0.0!")
+		world.queue_free()
+		return
+	if not ("corrupted_1" in quest_mgr._killed_enemy_ids and "corrupted_2" in quest_mgr._killed_enemy_ids):
+		_fail("Danh sách killed_enemy_ids bị biến dạng sau khi lưu và nạp lại v2.0.0!")
+		world.queue_free()
+		return
+	print("[PASS] Test 8: Tính Idempotent của Save/Load v2.0.0 (vàng, quest state, killed quái) bảo toàn hoàn hảo OK.")
 
 	# Dọn dẹp world noctis_forest
 	world.queue_free()
 	await process_frame
 
 	# --- TEST 9: CHUYỂN VÙNG A -> B -> A, TÍCH LŨY VÀNG VÀ SAVE/LOAD ---
-	# 9.1 Khởi tạo Vùng A (Noctis Forest) với 50 vàng ban đầu
+	# 9.1 Khởi tạo Vùng A (Noctis Forest) với 50 vàng và tiến độ quest ACTIVE 2/3
 	var world_a := forest_scene.instantiate()
 	root.add_child(world_a)
 	await process_frame
 	await process_frame
 
 	var player_a := world_a.get_node_or_null("Player") as Player
+	var quest_mgr_a := world_a.get_node_or_null("QuestManager") as QuestManager
 	player_a.wallet_component.set_gold(50)
-	if player_a.wallet_component.gold != 50:
-		_fail("Không thể thiết lập 50 vàng ban đầu ở Vùng A!")
-		world_a.queue_free()
-		return
+	quest_mgr_a.current_quest.current_state = QuestData.State.ACTIVE
+	quest_mgr_a.current_quest.current_amount = 2
+	quest_mgr_a._killed_enemy_ids = ["corrupted_1", "corrupted_2"]
 
 	# Lưu trạng thái phiên chuyển vùng
 	ZoneManager.session_player_data = ZoneManager.extract_player_state(world_a)
@@ -413,13 +483,16 @@ func _run_all_tests() -> void:
 		_fail("QuestManager ở Vùng A không đồng bộ 125 vàng sau khi chuyển vùng về!")
 		world_a2.queue_free()
 		return
+	if quest_mgr_a2.current_quest.current_state != QuestData.State.ACTIVE or quest_mgr_a2.current_quest.current_amount != 2:
+		_fail("Tiến trình quest bị mất sau khi chuyển vùng về Vùng A!")
+		world_a2.queue_free()
+		return
 
-	# Cập nhật UI và kiểm tra hiển thị
+	# Kiểm tra HUD tự động cập nhật qua signal (KHÔNG gọi thủ công ui_a2.update_gold)
 	if ui_a2:
-		ui_a2.update_gold(player_a2.wallet_component.gold)
 		var gold_label = ui_a2.get_node_or_null("TopBar/HBox/GoldContainer/GoldLabel") as Label
 		if gold_label and gold_label.text != "125":
-			_fail("HUD hiển thị số vàng sai sau khi chuyển vùng về Vùng A! Mong đợi '125', nhận '%s'" % gold_label.text)
+			_fail("HUD không tự động hiển thị đúng 125 vàng qua signal! Mong đợi '125', nhận '%s'" % gold_label.text)
 			world_a2.queue_free()
 			return
 
@@ -448,6 +521,11 @@ func _run_all_tests() -> void:
 
 	if player_a3.wallet_component.gold != 125 or quest_mgr_a3.gold != 125:
 		_fail("Nạp bản lưu sau chuỗi chuyển vùng bị sai số vàng! Wallet: %d, QM: %d" % [player_a3.wallet_component.gold, quest_mgr_a3.gold])
+		world_a3.queue_free()
+		return
+
+	if quest_mgr_a3.current_quest.current_state != QuestData.State.ACTIVE or quest_mgr_a3.current_quest.current_amount != 2:
+		_fail("Nạp bản lưu sau chuỗi chuyển vùng bị sai tiến trình quest! State: %d, Amount: %d" % [quest_mgr_a3.current_quest.current_state, quest_mgr_a3.current_quest.current_amount])
 		world_a3.queue_free()
 		return
 

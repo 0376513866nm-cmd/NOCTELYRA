@@ -155,6 +155,34 @@ func _run() -> void:
 	await process_frame
 	print("[PASS] 5. Vận hành tiến độ của toàn bộ 3 nhiệm vụ trong nhật ký hoàn tất thành công.")
 
+	# 6. KIỂM THỬ GIAO DIỆN QUESTJOURNALUI: KHÔNG ĐƯA MAIN QUEST VÀO DANH SÁCH SIDE QUEST
+	var journal_ui_scene := load("res://src/ui/quest_journal_ui.tscn") as PackedScene
+	if journal_ui_scene == null:
+		_fail("Không tải được quest_journal_ui.tscn")
+		return
+	var journal_ui := journal_ui_scene.instantiate() as QuestJournalUI
+	root.add_child(journal_ui)
+	await process_frame
+
+	if journal_ui._side_quest_cards.has("quest_noctis_purify"):
+		_fail("QuestJournalUI KHÔNG ĐƯỢC tạo SideQuestCard cho Main Quest 'quest_noctis_purify'!")
+		journal_ui.queue_free()
+		return
+
+	if not journal_ui._side_quest_cards.has("quest_elyndra_cleansing") or not journal_ui._side_quest_cards.has("quest_vharok_embers"):
+		_fail("QuestJournalUI thiếu các thẻ Side Quest thật (Kaelis hoặc Rhaek)!")
+		journal_ui.queue_free()
+		return
+
+	if journal_ui._side_quest_cards.size() != 2:
+		_fail("Kỳ vọng chính xác 2 thẻ Side Quest trong UI, thực tế có: %d" % journal_ui._side_quest_cards.size())
+		journal_ui.queue_free()
+		return
+
+	journal_ui.queue_free()
+	await process_frame
+	print("[PASS] 6. QuestJournalUI phân loại đúng: Main Quest không bị hiển thị trùng trong danh sách Side Quest.")
+
 	print("QUEST_CATALOG_OK quests=%d" % catalog.quests.size())
 	quit(0)
 
