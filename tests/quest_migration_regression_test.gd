@@ -160,7 +160,7 @@ func _run_all_tests() -> void:
 	# 3.5. Main Quest turn-in: đúng 1 signal duy nhất khi trao thưởng vàng
 	wallet_signals.clear()
 	var journal := player.quest_journal_component
-	journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.READY_TO_TURN_IN
+	journal.reconcile_quest_state("quest_noctis_purify", QuestDefinition.State.READY_TO_TURN_IN, 3, false)
 	var prev_gold := player.wallet_component.gold
 	var turn_res := journal.turn_in_quest("quest_noctis_purify", player.inventory_component)
 	if not turn_res.get("success", false):
@@ -178,7 +178,7 @@ func _run_all_tests() -> void:
 	var side_def := ContentRegistry.get_quest("quest_elyndra_cleansing")
 	if side_def:
 		journal.start_quest("quest_elyndra_cleansing")
-		journal._quests["quest_elyndra_cleansing"]["state"] = QuestDefinition.State.READY_TO_TURN_IN
+		journal.reconcile_quest_state("quest_elyndra_cleansing", QuestDefinition.State.READY_TO_TURN_IN, side_def.target_amount, false)
 		var prev_side_gold := player.wallet_component.gold
 		var res := journal.turn_in_quest("quest_elyndra_cleansing", player.inventory_component)
 		if not res.get("success", false):
@@ -237,6 +237,10 @@ func _run_all_tests() -> void:
 		_fail("capture() không lưu đúng gold = 450 từ WalletComponent!")
 		world.queue_free()
 		return
+	if captured.has("legacy_quest") or captured.has("killed_enemy_ids"):
+		_fail("capture() v2.0 không được chứa legacy_quest hay killed_enemy_ids!")
+		world.queue_free()
+		return
 	player.wallet_component.set_gold(0)
 	PlayerStateSerializer.apply(world, captured)
 	if player.wallet_component.gold != 450:
@@ -246,8 +250,7 @@ func _run_all_tests() -> void:
 	print("[PASS] Test 4: PlayerStateSerializer round-trip thành công.")
 
 	# --- TEST 5: CỔNG MA PHÁP PHẢI ĐÓNG KHI READY_TO_TURN_IN VÀ CHỈ MỞ KHI COMPLETED ---
-	journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.READY_TO_TURN_IN
-	journal._quests["quest_noctis_purify"]["current_amount"] = 3
+	journal.reconcile_quest_state("quest_noctis_purify", QuestDefinition.State.READY_TO_TURN_IN, 3, false)
 	gate.update_quest_status()
 
 	if gate.is_open:
@@ -255,7 +258,7 @@ func _run_all_tests() -> void:
 		world.queue_free()
 		return
 
-	journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.COMPLETED
+	journal.reconcile_quest_state("quest_noctis_purify", QuestDefinition.State.COMPLETED, 3, true)
 	gate.update_quest_status()
 
 	if not gate.is_open:
@@ -268,8 +271,7 @@ func _run_all_tests() -> void:
 	if player.health_component:
 		player.health_component.current_health = 10.0
 		player.health_component.current_mana = 5.0
-		journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.READY_TO_TURN_IN
-		journal._quests["quest_noctis_purify"]["reward_claimed"] = false
+		journal.reconcile_quest_state("quest_noctis_purify", QuestDefinition.State.READY_TO_TURN_IN, 3, false)
 		var res := journal.turn_in_quest("quest_noctis_purify", player.inventory_component)
 		if not res.get("success", false):
 			_fail("turn_in_quest thất bại!")
@@ -421,7 +423,7 @@ func _run_all_tests() -> void:
 		_fail("Journal không đạt COMPLETED sau khi migrate!")
 		world.queue_free()
 		return
-	if not journal._quests["quest_noctis_purify"]["reward_claimed"]:
+	if not journal.is_reward_claimed("quest_noctis_purify"):
 		_fail("Main Quest migrate COMPLETED phải có reward_claimed = true!")
 		world.queue_free()
 		return
@@ -659,7 +661,7 @@ func _run_all_tests() -> void:
 		_fail("Test 7.8: Tiến trình quest sói phải là 2, nhận: " + str(journal.get_quest_progress("quest_noctis_purify")))
 		world.queue_free()
 		return
-	var counted_78: Array = journal._quests["quest_noctis_purify"].get("counted_enemy_ids", [])
+	var counted_78: Array = journal.get_quest_data("quest_noctis_purify").get("counted_enemy_ids", [])
 	if counted_78.size() != 2:
 		_fail("Test 7.8: Số lượng counted_enemy_ids phải bằng 2, nhận: " + str(counted_78.size()))
 		world.queue_free()
@@ -668,11 +670,11 @@ func _run_all_tests() -> void:
 		_fail("Test 7.8: Quái mooncap không được lọt vào counted_enemy_ids của quest_noctis_purify!")
 		world.queue_free()
 		return
-	if not ("elyndra_mooncap_1" in journal._kill_history.get("corrupted_mooncap", [])):
+	if not ("elyndra_mooncap_1" in journal.get_kill_history("corrupted_mooncap")):
 		_fail("Test 7.8: Quái mooncap phải được ghi nhận vào _kill_history['corrupted_mooncap']!")
 		world.queue_free()
 		return
-	if not ("enemy_forest_1" in journal._kill_history.get("corrupted_wolf", []) and "enemy_forest_2" in journal._kill_history.get("corrupted_wolf", [])):
+	if not ("enemy_forest_1" in journal.get_kill_history("corrupted_wolf") and "enemy_forest_2" in journal.get_kill_history("corrupted_wolf")):
 		_fail("Test 7.8: ID thật enemy_forest_1 và enemy_forest_2 phải được map vào _kill_history['corrupted_wolf']!")
 		world.queue_free()
 		return
@@ -742,7 +744,7 @@ func _run_all_tests() -> void:
 		_fail("Test 7.9: Tiến trình quest phải bảo toàn là 2/3!")
 		world.queue_free()
 		return
-	var wolf_history: Array = journal._kill_history.get("corrupted_wolf", [])
+	var wolf_history: Array = journal.get_kill_history("corrupted_wolf")
 	if "unknown_mob_99" in wolf_history or "generic_creature_01" in wolf_history:
 		_fail("Test 7.9: ID không rõ loại tuyệt đối không được đưa vào _kill_history['corrupted_wolf']!")
 		world.queue_free()
@@ -790,7 +792,7 @@ func _run_all_tests() -> void:
 		_fail("Test 7.10: Save A phải có quest_kaelis_cure COMPLETED!")
 		world.queue_free()
 		return
-	if journal._kill_history.get("corrupted_mooncap", []).size() != 2:
+	if journal.get_kill_history("corrupted_mooncap").size() != 2:
 		_fail("Test 7.10: Save A phải có 2 mooncap trong kill_history!")
 		world.queue_free()
 		return
@@ -833,7 +835,7 @@ func _run_all_tests() -> void:
 		_fail("Test 7.10: quest_kaelis_cure từ Save A bị rò rỉ sang Save B! Nhận state: " + str(journal.get_quest_state("quest_kaelis_cure")))
 		world.queue_free()
 		return
-	if not journal._kill_history.get("corrupted_mooncap", []).is_empty():
+	if not journal.get_kill_history("corrupted_mooncap").is_empty():
 		_fail("Test 7.10: Lịch sử diệt mooncap từ Save A bị rò rỉ sang Save B!")
 		world.queue_free()
 		return
@@ -879,7 +881,7 @@ func _run_all_tests() -> void:
 		_fail("Test 7.11: Tiến trình quest sói phải được bảo toàn là 2/3 khi killed_enemy_ids rỗng!")
 		world.queue_free()
 		return
-	var counted_711: Array = journal._quests["quest_noctis_purify"].get("counted_enemy_ids", [])
+	var counted_711: Array = journal.get_quest_data("quest_noctis_purify").get("counted_enemy_ids", [])
 	if counted_711.size() != 2:
 		_fail("Test 7.11: counted_enemy_ids phải chứa 2 credit fallback!")
 		world.queue_free()
@@ -888,7 +890,7 @@ func _run_all_tests() -> void:
 		_fail("Test 7.11: counted_enemy_ids phải dùng prefix '__legacy_credit_' thay vì tên quái giả!")
 		world.queue_free()
 		return
-	var wolf_history_711: Array = journal._kill_history.get("corrupted_wolf", [])
+	var wolf_history_711: Array = journal.get_kill_history("corrupted_wolf")
 	if not wolf_history_711.is_empty():
 		_fail("Test 7.11: Credit giả không được phép xuất hiện trong _kill_history['corrupted_wolf']! Nhận: " + str(wolf_history_711))
 		world.queue_free()
@@ -909,7 +911,7 @@ func _run_all_tests() -> void:
 		_fail("Test 7.11: Quest phải chuyển sang READY_TO_TURN_IN sau khi hoàn thành 3/3!")
 		world.queue_free()
 		return
-	wolf_history_711 = journal._kill_history.get("corrupted_wolf", [])
+	wolf_history_711 = journal.get_kill_history("corrupted_wolf")
 	if wolf_history_711 != ["enemy_forest_3"]:
 		_fail("Test 7.11: _kill_history['corrupted_wolf'] chỉ được chứa sói thật 'enemy_forest_3'! Nhận: " + str(wolf_history_711))
 		world.queue_free()
@@ -970,7 +972,7 @@ func _run_all_tests() -> void:
 		_fail("Test 7.12: Tiến trình 2/3 bị biến dạng sau chu kỳ Save/Load!")
 		world.queue_free()
 		return
-	var wolf_history_712: Array = journal._kill_history.get("corrupted_wolf", [])
+	var wolf_history_712: Array = journal.get_kill_history("corrupted_wolf")
 	if "legacy_wolf_1" in wolf_history_712 or "legacy_wolf_2" in wolf_history_712:
 		_fail("Test 7.12: legacy_wolf_ cũ không được phép bị biến thành Wolf thật trong _kill_history!")
 		world.queue_free()
@@ -986,9 +988,7 @@ func _run_all_tests() -> void:
 	print("[PASS] Test 7.12: Khử nhận nhầm 'legacy_wolf_' cũ thành Wolf thật & bảo toàn Idempotent tuyệt đối OK.")
 
 	# --- TEST 8: TÍNH TOÀN VẸN VÀ IDEMPOTENT CỦA SAVE v2.0.0 (Save -> Load -> Save -> Load) ---
-	journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.ACTIVE
-	journal._quests["quest_noctis_purify"]["current_amount"] = 2
-	journal._quests["quest_noctis_purify"]["reward_claimed"] = false
+	journal.reconcile_quest_state("quest_noctis_purify", QuestDefinition.State.ACTIVE, 2, false)
 	player.wallet_component.set_gold(125)
 
 	# Lần 1: Lưu -> Tải
@@ -1026,8 +1026,7 @@ func _run_all_tests() -> void:
 	var player_a := world_a.get_node_or_null("Player") as Player
 	var journal_a := player_a.quest_journal_component
 	player_a.wallet_component.set_gold(50)
-	journal_a._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.ACTIVE
-	journal_a._quests["quest_noctis_purify"]["current_amount"] = 2
+	journal_a.reconcile_quest_state("quest_noctis_purify", QuestDefinition.State.ACTIVE, 2, false)
 
 	# Lưu trạng thái phiên chuyển vùng
 	ZoneManager.session_player_data = ZoneManager.extract_player_state(world_a)

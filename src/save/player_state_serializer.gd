@@ -20,15 +20,6 @@ static func capture(world: Node) -> Dictionary:
 	var progression := player.progression_component
 	var wallet := player.wallet_component
 
-	var main_q_state: int = 0
-	var main_q_amount: int = 0
-	var killed_ids: Array = []
-	if journal and journal._quests.has("quest_noctis_purify"):
-		var q_dict: Dictionary = journal._quests["quest_noctis_purify"]
-		main_q_state = int(q_dict.get("state", 0))
-		main_q_amount = int(q_dict.get("current_amount", 0))
-		killed_ids = q_dict.get("counted_enemy_ids", []).duplicate()
-
 	return {
 		"race_id": stats.race_id if stats else "human",
 		"level": progression.level if progression else 1,
@@ -40,12 +31,7 @@ static func capture(world: Node) -> Dictionary:
 		"inventory": inventory.to_dict() if inventory else [],
 		"equipment": equipment.to_dict() if equipment else {},
 		"spellbook": spellbook.to_dict() if spellbook else {},
-		"quest_journal": journal.to_dict() if journal else {},
-		"legacy_quest": {
-			"state": main_q_state,
-			"current_amount": main_q_amount
-		},
-		"killed_enemy_ids": killed_ids
+		"quest_journal": journal.to_dict() if journal else {}
 	}
 
 static func apply(world: Node, data: Dictionary) -> bool:
@@ -141,14 +127,6 @@ static func _classify_enemy_id(id_str: String) -> String:
 		return "corrupted_wolf"
 	return ""
 
-static func _record_kill_history(journal: QuestJournalComponent, enemy_type: String, enemy_id: String) -> void:
-	if journal == null or enemy_type.is_empty() or enemy_id.is_empty():
-		return
-	if not journal._kill_history.has(enemy_type):
-		journal._kill_history[enemy_type] = []
-	if not enemy_id in journal._kill_history[enemy_type]:
-		journal._kill_history[enemy_type].append(enemy_id)
-
 static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent, progression: PlayerProgressionComponent) -> void:
 	if journal == null:
 		return
@@ -178,9 +156,9 @@ static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent
 		if enemy_type == "corrupted_wolf":
 			if not id_str in wolf_candidates:
 				wolf_candidates.append(id_str)
-			_record_kill_history(journal, "corrupted_wolf", id_str)
+			journal.record_kill_history_entry("corrupted_wolf", id_str)
 		elif not enemy_type.is_empty():
-			_record_kill_history(journal, enemy_type, id_str)
+			journal.record_kill_history_entry(enemy_type, id_str)
 		else:
 			if not id_str in other_candidates:
 				other_candidates.append(id_str)
@@ -250,18 +228,13 @@ static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent
 			if not fid in final_counted:
 				final_counted.append(fid)
 
-	# Chỉ ghi nhận vào _kill_history["corrupted_wolf"] các ID thực sự là sói (hoặc known wolf mapping)
+	# Chỉ ghi nhận vào kill_history các ID thực sự là sói (hoặc known wolf mapping)
 	for fc in final_counted:
 		if _classify_enemy_id(str(fc)) == "corrupted_wolf":
-			_record_kill_history(journal, "corrupted_wolf", str(fc))
+			journal.record_kill_history_entry("corrupted_wolf", str(fc))
 
-	# 4. Áp dụng đồng bộ vào QuestJournalComponent
-	journal._quests["quest_noctis_purify"] = {
-		"state": final_state,
-		"current_amount": final_amount,
-		"reward_claimed": final_claimed,
-		"counted_enemy_ids": final_counted
-	}
+	# 4. Áp dụng đồng bộ vào QuestJournalComponent qua phương thức nội bộ có kiểm soát
+	journal.reconcile_quest_state("quest_noctis_purify", final_state, final_amount, final_claimed, final_counted)
 
 	# 5. Bảo vệ chống nhận EXP trùng lặp nếu Quest đã hoàn thành
 	if (final_state == 3 or final_claimed) and progression != null:

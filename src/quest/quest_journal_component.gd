@@ -67,6 +67,52 @@ func is_reward_claimed(quest_id: String) -> bool:
 		return bool(_quests[quest_id].get("reward_claimed", false))
 	return false
 
+func get_quest_data(quest_id: String) -> Dictionary:
+	_ensure_default_quests()
+	if _quests.has(quest_id):
+		return _quests[quest_id].duplicate(true)
+	return {}
+
+func get_kill_history(enemy_type: String = "") -> Variant:
+	if enemy_type.is_empty():
+		return _kill_history.duplicate(true)
+	return _kill_history.get(enemy_type, []).duplicate()
+
+func record_kill_history_entry(enemy_type: String, enemy_id: String) -> void:
+	var c_type := enemy_type.strip_edges()
+	var c_id := enemy_id.strip_edges()
+	if c_type.is_empty() or c_id.is_empty():
+		return
+	if not _kill_history.has(c_type):
+		var new_arr: Array[String] = []
+		_kill_history[c_type] = new_arr
+	if not c_id in _kill_history[c_type]:
+		_kill_history[c_type].append(c_id)
+
+func reconcile_quest_state(quest_id: String, state: int, current_amount: int, reward_claimed: bool, counted_enemy_ids: Array = []) -> void:
+	_ensure_default_quests()
+	var def := ContentRegistry.get_quest(quest_id)
+	var max_target: int = def.target_amount if def else 999
+	var clamped_state: int = clampi(state, State.NOT_STARTED, State.COMPLETED)
+	var clamped_amount: int = clampi(current_amount, 0, max_target)
+	var is_claimed: bool = reward_claimed or (clamped_state == State.COMPLETED)
+	if clamped_state == State.COMPLETED or clamped_state == State.READY_TO_TURN_IN:
+		clamped_amount = max_target
+
+	var clean_counted: Array[String] = []
+	for cid in counted_enemy_ids:
+		var s := str(cid).strip_edges()
+		if not s.is_empty() and not s in clean_counted:
+			clean_counted.append(s)
+
+	_quests[quest_id] = {
+		"state": clamped_state,
+		"current_amount": clamped_amount,
+		"reward_claimed": is_claimed,
+		"counted_enemy_ids": clean_counted
+	}
+	emit_signal("journal_changed")
+
 func start_quest(quest_id: String) -> bool:
 	_ensure_default_quests()
 	if not _quests.has(quest_id):
@@ -313,22 +359,60 @@ func from_dict(data: Dictionary) -> void:
 		emit_signal("journal_changed")
 		return
 
-	# 3. Khôi phục lịch sử diệt quái nếu có trong snapshot
+	# 3. Khôi phục và kiểm tra tính hợp lệ của lịch sử diệt quái (_kill_history)
 	if data.has("_kill_history") and (data["_kill_history"] is Dictionary):
-		_kill_history = data["_kill_history"].duplicate(true)
+		var raw_history: Dictionary = data["_kill_history"]
+		for enemy_type in raw_history.keys():
+			var type_str := str(enemy_type).strip_edges()
+			if type_str.is_empty():
+				continue
+			var raw_ids = raw_history[enemy_type]
+			if raw_ids is Array:
+				var clean_ids: Array[String] = []
+				for id_val in raw_ids:
+					var id_str := str(id_val).strip_edges()
+					if not id_str.is_empty() and not id_str in clean_ids:
+						clean_ids.append(id_str)
+				_kill_history[type_str] = clean_ids
 
-	# 4. Áp dụng dữ liệu cho các quest có trong snapshot
+	# 4. Áp dụng dữ liệu cho các quest có trong snapshot kèm validation có kiểm soát
 	for k in data.keys():
 		if k == "_kill_history":
 			continue
-		if data[k] is Dictionary:
-			var q_data: Dictionary = data[k]
-			_quests[k] = {
-				"state": int(q_data.get("state", State.NOT_STARTED)),
-				"current_amount": int(q_data.get("current_amount", 0)),
-				"reward_claimed": bool(q_data.get("reward_claimed", false)),
-				"counted_enemy_ids": q_data.get("counted_enemy_ids", []).duplicate()
-			}
+		var quest_key := str(k).strip_edges()
+		if quest_key.is_empty() or not (data[k] is Dictionary):
+			continue
+
+		var q_data: Dictionary = data[k]
+		var def := ContentRegistry.get_quest(quest_key)
+		var max_target: int = def.target_amount if def else 999
+
+		var raw_state = q_data.get("state", State.NOT_STARTED)
+		var state_int: int = clampi(int(raw_state), State.NOT_STARTED, State.COMPLETED)
+
+		var raw_amount = q_data.get("current_amount", 0)
+		var amount_int: int = clampi(int(raw_amount), 0, max_target)
+
+		var reward_claimed: bool = bool(q_data.get("reward_claimed", false))
+		if state_int == State.COMPLETED or state_int == State.READY_TO_TURN_IN:
+			amount_int = max_target
+		if state_int == State.COMPLETED:
+			reward_claimed = true
+
+		var clean_counted: Array[String] = []
+		var raw_counted = q_data.get("counted_enemy_ids", [])
+		if raw_counted is Array:
+			for cid in raw_counted:
+				var cid_str := str(cid).strip_edges()
+				if not cid_str.is_empty() and not cid_str in clean_counted:
+					clean_counted.append(cid_str)
+
+		_quests[quest_key] = {
+			"state": state_int,
+			"current_amount": amount_int,
+			"reward_claimed": reward_claimed,
+			"counted_enemy_ids": clean_counted
+		}
 
 	# 5. Bổ sung trạng thái mặc định cho các quest trong ContentCatalog bị thiếu trong snapshot
 	_ensure_default_quests()
