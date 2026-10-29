@@ -8,6 +8,7 @@ const BossHUDClass = preload("res://src/ui/boss_hud.gd")
 const WorldOverlayUIClass = preload("res://src/ui/world_overlay_ui.gd")
 const EndScreenUIClass = preload("res://src/ui/end_screen_ui.gd")
 const PauseMenuUIClass = preload("res://src/ui/pause_menu.gd")
+const SidebarUIClass = preload("res://src/ui/sidebar_ui.gd")
 
 ## Giao diện người dùng chính (HUD, Dialogue, GameOver, PauseMenu, BossHUD, Victory) cho NOCTELYRA (M4)
 
@@ -38,6 +39,7 @@ signal hybrid_controls_changed(enabled: bool)
 @onready var world_overlay_ui: WorldOverlayUIClass = find_child("WorldOverlayUI", true, false) as WorldOverlayUIClass
 @onready var end_screen_ui: EndScreenUIClass = find_child("EndScreenUI", true, false) as EndScreenUIClass
 @onready var pause_menu_controller: PauseMenuUIClass = find_child("PauseMenu", true, false) as PauseMenuUIClass
+@onready var sidebar_ui: SidebarUIClass = find_child("Sidebar", true, false) as SidebarUIClass
 
 # Boss UI (M4) - Compatibility accessors
 @onready var boss_hud: Control = boss_hud_controller.boss_bar_panel if boss_hud_controller else null
@@ -282,6 +284,98 @@ func _sync_extracted_components() -> void:
 		if not pause_menu_controller.settings_closed.is_connected(_on_settings_close_pressed):
 			pause_menu_controller.settings_closed.connect(_on_settings_close_pressed)
 
+	if sidebar_ui == null:
+		sidebar_ui = find_child("Sidebar", true, false) as SidebarUIClass
+	if sidebar_ui:
+		sidebar = sidebar_ui
+		sidebar_close_btn = sidebar_ui.close_btn
+		tab_btn_stats = sidebar_ui.tab_btn_stats
+		tab_btn_quests = sidebar_ui.tab_btn_quests
+		tab_btn_inventory = sidebar_ui.tab_btn_inventory
+		tab_btn_settings = sidebar_ui.tab_btn_settings
+		panel_stats = sidebar_ui.panel_stats
+		panel_quests = sidebar_ui.panel_quests
+		panel_inventory = sidebar_ui.panel_inventory
+		panel_settings = sidebar_ui.panel_settings
+		sidebar_race_label = sidebar_ui.race_label
+		sidebar_level_label = sidebar_ui.level_label
+		sidebar_exp_bar = sidebar_ui.exp_bar
+		sidebar_exp_label = sidebar_ui.exp_label
+		sidebar_stat_hp = sidebar_ui.stat_hp
+		sidebar_stat_mp = sidebar_ui.stat_mp
+		sidebar_stat_atk = sidebar_ui.stat_atk
+		sidebar_stat_regen = sidebar_ui.stat_regen
+		sidebar_stat_speed = sidebar_ui.stat_speed
+		sidebar_stat_magic = sidebar_ui.stat_magic
+		sidebar_equip_weapon = sidebar_ui.equip_weapon
+		sidebar_equip_armor = sidebar_ui.equip_armor
+		sidebar_equip_acc = sidebar_ui.equip_acc
+		sidebar_open_sheet_btn = sidebar_ui.open_sheet_btn
+		sidebar_shard_label = sidebar_ui.shard_label
+		sidebar_upgrade_moon_btn = sidebar_ui.spell_moon_btn
+		sidebar_upgrade_ember_btn = sidebar_ui.spell_ember_btn
+		sidebar_upgrade_frost_btn = sidebar_ui.spell_frost_btn
+		sidebar_spell_moon_lbl = sidebar_ui.spell_moon_lbl
+		sidebar_spell_ember_lbl = sidebar_ui.spell_ember_lbl
+		sidebar_spell_frost_lbl = sidebar_ui.spell_frost_lbl
+		sidebar_quest_title = sidebar_ui.quest_title
+		sidebar_quest_status = sidebar_ui.quest_status
+		sidebar_quest_desc = sidebar_ui.quest_desc
+		sidebar_quest_progress = sidebar_ui.quest_progress
+		sidebar_open_journal_btn = sidebar_ui.open_journal_btn
+		sidebar_inv_gold = sidebar_ui.inv_gold
+		sidebar_open_inv_btn = sidebar_ui.open_inv_btn
+		sidebar_zoom_out_btn = sidebar_ui.sidebar_zoom_out_btn
+		sidebar_zoom_label = sidebar_ui.sidebar_zoom_label
+		sidebar_zoom_in_btn = sidebar_ui.sidebar_zoom_in_btn
+		sidebar_zoom_reset_btn = sidebar_ui.sidebar_zoom_reset_btn
+		sidebar_zoom_slider = sidebar_ui.sidebar_zoom_slider
+		sidebar_fullscreen_btn = sidebar_ui.sidebar_fullscreen_btn
+		sidebar_fps_btn = sidebar_ui.sidebar_fps_btn
+		sidebar_save_btn = sidebar_ui.sidebar_save_btn
+		sidebar_quit_btn = sidebar_ui.sidebar_quit_btn
+		sidebar_hybrid_controls_btn = sidebar_ui.sidebar_hybrid_controls_btn
+		sidebar_day_night_btn = sidebar_ui.sidebar_day_night_btn
+		guide_toggle_btn = sidebar_ui.guide_toggle_btn
+		guide_content = sidebar_ui.guide_content
+
+		if not sidebar_ui.closed.is_connected(_on_sidebar_closed):
+			sidebar_ui.closed.connect(_on_sidebar_closed)
+		if not sidebar_ui.tab_changed.is_connected(_on_sidebar_tab_changed):
+			sidebar_ui.tab_changed.connect(_on_sidebar_tab_changed)
+		if not sidebar_ui.inventory_requested.is_connected(open_inventory):
+			sidebar_ui.inventory_requested.connect(open_inventory)
+		if not sidebar_ui.journal_requested.is_connected(open_quest_journal):
+			sidebar_ui.journal_requested.connect(open_quest_journal)
+		if not sidebar_ui.character_sheet_requested.is_connected(open_character_sheet):
+			sidebar_ui.character_sheet_requested.connect(open_character_sheet)
+		if not sidebar_ui.save_requested.is_connected(_on_save_pressed):
+			sidebar_ui.save_requested.connect(_on_save_pressed)
+		if not sidebar_ui.quit_requested.is_connected(_on_quit_pressed):
+			sidebar_ui.quit_requested.connect(_on_quit_pressed)
+		if not sidebar_ui.hybrid_controls_toggled.is_connected(toggle_touch_controls):
+			sidebar_ui.hybrid_controls_toggled.connect(toggle_touch_controls)
+		if not sidebar_ui.day_night_toggled.is_connected(_on_toggle_day_night_pressed):
+			sidebar_ui.day_night_toggled.connect(_on_toggle_day_night_pressed)
+		if not sidebar_ui.spell_upgrade_requested.is_connected(_on_sidebar_upgrade_spell):
+			sidebar_ui.spell_upgrade_requested.connect(_on_sidebar_upgrade_spell)
+		if not sidebar_ui.zoom_in_requested.is_connected(_on_zoom_in_pressed):
+			sidebar_ui.zoom_in_requested.connect(_on_zoom_in_pressed)
+		if not sidebar_ui.zoom_out_requested.is_connected(_on_zoom_out_pressed):
+			sidebar_ui.zoom_out_requested.connect(_on_zoom_out_pressed)
+		if not sidebar_ui.zoom_reset_requested.is_connected(_on_zoom_reset_pressed):
+			sidebar_ui.zoom_reset_requested.connect(_on_zoom_reset_pressed)
+		if not sidebar_ui.zoom_slider_changed.is_connected(_on_zoom_slider_changed):
+			sidebar_ui.zoom_slider_changed.connect(_on_zoom_slider_changed)
+		if not sidebar_ui.fullscreen_toggled.is_connected(_on_fullscreen_pressed):
+			sidebar_ui.fullscreen_toggled.connect(_on_fullscreen_pressed)
+		if not sidebar_ui.fps_toggled.is_connected(_on_toggle_fps_pressed):
+			sidebar_ui.fps_toggled.connect(_on_toggle_fps_pressed)
+
+func _on_sidebar_tab_changed(tab_idx: int) -> void:
+	_current_sidebar_tab = tab_idx
+	_refresh_sidebar_content()
+
 func _ready() -> void:
 	_sync_extracted_components()
 	if character_sheet_ui == null:
@@ -306,50 +400,6 @@ func _ready() -> void:
 		fps_btn,
 		sidebar_fps_btn
 	)
-
-	_sidebar_controller = SidebarController.new()
-	_sidebar_controller.sidebar_panel = sidebar
-	_sidebar_controller.touch_controls = touch_controls
-	_sidebar_controller.toggle_btn = sidebar_toggle_btn
-	_sidebar_controller.close_btn = sidebar_close_btn
-	_sidebar_controller.spell_hotbar = spell_hotbar
-
-	_sidebar_controller.tab_btn_stats = tab_btn_stats
-	_sidebar_controller.tab_btn_quests = tab_btn_quests
-	_sidebar_controller.tab_btn_inventory = tab_btn_inventory
-	_sidebar_controller.tab_btn_settings = tab_btn_settings
-
-	_sidebar_controller.panel_stats = panel_stats
-	_sidebar_controller.panel_quests = panel_quests
-	_sidebar_controller.panel_inventory = panel_inventory
-	_sidebar_controller.panel_settings = panel_settings
-
-	_sidebar_controller.race_label = sidebar_race_label
-	_sidebar_controller.level_label = sidebar_level_label
-	_sidebar_controller.exp_bar = sidebar_exp_bar
-	_sidebar_controller.exp_label = sidebar_exp_label
-	_sidebar_controller.stat_hp = sidebar_stat_hp
-	_sidebar_controller.stat_mp = sidebar_stat_mp
-	_sidebar_controller.stat_atk = sidebar_stat_atk
-	_sidebar_controller.stat_regen = sidebar_stat_regen
-	_sidebar_controller.stat_speed = sidebar_stat_speed
-	_sidebar_controller.stat_magic = sidebar_stat_magic
-
-	_sidebar_controller.equip_weapon = sidebar_equip_weapon
-	_sidebar_controller.equip_armor = sidebar_equip_armor
-	_sidebar_controller.equip_acc = sidebar_equip_acc
-
-	_sidebar_controller.shard_label = sidebar_shard_label
-	_sidebar_controller.spell_moon_btn = sidebar_upgrade_moon_btn
-	_sidebar_controller.spell_ember_btn = sidebar_upgrade_ember_btn
-	_sidebar_controller.spell_frost_btn = sidebar_upgrade_frost_btn
-	_sidebar_controller.spell_moon_lbl = sidebar_spell_moon_lbl
-	_sidebar_controller.spell_ember_lbl = sidebar_spell_ember_lbl
-	_sidebar_controller.spell_frost_lbl = sidebar_spell_frost_lbl
-
-	_sidebar_controller.quest_title = sidebar_quest_title
-	_sidebar_controller.quest_progress = sidebar_quest_progress
-	_sidebar_controller.inv_gold = sidebar_inv_gold
 	if game_over_panel:
 		game_over_panel.visible = false
 	if notification_label:
@@ -420,53 +470,56 @@ func _ready() -> void:
 		# One menu entry: touch MENU in hybrid mode, HUD MENU otherwise.
 		settings_gear_btn.visible = false
 		settings_gear_btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if sidebar_hybrid_controls_btn:
+	if sidebar_hybrid_controls_btn and sidebar_ui == null:
 		sidebar_hybrid_controls_btn.pressed.connect(toggle_touch_controls)
 
 	if touch_controls and touch_controls.has_signal("menu_pressed"):
 		touch_controls.menu_pressed.connect(toggle_sidebar)
-	if sidebar_close_btn:
-		sidebar_close_btn.pressed.connect(close_sidebar)
-	if tab_btn_stats:
-		tab_btn_stats.pressed.connect(func(): switch_sidebar_tab(0))
-	if tab_btn_quests:
-		tab_btn_quests.pressed.connect(func(): switch_sidebar_tab(1))
-	if tab_btn_inventory:
-		tab_btn_inventory.pressed.connect(func(): switch_sidebar_tab(2))
-	if tab_btn_settings:
-		tab_btn_settings.pressed.connect(func(): switch_sidebar_tab(3))
-	if sidebar_open_sheet_btn:
-		sidebar_open_sheet_btn.pressed.connect(open_character_sheet)
-	if sidebar_upgrade_moon_btn:
-		sidebar_upgrade_moon_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("moon_bolt"))
-	if sidebar_upgrade_ember_btn:
-		sidebar_upgrade_ember_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("ember_bloom"))
-	if sidebar_upgrade_frost_btn:
-		sidebar_upgrade_frost_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("frost_shard"))
-	if sidebar_open_journal_btn:
-		sidebar_open_journal_btn.pressed.connect(open_quest_journal)
-	if sidebar_open_inv_btn:
-		sidebar_open_inv_btn.pressed.connect(open_inventory)
-	if sidebar_zoom_out_btn:
-		sidebar_zoom_out_btn.pressed.connect(_on_zoom_out_pressed)
-	if sidebar_zoom_in_btn:
-		sidebar_zoom_in_btn.pressed.connect(_on_zoom_in_pressed)
-	if sidebar_zoom_reset_btn:
-		sidebar_zoom_reset_btn.pressed.connect(_on_zoom_reset_pressed)
-	if sidebar_zoom_slider:
-		sidebar_zoom_slider.value_changed.connect(_on_zoom_slider_changed)
-	if sidebar_fullscreen_btn:
-		sidebar_fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
-	if sidebar_fps_btn:
-		sidebar_fps_btn.pressed.connect(_on_toggle_fps_pressed)
-	if guide_toggle_btn:
-		guide_toggle_btn.pressed.connect(_on_guide_toggle_pressed)
-	if sidebar_save_btn:
-		sidebar_save_btn.pressed.connect(_on_save_pressed)
-	if sidebar_quit_btn:
-		sidebar_quit_btn.pressed.connect(_on_quit_pressed)
-	if sidebar_day_night_btn:
-		sidebar_day_night_btn.pressed.connect(_on_toggle_day_night_pressed)
+
+	if sidebar_ui == null:
+		if sidebar_close_btn:
+			sidebar_close_btn.pressed.connect(close_sidebar)
+		if tab_btn_stats:
+			tab_btn_stats.pressed.connect(func(): switch_sidebar_tab(0))
+		if tab_btn_quests:
+			tab_btn_quests.pressed.connect(func(): switch_sidebar_tab(1))
+		if tab_btn_inventory:
+			tab_btn_inventory.pressed.connect(func(): switch_sidebar_tab(2))
+		if tab_btn_settings:
+			tab_btn_settings.pressed.connect(func(): switch_sidebar_tab(3))
+		if sidebar_open_sheet_btn:
+			sidebar_open_sheet_btn.pressed.connect(open_character_sheet)
+		if sidebar_upgrade_moon_btn:
+			sidebar_upgrade_moon_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("moon_bolt"))
+		if sidebar_upgrade_ember_btn:
+			sidebar_upgrade_ember_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("ember_bloom"))
+		if sidebar_upgrade_frost_btn:
+			sidebar_upgrade_frost_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("frost_shard"))
+		if sidebar_open_journal_btn:
+			sidebar_open_journal_btn.pressed.connect(open_quest_journal)
+		if sidebar_open_inv_btn:
+			sidebar_open_inv_btn.pressed.connect(open_inventory)
+		if sidebar_zoom_out_btn:
+			sidebar_zoom_out_btn.pressed.connect(_on_zoom_out_pressed)
+		if sidebar_zoom_in_btn:
+			sidebar_zoom_in_btn.pressed.connect(_on_zoom_in_pressed)
+		if sidebar_zoom_reset_btn:
+			sidebar_zoom_reset_btn.pressed.connect(_on_zoom_reset_pressed)
+		if sidebar_zoom_slider:
+			sidebar_zoom_slider.value_changed.connect(_on_zoom_slider_changed)
+		if sidebar_fullscreen_btn:
+			sidebar_fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
+		if sidebar_fps_btn:
+			sidebar_fps_btn.pressed.connect(_on_toggle_fps_pressed)
+		if guide_toggle_btn:
+			guide_toggle_btn.pressed.connect(_on_guide_toggle_pressed)
+		if sidebar_save_btn:
+			sidebar_save_btn.pressed.connect(_on_save_pressed)
+		if sidebar_quit_btn:
+			sidebar_quit_btn.pressed.connect(_on_quit_pressed)
+		if sidebar_day_night_btn:
+			sidebar_day_night_btn.pressed.connect(_on_toggle_day_night_pressed)
+
 	if time_btn:
 		time_btn.pressed.connect(_on_toggle_day_night_pressed)
 
@@ -1107,17 +1160,42 @@ func _update_settings_ui() -> void:
 	_update_hybrid_controls_ui()
 
 func is_sidebar_open() -> bool:
+	if sidebar_ui:
+		return sidebar_ui.is_open()
 	return _sidebar_controller != null and _sidebar_controller.is_open()
 
 func open_sidebar(tab_idx: int = -1) -> void:
-	if _sidebar_controller:
+	if sidebar_ui:
+		sidebar_ui.open(tab_idx)
+	elif _sidebar_controller:
 		_sidebar_controller.open(tab_idx)
+	if touch_controls:
+		touch_controls.visible = false
+	if sidebar_toggle_btn:
+		sidebar_toggle_btn.visible = false
+	if spell_hotbar:
+		spell_hotbar.visible = false
 	_refresh_sidebar_content()
 	_set_input_lock("sidebar", true)
 
 func close_sidebar() -> void:
-	if _sidebar_controller:
+	if sidebar_ui and sidebar_ui.is_open():
+		sidebar_ui.close()
+		return
+	elif _sidebar_controller and _sidebar_controller.is_open():
 		_sidebar_controller.close()
+	_on_sidebar_closed()
+
+func _on_sidebar_closed() -> void:
+	var show_touch := SidebarUIClass.should_show_touch_controls()
+	if touch_controls:
+		touch_controls.visible = show_touch
+		if show_touch and touch_controls.has_method("_sync_current_spell_icon"):
+			touch_controls._sync_current_spell_icon()
+	if sidebar_toggle_btn:
+		sidebar_toggle_btn.visible = not show_touch
+	if spell_hotbar:
+		spell_hotbar.visible = not show_touch
 	_set_input_lock("sidebar", false)
 	_ui_close_grace_cooldown = 0.15
 	_set_input_lock("ui_cooldown", true)
@@ -1130,18 +1208,21 @@ func toggle_sidebar() -> void:
 
 func switch_sidebar_tab(tab_idx: int) -> void:
 	_current_sidebar_tab = tab_idx
-	if _sidebar_controller:
+	if sidebar_ui:
+		sidebar_ui.switch_tab(tab_idx)
+	elif _sidebar_controller:
 		_sidebar_controller.switch_tab(tab_idx)
 	_refresh_sidebar_content()
 
 func _refresh_sidebar_content() -> void:
-	if _sidebar_controller == null:
-		return
 	var scene := _get_active_scene()
 	var player: Player = scene.get_node_or_null("Player") as Player if scene else null
 	var q_title := quest_title_label.text if quest_title_label else ""
 	var q_prog := quest_progress_label.text if quest_progress_label else ""
-	_sidebar_controller.refresh_content(player, _current_gold, q_title, q_prog)
+	if sidebar_ui:
+		sidebar_ui.refresh_content(player, _current_gold, q_title, q_prog)
+	elif _sidebar_controller:
+		_sidebar_controller.refresh_content(player, _current_gold, q_title, q_prog)
 
 func _on_sidebar_upgrade_spell(spell_id: String) -> void:
 	var scene := _get_active_scene()
@@ -1191,6 +1272,8 @@ func set_touch_controls_visible(show: bool) -> void:
 	hybrid_controls_changed.emit(show)
 
 func _update_hybrid_controls_ui() -> void:
+	if sidebar_ui:
+		sidebar_ui.update_hybrid_controls_btn(SettingsManager.hybrid_controls_enabled)
 	if sidebar_hybrid_controls_btn:
 		sidebar_hybrid_controls_btn.text = "BẬT" if SettingsManager.hybrid_controls_enabled else "TẮT"
 
