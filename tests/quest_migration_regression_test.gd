@@ -5,12 +5,12 @@ extends SceneTree
 ## 1. WalletComponent unit operations (add, spend, clamp, signal debounce, serialize).
 ## 2. Player integration (WalletComponent exists on Player scene).
 ## 3. Strict Signal Accounting across all gold pathways: add_gold, spend_gold,
-##    quest_mgr.gold setter, complete_quest(), Side Quest turn-in, Boss reward, Serializer apply.
+##    WalletComponent add_gold, spend_gold, set_gold, turn-in, Boss reward, Serializer apply.
 ## 4. PlayerStateSerializer captures and restores gold via WalletComponent.
 ## 5. MagicGate remains closed at READY_TO_TURN_IN and ONLY opens when COMPLETED.
 ## 6. Quest turn-in restores 100% HP/MP and grants rewards properly.
 ## 7. Migration Test Suite:
-##    7.1: Legacy Save v1.5.0 ACTIVE (2/3 quái) -> Migrates into QuestJournal & syncs QuestManager.
+##    7.1: Legacy Save v1.5.0 ACTIVE (2/3 quái) -> Migrates into QuestJournal.
 ##    7.2: Save with both legacy_quest (ACTIVE 2/3) and unmigrated default quest_journal (NOT_STARTED).
 ##    7.3: Legacy Save v1.5.0 READY_TO_TURN_IN -> Gate auto-syncs closed.
 ##    7.4: Legacy Save v1.5.0 COMPLETED -> Gate auto-syncs OPEN, reward_claimed=true, double EXP blocked.
@@ -103,11 +103,10 @@ func _run_all_tests() -> void:
 
 	var player := world.get_node_or_null("Player") as Player
 	var gate := world.get_node_or_null("MagicGate") as MagicGate
-	var quest_mgr := world.get_node_or_null("QuestManager") as QuestManager
 	var ui := world.get_node_or_null("GameUI") as GameUI
 
-	if player == null or gate == null or quest_mgr == null:
-		_fail("World thiếu Player, MagicGate hoặc QuestManager!")
+	if player == null or gate == null or ui == null:
+		_fail("World thiếu Player, MagicGate hoặc GameUI!")
 		world.queue_free()
 		return
 
@@ -120,76 +119,68 @@ func _run_all_tests() -> void:
 
 	# --- TEST 3: KIỂM SOÁT TÍN HIỆU NGHIÊM NGẶT (STRICT SIGNAL ACCOUNTING) ---
 	var wallet_signals: Array[int] = []
-	var qm_signals: Array[int] = []
-
 	var wallet_cb = func(val: int): wallet_signals.append(val)
-	var qm_cb = func(val: int): qm_signals.append(val)
 
 	player.wallet_component.gold_changed.connect(wallet_cb)
-	quest_mgr.gold_changed.connect(qm_cb)
 
-	# 3.1. add_gold(100): đúng 1 signal trên mỗi bên
+	# 3.1. add_gold(100): đúng 1 signal
 	player.wallet_component.set_gold(0)
 	wallet_signals.clear()
-	qm_signals.clear()
 
 	player.wallet_component.add_gold(100)
-	if wallet_signals.size() != 1 or wallet_signals[0] != 100 or qm_signals.size() != 1 or qm_signals[0] != 100:
-		_fail("add_gold(100) phải phát đúng 1 signal trên mỗi bên!")
+	if wallet_signals.size() != 1 or wallet_signals[0] != 100:
+		_fail("add_gold(100) phải phát đúng 1 signal!")
 		world.queue_free()
 		return
 
-	# 3.2. spend_gold(40): đúng 1 signal trên mỗi bên
+	# 3.2. spend_gold(40): đúng 1 signal
 	wallet_signals.clear()
-	qm_signals.clear()
 	player.wallet_component.spend_gold(40)
-	if wallet_signals.size() != 1 or wallet_signals[0] != 60 or qm_signals.size() != 1 or qm_signals[0] != 60:
-		_fail("spend_gold(40) phải phát đúng 1 signal trên mỗi bên!")
+	if wallet_signals.size() != 1 or wallet_signals[0] != 60:
+		_fail("spend_gold(40) phải phát đúng 1 signal!")
 		world.queue_free()
 		return
 
-	# 3.3. quest_mgr.gold = 300: đúng 1 signal trên mỗi bên
+	# 3.3. spend_gold quá số dư: không phát signal và trả về false
 	wallet_signals.clear()
-	qm_signals.clear()
-	quest_mgr.gold = 300
-	if wallet_signals.size() != 1 or wallet_signals[0] != 300 or qm_signals.size() != 1 or qm_signals[0] != 300:
-		_fail("quest_mgr.gold = 300 phải phát đúng 1 signal trên mỗi bên!")
+	var spend_failed := player.wallet_component.spend_gold(100)
+	if spend_failed or wallet_signals.size() != 0:
+		_fail("spend_gold quá số dư không được phát signal!")
 		world.queue_free()
 		return
 
-	# 3.4. Gán cùng giá trị: đúng 0 signal trên cả hai
+	# 3.4. Gán cùng giá trị: đúng 0 signal (debounce)
 	wallet_signals.clear()
-	qm_signals.clear()
-	quest_mgr.gold = 300
-	player.wallet_component.set_gold(300)
-	if wallet_signals.size() != 0 or qm_signals.size() != 0:
+	player.wallet_component.set_gold(60)
+	if wallet_signals.size() != 0:
 		_fail("Gán cùng giá trị không được phát signal nào!")
 		world.queue_free()
 		return
 
-	# 3.5. complete_quest(): đúng 1 signal duy nhất khi trao thưởng vàng
+	# 3.5. Main Quest turn-in: đúng 1 signal duy nhất khi trao thưởng vàng
 	wallet_signals.clear()
-	qm_signals.clear()
-	quest_mgr.current_quest.current_state = QuestData.State.READY_TO_TURN_IN
-	quest_mgr.current_quest.reward_gold = 50
+	var journal := player.quest_journal_component
+	journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.READY_TO_TURN_IN
 	var prev_gold := player.wallet_component.gold
-	quest_mgr.complete_quest(player.health_component)
+	var turn_res := journal.turn_in_quest("quest_noctis_purify", player.inventory_component)
+	if not turn_res.get("success", false):
+		_fail("turn_in_quest cho Main Quest thất bại!")
+		world.queue_free()
+		return
 
-	if player.wallet_component.gold != prev_gold + 50 or wallet_signals.size() != 1 or qm_signals.size() != 1:
-		_fail("complete_quest() phải phát đúng 1 signal trên mỗi bên!")
+	if player.wallet_component.gold != prev_gold + 50 or wallet_signals.size() != 1:
+		_fail("turn_in_quest() phải phát đúng 1 signal trao thưởng vàng!")
 		world.queue_free()
 		return
 
 	# 3.6. Side Quest turn-in: đúng 1 signal duy nhất khi nhận thưởng vàng
 	wallet_signals.clear()
-	qm_signals.clear()
-	var journal := player.quest_journal_component
 	var side_def := ContentRegistry.get_quest("quest_elyndra_cleansing")
 	if side_def:
 		journal.start_quest("quest_elyndra_cleansing")
 		journal._quests["quest_elyndra_cleansing"]["state"] = QuestDefinition.State.READY_TO_TURN_IN
 		var prev_side_gold := player.wallet_component.gold
-		var res := journal.turn_in_quest("quest_elyndra_cleansing", player.inventory_component, quest_mgr)
+		var res := journal.turn_in_quest("quest_elyndra_cleansing", player.inventory_component)
 		if not res.get("success", false):
 			_fail("turn_in_quest thất bại!")
 			world.queue_free()
@@ -198,14 +189,13 @@ func _run_all_tests() -> void:
 			_fail("turn_in_quest không cộng đúng vàng thưởng!")
 			world.queue_free()
 			return
-		if wallet_signals.size() != 1 or qm_signals.size() != 1:
-			_fail("turn_in_quest phát trùng signal! Wallet: %d, QM: %d" % [wallet_signals.size(), qm_signals.size()])
+		if wallet_signals.size() != 1:
+			_fail("turn_in_quest phát trùng signal! Wallet: %d" % wallet_signals.size())
 			world.queue_free()
 			return
 
 	# 3.7. Boss reward: đúng 1 signal duy nhất khi nhận thưởng 100 vàng
 	wallet_signals.clear()
-	qm_signals.clear()
 	world.boss_reward_claimed = false # reset để nhận thưởng test
 	var prev_boss_gold := player.wallet_component.gold
 	world.grant_boss_reward()
@@ -213,34 +203,31 @@ func _run_all_tests() -> void:
 		_fail("grant_boss_reward() không cộng đúng 100 vàng!")
 		world.queue_free()
 		return
-	if wallet_signals.size() != 1 or qm_signals.size() != 1:
-		_fail("grant_boss_reward() phát trùng signal! Wallet: %d, QM: %d" % [wallet_signals.size(), qm_signals.size()])
+	if wallet_signals.size() != 1:
+		_fail("grant_boss_reward() phát trùng signal! Wallet: %d" % wallet_signals.size())
 		world.queue_free()
 		return
 
 	# 3.8. PlayerStateSerializer.apply(): đúng 1 signal duy nhất khi nạp giá trị mới
 	wallet_signals.clear()
-	qm_signals.clear()
 	var test_data := PlayerStateSerializer.capture(world)
 	test_data["gold"] = 777
 	PlayerStateSerializer.apply(world, test_data)
 
-	if wallet_signals.size() != 1 or qm_signals.size() != 1:
-		_fail("PlayerStateSerializer.apply() phải phát đúng 1 signal trên mỗi bên!")
+	if wallet_signals.size() != 1:
+		_fail("PlayerStateSerializer.apply() phải phát đúng 1 signal!")
 		world.queue_free()
 		return
 
 	# 3.9. PlayerStateSerializer.apply() với cùng số vàng: đúng 0 signal
 	wallet_signals.clear()
-	qm_signals.clear()
 	PlayerStateSerializer.apply(world, test_data)
-	if wallet_signals.size() != 0 or qm_signals.size() != 0:
+	if wallet_signals.size() != 0:
 		_fail("PlayerStateSerializer.apply() với số vàng không đổi không được phát signal!")
 		world.queue_free()
 		return
 
 	player.wallet_component.gold_changed.disconnect(wallet_cb)
-	quest_mgr.gold_changed.disconnect(qm_cb)
 	print("[PASS] Test 3: Kiểm soát tín hiệu nghiêm ngặt (Strict Signal Accounting): 100% không phát trùng lặp.")
 
 	# --- TEST 4: PLAYER STATE SERIALIZER ROUND-TRIP ---
@@ -252,24 +239,24 @@ func _run_all_tests() -> void:
 		return
 	player.wallet_component.set_gold(0)
 	PlayerStateSerializer.apply(world, captured)
-	if player.wallet_component.gold != 450 or quest_mgr.gold != 450:
+	if player.wallet_component.gold != 450:
 		_fail("apply() không khôi phục đúng gold = 450!")
 		world.queue_free()
 		return
 	print("[PASS] Test 4: PlayerStateSerializer round-trip thành công.")
 
 	# --- TEST 5: CỔNG MA PHÁP PHẢI ĐÓNG KHI READY_TO_TURN_IN VÀ CHỈ MỞ KHI COMPLETED ---
-	quest_mgr.current_quest.current_state = QuestData.State.READY_TO_TURN_IN
-	quest_mgr.current_quest.current_amount = 3
-	gate.update_quest_status(quest_mgr.current_quest)
+	journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.READY_TO_TURN_IN
+	journal._quests["quest_noctis_purify"]["current_amount"] = 3
+	gate.update_quest_status()
 
 	if gate.is_open:
 		_fail("Cổng MagicGate KHÔNG ĐƯỢC MỞ ở trạng thái READY_TO_TURN_IN!")
 		world.queue_free()
 		return
 
-	quest_mgr.current_quest.current_state = QuestData.State.COMPLETED
-	gate.update_quest_status(quest_mgr.current_quest)
+	journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.COMPLETED
+	gate.update_quest_status()
 
 	if not gate.is_open:
 		_fail("Cổng MagicGate PHẢI MỞ khi nhiệm vụ chính COMPLETED!")
@@ -281,10 +268,11 @@ func _run_all_tests() -> void:
 	if player.health_component:
 		player.health_component.current_health = 10.0
 		player.health_component.current_mana = 5.0
-		quest_mgr.current_quest.current_state = QuestData.State.READY_TO_TURN_IN
-		var ok := quest_mgr.complete_quest(player.health_component)
-		if not ok:
-			_fail("complete_quest thất bại!")
+		journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.READY_TO_TURN_IN
+		journal._quests["quest_noctis_purify"]["reward_claimed"] = false
+		var res := journal.turn_in_quest("quest_noctis_purify", player.inventory_component)
+		if not res.get("success", false):
+			_fail("turn_in_quest thất bại!")
 			world.queue_free()
 			return
 		if not is_equal_approx(player.health_component.current_health, player.health_component.max_health):
@@ -331,16 +319,8 @@ func _run_all_tests() -> void:
 		world.queue_free()
 		return
 
-	if player.wallet_component.gold != 125 or quest_mgr.gold != 125:
+	if player.wallet_component.gold != 125:
 		_fail("Save v1.5.0 không nạp đúng 125 vàng!")
-		world.queue_free()
-		return
-	if quest_mgr.current_quest.current_state != QuestData.State.ACTIVE or quest_mgr.current_quest.current_amount != 2:
-		_fail("Save v1.5.0 không khôi phục đúng QuestManager (ACTIVE 2/3)!")
-		world.queue_free()
-		return
-	if not ("corrupted_1" in quest_mgr._killed_enemy_ids and "corrupted_2" in quest_mgr._killed_enemy_ids):
-		_fail("Save v1.5.0 không khôi phục danh sách killed_enemy_ids!")
 		world.queue_free()
 		return
 
@@ -416,10 +396,6 @@ func _run_all_tests() -> void:
 		_fail("Không thể nạp file save v1.5.0 READY_TO_TURN_IN!")
 		world.queue_free()
 		return
-	if quest_mgr.current_quest.current_state != QuestData.State.READY_TO_TURN_IN or quest_mgr.current_quest.current_amount != 3:
-		_fail("Khôi phục trạng thái READY_TO_TURN_IN 3/3 thất bại!")
-		world.queue_free()
-		return
 	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN:
 		_fail("Journal không đạt READY_TO_TURN_IN sau khi migrate!")
 		world.queue_free()
@@ -439,10 +415,6 @@ func _run_all_tests() -> void:
 
 	if not SaveManager.load_game(world):
 		_fail("Không thể nạp file save v1.5.0 COMPLETED!")
-		world.queue_free()
-		return
-	if quest_mgr.current_quest.current_state != QuestData.State.COMPLETED:
-		_fail("Khôi phục trạng thái COMPLETED thất bại!")
 		world.queue_free()
 		return
 	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.COMPLETED:
@@ -527,10 +499,6 @@ func _run_all_tests() -> void:
 		_fail("Test 7.5: reward_claimed phải là true khi Legacy đã COMPLETED!")
 		world.queue_free()
 		return
-	if quest_mgr.current_quest.current_state != QuestData.State.COMPLETED:
-		_fail("Test 7.5: QuestManager phải ở trạng thái COMPLETED!")
-		world.queue_free()
-		return
 	if not gate.is_open:
 		_fail("Test 7.5: Cổng Ma Pháp phải mở khi nhiệm vụ đã hoàn thành!")
 		world.queue_free()
@@ -542,7 +510,7 @@ func _run_all_tests() -> void:
 
 	# Thử trả nhiệm vụ qua Journal -> Bắt buộc thất bại và không cộng thêm vàng
 	var inv: InventoryComponent = player.get_node_or_null("InventoryComponent")
-	var turn_in_res := journal.turn_in_quest("quest_noctis_purify", inv, quest_mgr)
+	var turn_in_res := journal.turn_in_quest("quest_noctis_purify", inv)
 	if turn_in_res.get("success", false):
 		_fail("Test 7.5: turn_in_quest() phải thất bại khi phần thưởng đã nhận trước đó!")
 		world.queue_free()
@@ -595,10 +563,6 @@ func _run_all_tests() -> void:
 		_fail("Test 7.6: Tiến độ của Journal phải được nâng lên 2/3 theo tiến độ cao hơn!")
 		world.queue_free()
 		return
-	if quest_mgr.current_quest.current_amount != 2:
-		_fail("Test 7.6: QuestManager phải giữ nguyên 2/3!")
-		world.queue_free()
-		return
 	if gate.is_open:
 		_fail("Test 7.6: Cổng Ma Pháp phải đóng khi ACTIVE 2/3!")
 		world.queue_free()
@@ -645,10 +609,6 @@ func _run_all_tests() -> void:
 
 	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN or journal.get_quest_progress("quest_noctis_purify") != 3:
 		_fail("Test 7.7: Journal phải đạt READY_TO_TURN_IN 3/3!")
-		world.queue_free()
-		return
-	if quest_mgr.current_quest.current_state != QuestData.State.READY_TO_TURN_IN or quest_mgr.current_quest.current_amount != 3:
-		_fail("Test 7.7: QuestManager phải đạt READY_TO_TURN_IN 3/3!")
 		world.queue_free()
 		return
 	if gate.is_open:
@@ -1026,9 +986,6 @@ func _run_all_tests() -> void:
 	print("[PASS] Test 7.12: Khử nhận nhầm 'legacy_wolf_' cũ thành Wolf thật & bảo toàn Idempotent tuyệt đối OK.")
 
 	# --- TEST 8: TÍNH TOÀN VẸN VÀ IDEMPOTENT CỦA SAVE v2.0.0 (Save -> Load -> Save -> Load) ---
-	quest_mgr.current_quest.current_state = QuestData.State.ACTIVE
-	quest_mgr.current_quest.current_amount = 2
-	quest_mgr._killed_enemy_ids = ["corrupted_1", "corrupted_2"]
 	journal._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.ACTIVE
 	journal._quests["quest_noctis_purify"]["current_amount"] = 2
 	journal._quests["quest_noctis_purify"]["reward_claimed"] = false
@@ -1045,20 +1002,12 @@ func _run_all_tests() -> void:
 		world.queue_free()
 		return
 
-	if player.wallet_component.gold != 125 or quest_mgr.gold != 125:
+	if player.wallet_component.gold != 125:
 		_fail("Dữ liệu vàng bị biến dạng sau 2 chu kỳ Lưu/Nạp!")
-		world.queue_free()
-		return
-	if quest_mgr.current_quest.current_state != QuestData.State.ACTIVE or quest_mgr.current_quest.current_amount != 2:
-		_fail("Tiến trình quest bị biến dạng sau 2 chu kỳ Lưu/Nạp!")
 		world.queue_free()
 		return
 	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.ACTIVE or journal.get_quest_progress("quest_noctis_purify") != 2:
 		_fail("Journal quest_noctis_purify bị biến dạng sau 2 chu kỳ Lưu/Nạp!")
-		world.queue_free()
-		return
-	if not ("corrupted_1" in quest_mgr._killed_enemy_ids and "corrupted_2" in quest_mgr._killed_enemy_ids):
-		_fail("Danh sách killed_enemy_ids bị biến dạng sau 2 chu kỳ Lưu/Nạp!")
 		world.queue_free()
 		return
 	print("[PASS] Test 8: Chu trình Idempotent (Save -> Load -> Save -> Load) bảo toàn dữ liệu hoàn hảo.")
@@ -1075,12 +1024,8 @@ func _run_all_tests() -> void:
 	await process_frame
 
 	var player_a := world_a.get_node_or_null("Player") as Player
-	var quest_mgr_a := world_a.get_node_or_null("QuestManager") as QuestManager
 	var journal_a := player_a.quest_journal_component
 	player_a.wallet_component.set_gold(50)
-	quest_mgr_a.current_quest.current_state = QuestData.State.ACTIVE
-	quest_mgr_a.current_quest.current_amount = 2
-	quest_mgr_a._killed_enemy_ids = ["corrupted_1", "corrupted_2"]
 	journal_a._quests["quest_noctis_purify"]["state"] = QuestDefinition.State.ACTIVE
 	journal_a._quests["quest_noctis_purify"]["current_amount"] = 2
 
@@ -1131,20 +1076,11 @@ func _run_all_tests() -> void:
 
 	ZoneManager.apply_player_state(world_a2, ZoneManager.session_player_data)
 	var player_a2 := world_a2.get_node_or_null("Player") as Player
-	var quest_mgr_a2 := world_a2.get_node_or_null("QuestManager") as QuestManager
 	var ui_a2 := world_a2.get_node_or_null("GameUI") as GameUI
 	var journal_a2 := player_a2.quest_journal_component
 
 	if player_a2.wallet_component.gold != 125:
 		_fail("Chuyển từ Vùng B về lại Vùng A mất vàng! Kỳ vọng 125, nhận %d" % player_a2.wallet_component.gold)
-		world_a2.queue_free()
-		return
-	if quest_mgr_a2.gold != 125:
-		_fail("QuestManager ở Vùng A không đồng bộ 125 vàng sau khi chuyển vùng về!")
-		world_a2.queue_free()
-		return
-	if quest_mgr_a2.current_quest.current_state != QuestData.State.ACTIVE or quest_mgr_a2.current_quest.current_amount != 2:
-		_fail("Tiến trình quest bị mất sau khi chuyển vùng về Vùng A!")
 		world_a2.queue_free()
 		return
 	if journal_a2.get_quest_state("quest_noctis_purify") != QuestDefinition.State.ACTIVE or journal_a2.get_quest_progress("quest_noctis_purify") != 2:
@@ -1187,14 +1123,14 @@ func _run_all_tests() -> void:
 		return
 
 	var player_a3 := world_a3.get_node_or_null("Player") as Player
-	var quest_mgr_a3 := world_a3.get_node_or_null("QuestManager") as QuestManager
 	var ui_a3 := world_a3.get_node_or_null("GameUI") as GameUI
+	var journal_a3 := player_a3.quest_journal_component
 
-	if player_a3.wallet_component.gold != 125 or quest_mgr_a3.gold != 125:
-		_fail("Nạp bản lưu sau chuỗi chuyển vùng bị sai số vàng! Wallet: %d, QM: %d" % [player_a3.wallet_component.gold, quest_mgr_a3.gold])
+	if player_a3.wallet_component.gold != 125:
+		_fail("Nạp bản lưu sau chuỗi chuyển vùng bị sai số vàng! Wallet: %d" % player_a3.wallet_component.gold)
 		world_a3.queue_free()
 		return
-	if quest_mgr_a3.current_quest.current_state != QuestData.State.ACTIVE or quest_mgr_a3.current_quest.current_amount != 2:
+	if journal_a3.get_quest_state("quest_noctis_purify") != QuestDefinition.State.ACTIVE or journal_a3.get_quest_progress("quest_noctis_purify") != 2:
 		_fail("Nạp bản lưu sau chuỗi chuyển vùng bị sai tiến trình quest!")
 		world_a3.queue_free()
 		return
@@ -1255,11 +1191,15 @@ func _run_all_tests() -> void:
 		return
 
 	# 10.2b: Kiểm tra quái bị diệt TRƯỚC khi nhận quest KHÔNG được tính vào Main Quest (bảo toàn gameplay cũ)
-	var early_wolf := Enemy.new()
+	var early_wolf_scene := preload("res://src/actors/enemy/enemy.tscn")
+	var early_wolf: Enemy = early_wolf_scene.instantiate()
 	early_wolf.enemy_type_id = "corrupted_wolf"
 	early_wolf.enemy_id = "enemy_forest_early"
-	journal_flow.register_enemy_kill(early_wolf)
-	early_wolf.free()
+	world_flow.add_child(early_wolf)
+	early_wolf.enemy_defeated.connect(journal_flow.register_enemy_kill)
+	early_wolf.enemy_defeated.emit(early_wolf)
+	early_wolf.queue_free()
+	await process_frame
 
 	# 10.3: Nhận nhiệm vụ qua QuestActionService
 	var act_start_res := QuestActionService.execute(str(interact_offer.get("action")), world_flow)
@@ -1280,17 +1220,32 @@ func _run_all_tests() -> void:
 		world_flow.queue_free()
 		return
 
-	# 10.4: Tiêu diệt 3 quái sói thật qua pipeline thực tế và kiểm tra HUD cập nhật từng mốc
+	# 10.4: Tiêu diệt 3 quái sói thật qua pipeline signal thực tế và kiểm tra HUD cập nhật từng mốc
 	var game_ui_flow := world_flow.get_node_or_null("GameUI") as GameUI
-	var wolf_scene := preload("res://src/actors/enemy/enemy.tscn")
+	if game_ui_flow == null:
+		_fail("Test 10: GameUI không tồn tại trong world_flow!")
+		world_flow.queue_free()
+		return
+	if game_ui_flow.quest_progress_label == null:
+		_fail("Test 10: quest_progress_label trong GameUI không tồn tại!")
+		world_flow.queue_free()
+		return
+
+	var scene_wolves := [
+		world_flow.get_node_or_null("CorruptedEnemy1") as Enemy,
+		world_flow.get_node_or_null("CorruptedEnemy2") as Enemy,
+		world_flow.get_node_or_null("CorruptedEnemy3") as Enemy
+	]
+
 	for w_idx in [1, 2, 3]:
-		var wolf_enemy: Enemy = wolf_scene.instantiate()
-		wolf_enemy.enemy_type_id = "corrupted_wolf"
-		wolf_enemy.enemy_id = "enemy_forest_" + str(w_idx)
-		world_flow.add_child(wolf_enemy)
-		world_flow._on_enemy_defeated(wolf_enemy)
-		journal_flow.register_enemy_kill(wolf_enemy)
-		wolf_enemy.queue_free()
+		var wolf_enemy: Enemy = scene_wolves[w_idx - 1]
+		if wolf_enemy == null:
+			_fail("Test 10: CorruptedEnemy%d không tồn tại trong scene!" % w_idx)
+			world_flow.queue_free()
+			return
+
+		# Phát tín hiệu enemy_defeated từ chính đối tượng quái qua signal pipeline thực tế
+		wolf_enemy.enemy_defeated.emit(wolf_enemy)
 		await process_frame
 
 		if journal_flow.get_quest_progress("quest_noctis_purify") != w_idx:
@@ -1298,23 +1253,22 @@ func _run_all_tests() -> void:
 			world_flow.queue_free()
 			return
 
-		# Kiểm tra HUD nhiệm vụ hiển thị chuẩn xác từng mốc
-		if game_ui_flow and game_ui_flow.quest_progress_label:
-			if w_idx == 1:
-				if game_ui_flow.quest_progress_label.text != "Tiêu diệt sinh vật: 1/3":
-					_fail("Test 10: HUD hiển thị sai ở mốc 1/3! Nhận: " + game_ui_flow.quest_progress_label.text)
-					world_flow.queue_free()
-					return
-			elif w_idx == 2:
-				if game_ui_flow.quest_progress_label.text != "Tiêu diệt sinh vật: 2/3":
-					_fail("Test 10: HUD hiển thị sai ở mốc 2/3! Nhận: " + game_ui_flow.quest_progress_label.text)
-					world_flow.queue_free()
-					return
-			elif w_idx == 3:
-				if game_ui_flow.quest_progress_label.text != "Tiến độ: 3/3 (Về gặp Eiran nhận thưởng!)":
-					_fail("Test 10: HUD hiển thị sai ở mốc 3/3! Nhận: " + game_ui_flow.quest_progress_label.text)
-					world_flow.queue_free()
-					return
+		# Kiểm tra HUD nhiệm vụ hiển thị chuẩn xác từng mốc (bắt buộc node tồn tại, FAIL nếu sai)
+		if w_idx == 1:
+			if game_ui_flow.quest_progress_label.text != "Tiêu diệt sinh vật: 1/3":
+				_fail("Test 10: HUD hiển thị sai ở mốc 1/3! Nhận: " + game_ui_flow.quest_progress_label.text)
+				world_flow.queue_free()
+				return
+		elif w_idx == 2:
+			if game_ui_flow.quest_progress_label.text != "Tiêu diệt sinh vật: 2/3":
+				_fail("Test 10: HUD hiển thị sai ở mốc 2/3! Nhận: " + game_ui_flow.quest_progress_label.text)
+				world_flow.queue_free()
+				return
+		elif w_idx == 3:
+			if game_ui_flow.quest_progress_label.text != "Tiến độ: 3/3 (Về gặp Eiran nhận thưởng!)":
+				_fail("Test 10: HUD hiển thị sai ở mốc 3/3! Nhận: " + game_ui_flow.quest_progress_label.text)
+				world_flow.queue_free()
+				return
 
 	if journal_flow.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN:
 		_fail("Test 10: Nhiệm vụ phải đạt READY_TO_TURN_IN sau khi đủ 3 quái!")

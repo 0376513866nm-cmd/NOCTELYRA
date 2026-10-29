@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://c7v1n8m3q2k4"]
+[gd_scene load_steps=25 format=3 uid="uid://c7v1n8m3q2k4"]
 
 [ext_resource type="Script" path="res://src/world/noctis_forest.gd" id="1_world"]
 [ext_resource type="PackedScene" uid="uid://c8m4p7k1y2r3" path="res://src/actors/player/player.tscn" id="2_player"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://b7y2n4m8q1wa" path="res://src/actors/enemy/enemy.tscn" id="4_enemy"]
 [ext_resource type="PackedScene" uid="uid://d3m8k10ap2q5" path="res://src/ui/game_ui.tscn" id="5_ui"]
 [ext_resource type="Script" path="res://src/ui/pause_controller.gd" id="6_pause"]
-[ext_resource type="Script" path="res://src/quest/quest_manager.gd" id="7_quest"]
 [ext_resource type="Script" path="res://src/interaction/interaction_coordinator.gd" id="8_interact_coord"]
 [ext_resource type="PackedScene" uid="uid://b5nan2q8v3k1" path="res://src/loot/item_pickup.tscn" id="9_pickup"]
 [ext_resource type="PackedScene" uid="uid://m1g8k4p2q7wa" path="res://src/world/magic_gate.tscn" id="10_gate"]
@@ -65,9 +64,6 @@ pause_menu = NodePath("../GameUI/PauseMenu")
 [node name="InteractionCoordinator" type="Node" parent="." node_paths=PackedStringArray("game_ui")]
 script = ExtResource("8_interact_coord")
 game_ui = NodePath("../GameUI")
-
-[node name="QuestManager" type="Node" parent="."]
-script = ExtResource("7_quest")
 
 [node name="WorldCanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.32, 0.35, 0.52, 1)

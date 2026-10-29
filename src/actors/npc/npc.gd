@@ -38,7 +38,6 @@ func trigger_interaction() -> void:
 	if cur_ui and (cur_ui.is_dialogue_open() or cur_ui.is_dialogue_cooling_down()):
 		return
 
-	var quest_mgr: QuestManager = _get_quest_manager()
 	var player: Player = _get_player()
 	var lines: Array[String] = []
 	var action: String = "none"
@@ -129,35 +128,6 @@ func trigger_interaction() -> void:
 					"Vùng đất cằn cỗi này còn nhiều mối đe dọa rình rập. Hãy giữ vững tinh thần cảnh giác, người bạn của Quỷ tộc!"
 				]
 				action = "none"
-	elif quest_mgr and quest_mgr.current_quest and npc_name in ["Eiran", "Elyra"]:
-		var q_state = quest_mgr.current_quest.current_state
-		match q_state:
-			QuestData.State.NOT_STARTED:
-				lines = [
-					"Mừng con đã trở về Tổ Ấm Đèn Nguyệt. Đêm nay gió rừng có chút xao động...",
-					"Ma lực sâu trong Rừng Hắc Nguyệt đang hỗn loạn bất thường, khiến các sinh vật hoang dã bị tha hóa.",
-					"Uống một ngụm trà thảo mộc ấm rồi tiến vào rừng tiêu diệt 3 sinh vật bị ma hóa giúp ta được không?"
-				]
-				action = "start_quest"
-			QuestData.State.ACTIVE:
-				lines = [
-					"Hãy cẩn trọng khi bước qua ranh giới Rừng Hắc Nguyệt nhé.",
-					"Tiến độ hiện tại: %d/%d sinh vật ma hóa. Mau hoàn thành rồi về sưởi ấm cạnh bếp lửa nhé!" % [quest_mgr.current_quest.current_amount, quest_mgr.current_quest.target_amount]
-				]
-				action = "none"
-			QuestData.State.READY_TO_TURN_IN:
-				lines = [
-					"Con đã trở về an toàn rồi! Mầm và Lumi cứ ngóng con mãi ngoài hiên đấy.",
-					"Ma khí quanh bìa rừng đã lắng dịu. Hãy nhận 50 Vàng và để ta dùng quang ma pháp thanh tẩy, hồi phục trọn vẹn sinh lực cho con!"
-				]
-				action = "complete_quest"
-			QuestData.State.COMPLETED:
-				lines = [
-					"Cảm ơn con đã bảo vệ sự bình yên của Tổ Ấm Đèn Nguyệt.",
-					"Mỗi khi mỏi mệt, con luôn có thể trở về đây ngồi bên bếp lửa để nghỉ ngơi và hồi phục.",
-					"Hãy tiếp tục rèn luyện kỹ năng kiếm thuật (J) và ma pháp (K) để sẵn sàng cho những thử thách lớn hơn phía trước!"
-				]
-				action = "none"
 	else:
 		lines = ["Xin chào dũng sĩ! Chúc ngươi một ngày bình an dưới ánh sáng mặt trăng."]
 
@@ -202,19 +172,6 @@ func _get_catalog_quest_interaction(player: Player) -> Dictionary:
 				"action": "none"
 			}
 	return {"lines": [], "action": "none"}
-
-func _get_quest_manager() -> QuestManager:
-	var cur_scene = get_tree().current_scene if get_tree() else null
-	if cur_scene:
-		var mgr = cur_scene.get_node_or_null("QuestManager") as QuestManager
-		if mgr:
-			return mgr
-	var p = get_parent()
-	if p:
-		var mgr = p.get_node_or_null("QuestManager") as QuestManager
-		if mgr:
-			return mgr
-	return null
 
 func _get_player() -> Player:
 	var cur_scene = get_tree().current_scene if get_tree() else null

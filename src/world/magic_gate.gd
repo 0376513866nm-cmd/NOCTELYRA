@@ -45,14 +45,12 @@ func close_gate() -> void:
 		runes.text = "[PHONG ẤN CỔ TỰ]\nCần hoàn thành nhiệm vụ Eiran!"
 		runes.modulate = Color(1.0, 0.6, 0.9, 1.0)
 
-func update_quest_status(quest: Variant = null) -> void:
+func update_quest_status(status_override: Variant = null) -> void:
 	var completed := false
-	if quest is QuestData:
-		completed = (quest.current_state == QuestData.State.COMPLETED)
-	elif quest is int:
-		completed = (quest == 3)
-	elif quest is bool:
-		completed = quest
+	if status_override is bool:
+		completed = status_override
+	elif status_override is int:
+		completed = (status_override == QuestDefinition.State.COMPLETED)
 	else:
 		var p: Player = null
 		if get_parent():
@@ -61,10 +59,6 @@ func update_quest_status(quest: Variant = null) -> void:
 			p = get_tree().current_scene.get_node_or_null("Player") as Player
 		if p and p.quest_journal_component:
 			completed = (p.quest_journal_component.get_quest_state("quest_noctis_purify") == QuestDefinition.State.COMPLETED)
-		elif not completed and get_parent():
-			var qm = get_parent().get_node_or_null("QuestManager") as QuestManager
-			if qm and qm.current_quest:
-				completed = (qm.current_quest.current_state == QuestData.State.COMPLETED)
 
 	if completed:
 		if not is_open:

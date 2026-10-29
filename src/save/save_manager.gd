@@ -84,7 +84,6 @@ static func load_game(world: Node) -> bool:
 	if data.is_empty():
 		return false
 	var player := world.get_node_or_null("Player") as Player
-	var quest_manager := world.get_node_or_null("QuestManager") as QuestManager
 	if player == null:
 		return false
 
@@ -100,13 +99,6 @@ static func load_game(world: Node) -> bool:
 	_restore_player_position(player, data)
 	ZoneManager.restore_zone_state(zone_id, world)
 
-	var zone_state: Dictionary = ZoneManager.zone_states.get(zone_id, {})
-	if quest_manager:
-		for defeated_id in zone_state.get("defeated_enemy_ids", []):
-			var stable_id := str(defeated_id)
-			if not stable_id in quest_manager._killed_enemy_ids:
-				quest_manager._killed_enemy_ids.append(stable_id)
-
 	var gate := world.get_node_or_null("MagicGate") as MagicGate
 	if gate:
 		gate.update_quest_status()
@@ -117,8 +109,6 @@ static func load_game(world: Node) -> bool:
 		var current_gold: int = 0
 		if player and player.wallet_component:
 			current_gold = player.wallet_component.gold
-		elif quest_manager:
-			current_gold = quest_manager.gold
 		ui.update_gold(current_gold)
 		ui.set_current_zone(zone_id)
 		ui.update_quest_journal_ui()

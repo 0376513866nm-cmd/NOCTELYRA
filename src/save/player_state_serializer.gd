@@ -8,7 +8,6 @@ static func capture(world: Node) -> Dictionary:
 	if world == null:
 		return {}
 	var player := world.get_node_or_null("Player") as Player
-	var quest_manager := world.get_node_or_null("QuestManager") as QuestManager
 	if player == null:
 		return {}
 
@@ -21,6 +20,15 @@ static func capture(world: Node) -> Dictionary:
 	var progression := player.progression_component
 	var wallet := player.wallet_component
 
+	var main_q_state: int = 0
+	var main_q_amount: int = 0
+	var killed_ids: Array = []
+	if journal and journal._quests.has("quest_noctis_purify"):
+		var q_dict: Dictionary = journal._quests["quest_noctis_purify"]
+		main_q_state = int(q_dict.get("state", 0))
+		main_q_amount = int(q_dict.get("current_amount", 0))
+		killed_ids = q_dict.get("counted_enemy_ids", []).duplicate()
+
 	return {
 		"race_id": stats.race_id if stats else "human",
 		"level": progression.level if progression else 1,
@@ -28,23 +36,22 @@ static func capture(world: Node) -> Dictionary:
 		"claimed_exp_sources": progression.claimed_exp_sources.duplicate() if progression else [],
 		"current_health": health.current_health if health else 100.0,
 		"current_mana": health.current_mana if health else 60.0,
-		"gold": wallet.gold if wallet else (quest_manager.gold if quest_manager else 0),
+		"gold": wallet.gold if wallet else 0,
 		"inventory": inventory.to_dict() if inventory else [],
 		"equipment": equipment.to_dict() if equipment else {},
 		"spellbook": spellbook.to_dict() if spellbook else {},
 		"quest_journal": journal.to_dict() if journal else {},
 		"legacy_quest": {
-			"state": int(quest_manager.current_quest.current_state) if quest_manager and quest_manager.current_quest else 0,
-			"current_amount": int(quest_manager.current_quest.current_amount) if quest_manager and quest_manager.current_quest else 0
+			"state": main_q_state,
+			"current_amount": main_q_amount
 		},
-		"killed_enemy_ids": quest_manager._killed_enemy_ids.duplicate() if quest_manager else []
+		"killed_enemy_ids": killed_ids
 	}
 
 static func apply(world: Node, data: Dictionary) -> bool:
 	if world == null or data.is_empty():
 		return false
 	var player := world.get_node_or_null("Player") as Player
-	var quest_manager := world.get_node_or_null("QuestManager") as QuestManager
 	if player == null:
 		return false
 
@@ -91,25 +98,9 @@ static func apply(world: Node, data: Dictionary) -> bool:
 	var wallet := player.wallet_component
 	if wallet:
 		wallet.set_gold(saved_gold)
-	elif quest_manager:
-		quest_manager.gold = saved_gold
-
-	if quest_manager:
-		var legacy_quest: Dictionary = data.get("legacy_quest", data.get("quest", {}))
-		if quest_manager.current_quest and legacy_quest is Dictionary:
-			var state: int = clampi(int(legacy_quest.get("state", 0)), 0, 3)
-			quest_manager.current_quest.current_state = state as QuestData.State
-			quest_manager.current_quest.current_amount = clamp(
-				int(legacy_quest.get("current_amount", 0)),
-				0,
-				quest_manager.current_quest.target_amount
-			)
-		var killed = data.get("killed_enemy_ids", data.get("defeated_enemy_ids", []))
-		if killed is Array:
-			quest_manager._killed_enemy_ids.assign(killed)
 
 	# Giai đoạn 2 Bước 3: Di chuyển dữ liệu Idempotent từ Legacy Quest sang Quest Journal
-	_migrate_quest_data(data, journal, quest_manager, progression)
+	_migrate_quest_data(data, journal, progression)
 	return true
 
 const KNOWN_LEGACY_ENEMY_IDS: Dictionary = {
@@ -158,7 +149,7 @@ static func _record_kill_history(journal: QuestJournalComponent, enemy_type: Str
 	if not enemy_id in journal._kill_history[enemy_type]:
 		journal._kill_history[enemy_type].append(enemy_id)
 
-static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent, quest_manager: QuestManager, progression: PlayerProgressionComponent) -> void:
+static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent, progression: PlayerProgressionComponent) -> void:
 	if journal == null:
 		return
 
@@ -272,15 +263,7 @@ static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent
 		"counted_enemy_ids": final_counted
 	}
 
-	# 5. Đồng bộ ngược lại sang QuestManager adapter
-	if quest_manager and quest_manager.current_quest:
-		quest_manager.current_quest.current_state = final_state as QuestData.State
-		quest_manager.current_quest.current_amount = final_amount
-		for fc in final_counted:
-			if not fc in quest_manager._killed_enemy_ids:
-				quest_manager._killed_enemy_ids.append(fc)
-
-	# 6. Bảo vệ chống nhận EXP trùng lặp nếu Quest đã hoàn thành
+	# 5. Bảo vệ chống nhận EXP trùng lặp nếu Quest đã hoàn thành
 	if (final_state == 3 or final_claimed) and progression != null:
 		if not "quest:quest_tutorial" in progression.claimed_exp_sources:
 			progression.claimed_exp_sources.append("quest:quest_tutorial")

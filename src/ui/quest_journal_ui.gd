@@ -50,85 +50,47 @@ func is_open() -> bool:
 
 func refresh() -> void:
 	var player: Player = _get_player()
-	var quest_mgr: QuestManager = _get_quest_manager()
-	
+
 	if player and player.quest_journal_component and player.inventory_component:
 		player.quest_journal_component.update_item_collection(player.inventory_component)
 
-	_refresh_main_quest(quest_mgr)
+	_refresh_main_quest()
 	_refresh_catalog_quests(player)
 
-func _refresh_main_quest(quest_mgr: QuestManager = null) -> void:
+func _refresh_main_quest() -> void:
 	if not main_quest_card:
 		return
 
 	var player: Player = _get_player()
 	var journal := player.quest_journal_component if player else null
 
-	# Ưu tiên đọc trực tiếp từ QuestJournalComponent (Single Source of Truth)
-	if journal != null:
-		var def := ContentRegistry.get_quest("quest_noctis_purify")
-		var q_title := def.title if def else "Ánh Sáng Bị Nuốt Chửng"
-		var q_desc := def.description if def else "Ma lực tại Rừng Hắc Nguyệt đang mất cân bằng. Hãy tiêu diệt 3 sinh vật bị ma lực tha hóa để bảo vệ ngôi làng."
-		var q_reward := "%d Vàng, Hồi phục toàn bộ HP & MP" % (def.reward_gold if def else 50)
-		var state := journal.get_quest_state("quest_noctis_purify")
-		var progress := journal.get_quest_progress("quest_noctis_purify")
-		var target := def.target_amount if def else 3
+	var def := ContentRegistry.get_quest("quest_noctis_purify")
+	var q_title := def.title if def else "Ánh Sáng Bị Nuốt Chửng"
+	var q_desc := def.description if def else "Ma lực tại Rừng Hắc Nguyệt đang mất cân bằng. Hãy tiêu diệt 3 sinh vật bị ma lực tha hóa để bảo vệ ngôi làng."
+	var q_reward := "%d Vàng, Hồi phục toàn bộ HP & MP" % (def.reward_gold if def else 50)
+	var state := journal.get_quest_state("quest_noctis_purify") if journal else 0
+	var progress := journal.get_quest_progress("quest_noctis_purify") if journal else 0
+	var target := def.target_amount if def else 3
 
-		main_title_label.text = "Nhiệm Vụ Chính: " + q_title
-		main_npc_label.text = "Người giao: Eiran | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
-		main_desc_label.text = q_desc
-		main_reward_label.text = "Phần thưởng: " + q_reward
-
-		match state:
-			QuestDefinition.State.NOT_STARTED:
-				main_badge_label.text = "[Chưa nhận]"
-				main_badge_label.modulate = Color(0.7, 0.7, 0.7)
-				main_progress_label.text = "Mục tiêu: Tiêu diệt %d sinh vật ma hóa (Chưa nhận - gặp Eiran)" % target
-			QuestDefinition.State.ACTIVE:
-				main_badge_label.text = "[Đang thực hiện]"
-				main_badge_label.modulate = Color(1.0, 0.85, 0.3)
-				main_progress_label.text = "Mục tiêu: Tiêu diệt %d/%d sinh vật ma hóa" % [progress, target]
-			QuestDefinition.State.READY_TO_TURN_IN:
-				main_badge_label.text = "[Sẵn sàng trả]"
-				main_badge_label.modulate = Color(0.3, 0.9, 1.0)
-				main_progress_label.text = "Mục tiêu: %d/%d sinh vật ma hóa (Gặp Eiran nhận thưởng!)" % [progress, target]
-			QuestDefinition.State.COMPLETED:
-				main_badge_label.text = "[Đã hoàn thành]"
-				main_badge_label.modulate = Color(0.4, 1.0, 0.4)
-				main_progress_label.text = "Mục tiêu: Đã hoàn thành (Cổng Ma Thuật Đấu Trường Đã Mở)"
-		return
-
-	if quest_mgr == null or quest_mgr.current_quest == null:
-		main_title_label.text = "Nhiệm Vụ Chính: Thanh Tẩy Rừng Noctis"
-		main_badge_label.text = "[Chưa nhận]"
-		main_badge_label.modulate = Color(0.7, 0.7, 0.7)
-		main_npc_label.text = "Người giao: Eiran | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
-		main_desc_label.text = "Tiêu diệt sinh vật ma hóa để bảo vệ Làng Ánh Nguyệt và mở Cổng Ma Thuật."
-		main_progress_label.text = "Mục tiêu: Tiêu diệt 3 sinh vật ma hóa (0/3)"
-		main_reward_label.text = "Phần thưởng: 50 Vàng, Hồi phục toàn bộ HP & MP"
-		return
-
-	var q = quest_mgr.current_quest
-	main_title_label.text = "Nhiệm Vụ Chính: " + q.title
+	main_title_label.text = "Nhiệm Vụ Chính: " + q_title
 	main_npc_label.text = "Người giao: Eiran | Khu vực: Rừng Hắc Nguyệt (Noctis Forest)"
-	main_desc_label.text = q.description
-	main_reward_label.text = "Phần thưởng: %d Vàng, Hồi phục toàn bộ HP & MP" % q.reward_gold
+	main_desc_label.text = q_desc
+	main_reward_label.text = "Phần thưởng: " + q_reward
 
-	match q.current_state:
-		QuestData.State.NOT_STARTED:
+	match state:
+		QuestDefinition.State.NOT_STARTED:
 			main_badge_label.text = "[Chưa nhận]"
 			main_badge_label.modulate = Color(0.7, 0.7, 0.7)
-			main_progress_label.text = "Mục tiêu: Tiêu diệt 3 sinh vật ma hóa (Chưa nhận - gặp Eiran)"
-		QuestData.State.ACTIVE:
+			main_progress_label.text = "Mục tiêu: Tiêu diệt %d sinh vật ma hóa (Chưa nhận - gặp Eiran)" % target
+		QuestDefinition.State.ACTIVE:
 			main_badge_label.text = "[Đang thực hiện]"
 			main_badge_label.modulate = Color(1.0, 0.85, 0.3)
-			main_progress_label.text = "Mục tiêu: Tiêu diệt %d/%d sinh vật ma hóa" % [q.current_amount, q.target_amount]
-		QuestData.State.READY_TO_TURN_IN:
+			main_progress_label.text = "Mục tiêu: Tiêu diệt %d/%d sinh vật ma hóa" % [progress, target]
+		QuestDefinition.State.READY_TO_TURN_IN:
 			main_badge_label.text = "[Sẵn sàng trả]"
 			main_badge_label.modulate = Color(0.3, 0.9, 1.0)
-			main_progress_label.text = "Mục tiêu: %d/%d sinh vật ma hóa (Gặp Eiran nhận thưởng!)" % [q.current_amount, q.target_amount]
-		QuestData.State.COMPLETED:
+			main_progress_label.text = "Mục tiêu: %d/%d sinh vật ma hóa (Gặp Eiran nhận thưởng!)" % [progress, target]
+		QuestDefinition.State.COMPLETED:
 			main_badge_label.text = "[Đã hoàn thành]"
 			main_badge_label.modulate = Color(0.4, 1.0, 0.4)
 			main_progress_label.text = "Mục tiêu: Đã hoàn thành (Cổng Ma Thuật Đấu Trường Đã Mở)"
@@ -220,16 +182,4 @@ func _get_player() -> Player:
 		var players = get_tree().get_nodes_in_group(GameGroups.PLAYERS)
 		if players.size() > 0:
 			return players[0] as Player
-	return null
-
-func _get_quest_manager() -> QuestManager:
-	if get_tree() and get_tree().current_scene:
-		var qm = get_tree().current_scene.get_node_or_null("QuestManager") as QuestManager
-		if qm:
-			return qm
-	var par = get_parent()
-	if par:
-		var qm = par.get_node_or_null("QuestManager") as QuestManager
-		if qm:
-			return qm
 	return null

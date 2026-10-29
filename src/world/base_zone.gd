@@ -13,7 +13,6 @@ const SettingsManager = preload("res://src/ui/settings_manager.gd")
 
 var player: Player
 var game_ui: GameUI
-var quest_manager: QuestManager
 var pause_controller: PauseController
 var interaction_coordinator: InteractionCoordinator
 
@@ -62,8 +61,6 @@ func init_base_references() -> void:
 		player = get_node_or_null("Player") as Player
 	if game_ui == null:
 		game_ui = get_node_or_null("GameUI") as GameUI
-	if quest_manager == null:
-		quest_manager = get_node_or_null("QuestManager") as QuestManager
 	if pause_controller == null:
 		pause_controller = get_node_or_null("PauseController") as PauseController
 	if interaction_coordinator == null:
@@ -112,21 +109,6 @@ func setup_signals() -> void:
 			if player.has_signal("notification_posted") and not player.notification_posted.is_connected(game_ui.show_notification):
 				player.notification_posted.connect(game_ui.show_notification)
 			game_ui.sync_locks_to_player(player)
-
-	# Kết nối QuestManager
-	if quest_manager:
-		if not quest_manager.quest_started.is_connected(_on_quest_updated):
-			quest_manager.quest_started.connect(_on_quest_updated)
-		if not quest_manager.quest_progress_updated.is_connected(_on_quest_updated):
-			quest_manager.quest_progress_updated.connect(_on_quest_updated)
-		if not quest_manager.quest_ready_to_turn_in.is_connected(_on_quest_updated):
-			quest_manager.quest_ready_to_turn_in.connect(_on_quest_updated)
-		if not quest_manager.quest_completed.is_connected(_on_quest_updated):
-			quest_manager.quest_completed.connect(_on_quest_updated)
-		if (player == null or player.wallet_component == null) and not quest_manager.gold_changed.is_connected(_on_gold_changed):
-			quest_manager.gold_changed.connect(_on_gold_changed)
-		if not quest_manager.notification_posted.is_connected(_on_notification_posted):
-			quest_manager.notification_posted.connect(_on_notification_posted)
 
 	# Kết nối tất cả NPC trong khu vực
 	if get_tree():
@@ -206,11 +188,7 @@ func setup_ui() -> void:
 			player.progression_component.level_up.connect(_on_player_level_up)
 
 	# 6. Cập nhật Vàng và Nhiệm vụ
-	var current_gold: int = 0
-	if player and player.wallet_component:
-		current_gold = player.wallet_component.gold
-	elif quest_manager:
-		current_gold = quest_manager.gold
+	var current_gold: int = player.wallet_component.gold if (player and player.wallet_component) else 0
 	game_ui.update_gold(current_gold)
 	if game_ui:
 		game_ui.update_quest_info()
@@ -357,12 +335,6 @@ func _on_journal_quest_updated(quest_id: String, current: int, target: int, stat
 				game_ui.show_notification("Tiến độ: %d/%d sinh vật tha hóa" % [current, target])
 			elif state == QuestDefinition.State.READY_TO_TURN_IN:
 				game_ui.show_notification("Nhiệm vụ hoàn tất! Hãy về gặp Eiran để nhận thưởng.")
-
-func _on_quest_updated(_q: QuestData) -> void:
-	if game_ui:
-		game_ui.update_quest_info()
-		var current_gold: int = player.wallet_component.gold if (player and player.wallet_component) else (quest_manager.gold if quest_manager else 0)
-		game_ui.update_gold(current_gold)
 
 func _on_gold_changed(new_gold: int) -> void:
 	if game_ui:

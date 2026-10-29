@@ -175,8 +175,6 @@ func grant_boss_reward() -> void:
 	# 1. Thưởng 100 Vàng
 	if player and player.wallet_component:
 		player.wallet_component.add_gold(100)
-	elif quest_manager:
-		quest_manager.gold += 100
 
 	# 1b. Thưởng 150 EXP từ Boss Lunareth (M8)
 	if player and player.progression_component:
@@ -243,8 +241,8 @@ func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> 
 				b_col.set_deferred("disabled", true)
 		if boss_lunareth:
 			boss_lunareth.reset_boss()
-		if magic_gate and quest_manager and quest_manager.current_quest:
-			magic_gate.update_quest_status(quest_manager.current_quest)
+		if magic_gate:
+			magic_gate.update_quest_status()
 
 func clear_boss_projectiles() -> void:
 	if get_tree():
@@ -256,12 +254,6 @@ func clear_boss_projectiles() -> void:
 func clear_all_projectiles() -> void:
 	clear_boss_projectiles()
 	clear_player_projectiles()
-
-func _on_quest_updated(quest: QuestData) -> void:
-	super._on_quest_updated(quest)
-	# Mở cổng đấu trường ngay khi nhiệm vụ hoàn thành
-	if magic_gate:
-		magic_gate.update_quest_status(quest)
 
 func _on_retry_requested() -> void:
 	super._on_retry_requested()

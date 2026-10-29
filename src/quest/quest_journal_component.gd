@@ -224,7 +224,7 @@ func can_turn_in(quest_id: String, inventory: InventoryComponent = null) -> bool
 
 	return true
 
-func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manager: QuestManager = null) -> Dictionary:
+func turn_in_quest(quest_id: String, inventory: InventoryComponent) -> Dictionary:
 	_ensure_default_quests()
 	if not _quests.has(quest_id):
 		return {"success": false, "reason": "Nhiệm vụ không tồn tại!"}
@@ -259,8 +259,6 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 		var parent_player := get_parent() as Player
 		if parent_player and parent_player.wallet_component:
 			parent_player.wallet_component.add_gold(def.reward_gold)
-		elif quest_manager:
-			quest_manager.gold += def.reward_gold
 
 	# 4. Trao thưởng Vật phẩm
 	if inventory:
@@ -285,11 +283,6 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 		if def.restore_mana_on_complete:
 			p_hp.current_mana = p_hp.max_mana
 			p_hp.emit_signal("mana_changed", p_hp.current_mana, p_hp.max_mana)
-
-	# 7. Đồng bộ sang QuestManager nếu là Main Quest
-	if quest_manager and def.is_main_quest and quest_manager.current_quest:
-		quest_manager.current_quest.current_state = QuestData.State.COMPLETED
-		quest_manager.emit_signal("quest_completed", quest_manager.current_quest)
 
 	emit_signal("quest_completed", quest_id)
 	emit_signal("journal_changed")
