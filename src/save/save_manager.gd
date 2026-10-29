@@ -111,7 +111,12 @@ static func load_game(world: Node) -> bool:
 	if ui:
 		if quest_manager and quest_manager.current_quest:
 			ui.update_quest_info(quest_manager.current_quest)
-			ui.update_gold(quest_manager.gold)
+		var current_gold: int = 0
+		if player and player.wallet_component:
+			current_gold = player.wallet_component.gold
+		elif quest_manager:
+			current_gold = quest_manager.gold
+		ui.update_gold(current_gold)
 		ui.set_current_zone(zone_id)
 		ui.update_quest_journal_ui()
 		ui.show_notification("Đã tải bản lưu thành công!")

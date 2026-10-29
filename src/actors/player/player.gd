@@ -27,6 +27,7 @@ enum State {
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var melee_hitbox: Hitbox = $MeleeHitbox
 @onready var inventory_component: InventoryComponent = $InventoryComponent
+@onready var wallet_component: WalletComponent = $WalletComponent
 @onready var equipment_component: EquipmentComponent = $EquipmentComponent
 @onready var spellbook_component: SpellbookComponent = $SpellbookComponent
 @onready var quest_journal_component: QuestJournalComponent = $QuestJournalComponent
@@ -139,6 +140,13 @@ func _ensure_m8_components() -> void:
 			player_stats_component.name = "PlayerStatsComponent"
 			player_stats_component.player = self
 			add_child(player_stats_component)
+
+	if wallet_component == null:
+		wallet_component = get_node_or_null("WalletComponent") as WalletComponent
+		if wallet_component == null:
+			wallet_component = WalletComponent.new()
+			wallet_component.name = "WalletComponent"
+			add_child(wallet_component)
 
 func apply_race_visual(r_id: String) -> void:
 	if sprite_root == null:

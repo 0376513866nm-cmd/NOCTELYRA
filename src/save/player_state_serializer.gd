@@ -19,6 +19,7 @@ static func capture(world: Node) -> Dictionary:
 	var journal := player.quest_journal_component
 	var stats := player.player_stats_component
 	var progression := player.progression_component
+	var wallet := player.wallet_component
 
 	return {
 		"race_id": stats.race_id if stats else "human",
@@ -27,7 +28,7 @@ static func capture(world: Node) -> Dictionary:
 		"claimed_exp_sources": progression.claimed_exp_sources.duplicate() if progression else [],
 		"current_health": health.current_health if health else 100.0,
 		"current_mana": health.current_mana if health else 60.0,
-		"gold": quest_manager.gold if quest_manager else 0,
+		"gold": wallet.gold if wallet else (quest_manager.gold if quest_manager else 0),
 		"inventory": inventory.to_dict() if inventory else [],
 		"equipment": equipment.to_dict() if equipment else {},
 		"spellbook": spellbook.to_dict() if spellbook else {},
@@ -86,8 +87,13 @@ static func apply(world: Node, data: Dictionary) -> bool:
 		health.health_changed.emit(health.current_health, health.max_health)
 		health.mana_changed.emit(health.current_mana, health.max_mana)
 
+	var saved_gold: int = maxi(0, int(data.get("gold", 0)))
+	var wallet := player.wallet_component
+	if wallet:
+		wallet.set_gold(saved_gold)
+
 	if quest_manager:
-		quest_manager.gold = max(0, int(data.get("gold", 0)))
+		quest_manager.gold = saved_gold
 		quest_manager.gold_changed.emit(quest_manager.gold)
 		var legacy_quest: Dictionary = data.get("legacy_quest", {})
 		if quest_manager.current_quest and legacy_quest is Dictionary:

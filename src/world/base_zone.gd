@@ -84,6 +84,11 @@ func setup_signals() -> void:
 			if not p_health.mana_changed.is_connected(_on_player_mana_changed):
 				p_health.mana_changed.connect(_on_player_mana_changed)
 
+		var p_wallet: WalletComponent = player.wallet_component if player.wallet_component else player.get_node_or_null("WalletComponent") as WalletComponent
+		if p_wallet:
+			if not p_wallet.gold_changed.is_connected(_on_gold_changed):
+				p_wallet.gold_changed.connect(_on_gold_changed)
+
 	# Kết nối GameUI
 	if game_ui:
 		if not game_ui.retry_requested.is_connected(_on_retry_requested):
@@ -107,7 +112,7 @@ func setup_signals() -> void:
 			quest_manager.quest_ready_to_turn_in.connect(_on_quest_updated)
 		if not quest_manager.quest_completed.is_connected(_on_quest_updated):
 			quest_manager.quest_completed.connect(_on_quest_updated)
-		if not quest_manager.gold_changed.is_connected(_on_gold_changed):
+		if (player == null or player.wallet_component == null) and not quest_manager.gold_changed.is_connected(_on_gold_changed):
 			quest_manager.gold_changed.connect(_on_gold_changed)
 		if not quest_manager.notification_posted.is_connected(_on_notification_posted):
 			quest_manager.notification_posted.connect(_on_notification_posted)
@@ -190,10 +195,14 @@ func setup_ui() -> void:
 			player.progression_component.level_up.connect(_on_player_level_up)
 
 	# 6. Cập nhật Vàng và Nhiệm vụ
-	if quest_manager:
-		game_ui.update_gold(quest_manager.gold)
-		if quest_manager.current_quest:
-			game_ui.update_quest_info(quest_manager.current_quest)
+	var current_gold: int = 0
+	if player and player.wallet_component:
+		current_gold = player.wallet_component.gold
+	elif quest_manager:
+		current_gold = quest_manager.gold
+	game_ui.update_gold(current_gold)
+	if quest_manager and quest_manager.current_quest:
+		game_ui.update_quest_info(quest_manager.current_quest)
 
 	# 7. Cập nhật thông tin vùng đất (HUD zone label)
 	if game_ui.has_method("set_current_zone"):
@@ -328,7 +337,8 @@ func _on_player_mana_changed(current: float, maximum: float) -> void:
 func _on_quest_updated(_q: QuestData) -> void:
 	if game_ui and quest_manager and quest_manager.current_quest:
 		game_ui.update_quest_info(quest_manager.current_quest)
-		game_ui.update_gold(quest_manager.gold)
+		var current_gold: int = player.wallet_component.gold if (player and player.wallet_component) else quest_manager.gold
+		game_ui.update_gold(current_gold)
 
 func _on_gold_changed(new_gold: int) -> void:
 	if game_ui:
