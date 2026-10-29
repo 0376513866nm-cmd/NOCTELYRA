@@ -113,19 +113,21 @@ signal input_lock_changed(reason: String, blocked: bool)
 @onready var sidebar_inv_gold: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/InventoryPanel/InvGoldLabel") as Label
 @onready var sidebar_open_inv_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/InventoryPanel/OpenInvBtn") as Button
 
-@onready var sidebar_zoom_out_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox/SidebarZoomOutBtn") as Button
-@onready var sidebar_zoom_label: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox/SidebarZoomLabel") as Label
-@onready var sidebar_zoom_in_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox/SidebarZoomInBtn") as Button
-@onready var sidebar_zoom_reset_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox/SidebarZoomResetBtn") as Button
-@onready var sidebar_zoom_slider: HSlider = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SidebarZoomSlider") as HSlider
-@onready var sidebar_fullscreen_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SidebarFullscreenBtn") as Button
+@onready var sidebar_zoom_out_btn: Button = find_child("SidebarZoomOutBtn", true, false) as Button
+@onready var sidebar_zoom_label: Label = find_child("SidebarZoomLabel", true, false) as Label
+@onready var sidebar_zoom_in_btn: Button = find_child("SidebarZoomInBtn", true, false) as Button
+@onready var sidebar_zoom_reset_btn: Button = find_child("SidebarZoomResetBtn", true, false) as Button
+@onready var sidebar_zoom_slider: HSlider = find_child("SidebarZoomSlider", true, false) as HSlider
+@onready var sidebar_fullscreen_btn: Button = find_child("SidebarFullscreenBtn", true, false) as Button
 @onready var sidebar_fps_btn: Button = find_child("SidebarFPSBtn", true, false) as Button
 @onready var fps_panel: PanelContainer = find_child("FPSPanel", true, false) as PanelContainer
 @onready var fps_label: Label = find_child("FPSLabel", true, false) as Label
-@onready var sidebar_save_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SystemBtnsHBox/SidebarSaveBtn") as Button
-@onready var sidebar_quit_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SystemBtnsHBox/SidebarQuitBtn") as Button
+@onready var sidebar_save_btn: Button = find_child("SidebarSaveBtn", true, false) as Button
+@onready var sidebar_quit_btn: Button = find_child("SidebarQuitBtn", true, false) as Button
 @onready var sidebar_hybrid_controls_btn: Button = find_child("SidebarHybridControlsBtn", true, false) as Button
 @onready var sidebar_day_night_btn: Button = find_child("SidebarDayNightBtn", true, false) as Button
+@onready var guide_toggle_btn: Button = find_child("GuideToggleBtn", true, false) as Button
+@onready var guide_content: Control = find_child("GuideContent", true, false) as Control
 @onready var time_btn: Button = get_node_or_null("HUD/TimePanel/TimeBtn") as Button
 
 var _current_sidebar_tab: int = 0
@@ -377,6 +379,8 @@ func _ready() -> void:
 		sidebar_fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
 	if sidebar_fps_btn:
 		sidebar_fps_btn.pressed.connect(_on_toggle_fps_pressed)
+	if guide_toggle_btn:
+		guide_toggle_btn.pressed.connect(_on_guide_toggle_pressed)
 	if sidebar_save_btn:
 		sidebar_save_btn.pressed.connect(_on_save_pressed)
 	if sidebar_quit_btn:
@@ -946,6 +950,12 @@ func _on_toggle_fps_pressed() -> void:
 	_update_settings_ui()
 	var state_str := "BẬT" if SettingsManager.show_fps else "TẮT"
 	show_notification("Hiển thị FPS: " + state_str)
+
+func _on_guide_toggle_pressed() -> void:
+	if guide_content:
+		guide_content.visible = not guide_content.visible
+		if guide_toggle_btn:
+			guide_toggle_btn.text = "📖 Hướng Dẫn Điều Khiển & Phím Tắt ▼ (Thu gọn)" if guide_content.visible else "📖 Hướng Dẫn Điều Khiển & Phím Tắt ▶"
 
 func _update_settings_ui() -> void:
 	if _settings_controller:

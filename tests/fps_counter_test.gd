@@ -78,10 +78,27 @@ func test_game_ui_fps_integration() -> void:
 	var fps_label = game_ui.get_node_or_null("HUD/FPSPanel/FPSLabel")
 	assert(fps_label != null, "HUD/FPSPanel/FPSLabel must exist in game_ui")
 
-	var pause_fps_btn = game_ui.get_node_or_null("PauseMenu/SettingsPanel/FPSBtn")
+	var pause_fps_btn = game_ui.find_child("FPSBtn", true, false)
 	assert(pause_fps_btn != null, "PauseMenu FPSBtn must exist")
-	var sb_fps_btn = game_ui.get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SidebarFPSBtn")
+	var sb_fps_btn = game_ui.find_child("SidebarFPSBtn", true, false)
 	assert(sb_fps_btn != null, "Sidebar FPSBtn must exist")
+
+	# Verify SettingsPanel is a ScrollContainer
+	var settings_panel = game_ui.get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel")
+	assert(settings_panel is ScrollContainer, "SettingsPanel must be a ScrollContainer to support scrolling")
+	assert(settings_panel.vertical_scroll_mode != ScrollContainer.SCROLL_MODE_DISABLED, "Vertical scroll must be enabled")
+
+	# Verify Game Guide collapsible sub-section
+	var guide_btn = game_ui.find_child("GuideToggleBtn", true, false)
+	var guide_content = game_ui.find_child("GuideContent", true, false)
+	assert(guide_btn != null, "GuideToggleBtn must exist in SettingsPanel")
+	assert(guide_content != null, "GuideContent must exist in SettingsPanel")
+	assert(guide_content.visible == false, "GuideContent should be collapsed by default for compact view")
+
+	game_ui._on_guide_toggle_pressed()
+	assert(guide_content.visible == true, "GuideContent should expand on toggle")
+	game_ui._on_guide_toggle_pressed()
+	assert(guide_content.visible == false, "GuideContent should collapse on toggle")
 
 	# Test toggling via game_ui method
 	SettingsManager.show_fps = false

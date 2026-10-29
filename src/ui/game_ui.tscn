@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://d3m8k1y9p2q5"]
+[gd_scene load_steps=14 format=3 uid="uid://d3m8k1y9p2q5"]
 
 [ext_resource type="Script" path="res://src/ui/game_ui.gd" id="1_ui"]
 [ext_resource type="PackedScene" uid="uid://c7m9x4v1q5p2" path="res://src/inventory/inventory_ui.tscn" id="2_inv_ui"]
@@ -46,6 +46,18 @@ corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mp_bg"]
 bg_color = Color(0.05, 0.18, 0.28, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_guide"]
+bg_color = Color(0.06, 0.09, 0.14, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.28, 0.45, 0.65, 0.6)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
@@ -1273,7 +1285,7 @@ custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
 text = "Mở Giao Diện Túi Đồ & Trang Bị (I)"
 
-[node name="SettingsPanel" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer"]
+[node name="SettingsPanel" type="ScrollContainer" parent="Sidebar/MainVBox/ContentContainer"]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -1281,124 +1293,176 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 7
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
 
-[node name="ControlsTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="VBox" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.5, 1)
-text = "🎮 HƯỚNG DẪN ĐIỀU KHIỂN (CONTROLS):"
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
 
-[node name="ControlsGuideText" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
-autowrap_mode = 2
-text = "• A / D hoặc ← / → : Di chuyển trái / phải
-• Space : Nhảy / Nhảy đôi trên không
-• Shift / X : Lướt nhanh né đòn (Dash)
-• J : Đánh thường cận chiến (Slash)
-• K : Dùng ma pháp (Tiêu hao MP)
-• 1, 2, 3 hoặc Cuộn Chuột : Chuyển đổi loại ma pháp
-• U : Nâng cấp kỹ năng đang chọn
-• E : Tương tác với NPC (Eiran) / Cổng
-• F1 : Bật / Tắt phím ảo cảm ứng (Hybrid Controls)
-• Tab / M : Ẩn / Hiện Bảng Điều Khiển
-• Esc : Tạm dừng game"
-
-[node name="HybridControlsHBox" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="HybridControlsHBox" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="HybridTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/HybridControlsHBox"]
+[node name="HybridTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/HybridControlsHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.4, 0.85, 1, 1)
 theme_override_font_sizes/font_size = 14
 text = "📱 Phím Ảo Cảm Ứng (F1):"
 
-[node name="SidebarHybridControlsBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/HybridControlsHBox"]
+[node name="SidebarHybridControlsBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/HybridControlsHBox"]
 custom_minimum_size = Vector2(105, 32)
 layout_mode = 2
 text = "TẮT"
 
-[node name="HSeparator" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="HSeparator" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 
-[node name="ZoomTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="ZoomTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 text = "🔍 Thu Phóng Camera (Zoom):"
 
-[node name="ZoomControlsHBox" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="ZoomControlsHBox" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="SidebarZoomOutBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox"]
+[node name="SidebarZoomOutBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/ZoomControlsHBox"]
 custom_minimum_size = Vector2(44, 30)
 layout_mode = 2
 text = "[-]"
 
-[node name="SidebarZoomLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox"]
+[node name="SidebarZoomLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/ZoomControlsHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "100% (1.0x)"
 horizontal_alignment = 1
 
-[node name="SidebarZoomInBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox"]
+[node name="SidebarZoomInBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/ZoomControlsHBox"]
 custom_minimum_size = Vector2(44, 30)
 layout_mode = 2
 text = "[+]"
 
-[node name="SidebarZoomResetBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox"]
+[node name="SidebarZoomResetBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/ZoomControlsHBox"]
 custom_minimum_size = Vector2(70, 30)
 layout_mode = 2
 text = "Đặt Lại"
 
-[node name="SidebarZoomSlider" type="HSlider" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="SidebarZoomSlider" type="HSlider" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 min_value = 0.6
 max_value = 1.8
 step = 0.05
 value = 1.0
 
-[node name="HSeparator2" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="HSeparator2" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 
-[node name="SidebarFullscreenBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="DisplaySectionLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
+layout_mode = 2
+text = "🖥️ Màn Hình & Hiệu Năng"
+
+[node name="SidebarFullscreenBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Toàn Màn Hình: TẮT"
 
-[node name="SidebarFPSBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="SidebarFPSBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Hiển Thị FPS: TẮT"
 
-[node name="HSeparator3" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="HSeparator3" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 
-[node name="DayNightSectionLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="DayNightSectionLabel" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 text = "Thời Khắc & Ánh Sáng Thế Giới"
 
-[node name="SidebarDayNightBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="SidebarDayNightBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "🌙 Chuyển Thời Gian (Phím L)"
 
-[node name="HSeparator4" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="HSeparator4" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 
-[node name="SystemBtnsHBox" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel"]
+[node name="GuideToggleBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+text = "📖 Hướng Dẫn Điều Khiển & Phím Tắt ▶"
+
+[node name="GuideContent" type="PanelContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_guide")
+
+[node name="Margin" type="MarginContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/GuideContent"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="GuideVBox" type="VBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/GuideContent/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="GuideCombatTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/GuideContent/Margin/GuideVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.5, 1)
+theme_override_font_sizes/font_size = 12
+text = "⚔️ CHIẾN ĐẤU & DI CHUYỂN:"
+
+[node name="GuideCombatText" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/GuideContent/Margin/GuideVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• A / D hoặc ← / → : Di chuyển trái / phải
+• Space : Nhảy / Nhảy đôi trên không
+• Shift / X : Lướt nhanh né đòn (Dash)
+• J : Đánh thường cận chiến (Slash)
+• K : Tung ma pháp (Tiêu hao MP)
+• 1, 2, 3 / Cuộn chuột : Đổi loại ma pháp
+• U : Nâng cấp kỹ năng đang chọn"
+
+[node name="HSeparatorGuide" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/GuideContent/Margin/GuideVBox"]
+layout_mode = 2
+
+[node name="GuideSystemTitle" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/GuideContent/Margin/GuideVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "🧭 HỆ THỐNG & GIAO DIỆN:"
+
+[node name="GuideSystemText" type="Label" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/GuideContent/Margin/GuideVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "• E : Tương tác NPC / Cổng / Mở hòm
+• F1 : Bật / Tắt phím ảo cảm ứng (Hybrid)
+• F3 : Bật / Tắt đo FPS
+• I : Mở Túi Đồ & Trang Bị
+• Q : Mở Sổ Nhiệm Vụ
+• C : Mở Bảng Thông Tin Nhân Vật
+• L : Chuyển đổi Ngày / Đêm
+• Tab / M : Ẩn / Hiện Bảng Điều Khiển
+• Esc : Tạm dừng game"
+
+[node name="HSeparator5" type="HSeparator" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
+layout_mode = 2
+
+[node name="SystemBtnsHBox" type="HBoxContainer" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="SidebarSaveBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/SystemBtnsHBox"]
+[node name="SidebarSaveBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/SystemBtnsHBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 size_flags_horizontal = 3
 text = "💾 Lưu Game"
 
-[node name="SidebarQuitBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/SystemBtnsHBox"]
+[node name="SidebarQuitBtn" type="Button" parent="Sidebar/MainVBox/ContentContainer/SettingsPanel/VBox/SystemBtnsHBox"]
 custom_minimum_size = Vector2(0, 34)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "🚪 Thoát Game"
+text = "🚪 Thoát Game" 
