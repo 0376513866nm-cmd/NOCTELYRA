@@ -102,7 +102,6 @@ func complete_quest(player_health: HealthComponent = null) -> bool:
 	
 	current_quest.current_state = QuestData.State.COMPLETED
 	gold += current_quest.reward_gold
-	emit_signal("gold_changed", gold)
 
 	if player_health:
 		player_health.current_health = player_health.max_health

@@ -91,10 +91,8 @@ static func apply(world: Node, data: Dictionary) -> bool:
 	var wallet := player.wallet_component
 	if wallet:
 		wallet.set_gold(saved_gold)
-
-	if quest_manager:
+	elif quest_manager:
 		quest_manager.gold = saved_gold
-		quest_manager.gold_changed.emit(quest_manager.gold)
 		var legacy_quest: Dictionary = data.get("legacy_quest", {})
 		if quest_manager.current_quest and legacy_quest is Dictionary:
 			var state: int = clampi(int(legacy_quest.get("state", 0)), 0, 3)
