@@ -108,13 +108,12 @@ static func load_game(world: Node) -> bool:
 				quest_manager._killed_enemy_ids.append(stable_id)
 
 	var gate := world.get_node_or_null("MagicGate") as MagicGate
-	if gate and quest_manager and quest_manager.current_quest:
-		gate.update_quest_status(quest_manager.current_quest)
+	if gate:
+		gate.update_quest_status()
 
 	var ui := world.get_node_or_null("GameUI") as GameUI
 	if ui:
-		if quest_manager and quest_manager.current_quest:
-			ui.update_quest_info(quest_manager.current_quest)
+		ui.update_quest_info()
 		var current_gold: int = 0
 		if player and player.wallet_component:
 			current_gold = player.wallet_component.gold

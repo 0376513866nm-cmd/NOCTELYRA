@@ -83,7 +83,8 @@ func start_quest(quest_id: String) -> bool:
 	var def := QuestDefinition.get_definition(quest_id)
 
 	# 1. Nếu là nhiệm vụ diệt quái: đồng bộ số quái đã từng diệt trước đó (chống kẹt do diệt quái sớm)
-	if def.quest_type == QuestDefinition.QuestType.KILL_ENEMY_TYPE:
+	# Với Main Quest (Eiran): bảo toàn nguyên bản cơ chế nhận nhiệm vụ xong mới bắt đầu tính quái!
+	if def.quest_type == QuestDefinition.QuestType.KILL_ENEMY_TYPE and not def.is_main_quest:
 		_sync_prior_kills(quest_id, def)
 	# 2. Nếu là nhiệm vụ thu thập: đồng bộ vật phẩm sẵn có trong túi đồ
 	elif def.quest_type == QuestDefinition.QuestType.COLLECT_ITEMS:

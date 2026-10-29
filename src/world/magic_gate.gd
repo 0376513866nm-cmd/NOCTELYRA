@@ -54,11 +54,17 @@ func update_quest_status(quest: Variant = null) -> void:
 	elif quest is bool:
 		completed = quest
 	else:
-		var cur_scene := get_tree().current_scene if get_tree() else null
-		if cur_scene:
-			var p := cur_scene.get_node_or_null("Player") as Player
-			if p and p.quest_journal_component:
-				completed = (p.quest_journal_component.get_quest_state("quest_noctis_purify") == QuestDefinition.State.COMPLETED)
+		var p: Player = null
+		if get_parent():
+			p = get_parent().get_node_or_null("Player") as Player
+		if p == null and get_tree() and get_tree().current_scene:
+			p = get_tree().current_scene.get_node_or_null("Player") as Player
+		if p and p.quest_journal_component:
+			completed = (p.quest_journal_component.get_quest_state("quest_noctis_purify") == QuestDefinition.State.COMPLETED)
+		elif not completed and get_parent():
+			var qm = get_parent().get_node_or_null("QuestManager") as QuestManager
+			if qm and qm.current_quest:
+				completed = (qm.current_quest.current_state == QuestData.State.COMPLETED)
 
 	if completed:
 		if not is_open:

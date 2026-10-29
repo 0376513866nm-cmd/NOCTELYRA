@@ -1254,6 +1254,13 @@ func _run_all_tests() -> void:
 		world_flow.queue_free()
 		return
 
+	# 10.2b: Kiểm tra quái bị diệt TRƯỚC khi nhận quest KHÔNG được tính vào Main Quest (bảo toàn gameplay cũ)
+	var early_wolf := Enemy.new()
+	early_wolf.enemy_type_id = "corrupted_wolf"
+	early_wolf.enemy_id = "enemy_forest_early"
+	journal_flow.register_enemy_kill(early_wolf)
+	early_wolf.free()
+
 	# 10.3: Nhận nhiệm vụ qua QuestActionService
 	var act_start_res := QuestActionService.execute(str(interact_offer.get("action")), world_flow)
 	if not act_start_res.get("success", false):
@@ -1264,23 +1271,51 @@ func _run_all_tests() -> void:
 		_fail("Test 10: Nhiệm vụ phải ở trạng thái ACTIVE sau khi nhận!")
 		world_flow.queue_free()
 		return
+	if journal_flow.get_quest_progress("quest_noctis_purify") != 0:
+		_fail("Test 10: Quái diệt trước khi nhận quest tuyệt đối không được tính vào Main Quest! Nhận: " + str(journal_flow.get_quest_progress("quest_noctis_purify")))
+		world_flow.queue_free()
+		return
 	if gate_flow.is_open:
 		_fail("Test 10: Cổng Ma Pháp phải đóng khi mới nhận nhiệm vụ!")
 		world_flow.queue_free()
 		return
 
-	# 10.4: Tiêu diệt 3 quái sói thật
+	# 10.4: Tiêu diệt 3 quái sói thật qua pipeline thực tế và kiểm tra HUD cập nhật từng mốc
+	var game_ui_flow := world_flow.get_node_or_null("GameUI") as GameUI
+	var wolf_scene := preload("res://src/actors/enemy/enemy.tscn")
 	for w_idx in [1, 2, 3]:
-		var wolf_enemy := Enemy.new()
+		var wolf_enemy: Enemy = wolf_scene.instantiate()
 		wolf_enemy.enemy_type_id = "corrupted_wolf"
 		wolf_enemy.enemy_id = "enemy_forest_" + str(w_idx)
+		world_flow.add_child(wolf_enemy)
+		world_flow._on_enemy_defeated(wolf_enemy)
 		journal_flow.register_enemy_kill(wolf_enemy)
-		wolf_enemy.free()
+		wolf_enemy.queue_free()
+		await process_frame
 
-	if journal_flow.get_quest_progress("quest_noctis_purify") != 3:
-		_fail("Test 10: Tiến độ phải đạt 3/3 sau khi diệt 3 sói!")
-		world_flow.queue_free()
-		return
+		if journal_flow.get_quest_progress("quest_noctis_purify") != w_idx:
+			_fail("Test 10: Tiến độ sau khi diệt quái %d phải bằng %d! Nhận: %d" % [w_idx, w_idx, journal_flow.get_quest_progress("quest_noctis_purify")])
+			world_flow.queue_free()
+			return
+
+		# Kiểm tra HUD nhiệm vụ hiển thị chuẩn xác từng mốc
+		if game_ui_flow and game_ui_flow.quest_progress_label:
+			if w_idx == 1:
+				if game_ui_flow.quest_progress_label.text != "Tiêu diệt sinh vật: 1/3":
+					_fail("Test 10: HUD hiển thị sai ở mốc 1/3! Nhận: " + game_ui_flow.quest_progress_label.text)
+					world_flow.queue_free()
+					return
+			elif w_idx == 2:
+				if game_ui_flow.quest_progress_label.text != "Tiêu diệt sinh vật: 2/3":
+					_fail("Test 10: HUD hiển thị sai ở mốc 2/3! Nhận: " + game_ui_flow.quest_progress_label.text)
+					world_flow.queue_free()
+					return
+			elif w_idx == 3:
+				if game_ui_flow.quest_progress_label.text != "Tiến độ: 3/3 (Về gặp Eiran nhận thưởng!)":
+					_fail("Test 10: HUD hiển thị sai ở mốc 3/3! Nhận: " + game_ui_flow.quest_progress_label.text)
+					world_flow.queue_free()
+					return
+
 	if journal_flow.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN:
 		_fail("Test 10: Nhiệm vụ phải đạt READY_TO_TURN_IN sau khi đủ 3 quái!")
 		world_flow.queue_free()

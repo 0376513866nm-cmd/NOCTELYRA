@@ -100,12 +100,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func setup_ui() -> void:
 	super.setup_ui()
-	# Đồng bộ trạng thái mở cổng theo nhiệm vụ
+	# Đồng bộ trạng thái mở cổng theo QuestJournalComponent
 	if magic_gate:
-		if quest_manager and quest_manager.current_quest:
-			magic_gate.update_quest_status(quest_manager.current_quest)
-		else:
-			magic_gate.update_quest_status()
+		magic_gate.update_quest_status()
 
 func _on_journal_quest_completed(quest_id: String) -> void:
 	if quest_id == "quest_noctis_purify" and magic_gate:

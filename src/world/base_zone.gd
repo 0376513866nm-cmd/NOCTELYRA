@@ -89,6 +89,17 @@ func setup_signals() -> void:
 			if not p_wallet.gold_changed.is_connected(_on_gold_changed):
 				p_wallet.gold_changed.connect(_on_gold_changed)
 
+		var p_journal: QuestJournalComponent = player.quest_journal_component if player.quest_journal_component else player.get_node_or_null("QuestJournalComponent") as QuestJournalComponent
+		if p_journal:
+			if not p_journal.quest_started.is_connected(_on_journal_quest_event):
+				p_journal.quest_started.connect(_on_journal_quest_event)
+			if not p_journal.quest_updated.is_connected(_on_journal_quest_updated):
+				p_journal.quest_updated.connect(_on_journal_quest_updated)
+			if not p_journal.quest_ready.is_connected(_on_journal_quest_event):
+				p_journal.quest_ready.connect(_on_journal_quest_event)
+			if not p_journal.quest_completed.is_connected(_on_journal_quest_event):
+				p_journal.quest_completed.connect(_on_journal_quest_event)
+
 	# Kết nối GameUI
 	if game_ui:
 		if not game_ui.retry_requested.is_connected(_on_retry_requested):
@@ -201,8 +212,8 @@ func setup_ui() -> void:
 	elif quest_manager:
 		current_gold = quest_manager.gold
 	game_ui.update_gold(current_gold)
-	if quest_manager and quest_manager.current_quest:
-		game_ui.update_quest_info(quest_manager.current_quest)
+	if game_ui:
+		game_ui.update_quest_info()
 
 	# 7. Cập nhật thông tin vùng đất (HUD zone label)
 	if game_ui.has_method("set_current_zone"):
@@ -334,10 +345,23 @@ func _on_player_mana_changed(current: float, maximum: float) -> void:
 	if game_ui:
 		game_ui.update_player_mp(current, maximum)
 
+func _on_journal_quest_event(_quest_id: String) -> void:
+	if game_ui:
+		game_ui.update_quest_info()
+
+func _on_journal_quest_updated(quest_id: String, current: int, target: int, state: int) -> void:
+	if game_ui:
+		game_ui.update_quest_info()
+		if quest_id == "quest_noctis_purify":
+			if state == QuestDefinition.State.ACTIVE:
+				game_ui.show_notification("Tiến độ: %d/%d sinh vật tha hóa" % [current, target])
+			elif state == QuestDefinition.State.READY_TO_TURN_IN:
+				game_ui.show_notification("Nhiệm vụ hoàn tất! Hãy về gặp Eiran để nhận thưởng.")
+
 func _on_quest_updated(_q: QuestData) -> void:
-	if game_ui and quest_manager and quest_manager.current_quest:
-		game_ui.update_quest_info(quest_manager.current_quest)
-		var current_gold: int = player.wallet_component.gold if (player and player.wallet_component) else quest_manager.gold
+	if game_ui:
+		game_ui.update_quest_info()
+		var current_gold: int = player.wallet_component.gold if (player and player.wallet_component) else (quest_manager.gold if quest_manager else 0)
 		game_ui.update_gold(current_gold)
 
 func _on_gold_changed(new_gold: int) -> void:

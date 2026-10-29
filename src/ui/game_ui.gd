@@ -652,20 +652,43 @@ func update_gold(amount: int) -> void:
 	if sidebar_inv_gold:
 		sidebar_inv_gold.text = "🪙 Vàng Sở Hữu: %d G" % amount
 
-func update_quest_info(quest: QuestData) -> void:
-	if quest == null:
-		return
+func update_quest_info(quest: Variant = null) -> void:
+	var q_title: String = ""
+	var q_state: int = 0
+	var q_progress: int = 0
+	var q_target: int = 3
+
+	if quest is QuestData:
+		q_title = quest.title
+		q_state = int(quest.current_state)
+		q_progress = quest.current_amount
+		q_target = quest.target_amount
+	else:
+		var p: Player = null
+		if get_parent():
+			p = get_parent().get_node_or_null("Player") as Player
+		if p == null and get_tree() and get_tree().current_scene:
+			p = get_tree().current_scene.get_node_or_null("Player") as Player
+		if p and p.quest_journal_component:
+			var def := ContentRegistry.get_quest("quest_noctis_purify")
+			q_title = def.title if def else "Ánh Sáng Bị Nuốt Chửng"
+			q_state = p.quest_journal_component.get_quest_state("quest_noctis_purify")
+			q_progress = p.quest_journal_component.get_quest_progress("quest_noctis_purify")
+			q_target = def.target_amount if def else 3
+		else:
+			return
+
 	if quest_title_label:
-		quest_title_label.text = "Nhiệm vụ: %s" % quest.title
+		quest_title_label.text = "Nhiệm vụ: %s" % q_title
 	if quest_progress_label:
-		match quest.current_state:
-			QuestData.State.NOT_STARTED:
+		match q_state:
+			0:
 				quest_progress_label.text = "Tiến độ: Chưa nhận (Gặp Eiran)"
-			QuestData.State.ACTIVE:
-				quest_progress_label.text = "Tiêu diệt sinh vật: %d/%d" % [quest.current_amount, quest.target_amount]
-			QuestData.State.READY_TO_TURN_IN:
+			1:
+				quest_progress_label.text = "Tiêu diệt sinh vật: %d/%d" % [q_progress, q_target]
+			2:
 				quest_progress_label.text = "Tiến độ: 3/3 (Về gặp Eiran nhận thưởng!)"
-			QuestData.State.COMPLETED:
+			3:
 				quest_progress_label.text = "Trạng thái: Hoàn thành! (Cổng Đấu trường đã mở)"
 	update_quest_journal_ui()
 
