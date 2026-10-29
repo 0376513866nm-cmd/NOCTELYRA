@@ -313,6 +313,67 @@ func _run_tests() -> void:
 		return
 	print("[PASS] Bài test 8: Signals notification_posted và player_died kết nối đúng sang GameUI OK")
 	
+	# --- BÀI TEST 9: Bảo toàn trạng thái Hybrid Controls khi thay đổi trong Sidebar và sau khi đóng Sidebar ---
+	# 9.1 Bắt đầu với Hybrid Controls tắt
+	scene_ui.set_touch_controls_visible(false)
+	if touch.visible:
+		_fail("Touch controls phải bị ẩn khi set_touch_controls_visible(false)!")
+		return
+	if not scene_ui.sidebar_toggle_btn.visible:
+		_fail("SidebarToggleBtn phải hiển thị khi Touch controls bị ẩn!")
+		return
+
+	# 9.2 Mở Sidebar: Touch controls và ToggleBtn đều phải tạm thời bị ẩn
+	scene_ui.open_sidebar(3) # Tab Settings
+	if not scene_ui.is_sidebar_open():
+		_fail("Sidebar phải mở thành công!")
+		return
+	if touch.visible:
+		_fail("Touch controls phải tạm ẩn khi Sidebar đang mở!")
+		return
+	if scene_ui.sidebar_toggle_btn.visible:
+		_fail("SidebarToggleBtn phải tạm ẩn khi Sidebar đang mở!")
+		return
+
+	# 9.3 Người chơi bật Hybrid Controls trong lúc Sidebar đang mở
+	scene_ui.toggle_touch_controls()
+	if not SettingsManager.hybrid_controls_enabled:
+		_fail("hybrid_controls_enabled phải là true sau khi toggle_touch_controls()!")
+		return
+	if scene_ui.sidebar_hybrid_controls_btn and scene_ui.sidebar_hybrid_controls_btn.text != "BẬT":
+		_fail("Nút SidebarHybridControlsBtn phải hiển thị 'BẬT'!")
+		return
+
+	# 9.4 Đóng Sidebar: Trạng thái Hybrid Controls vừa bật PHẢI được áp dụng và bảo toàn
+	scene_ui.close_sidebar()
+	if scene_ui.is_sidebar_open():
+		_fail("Sidebar phải đóng thành công!")
+		return
+	if not touch.visible:
+		_fail("Touch controls PHẢI hiển thị sau khi đóng Sidebar vì người chơi đã bật Hybrid Controls!")
+		return
+	if scene_ui.sidebar_toggle_btn.visible:
+		_fail("SidebarToggleBtn PHẢI ẩn khi Touch controls đang hiển thị!")
+		return
+
+	# 9.5 Đảo chiều: Mở Sidebar và tắt Hybrid Controls
+	scene_ui.open_sidebar(3)
+	scene_ui.toggle_touch_controls()
+	if SettingsManager.hybrid_controls_enabled:
+		_fail("hybrid_controls_enabled phải là false sau khi toggle_touch_controls() lần 2!")
+		return
+	if scene_ui.sidebar_hybrid_controls_btn and scene_ui.sidebar_hybrid_controls_btn.text != "TẮT":
+		_fail("Nút SidebarHybridControlsBtn phải hiển thị 'TẮT'!")
+		return
+	scene_ui.close_sidebar()
+	if touch.visible:
+		_fail("Touch controls PHẢI ẩn sau khi đóng Sidebar vì người chơi đã tắt Hybrid Controls!")
+		return
+	if not scene_ui.sidebar_toggle_btn.visible:
+		_fail("SidebarToggleBtn PHẢI hiển thị sau khi đóng Sidebar vì Touch controls đã tắt!")
+		return
+	print("[PASS] Bài test 9: Bảo toàn trạng thái Hybrid Controls khi thay đổi trong Sidebar và sau khi đóng Sidebar OK")
+	
 	world.queue_free()
 	await process_frame
 	

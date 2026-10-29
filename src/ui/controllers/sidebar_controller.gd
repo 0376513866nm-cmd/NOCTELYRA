@@ -1,6 +1,8 @@
 class_name SidebarController
 extends RefCounted
 
+const SettingsManager = preload("res://src/ui/settings_manager.gd")
+
 ## Bộ điều khiển Sidebar (Stats, Quests, Inventory, Settings) cho GameUI
 ## Phụ trách quản lý trạng thái hiển thị, chuyển đổi tab và cập nhật nội dung dữ liệu bên trong Sidebar.
 
@@ -8,6 +10,7 @@ var sidebar_panel: Control
 var touch_controls: Control
 var toggle_btn: Button
 var close_btn: Button
+var spell_hotbar: Control
 
 # Tab Buttons
 var tab_btn_stats: Button
@@ -50,31 +53,38 @@ var quest_progress: Label
 var inv_gold: Label
 
 var current_tab: int = 0
-var was_touch_controls_visible: bool = false
+
+static func should_show_touch_controls() -> bool:
+	var is_mobile := OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios") or OS.has_feature("web_android") or OS.has_feature("web_ios")
+	return is_mobile or SettingsManager.hybrid_controls_enabled
 
 func is_open() -> bool:
 	return sidebar_panel != null and sidebar_panel.visible
 
 func open(tab_idx: int = -1) -> void:
-	var was_already_open := is_open()
 	if sidebar_panel:
 		sidebar_panel.visible = true
 		if tab_idx >= 0:
 			switch_tab(tab_idx)
 	if touch_controls:
-		if not was_already_open:
-			was_touch_controls_visible = touch_controls.visible
 		touch_controls.visible = false
 	if toggle_btn:
 		toggle_btn.visible = false
+	if spell_hotbar:
+		spell_hotbar.visible = false
 
 func close() -> void:
 	if sidebar_panel:
 		sidebar_panel.visible = false
+	var show_touch := should_show_touch_controls()
 	if touch_controls:
-		touch_controls.visible = was_touch_controls_visible
+		touch_controls.visible = show_touch
+		if show_touch and touch_controls.has_method("_sync_current_spell_icon"):
+			touch_controls._sync_current_spell_icon()
 	if toggle_btn:
-		toggle_btn.visible = not was_touch_controls_visible
+		toggle_btn.visible = not show_touch
+	if spell_hotbar:
+		spell_hotbar.visible = not show_touch
 
 func toggle() -> void:
 	if is_open():

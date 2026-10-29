@@ -125,7 +125,6 @@ signal input_lock_changed(reason: String, blocked: bool)
 @onready var time_btn: Button = get_node_or_null("HUD/TimePanel/TimeBtn") as Button
 
 var _current_sidebar_tab: int = 0
-var _was_touch_controls_visible: bool = false
 
 @onready var zone_label: Label = $HUD/ZoneLabel
 @onready var zone_banner: Control = $ZoneBanner
@@ -224,6 +223,7 @@ func _ready() -> void:
 	_sidebar_controller.touch_controls = touch_controls
 	_sidebar_controller.toggle_btn = sidebar_toggle_btn
 	_sidebar_controller.close_btn = sidebar_close_btn
+	_sidebar_controller.spell_hotbar = spell_hotbar
 
 	_sidebar_controller.tab_btn_stats = tab_btn_stats
 	_sidebar_controller.tab_btn_quests = tab_btn_quests
@@ -966,29 +966,28 @@ func _get_spell_lbl(item_name: String) -> Label:
 	return null
 
 func toggle_touch_controls() -> void:
-	var cur_vis: bool = touch_controls.visible if touch_controls else false
-	set_touch_controls_visible(not cur_vis)
+	var next_enabled := not SettingsManager.hybrid_controls_enabled
+	set_touch_controls_visible(next_enabled)
 	SettingsManager.save_settings()
-	var state_str: String = "BẬT" if (touch_controls and touch_controls.visible) else "TẮT"
+	var state_str: String = "BẬT" if next_enabled else "TẮT"
 	show_notification("Phím ảo cảm ứng (Hybrid): " + state_str)
 
 func set_touch_controls_visible(show: bool) -> void:
 	SettingsManager.hybrid_controls_enabled = show
-	_was_touch_controls_visible = show
-	if touch_controls:
-		touch_controls.visible = show
-		if show and touch_controls.has_method("_sync_current_spell_icon"):
-			touch_controls._sync_current_spell_icon()
-	if sidebar_toggle_btn:
-		sidebar_toggle_btn.visible = not show
-	if spell_hotbar:
-		spell_hotbar.visible = not show
+	if not is_sidebar_open():
+		if touch_controls:
+			touch_controls.visible = show
+			if show and touch_controls.has_method("_sync_current_spell_icon"):
+				touch_controls._sync_current_spell_icon()
+		if sidebar_toggle_btn:
+			sidebar_toggle_btn.visible = not show
+		if spell_hotbar:
+			spell_hotbar.visible = not show
 	_update_hybrid_controls_ui()
 
 func _update_hybrid_controls_ui() -> void:
 	if sidebar_hybrid_controls_btn:
-		var is_on: bool = touch_controls.visible if touch_controls else false
-		sidebar_hybrid_controls_btn.text = "BẬT" if is_on else "TẮT"
+		sidebar_hybrid_controls_btn.text = "BẬT" if SettingsManager.hybrid_controls_enabled else "TẮT"
 
 func _check_connect_spellbook() -> void:
 	if _connected_spellbook and is_instance_valid(_connected_spellbook):
