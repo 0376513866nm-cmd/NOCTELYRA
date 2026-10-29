@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ZoneDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/world/zone_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+zone_id = "noctis_forest"
+display_name = "Rừng Noctis"
+sub_title = "Bìa Rừng Hắc Nguyệt — Làng Ánh Nguyệt"
+scene_path = "res://src/world/noctis_forest.tscn"
+default_spawn = "spawn_default"

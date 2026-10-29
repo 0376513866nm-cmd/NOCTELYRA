@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/item_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "eclipse_fragment"
+display_name = "Mảnh Nguyệt Thực"
+description = "Mảnh tinh thể ngưng tụ từ ma lực hắc nguyệt đã được thanh tẩy của linh thú Lunareth."
+placeholder_color = Color(0.85, 0.35, 0.95, 1)
+sell_value = 250

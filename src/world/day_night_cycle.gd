@@ -33,7 +33,7 @@ const AMBIENT_DAY: Color   = Color(1.00, 1.00, 1.00, 1.0) # Ban ngày (ánh nắ
 const AMBIENT_DUSK: Color  = Color(0.95, 0.65, 0.48, 1.0) # Hoàng hôn (cam rực - tím tía)
 
 func _ready() -> void:
-	add_to_group("day_night_cycle")
+	add_to_group(GameGroups.DAY_NIGHT_CYCLE)
 	_find_node_references()
 	_update_lighting(0.0)
 

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="RaceDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/race/race_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+race_id = "elf"
+display_name = "Tinh Linh tộc"
+title = "Người Gìn Giữ Tinh Mạch Elyndra"
+description = "Hậu duệ cổ xưa của Thánh Lâm Elyndra với trí tuệ ma pháp siêu phàm."
+pros = "Nhiều MP, hồi MP nhanh, sát thương phép cao và di chuyển nhanh."
+cons = "HP cơ bản thấp, sức chống chịu vật lý mỏng."
+base_health = 90.0
+base_mana = 80.0
+base_attack = 23.0
+base_mana_regen = 7.0
+base_move_speed = 275.0
+magic_damage_multiplier = 1.1
+theme_color = Color(0.2, 0.85, 0.55, 1)
+aura_color = Color(0.2, 0.9, 0.6, 0.4)

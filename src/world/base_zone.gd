@@ -72,8 +72,8 @@ func init_base_references() -> void:
 func setup_signals() -> void:
 	# Kết nối Player
 	if player:
-		if not player.is_in_group("players"):
-			player.add_to_group("players")
+		if not player.is_in_group(GameGroups.PLAYERS):
+			player.add_to_group(GameGroups.PLAYERS)
 		if not player.state_changed.is_connected(_on_player_state_changed):
 			player.state_changed.connect(_on_player_state_changed)
 
@@ -106,13 +106,13 @@ func setup_signals() -> void:
 
 	# Kết nối tất cả NPC trong khu vực
 	if get_tree():
-		for n in get_tree().get_nodes_in_group("npcs"):
+		for n in get_tree().get_nodes_in_group(GameGroups.NPCS):
 			if n is NPC and not n.dialogue_requested.is_connected(_on_npc_dialogue_requested):
 				n.dialogue_requested.connect(_on_npc_dialogue_requested)
 
 	# Kết nối tất cả Enemy trong khu vực
 	if get_tree():
-		for e in get_tree().get_nodes_in_group("enemies"):
+		for e in get_tree().get_nodes_in_group(GameGroups.ENEMIES):
 			if e is Enemy and is_ancestor_of(e):
 				if not e.enemy_respawned.is_connected(_on_enemy_respawned):
 					e.enemy_respawned.connect(_on_enemy_respawned)
@@ -231,7 +231,7 @@ func _on_enemy_respawned(enemy_node: Node) -> void:
 
 func get_dropped_pickups_data() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	var dyn_pickups = get_tree().get_nodes_in_group("dynamic_pickups")
+	var dyn_pickups = get_tree().get_nodes_in_group(GameGroups.DYNAMIC_PICKUPS)
 	for p in dyn_pickups:
 		if p is ItemPickup and is_instance_valid(p) and not p.is_picked_up and not p.is_queued_for_deletion():
 			# Chỉ lấy các pickup thuộc khu vực hiện tại
@@ -258,14 +258,14 @@ func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_def
 		defeated_enemy_ids.append(str(id))
 
 	# 1. Dọn các vật phẩm đặt sẵn đã từng nhặt
-	var preplaced = get_tree().get_nodes_in_group("preplaced_pickups")
+	var preplaced = get_tree().get_nodes_in_group(GameGroups.PREPLACED_PICKUPS)
 	for p in preplaced:
 		if is_ancestor_of(p) and p is ItemPickup and not p.pickup_id.is_empty():
 			if p.pickup_id in collected_pickup_ids:
 				p.queue_free()
 
 	# 2. Xóa các dynamic pickup cũ trước khi phục hồi danh sách lưu (tránh nhân bản)
-	var existing_dyn = get_tree().get_nodes_in_group("dynamic_pickups")
+	var existing_dyn = get_tree().get_nodes_in_group(GameGroups.DYNAMIC_PICKUPS)
 	for p in existing_dyn:
 		if is_ancestor_of(p) and is_instance_valid(p):
 			p.queue_free()
@@ -285,7 +285,7 @@ func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_def
 			add_child(p)
 
 	# 4. Xóa các quái đã chết
-	var enemies = get_tree().get_nodes_in_group("enemies")
+	var enemies = get_tree().get_nodes_in_group(GameGroups.ENEMIES)
 	for e in enemies:
 		if is_ancestor_of(e) and e is Enemy and not e.enemy_id.is_empty():
 			if e.enemy_id in defeated_enemy_ids:
@@ -293,7 +293,7 @@ func restore_world_state(p_collected_ids: Array, p_dropped_pickups: Array, p_def
 
 func clear_player_projectiles() -> void:
 	if get_tree():
-		var projectiles := get_tree().get_nodes_in_group("player_projectiles")
+		var projectiles := get_tree().get_nodes_in_group(GameGroups.PLAYER_PROJECTILES)
 		for p in projectiles:
 			if is_instance_valid(p) and not p.is_queued_for_deletion():
 				p.queue_free()

@@ -40,20 +40,14 @@ func _on_inventory_updated() -> void:
 			update_item_collection(inv)
 
 func _ensure_default_quests() -> void:
-	if not _quests.has("quest_elyndra_cleansing"):
-		_quests["quest_elyndra_cleansing"] = {
-			"state": State.NOT_STARTED,
-			"current_amount": 0,
-			"reward_claimed": false,
-			"counted_enemy_ids": []
-		}
-	if not _quests.has("quest_vharok_embers"):
-		_quests["quest_vharok_embers"] = {
-			"state": State.NOT_STARTED,
-			"current_amount": 0,
-			"reward_claimed": false,
-			"counted_enemy_ids": []
-		}
+	for definition in ContentRegistry.catalog().quests:
+		if definition and not _quests.has(definition.quest_id):
+			_quests[definition.quest_id] = {
+				"state": State.NOT_STARTED,
+				"current_amount": 0,
+				"reward_claimed": false,
+				"counted_enemy_ids": []
+			}
 
 func get_quest_state(quest_id: String) -> int:
 	_ensure_default_quests()
@@ -159,50 +153,50 @@ func register_enemy_kill(enemy: Node) -> void:
 	if not enemy_id_str in _kill_history[enemy_type]:
 		_kill_history[enemy_type].append(enemy_id_str)
 
-	# 1. Kiểm tra nhiệm vụ Kaelis: Thanh Lọc Tinh Mạch (chỉ tính quái corrupted_mooncap)
-	if enemy_type == "corrupted_mooncap":
-		var q_id := "quest_elyndra_cleansing"
-		var q: Dictionary = _quests[q_id]
-		if q.get("state") == State.ACTIVE:
-			var counted: Array = q.get("counted_enemy_ids", [])
-			if not enemy_id_str in counted:
-				counted.append(enemy_id_str)
-				q["counted_enemy_ids"] = counted
-				q["current_amount"] = q.get("current_amount", 0) + 1
-				var def := QuestDefinition.get_definition(q_id)
-				var cur: int = q["current_amount"]
-
-				if cur >= def.target_amount:
-					q["state"] = State.READY_TO_TURN_IN
-					emit_signal("quest_ready", q_id)
-				emit_signal("quest_updated", q_id, cur, def.target_amount, q["state"])
-				emit_signal("journal_changed")
+	for definition in ContentRegistry.catalog().quests:
+		if definition == null or definition.quest_type != QuestDefinition.QuestType.KILL_ENEMY_TYPE:
+			continue
+		if definition.target_id != enemy_type:
+			continue
+		var quest: Dictionary = _quests.get(definition.quest_id, {})
+		if quest.get("state", State.NOT_STARTED) != State.ACTIVE:
+			continue
+		var counted: Array = quest.get("counted_enemy_ids", [])
+		if enemy_id_str in counted:
+			continue
+		counted.append(enemy_id_str)
+		quest["counted_enemy_ids"] = counted
+		var current := mini(counted.size(), definition.target_amount)
+		quest["current_amount"] = current
+		if current >= definition.target_amount:
+			quest["state"] = State.READY_TO_TURN_IN
+			quest_ready.emit(definition.quest_id)
+		quest_updated.emit(definition.quest_id, current, definition.target_amount, quest["state"])
+		journal_changed.emit()
 
 func update_item_collection(inventory: InventoryComponent) -> void:
 	if inventory == null:
 		return
 	_ensure_default_quests()
 
-	# Cập nhật nhiệm vụ Rhaek: Tàn Hỏa Hắc Nham (thu thập ember_core)
-	var q_id := "quest_vharok_embers"
-	var q: Dictionary = _quests[q_id]
-	var st: int = q.get("state", State.NOT_STARTED)
-
-	if st == State.ACTIVE or st == State.READY_TO_TURN_IN:
-		var def := QuestDefinition.get_definition(q_id)
-		var count: int = inventory.get_item_count(def.target_id)
-		var prev_count: int = int(q.get("current_amount", -1))
-		var prev_state: int = st
-		var new_state: int = State.READY_TO_TURN_IN if count >= def.target_amount else State.ACTIVE
-
-		# Chỉ phát tín hiệu và cập nhật khi có thay đổi thực tế (chống vòng lặp & refresh vô hạn)
-		if count != prev_count or new_state != prev_state:
-			q["current_amount"] = count
-			q["state"] = new_state
-			if new_state == State.READY_TO_TURN_IN and prev_state != State.READY_TO_TURN_IN:
-				emit_signal("quest_ready", q_id)
-			emit_signal("quest_updated", q_id, count, def.target_amount, q["state"])
-			emit_signal("journal_changed")
+	for definition in ContentRegistry.catalog().quests:
+		if definition == null or definition.quest_type != QuestDefinition.QuestType.COLLECT_ITEMS:
+			continue
+		var quest: Dictionary = _quests.get(definition.quest_id, {})
+		var previous_state := int(quest.get("state", State.NOT_STARTED))
+		if previous_state not in [State.ACTIVE, State.READY_TO_TURN_IN]:
+			continue
+		var count := inventory.get_item_count(definition.target_id)
+		var previous_count := int(quest.get("current_amount", -1))
+		var new_state := State.READY_TO_TURN_IN if count >= definition.target_amount else State.ACTIVE
+		if count == previous_count and new_state == previous_state:
+			continue
+		quest["current_amount"] = count
+		quest["state"] = new_state
+		if new_state == State.READY_TO_TURN_IN and previous_state != State.READY_TO_TURN_IN:
+			quest_ready.emit(definition.quest_id)
+		quest_updated.emit(definition.quest_id, count, definition.target_amount, new_state)
+		journal_changed.emit()
 
 func can_turn_in(quest_id: String, inventory: InventoryComponent = null) -> bool:
 	_ensure_default_quests()

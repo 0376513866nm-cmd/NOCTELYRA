@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RaceDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/race/race_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+race_id = "human"
+display_name = "Nhân tộc"
+title = "Người Bảo Vệ Làng Ánh Nguyệt"
+description = "Những chiến binh bền bỉ và thích nghi cao từ Rừng Noctis."
+pros = "Chỉ số cân bằng, dễ làm quen, tốc độ hồi phục ổn định."
+cons = "Không có chỉ số chuyên biệt vượt trội."
+theme_color = Color(0.3, 0.6, 1, 1)
+aura_color = Color(0.4, 0.7, 1, 0.3)

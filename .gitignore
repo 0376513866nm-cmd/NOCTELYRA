@@ -6,3 +6,10 @@
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Generated development caches and temporary backups
+__pycache__/
+*.py[cod]
+*.tmp
+*.blend1
+CODE_EXPORT.txt

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/item_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "moonsteel_sword"
+display_name = "Kiếm Ánh Trăng"
+description = "Thanh kiếm rèn từ thép ánh nguyệt tinh khiết. Khi trang bị, cộng thêm 10 sát thương đánh thường."
+item_type = 2
+placeholder_color = Color(0.4, 0.8, 1, 1)
+max_stack = 1
+sell_value = 100
+stat_modifiers = {"attack_bonus": 10.0}

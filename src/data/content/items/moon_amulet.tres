@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/item_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "moon_amulet"
+display_name = "Bùa Nguyệt Quang"
+description = "Dây chuyền khắc cổ ngữ bảo hộ. Khi trang bị, cộng thêm 20 Max MP."
+item_type = 3
+placeholder_color = Color(1, 0.85, 0.3, 1)
+max_stack = 1
+sell_value = 120
+stat_modifiers = {"max_mana_bonus": 20.0}

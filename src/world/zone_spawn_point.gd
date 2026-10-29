@@ -8,4 +8,4 @@ extends Node2D
 @export var facing_direction: int = 1 # 1: Phải, -1: Trái
 
 func _ready() -> void:
-	add_to_group("zone_spawn_points")
+	add_to_group(GameGroups.ZONE_SPAWN_POINTS)

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="SpellDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/magic/spell_definition.gd" id="1"]
+[ext_resource type="PackedScene" path="res://src/magic/projectiles/ember_bloom_projectile.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+spell_id = "ember_bloom"
+display_name = "Tinh Hỏa Bùng Nổ"
+description = "Bắn cầu lửa ma thuật phát nổ khi chạm mục tiêu, gây sát thương diện rộng."
+base_damage = 22.0
+mana_cost = 25.0
+cooldown = 2.0
+projectile_speed = 380.0
+projectile_scene = ExtResource("2")
+effect_type = 1
+effect_radius = 110.0
+icon_color = Color(1, 0.45, 0.1, 1)
+accent_color = Color(1, 0.85, 0.2, 1)
+hotkey_number = 2
+level_damages = [22.0, 25.3, 28.6]

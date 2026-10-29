@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/actors/enemy/enemy_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_type_id = "ember_lizard"
+display_name = "Hỏa Tích Hắc Nham"
+move_speed = 75.0
+detection_range = 320.0
+attack_range = 240.0
+attack_damage = 14.0
+attack_cooldown = 1.6
+attack_type = 2
+patrol_radius = 110.0
+leash_distance = 420.0
+telegraph_duration = 0.6
+recovery_duration = 0.7
+projectile_speed = 280.0
+projectile_damage = 15.0
+projectile_color = Color(1, 0.45, 0.1, 1)
+drop_item_id = "ember_core"

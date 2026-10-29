@@ -274,7 +274,7 @@ func _get_player() -> Player:
 	var tree := get_tree()
 	if not tree:
 		return null
-	var players = tree.get_nodes_in_group("player")
+	var players = tree.get_nodes_in_group(GameGroups.PLAYERS)
 	if players.size() > 0:
 		return players[0] as Player
 	if tree.current_scene:
@@ -289,23 +289,23 @@ func _check_can_interact() -> bool:
 		return false
 
 	# 1. Nếu đang mở hội thoại -> Hiển thị nút
-	var game_uis := tree.get_nodes_in_group("game_ui")
+	var game_uis := tree.get_nodes_in_group(GameGroups.GAME_UI)
 	for gui in game_uis:
 		if gui.has_method("is_dialogue_open") and gui.is_dialogue_open():
 			return true
 
 	# 2. Kiểm tra NPC có thể tương tác gần người chơi
-	for n in tree.get_nodes_in_group("npcs"):
+	for n in tree.get_nodes_in_group(GameGroups.NPCS):
 		if n.has_method("is_interactable") and n.is_interactable():
 			return true
 
 	# 3. Kiểm tra Cổng dịch chuyển
-	for p in tree.get_nodes_in_group("zone_portals"):
+	for p in tree.get_nodes_in_group(GameGroups.ZONE_PORTALS):
 		if p.has_method("is_interactable") and p.is_interactable():
 			return true
 
 	# 4. Kiểm tra vật thể tương tác
-	for obj in tree.get_nodes_in_group("interactables"):
+	for obj in tree.get_nodes_in_group(GameGroups.INTERACTABLES):
 		if obj.has_method("is_interactable") and obj.is_interactable():
 			return true
 
@@ -447,14 +447,14 @@ func _trigger_interact() -> void:
 		return
 
 	# 1. Nếu GameUI đang mở hội thoại -> Chuyển câu tiếp theo hoặc đóng (chỉ gọi 1 lần duy nhất)
-	var game_uis := tree.get_nodes_in_group("game_ui")
+	var game_uis := tree.get_nodes_in_group(GameGroups.GAME_UI)
 	for gui in game_uis:
 		if gui.has_method("is_dialogue_open") and gui.is_dialogue_open():
 			gui.advance_dialogue()
 			return
 
 	# 2. Nếu có InteractionCoordinator trong Scene -> Gọi điều phối duy nhất
-	var coords := tree.get_nodes_in_group("interaction_coordinator")
+	var coords := tree.get_nodes_in_group(GameGroups.INTERACTION_COORDINATOR)
 	if coords.size() > 0:
 		var ev_press := InputEventAction.new()
 		ev_press.action = "interact"
@@ -463,19 +463,19 @@ func _trigger_interact() -> void:
 		return
 
 	# 3. Kích hoạt trực tiếp NPC gần nhất
-	for n in tree.get_nodes_in_group("npcs"):
+	for n in tree.get_nodes_in_group(GameGroups.NPCS):
 		if n.has_method("is_interactable") and n.is_interactable() and n.has_method("trigger_interaction"):
 			n.trigger_interaction()
 			return
 
 	# 4. Kích hoạt trực tiếp Cổng dịch chuyển
-	for p in tree.get_nodes_in_group("zone_portals"):
+	for p in tree.get_nodes_in_group(GameGroups.ZONE_PORTALS):
 		if p.has_method("is_interactable") and p.is_interactable() and p.has_method("trigger_interaction"):
 			p.trigger_interaction()
 			return
 
 	# 5. Kích hoạt vật thể tương tác
-	for obj in tree.get_nodes_in_group("interactables"):
+	for obj in tree.get_nodes_in_group(GameGroups.INTERACTABLES):
 		if obj.has_method("is_interactable") and obj.is_interactable() and obj.has_method("trigger_interaction"):
 			obj.trigger_interaction()
 			return

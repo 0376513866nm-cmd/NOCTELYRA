@@ -221,6 +221,7 @@ target_spawn_id = "spawn_from_elyndra"
 position = Vector2(980, 640)
 npc_name = "Kaelis"
 title = "Người Canh Giữ Tinh Mạch"
+quest_id = "quest_elyndra_cleansing"
 
 [node name="AncientCrystal" parent="." instance=ExtResource("10_crystal")]
 position = Vector2(1200, 448)

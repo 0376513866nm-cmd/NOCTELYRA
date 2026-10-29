@@ -10,7 +10,7 @@ var _cycle: Node
 var _active := false
 
 func _ready() -> void:
-	_cycle = get_tree().get_first_node_in_group("day_night_cycle")
+	_cycle = get_tree().get_first_node_in_group(GameGroups.DAY_NIGHT_CYCLE)
 	_build_low_swarms()
 	_build_mesh()
 	_update_night()
@@ -83,7 +83,7 @@ func _build_low_swarms() -> void:
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(_cycle):
-		_cycle = get_tree().get_first_node_in_group("day_night_cycle")
+		_cycle = get_tree().get_first_node_in_group(GameGroups.DAY_NIGHT_CYCLE)
 	_update_night()
 	if _active:
 		_flight_time += delta

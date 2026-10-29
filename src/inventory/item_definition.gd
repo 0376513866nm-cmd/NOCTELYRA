@@ -15,6 +15,7 @@ enum ItemType {
 @export_multiline var description: String = ""
 @export var item_type: ItemType = ItemType.MATERIAL
 @export var icon: Texture2D = null
+@export var placeholder_color: Color = Color(0.6, 0.2, 0.9, 1.0)
 @export var max_stack: int = 99
 @export var sell_value: int = 0
 @export var stat_modifiers: Dictionary = {}

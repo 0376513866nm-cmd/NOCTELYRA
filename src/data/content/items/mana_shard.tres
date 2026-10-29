@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/item_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "mana_shard"
+display_name = "Tinh thể Ma lực"
+description = "Mảnh vỡ ngưng tụ ma lực bóng đêm rơi ra từ sinh vật tha hóa. Dùng làm nguyên liệu."
+placeholder_color = Color(0.6, 0.2, 0.9, 1)
+sell_value = 5

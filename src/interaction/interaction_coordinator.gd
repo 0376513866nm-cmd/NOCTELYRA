@@ -7,7 +7,7 @@ extends Node
 @export var game_ui: GameUI
 
 func _ready() -> void:
-	add_to_group("interaction_coordinator")
+	add_to_group(GameGroups.INTERACTION_COORDINATOR)
 	_ensure_game_ui()
 
 func _ensure_game_ui() -> void:
@@ -55,21 +55,21 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 func _find_nearby_interactable_npc() -> NPC:
-	var npcs = get_tree().get_nodes_in_group("npcs")
+	var npcs = get_tree().get_nodes_in_group(GameGroups.NPCS)
 	for n in npcs:
 		if n is NPC and n.is_interactable():
 			return n
 	return null
 
 func _find_nearby_portal() -> ZonePortal:
-	var portals = get_tree().get_nodes_in_group("zone_portals")
+	var portals = get_tree().get_nodes_in_group(GameGroups.ZONE_PORTALS)
 	for p in portals:
 		if p is ZonePortal and p.is_interactable():
 			return p
 	return null
 
 func _find_nearby_interactable() -> Node:
-	var objs = get_tree().get_nodes_in_group("interactables")
+	var objs = get_tree().get_nodes_in_group(GameGroups.INTERACTABLES)
 	for obj in objs:
 		if obj.has_method("is_interactable") and obj.is_interactable() and obj.has_method("trigger_interaction"):
 			return obj

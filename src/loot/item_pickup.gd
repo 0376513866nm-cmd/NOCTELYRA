@@ -35,9 +35,9 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 	if is_dynamic:
-		add_to_group("dynamic_pickups")
+		add_to_group(GameGroups.DYNAMIC_PICKUPS)
 	else:
-		add_to_group("preplaced_pickups")
+		add_to_group(GameGroups.PREPLACED_PICKUPS)
 		# Nếu là vật phẩm đặt sẵn đã được lưu là đã nhặt thì tự hủy
 		var cur_scene = get_tree().current_scene if get_tree() else null
 		if cur_scene and "collected_pickup_ids" in cur_scene:

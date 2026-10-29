@@ -69,6 +69,7 @@ var hurtbox_collision: CollisionShape2D:
 var _movement_data_isolated: bool = false
 
 func _enter_tree() -> void:
+	add_to_group(GameGroups.PLAYERS)
 	_ensure_isolated_movement_data()
 
 func _ensure_isolated_movement_data() -> void:
@@ -472,7 +473,7 @@ func _on_player_died() -> void:
 
 	# Dọn dẹp các projectile của Player đang bay để không gây tác động sau khi chết
 	if get_tree():
-		for p in get_tree().get_nodes_in_group("player_projectiles"):
+		for p in get_tree().get_nodes_in_group(GameGroups.PLAYER_PROJECTILES):
 			if is_instance_valid(p) and not p.is_queued_for_deletion():
 				p.queue_free()
 
@@ -501,7 +502,7 @@ func respawn() -> void:
 		sprite_root.modulate = get_race_base_modulate()
 
 	if get_tree():
-		for p in get_tree().get_nodes_in_group("player_projectiles"):
+		for p in get_tree().get_nodes_in_group(GameGroups.PLAYER_PROJECTILES):
 			if is_instance_valid(p) and not p.is_queued_for_deletion():
 				p.queue_free()
 

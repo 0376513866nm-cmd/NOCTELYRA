@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="RaceDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/race/race_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+race_id = "demon_beast"
+display_name = "Quỷ tộc bán thú"
+title = "Chiến Binh Tiền Đồn Vharok"
+description = "Chủng tộc kiêu hãnh của Tiền Đồn Vharok với thể lực và sức tấn công vượt trội."
+pros = "Sinh mệnh dồi dào và sức tấn công cận chiến cao."
+cons = "MP thấp, hồi MP chậm và tốc độ di chuyển thấp hơn."
+base_health = 125.0
+base_mana = 50.0
+base_attack = 30.0
+base_mana_regen = 4.0
+base_move_speed = 260.0
+theme_color = Color(0.85, 0.25, 0.45, 1)
+aura_color = Color(0.9, 0.3, 0.4, 0.4)

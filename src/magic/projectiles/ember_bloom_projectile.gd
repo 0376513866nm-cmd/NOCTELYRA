@@ -33,7 +33,7 @@ func setup(p_direction: Vector2, p_shooter: Node, p_damage: float = 22.0) -> voi
 	rotation = direction.angle()
 
 func _ready() -> void:
-	add_to_group("player_projectiles")
+	add_to_group(GameGroups.PLAYER_PROJECTILES)
 	collision_layer = 16
 	collision_mask = 5 # Hurtbox kẻ địch/Boss (Layer 4) & Địa hình StaticBody2D (Layer 1)
 	area_entered.connect(_on_area_entered)
@@ -121,8 +121,8 @@ func trigger_explosion() -> void:
 	# Quét trực tiếp kẻ địch và boss trong bán kính nổ (đảm bảo phản hồi tức thì kể cả giữa physics frames)
 	if get_tree():
 		var potential_targets: Array[Node] = []
-		potential_targets.append_array(get_tree().get_nodes_in_group("enemies"))
-		potential_targets.append_array(get_tree().get_nodes_in_group("bosses"))
+		potential_targets.append_array(get_tree().get_nodes_in_group(GameGroups.ENEMIES))
+		potential_targets.append_array(get_tree().get_nodes_in_group(GameGroups.BOSSES))
 		var cur_scene := get_tree().current_scene
 		if cur_scene:
 			for ch in cur_scene.get_children():

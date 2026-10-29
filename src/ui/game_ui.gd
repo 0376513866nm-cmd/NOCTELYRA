@@ -129,16 +129,13 @@ var _was_touch_controls_visible: bool = false
 @onready var zone_banner_title: Label = $ZoneBanner/Panel/TitleLabel
 @onready var zone_banner_subtitle: Label = $ZoneBanner/Panel/SubtitleLabel
 
-var _dialogue_lines: Array[String] = []
-var _current_dialogue_idx: int = 0
-var _current_quest_action: String = "none"
 var _notif_timer: float = 0.0
-var _dialogue_cooldown: float = 0.0
 var _ui_close_grace_cooldown: float = 0.0
 var _warning_timer: float = 0.0
 var _announcement_timer: float = 0.0
 var _zone_banner_timer: float = 0.0
 var _connected_spellbook: SpellbookComponent = null
+var _dialogue_controller: DialogueController
 
 
 func _apply_safe_insets() -> void:
@@ -158,6 +155,8 @@ func _ready() -> void:
 		character_sheet_ui.visible = false
 	if dialogue_box:
 		dialogue_box.visible = false
+	_dialogue_controller = DialogueController.new()
+	_dialogue_controller.setup(dialogue_box, dialogue_speaker, dialogue_text, dialogue_hint)
 	if game_over_panel:
 		game_over_panel.visible = false
 	if notification_label:
@@ -196,7 +195,7 @@ func _ready() -> void:
 		fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
 	if victory_continue_btn:
 		victory_continue_btn.pressed.connect(_on_victory_continue_pressed)
-	add_to_group("game_ui")
+	add_to_group(GameGroups.GAME_UI)
 	_apply_safe_insets()
 	get_viewport().size_changed.connect(_apply_safe_insets)
 
@@ -281,8 +280,8 @@ func _process(delta: float) -> void:
 		if _notif_timer <= 0.0 and notification_label:
 			notification_label.visible = false
 
-	if _dialogue_cooldown > 0.0:
-		_dialogue_cooldown -= delta
+	if _dialogue_controller:
+		_dialogue_controller.tick(delta)
 
 	if _ui_close_grace_cooldown > 0.0:
 		_ui_close_grace_cooldown -= delta
@@ -403,76 +402,40 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	# Dự phòng nếu không có InteractionCoordinator trong scene
 	if is_dialogue_open() and event.is_action_pressed("interact"):
-		if get_tree() and get_tree().get_nodes_in_group("interaction_coordinator").size() == 0:
+		if get_tree() and get_tree().get_nodes_in_group(GameGroups.INTERACTION_COORDINATOR).size() == 0:
 			advance_dialogue()
 			get_viewport().set_input_as_handled()
 
 func show_dialogue(speaker: String, lines: Array[String], action: String = "none") -> void:
-	_dialogue_lines = lines
-	_current_dialogue_idx = 0
-	_current_quest_action = action
-	dialogue_speaker.text = speaker
-	_display_current_line()
-	dialogue_box.visible = true
+	if _dialogue_controller:
+		_dialogue_controller.show_dialogue(speaker, lines, action)
 
 func _display_current_line() -> void:
-	if _current_dialogue_idx < _dialogue_lines.size():
-		dialogue_text.text = _dialogue_lines[_current_dialogue_idx]
-		var is_mobile := OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
-		if _current_dialogue_idx == _dialogue_lines.size() - 1:
-			dialogue_hint.text = "[Chạm / E để đóng]" if is_mobile else "[E để đóng]"
-		else:
-			dialogue_hint.text = "[Chạm / E để tiếp tục]" if is_mobile else "[E để tiếp tục]"
+	pass # Giữ API tương thích; hiển thị do DialogueController quản lý.
 
 func advance_dialogue() -> void:
-	_current_dialogue_idx += 1
-	if _current_dialogue_idx < _dialogue_lines.size():
-		_display_current_line()
-	else:
-		close_dialogue()
+	if _dialogue_controller == null:
+		return
+	var action := _dialogue_controller.advance()
+	if not action.is_empty():
+		_ui_close_grace_cooldown = 0.25
+		_execute_quest_action(action)
 
 func close_dialogue() -> void:
-	dialogue_box.visible = false
-	_dialogue_cooldown = 0.25 # Grace cooldown 0.25s
+	if _dialogue_controller == null:
+		return
+	var action := _dialogue_controller.close()
 	_ui_close_grace_cooldown = 0.25
-	var scene: Node = _get_active_scene()
-	var quest_mgr: QuestManager = scene.get_node_or_null("QuestManager") as QuestManager if scene else null
-	var player: Player = scene.get_node_or_null("Player") as Player if scene else null
-	if player == null and get_tree():
-		var players = get_tree().get_nodes_in_group("player")
-		if players.size() > 0:
-			player = players[0] as Player
-	var p_health: HealthComponent = player.get_node_or_null("HealthComponent") as HealthComponent if player else null
+	_execute_quest_action(action)
 
-	if _current_quest_action.begins_with("start_quest:"):
-		var q_id: String = _current_quest_action.substr(12)
-		if player and player.quest_journal_component:
-			player.quest_journal_component.start_quest(q_id)
-			show_notification("Đã nhận nhiệm vụ mới!")
-			update_quest_journal_ui()
-	elif _current_quest_action.begins_with("complete_quest:"):
-		var q_id: String = _current_quest_action.substr(15)
-		if player and player.quest_journal_component:
-			var res: Dictionary = player.quest_journal_component.turn_in_quest(q_id, player.inventory_component, quest_mgr)
-			if bool(res.get("success", false)):
-				show_notification("Đã hoàn thành nhiệm vụ và nhận thưởng!")
-				update_quest_journal_ui()
-				# Tự động lưu sau khi hoàn thành nhiệm vụ
-				SaveManager.save_game(scene)
-			else:
-				var fail_reason: String = str(res.get("reason", "Túi đồ đã đầy! Hãy dọn chỗ trống trước khi trả nhiệm vụ."))
-				show_notification(fail_reason)
-	elif quest_mgr:
-		if _current_quest_action == "start_quest":
-			quest_mgr.start_quest()
-		elif _current_quest_action == "complete_quest":
-			quest_mgr.complete_quest(p_health)
-			# M8: Thưởng EXP nhiệm vụ chính Elyra (chống nhận trùng)
-			if player and player.progression_component:
-				player.progression_component.add_exp(ExpDatabase.get_quest_exp("quest_tutorial"), "quest:quest_tutorial")
-			# Tự động lưu sau khi hoàn thành nhiệm vụ và nhận thưởng
-			SaveManager.save_game(scene)
-	_current_quest_action = "none"
+func _execute_quest_action(action: String) -> void:
+	var scene: Node = _get_active_scene()
+	var result := QuestActionService.execute(action, scene)
+	var message := str(result.get("message", ""))
+	if not message.is_empty():
+		show_notification(message)
+	if bool(result.get("refresh_journal", false)):
+		update_quest_journal_ui()
 
 func _get_active_scene() -> Node:
 	if get_tree() and get_tree().current_scene:
@@ -480,10 +443,10 @@ func _get_active_scene() -> Node:
 	return get_parent()
 
 func is_dialogue_open() -> bool:
-	return dialogue_box and dialogue_box.visible
+	return _dialogue_controller != null and _dialogue_controller.is_open()
 
 func is_dialogue_cooling_down() -> bool:
-	return _dialogue_cooldown > 0.0
+	return _dialogue_controller != null and _dialogue_controller.is_cooling_down()
 
 func is_ui_cooling_down() -> bool:
 	return _ui_close_grace_cooldown > 0.0
@@ -563,7 +526,7 @@ func open_character_sheet() -> void:
 		var scene := _get_active_scene()
 		var player: Player = scene.get_node_or_null("Player") as Player if scene else null
 		if player == null and get_tree():
-			var players = get_tree().get_nodes_in_group("player")
+			var players = get_tree().get_nodes_in_group(GameGroups.PLAYERS)
 			if players.size() > 0:
 				player = players[0] as Player
 		character_sheet_ui.open(player)
@@ -1042,7 +1005,7 @@ func _on_player_spell_selected(spell_id: String) -> void:
 		touch_controls.set_selected_spell(spell_id)
 
 func _on_toggle_day_night_pressed() -> void:
-	var dnc = get_tree().get_first_node_in_group("day_night_cycle")
+	var dnc = get_tree().get_first_node_in_group(GameGroups.DAY_NIGHT_CYCLE)
 	if dnc:
 		dnc.toggle_time_phase()
 		show_notification("%s Đã đổi thời khắc: %s (%s)" % [dnc.get_phase_icon(), dnc.get_phase_name(), dnc.get_time_string()])

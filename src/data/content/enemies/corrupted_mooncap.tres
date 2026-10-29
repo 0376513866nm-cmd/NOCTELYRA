@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/actors/enemy/enemy_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_type_id = "corrupted_mooncap"
+display_name = "Nấm Mộng Tha Hóa"
+max_health = 60.0
+move_speed = 80.0
+detection_range = 300.0
+attack_range = 50.0
+attack_damage = 12.0
+attack_cooldown = 1.4
+patrol_radius = 120.0
+leash_distance = 420.0
+telegraph_duration = 0.45
+recovery_duration = 0.6

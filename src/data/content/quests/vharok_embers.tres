@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="QuestDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/quest/quest_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+quest_id = "quest_vharok_embers"
+title = "Tàn Hỏa Hắc Nham"
+description = "Thu thập 3 Lõi Tàn Hỏa để củng cố kết giới phòng ngự của Quỷ tộc."
+giver_name = "Rhaek"
+giver_location = "Tiền Đồn Vharok"
+quest_type = 1
+target_id = "ember_core"
+target_amount = 3
+reward_gold = 100
+reward_exp = 70
+reward_items = [{"amount": 3, "item_id": "mana_shard"}]
+offer_dialogue = ["Đứng lại, lữ khách! Ta là Rhaek, Chiến Binh Tiền Đồn của Gia tộc Hắc Nham Quỷ tộc.", "Lò rèn của Tiền Đồn Vharok đang cạn kiệt năng lượng.", "Hãy thu thập giúp ta {target} {target_name}, ta sẽ thù lao xứng đáng cho ngươi!"]
+active_dialogue = ["Ngươi có thể tìm {target_name} quanh các mỏm đá vách núi hoặc từ sinh vật vùng này.", "Ngươi hiện có {progress}/{target} {target_name}. Hãy mau tìm đủ mang về đây!"]
+ready_dialogue = ["Hahaha! Tốt lắm! Đúng là {target_name} rực lửa nguyên chất!", "Quỷ tộc luôn sòng phẳng: đây là {reward} dành cho lòng quả cảm của ngươi!"]
+inventory_full_dialogue = ["Ngươi đã thu thập đủ vật phẩm, nhưng túi đồ của ngươi chật cứng rồi!", "Hãy dọn chỗ trống rồi quay lại nhận thưởng. Quỷ tộc không để bạn hữu chịu thiệt!"]
+completed_dialogue = ["Lò rèn của tiền đồn đã rực cháy trở lại! Ngươi đã chứng minh được dũng khí của một chiến binh thực thụ.", "Hãy giữ vững tinh thần cảnh giác, người bạn của Quỷ tộc!"]

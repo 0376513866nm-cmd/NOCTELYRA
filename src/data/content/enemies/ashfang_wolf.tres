@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/actors/enemy/enemy_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enemy_type_id = "ashfang_wolf"
+display_name = "Sói Tro"
+max_health = 70.0
+move_speed = 180.0
+detection_range = 360.0
+attack_range = 140.0
+attack_damage = 18.0
+attack_cooldown = 1.8
+attack_type = 1
+patrol_radius = 160.0
+leash_distance = 550.0
+telegraph_duration = 0.5
+attack_duration = 0.28
+recovery_duration = 0.85
+lunge_speed = 460.0

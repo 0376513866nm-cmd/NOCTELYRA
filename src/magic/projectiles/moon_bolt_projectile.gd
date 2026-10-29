@@ -24,7 +24,7 @@ func setup(p_direction: Vector2, p_shooter: Node, p_damage: float = 30.0) -> voi
 	rotation = direction.angle()
 
 func _ready() -> void:
-	add_to_group("player_projectiles")
+	add_to_group(GameGroups.PLAYER_PROJECTILES)
 	collision_layer = 8
 	collision_mask = 5 # Hurtbox kẻ địch/Boss (Layer 4) & Địa hình StaticBody2D (Layer 1)
 	area_entered.connect(_on_area_entered)

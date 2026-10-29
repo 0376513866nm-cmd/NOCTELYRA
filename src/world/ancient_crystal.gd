@@ -11,7 +11,7 @@ var _player_in_range: bool = false
 var _anim_time: float = 0.0
 
 func _ready() -> void:
-	add_to_group("interactables")
+	add_to_group(GameGroups.INTERACTABLES)
 	collision_layer = 0
 	collision_mask = 2 # Player (Layer 2)
 

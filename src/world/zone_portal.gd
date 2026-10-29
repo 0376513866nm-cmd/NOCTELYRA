@@ -19,7 +19,7 @@ var _player_in_range: bool = false
 var _anim_time: float = 0.0
 
 func _ready() -> void:
-	add_to_group("zone_portals")
+	add_to_group(GameGroups.ZONE_PORTALS)
 	collision_layer = 0
 	collision_mask = 2 # Chỉ tương tác với Player (Layer 2)
 
@@ -82,7 +82,7 @@ func trigger_interaction() -> void:
 	if world:
 		player = world.get_node_or_null("Player") as Player
 	if player == null and get_tree():
-		var players := get_tree().get_nodes_in_group("players")
+		var players := get_tree().get_nodes_in_group(GameGroups.PLAYERS)
 		if players.size() > 0:
 			player = players[0] as Player
 

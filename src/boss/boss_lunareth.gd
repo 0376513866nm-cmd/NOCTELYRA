@@ -151,7 +151,7 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 
 func _find_player() -> void:
-	var players = get_tree().get_nodes_in_group("players")
+	var players = get_tree().get_nodes_in_group(GameGroups.PLAYERS)
 	if players.size() > 0 and players[0] is Player:
 		target_player = players[0] as Player
 

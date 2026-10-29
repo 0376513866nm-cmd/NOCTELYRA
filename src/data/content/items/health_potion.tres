@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/item_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+item_id = "health_potion"
+display_name = "Bình Sinh Lực"
+description = "Dược tễ thảo mộc ánh nguyệt, hồi phục ngay lập tức 30 HP."
+item_type = 1
+placeholder_color = Color(0.9, 0.2, 0.2, 1)
+max_stack = 20
+sell_value = 15
+use_effect = {"heal_hp": 30.0}

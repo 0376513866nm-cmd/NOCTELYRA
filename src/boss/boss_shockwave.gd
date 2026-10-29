@@ -18,7 +18,7 @@ var _hit_nodes: Array[Node] = []
 @onready var core_glow: ColorRect = $VisualWave/CoreGlow
 
 func _ready() -> void:
-	add_to_group("boss_projectiles")
+	add_to_group(GameGroups.BOSS_PROJECTILES)
 	collision_layer = 0
 	collision_mask = 2 # Player Hurtbox nằm trên Layer 2
 	area_entered.connect(_on_area_entered)

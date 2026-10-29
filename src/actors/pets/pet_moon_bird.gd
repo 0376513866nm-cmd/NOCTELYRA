@@ -45,7 +45,7 @@ var _dialogues: Array[String] = [
 
 func _ready() -> void:
 	add_to_group("pets")
-	add_to_group("interactables")
+	add_to_group(GameGroups.INTERACTABLES)
 	position = perch_pos
 	if speech_bubble:
 		speech_bubble.visible = false
@@ -139,7 +139,7 @@ func _get_player() -> Player:
 	var tree := get_tree()
 	if not tree:
 		return null
-	var players = tree.get_nodes_in_group("player")
+	var players = tree.get_nodes_in_group(GameGroups.PLAYERS)
 	if players.size() > 0:
 		return players[0] as Player
 	return null

@@ -23,7 +23,7 @@ func _ready() -> void:
 
 func _get_dnc() -> DayNightCycle:
 	if _dnc == null and get_tree():
-		var nodes = get_tree().get_nodes_in_group("day_night_cycle")
+		var nodes = get_tree().get_nodes_in_group(GameGroups.DAY_NIGHT_CYCLE)
 		if nodes.size() > 0:
 			_dnc = nodes[0] as DayNightCycle
 	return _dnc
@@ -75,7 +75,7 @@ func _on_sanctuary_exited(body: Node2D) -> void:
 func _get_game_ui() -> GameUI:
 	var tree := get_tree()
 	if tree:
-		var uis = tree.get_nodes_in_group("game_ui")
+		var uis = tree.get_nodes_in_group(GameGroups.GAME_UI)
 		if uis.size() > 0:
 			return uis[0] as GameUI
 	return null

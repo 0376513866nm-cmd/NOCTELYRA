@@ -215,6 +215,7 @@ target_spawn_id = "spawn_from_vharok"
 position = Vector2(1040, 640)
 npc_name = "Rhaek"
 title = "Vệ Binh Gia Tộc"
+quest_id = "quest_vharok_embers"
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(300, 630)

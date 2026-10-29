@@ -30,42 +30,45 @@ const State = QuestState
 @export var reward_gold: int = 0
 @export var reward_exp: int = 0
 @export var reward_items: Array[Dictionary] = [] # [{"item_id": "health_potion", "amount": 2}]
+@export var offer_dialogue: Array[String] = []
+@export var active_dialogue: Array[String] = []
+@export var ready_dialogue: Array[String] = []
+@export var inventory_full_dialogue: Array[String] = []
+@export var completed_dialogue: Array[String] = []
+
+func get_target_display_name() -> String:
+	if quest_type == QuestType.KILL_ENEMY_TYPE:
+		var enemy := ContentRegistry.get_enemy(target_id)
+		return enemy.display_name if enemy else target_id
+	var item := ContentRegistry.get_item(target_id)
+	return item.display_name if item else target_id
+
+func get_reward_summary() -> String:
+	var parts: PackedStringArray = []
+	if reward_gold > 0:
+		parts.append("%d Vàng" % reward_gold)
+	if reward_exp > 0:
+		parts.append("%d EXP" % reward_exp)
+	for reward in reward_items:
+		var item_id := str(reward.get("item_id", ""))
+		var item := ContentRegistry.get_item(item_id)
+		parts.append("%d %s" % [int(reward.get("amount", 1)), item.display_name if item else item_id])
+	return ", ".join(parts)
+
+func format_dialogue(lines: Array[String], progress: int = 0) -> Array[String]:
+	var formatted: Array[String] = []
+	for line in lines:
+		formatted.append(line.replace("{progress}", str(progress))
+			.replace("{target}", str(target_amount))
+			.replace("{target_name}", get_target_display_name())
+			.replace("{reward}", get_reward_summary()))
+	return formatted
 
 static func get_definition(q_id: String) -> QuestDefinition:
-	var def := QuestDefinition.new()
-	def.quest_id = q_id
-
-	match q_id:
-		"quest_elyndra_cleansing":
-			def.title = "Thanh Lọc Tinh Mạch"
-			def.description = "Ma khí tha hóa đang lan tràn trong Thánh Lâm. Hãy tiêu diệt 3 Nấm Mộng Tha Hóa (Corrupted Mooncap) để ổn định dòng chảy Tinh Mạch."
-			def.giver_name = "Kaelis"
-			def.giver_location = "Thánh Lâm Elyndra"
-			def.quest_type = QuestType.KILL_ENEMY_TYPE
-			def.target_id = "corrupted_mooncap"
-			def.target_amount = 3
-			def.reward_gold = 80
-			def.reward_exp = 60
-			def.reward_items = [
-				{"item_id": "health_potion", "amount": 2}
-			]
-
-		"quest_vharok_embers":
-			def.title = "Tàn Hỏa Hắc Nham"
-			def.description = "Thu thập 3 Lõi Tàn Hỏa (Ember Core) nằm rải rác trong khu vực Tiền Đồn Vharok để củng cố kết giới phòng ngự của Quỷ tộc."
-			def.giver_name = "Rhaek"
-			def.giver_location = "Tiền Đồn Vharok"
-			def.quest_type = QuestType.COLLECT_ITEMS
-			def.target_id = "ember_core"
-			def.target_amount = 3
-			def.reward_gold = 100
-			def.reward_exp = 70
-			def.reward_items = [
-				{"item_id": "mana_shard", "amount": 3}
-			]
-
-		_:
-			def.title = "Nhiệm vụ chưa xác định"
-			def.description = ""
-
-	return def
+	var definition := ContentRegistry.get_quest(q_id)
+	if definition:
+		return definition
+	var fallback := QuestDefinition.new()
+	fallback.quest_id = q_id
+	fallback.title = "Nhiệm vụ chưa xác định"
+	return fallback

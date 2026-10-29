@@ -59,7 +59,7 @@ func setup_signals() -> void:
 		npc_elyra.dialogue_requested.connect(_on_npc_dialogue_requested)
 
 	# Kết nối các quái vật trên map
-	var enemies = get_tree().get_nodes_in_group("enemies") if get_tree() else []
+	var enemies = get_tree().get_nodes_in_group(GameGroups.ENEMIES) if get_tree() else []
 	for e in enemies:
 		if e is Enemy:
 			if quest_manager and not e.enemy_defeated.is_connected(quest_manager.register_enemy_kill):
@@ -240,7 +240,7 @@ func restore_boss_state(p_activated: bool, p_defeated: bool, p_reward: bool) -> 
 
 func clear_boss_projectiles() -> void:
 	if get_tree():
-		var projectiles := get_tree().get_nodes_in_group("boss_projectiles")
+		var projectiles := get_tree().get_nodes_in_group(GameGroups.BOSS_PROJECTILES)
 		for p in projectiles:
 			if is_instance_valid(p) and not p.is_queued_for_deletion():
 				p.queue_free()

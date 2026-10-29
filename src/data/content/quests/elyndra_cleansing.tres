@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="QuestDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/quest/quest_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+quest_id = "quest_elyndra_cleansing"
+title = "Thanh Lọc Tinh Mạch"
+description = "Tiêu diệt 3 Nấm Mộng Tha Hóa để ổn định dòng chảy Tinh Mạch."
+giver_name = "Kaelis"
+giver_location = "Thánh Lâm Elyndra"
+target_id = "corrupted_mooncap"
+target_amount = 3
+reward_gold = 80
+reward_exp = 60
+reward_items = [{"amount": 2, "item_id": "health_potion"}]
+offer_dialogue = ["Chào lữ khách từ Rừng Hắc Nguyệt. Ta là Kaelis, Người Canh Giữ Tinh Mạch của Thánh Lâm Elyndra.", "Ma khí bóng tối đang len lỏi vào các bụi nấm, làm ô nhiễm dòng chảy Tinh Mạch.", "Ngươi có thể giúp ta tiêu diệt {target} {target_name} để thanh tẩy vùng này không?"]
+active_dialogue = ["Hãy cẩn trọng khi bước qua những cụm nấm phát sáng ma thuật.", "Tiến độ hiện tại: {progress}/{target} {target_name}. Cố gắng lên nhé lữ khách!"]
+ready_dialogue = ["Thật phi thường! Dòng chảy Tinh Mạch đã bắt đầu lưu thông thanh khiết trở lại.", "Xin hãy nhận {reward} như lời cảm tạ chân thành từ Thánh Lâm Elyndra!"]
+inventory_full_dialogue = ["Ngươi đã thanh tẩy Thánh Lâm, nhưng túi đồ của ngươi hiện đã đầy!", "Hãy dọn chỗ trống trong túi đồ trước khi nhận thưởng nhé."]
+completed_dialogue = ["Cảm ơn ngươi đã bảo vệ Thánh Lâm.", "Quỷ tộc ở Tiền Đồn Vharok tuy thô ráp nhưng rất coi trọng danh dự. Hãy ghé thăm họ nếu ngươi cần thêm thử thách."]

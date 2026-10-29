@@ -1,0 +1,8 @@
+Godot Engine v4.3.stable.official.77dcf97d8 - https://godotengine.org
+
+USER SCRIPT ERROR: Parse Error: Could not find type "ContentCatalog" in the current scope.
+   at: GDScript::reload (res://src/data/content_smoke_test.gd:4)
+USER SCRIPT ERROR: Parse Error: Cannot infer the type of "content" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://src/data/content_smoke_test.gd:4)
+ERROR: Failed to load script "res://src/data/content_smoke_test.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:2936)

@@ -558,7 +558,7 @@ func _find_target() -> void:
 		return
 	if target_player and is_instance_valid(target_player):
 		return
-	var players := get_tree().get_nodes_in_group("players") if get_tree() else []
+	var players := get_tree().get_nodes_in_group(GameGroups.PLAYERS) if get_tree() else []
 	for p in players:
 		var p_health: HealthComponent = p.get_node_or_null("HealthComponent")
 		if p_health and p_health.is_alive():
