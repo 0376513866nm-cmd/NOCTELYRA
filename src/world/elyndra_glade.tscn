@@ -273,6 +273,3 @@ script = ExtResource("5_pause")
 
 [node name="InteractionCoordinator" type="Node" parent="."]
 script = ExtResource("7_interact")
-
-[connection signal="pressed" from="GameUI/PauseMenu/Panel/ResumeBtn" to="." method="_on_resume_button_pressed"]
-[connection signal="pressed" from="GameUI/PauseMenu/Panel/QuitBtn" to="." method="_on_quit_button_pressed"]

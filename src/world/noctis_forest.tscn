@@ -56,10 +56,9 @@ auto_step_takeoff_distance = 35.0
 process_mode = 1
 script = ExtResource("1_world")
 
-[node name="PauseController" type="Node" parent="." node_paths=PackedStringArray("pause_menu")]
+[node name="PauseController" type="Node" parent="."]
 process_mode = 3
 script = ExtResource("6_pause")
-pause_menu = NodePath("../GameUI/PauseMenu")
 
 [node name="InteractionCoordinator" type="Node" parent="." node_paths=PackedStringArray("game_ui")]
 script = ExtResource("8_interact_coord")

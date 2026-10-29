@@ -101,6 +101,10 @@ func setup_signals() -> void:
 	if game_ui:
 		if not game_ui.retry_requested.is_connected(_on_retry_requested):
 			game_ui.retry_requested.connect(_on_retry_requested)
+		if not game_ui.resume_requested.is_connected(_on_resume_button_pressed):
+			game_ui.resume_requested.connect(_on_resume_button_pressed)
+		if not game_ui.quit_requested.is_connected(_on_quit_button_pressed):
+			game_ui.quit_requested.connect(_on_quit_button_pressed)
 		if player:
 			if not game_ui.input_lock_changed.is_connected(player.set_input_blocked):
 				game_ui.input_lock_changed.connect(player.set_input_blocked)
@@ -343,7 +347,9 @@ func _on_notification_posted(msg: String) -> void:
 		game_ui.show_notification(msg)
 
 func _on_resume_button_pressed() -> void:
-	if pause_controller:
+	if game_ui and game_ui.has_method("close_pause_menu"):
+		game_ui.close_pause_menu()
+	elif pause_controller:
 		pause_controller.resume()
 	else:
 		get_tree().paused = false

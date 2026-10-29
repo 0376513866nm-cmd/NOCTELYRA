@@ -989,17 +989,36 @@ func show_zone_banner(zone_name: String, subtitle: String = "") -> void:
 			zone_banner_subtitle.text = subtitle
 		zone_banner.visible = true
 
+# --- HỆ THỐNG TẠM DỪNG (PAUSE MENU) ---
+
+func open_pause_menu() -> void:
+	if pause_menu:
+		pause_menu.visible = true
+	if get_tree():
+		get_tree().paused = true
+	_set_input_lock("pause_menu", true)
+
+func close_pause_menu() -> void:
+	if pause_menu:
+		pause_menu.visible = false
+	if get_tree():
+		get_tree().paused = false
+	_set_input_lock("pause_menu", false)
+
+func toggle_pause_menu() -> void:
+	if is_pause_menu_open():
+		close_pause_menu()
+	else:
+		open_pause_menu()
+
+func is_pause_menu_open() -> bool:
+	return pause_menu != null and pause_menu.visible
+
 # --- HỆ THỐNG CÀI ĐẶT & THU PHÓNG MÀN HÌNH (SETTINGS & ZOOM) ---
 
 func _on_resume_pressed() -> void:
+	close_pause_menu()
 	resume_requested.emit()
-	var scene = _get_active_scene()
-	if scene and "pause_controller" in scene and scene.pause_controller:
-		scene.pause_controller.resume()
-	else:
-		get_tree().paused = false
-		if pause_menu:
-			pause_menu.visible = false
 
 func _on_quit_pressed() -> void:
 	quit_requested.emit()
