@@ -10,6 +10,12 @@ const SidebarController = preload("res://src/ui/controllers/sidebar_controller.g
 signal retry_requested()
 signal victory_dismissed()
 signal input_lock_changed(reason: String, blocked: bool)
+signal resume_requested()
+signal save_requested()
+signal quit_requested()
+signal inventory_requested()
+signal journal_requested()
+signal hybrid_controls_changed(enabled: bool)
 
 @onready var hud: Control = $HUD
 @onready var hp_bar: ProgressBar = find_child("HPBar", true, false) as ProgressBar
@@ -456,66 +462,33 @@ func _process(delta: float) -> void:
 			zone_banner.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _handle_debug_shortcuts(event):
+		return
+	if _handle_dialogue_input(event):
+		return
+	if _handle_sidebar_shortcuts(event):
+		return
+	if _handle_modal_shortcuts(event):
+		return
+	if _handle_pause_shortcuts(event):
+		return
+	if _block_gameplay_actions_when_ui_open(event):
+		return
+
+func _handle_debug_shortcuts(event: InputEvent) -> bool:
 	# Phím F1: Bật / Tắt phím ảo cảm ứng (Hybrid Controls)
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F1:
 		toggle_touch_controls()
 		if get_viewport():
 			get_viewport().set_input_as_handled()
-		return
+		return true
 
 	# Phím F3: Bật / Tắt hiển thị FPS
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F3:
 		_on_toggle_fps_pressed()
 		if get_viewport():
 			get_viewport().set_input_as_handled()
-		return
-
-	# Chạm màn hình bất kỳ khi đang mở hội thoại để xem câu tiếp theo hoặc đóng
-	if is_dialogue_open():
-		if (event is InputEventScreenTouch and event.pressed) or (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
-			advance_dialogue()
-			get_viewport().set_input_as_handled()
-			return
-
-	# Bật/tắt Sidebar bằng phím Tab hoặc M
-	if event.is_action_pressed("toggle_sidebar") or (event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_TAB or event.keycode == KEY_M)):
-		if not is_dialogue_open():
-			toggle_sidebar()
-			get_viewport().set_input_as_handled()
-			return
-
-	# Phím ESC đóng Sidebar nếu đang mở
-	if event.is_action_pressed("ui_cancel") and is_sidebar_open():
-		close_sidebar()
-		get_viewport().set_input_as_handled()
-		return
-
-	# Bật/tắt Sổ Nhiệm Vụ bằng phím Q
-	if event.is_action_pressed("quest_journal"):
-		if not is_dialogue_open():
-			toggle_quest_journal()
-			get_viewport().set_input_as_handled()
-			return
-
-	# Mở/đóng Túi đồ bằng phím I
-	if event.is_action_pressed("inventory"):
-		if not is_dialogue_open():
-			toggle_inventory()
-			get_viewport().set_input_as_handled()
-			return
-
-	# Bật/tắt Bảng Thông Tin Nhân Vật bằng phím C
-	if event.is_action_pressed("character_sheet"):
-		if not is_dialogue_open():
-			toggle_character_sheet()
-			get_viewport().set_input_as_handled()
-			return
-
-	# Phím ESC đóng Settings nếu đang mở trong PauseMenu
-	if event.is_action_pressed("ui_cancel") and settings_panel and settings_panel.visible:
-		_on_settings_close_pressed()
-		get_viewport().set_input_as_handled()
-		return
+		return true
 
 	# Phím tắt phóng to/thu nhỏ nhanh (Ctrl + '+' / Ctrl + '-')
 	if event is InputEventKey and event.pressed and event.ctrl_pressed:
@@ -523,49 +496,119 @@ func _unhandled_input(event: InputEvent) -> void:
 			SettingsManager.zoom_in(0.1)
 			_update_settings_ui()
 			get_viewport().set_input_as_handled()
-			return
+			return true
 		elif event.keycode == KEY_MINUS or event.keycode == KEY_KP_SUBTRACT:
 			SettingsManager.zoom_out(0.1)
 			_update_settings_ui()
 			get_viewport().set_input_as_handled()
-			return
+			return true
+
+	return false
+
+func _handle_dialogue_input(event: InputEvent) -> bool:
+	if not is_dialogue_open():
+		return false
+
+	# Chạm màn hình bất kỳ hoặc click chuột trái để xem tiếp / đóng thoại
+	if (event is InputEventScreenTouch and event.pressed) or (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
+		advance_dialogue()
+		get_viewport().set_input_as_handled()
+		return true
+
+	# Dự phòng nếu không có InteractionCoordinator trong scene
+	if event.is_action_pressed("interact"):
+		if get_tree() and get_tree().get_nodes_in_group(GameGroups.INTERACTION_COORDINATOR).size() == 0:
+			advance_dialogue()
+			get_viewport().set_input_as_handled()
+			return true
+
+	return false
+
+func _handle_sidebar_shortcuts(event: InputEvent) -> bool:
+	# Bật/tắt Sidebar bằng phím Tab hoặc M
+	if event.is_action_pressed("toggle_sidebar") or (event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_TAB or event.keycode == KEY_M)):
+		if not is_dialogue_open():
+			toggle_sidebar()
+			get_viewport().set_input_as_handled()
+			return true
+
+	# Phím ESC đóng Sidebar nếu đang mở
+	if event.is_action_pressed("ui_cancel") and is_sidebar_open():
+		close_sidebar()
+		get_viewport().set_input_as_handled()
+		return true
+
+	return false
+
+func _handle_modal_shortcuts(event: InputEvent) -> bool:
+	# Bật/tắt Sổ Nhiệm Vụ bằng phím Q
+	if event.is_action_pressed("quest_journal"):
+		if not is_dialogue_open():
+			toggle_quest_journal()
+			get_viewport().set_input_as_handled()
+			return true
+
+	# Mở/đóng Túi đồ bằng phím I
+	if event.is_action_pressed("inventory"):
+		if not is_dialogue_open():
+			toggle_inventory()
+			get_viewport().set_input_as_handled()
+			return true
+
+	# Bật/tắt Bảng Thông Tin Nhân Vật bằng phím C
+	if event.is_action_pressed("character_sheet"):
+		if not is_dialogue_open():
+			toggle_character_sheet()
+			get_viewport().set_input_as_handled()
+			return true
+
+	# Phím ESC đóng Settings nếu đang mở trong PauseMenu
+	if event.is_action_pressed("ui_cancel") and settings_panel and settings_panel.visible:
+		_on_settings_close_pressed()
+		get_viewport().set_input_as_handled()
+		return true
 
 	# Phím ESC đóng CharacterSheet, Journal hoặc Inventory nếu đang mở
 	if event.is_action_pressed("ui_cancel"):
 		if is_character_sheet_open():
 			close_character_sheet()
 			get_viewport().set_input_as_handled()
-			return
+			return true
 		if is_quest_journal_open():
 			close_quest_journal()
 			get_viewport().set_input_as_handled()
-			return
+			return true
 		if is_inventory_open():
 			close_inventory()
 			get_viewport().set_input_as_handled()
-			return
+			return true
 
 	# Đóng Journal hoặc Character Sheet nếu đang mở bằng phím J (attack)
 	if is_quest_journal_open() and event.is_action_pressed("attack"):
 		close_quest_journal()
 		get_viewport().set_input_as_handled()
-		return
+		return true
 	if is_character_sheet_open() and event.is_action_pressed("attack"):
 		close_character_sheet()
 		get_viewport().set_input_as_handled()
-		return
+		return true
 
+	return false
+
+func _handle_pause_shortcuts(event: InputEvent) -> bool:
+	if pause_menu and pause_menu.visible and event.is_action_pressed("ui_cancel"):
+		_on_resume_pressed()
+		get_viewport().set_input_as_handled()
+		return true
+	return false
+
+func _block_gameplay_actions_when_ui_open(event: InputEvent) -> bool:
 	# Chặn các phím hành động khi đang mở hội thoại, trong thời gian hồi, hoặc đang mở túi đồ / sổ nhiệm vụ / bảng nhân vật
-	if is_dialogue_open() or is_dialogue_cooling_down() or is_ui_cooling_down() or is_inventory_open() or is_quest_journal_open() or is_character_sheet_open():
+	if is_dialogue_open() or is_dialogue_cooling_down() or is_ui_cooling_down() or is_inventory_open() or is_quest_journal_open() or is_character_sheet_open() or (pause_menu and pause_menu.visible):
 		if event.is_action_pressed("attack") or event.is_action_pressed("jump") or event.is_action_pressed("cast_spell") or event.is_action_pressed("dash") or event.is_action_pressed("spell_1") or event.is_action_pressed("spell_2") or event.is_action_pressed("spell_3") or event.is_action_pressed("spell_upgrade"):
 			get_viewport().set_input_as_handled()
-			return
-
-	# Dự phòng nếu không có InteractionCoordinator trong scene
-	if is_dialogue_open() and event.is_action_pressed("interact"):
-		if get_tree() and get_tree().get_nodes_in_group(GameGroups.INTERACTION_COORDINATOR).size() == 0:
-			advance_dialogue()
-			get_viewport().set_input_as_handled()
+			return true
+	return false
 
 func show_dialogue(speaker: String, lines: Array[String], action: String = "none") -> void:
 	if _dialogue_controller:
@@ -634,6 +677,7 @@ func open_inventory() -> void:
 		close_character_sheet()
 	if inventory_ui:
 		inventory_ui.open()
+	inventory_requested.emit()
 
 func close_inventory() -> void:
 	if inventory_ui:
@@ -667,6 +711,7 @@ func open_quest_journal() -> void:
 		close_character_sheet()
 	if quest_journal_ui:
 		quest_journal_ui.open()
+	journal_requested.emit()
 
 func close_quest_journal() -> void:
 	if quest_journal_ui:
@@ -715,6 +760,7 @@ func update_character_sheet_ui() -> void:
 		character_sheet_ui.refresh()
 
 func _on_save_pressed() -> void:
+	save_requested.emit()
 	var scene := _get_active_scene()
 	# Chặn lưu game thủ công khi Boss đang giao chiến
 	if scene and scene.has_method("is_boss_battle_active") and scene.is_boss_battle_active():
@@ -901,6 +947,7 @@ func show_zone_banner(zone_name: String, subtitle: String = "") -> void:
 # --- HỆ THỐNG CÀI ĐẶT & THU PHÓNG MÀN HÌNH (SETTINGS & ZOOM) ---
 
 func _on_resume_pressed() -> void:
+	resume_requested.emit()
 	var scene = _get_active_scene()
 	if scene and "pause_controller" in scene and scene.pause_controller:
 		scene.pause_controller.resume()
@@ -910,6 +957,7 @@ func _on_resume_pressed() -> void:
 			pause_menu.visible = false
 
 func _on_quit_pressed() -> void:
+	quit_requested.emit()
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://src/ui/main_menu.tscn")
 
@@ -1044,6 +1092,7 @@ func set_touch_controls_visible(show: bool) -> void:
 		if spell_hotbar:
 			spell_hotbar.visible = not show
 	_update_hybrid_controls_ui()
+	hybrid_controls_changed.emit(show)
 
 func _update_hybrid_controls_ui() -> void:
 	if sidebar_hybrid_controls_btn:
