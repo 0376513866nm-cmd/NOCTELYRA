@@ -22,6 +22,7 @@ func _run_tests() -> void:
 	await _test_pause_menu()
 	await _test_sidebar_ui()
 	await _test_game_ui_integration()
+	await _test_single_execution_guarantee()
 	print("ALL_UI_COMPONENT_CONTRACTS_PASS_SUCCESSFULLY")
 	quit(0)
 
@@ -322,3 +323,72 @@ func _test_game_ui_integration() -> void:
 	game_ui.queue_free()
 	await process_frame
 	print("[PASS] 6. GameUI full integration & compatibility facade OK")
+
+func _test_single_execution_guarantee() -> void:
+	var game_ui: GameUI = GameUIScene.instantiate() as GameUI
+	root.add_child(game_ui)
+	await process_frame
+
+	var counts := {
+		"save": 0,
+		"retry": 0,
+		"quit": 0,
+		"resume": 0,
+		"victory_dismiss": 0
+	}
+
+	game_ui.save_requested.connect(func(): counts["save"] += 1)
+	game_ui.retry_requested.connect(func(): counts["retry"] += 1)
+	game_ui.quit_requested.connect(func(): counts["quit"] += 1)
+	game_ui.resume_requested.connect(func(): counts["resume"] += 1)
+	game_ui.victory_dismissed.connect(func(): counts["victory_dismiss"] += 1)
+
+	# 1. Bấm Pause Resume: chạy đúng 1 lần
+	game_ui.open_pause_menu()
+	game_ui.pause_menu_controller.resume_btn.pressed.emit()
+	if counts["resume"] != 1:
+		_fail("resume_btn phải phát resume_requested đúng 1 lần, thực tế: %d" % counts["resume"])
+		return
+
+	# 2. Bấm Pause Save: chạy đúng 1 lần
+	game_ui.pause_menu_controller.save_btn.pressed.emit()
+	if counts["save"] != 1:
+		_fail("save_btn phải phát save_requested đúng 1 lần, thực tế: %d" % counts["save"])
+		return
+
+	# 3. Bấm Pause Quit: chạy đúng 1 lần
+	game_ui.pause_menu_controller.quit_btn.pressed.emit()
+	if counts["quit"] != 1:
+		_fail("quit_btn phải phát quit_requested đúng 1 lần, thực tế: %d" % counts["quit"])
+		return
+
+	# 4. Bấm EndScreen Retry: chạy đúng 1 lần
+	game_ui.show_game_over()
+	game_ui.end_screen_ui.retry_button.pressed.emit()
+	if counts["retry"] != 1:
+		_fail("retry_button phải phát retry_requested đúng 1 lần, thực tế: %d" % counts["retry"])
+		return
+
+	# 5. Bấm EndScreen Victory Continue: chạy đúng 1 lần
+	game_ui.show_victory_banner("Chiến Thắng", "Đã hạ gục trùm cuối")
+	game_ui.end_screen_ui.victory_continue_btn.pressed.emit()
+	if counts["victory_dismiss"] != 1:
+		_fail("victory_continue_btn phải phát victory_dismissed đúng 1 lần, thực tế: %d" % counts["victory_dismiss"])
+		return
+
+	# 6. Bấm Sidebar Save: tăng đúng 1 lần (tổng = 2)
+	game_ui.open_sidebar(3)
+	game_ui.sidebar_ui.sidebar_save_btn.pressed.emit()
+	if counts["save"] != 2:
+		_fail("sidebar_save_btn phải phát save_requested đúng 1 lần (tổng 2), thực tế: %d" % counts["save"])
+		return
+
+	# 7. Bấm Sidebar Quit: tăng đúng 1 lần (tổng = 2)
+	game_ui.sidebar_ui.sidebar_quit_btn.pressed.emit()
+	if counts["quit"] != 2:
+		_fail("sidebar_quit_btn phải phát quit_requested đúng 1 lần (tổng 2), thực tế: %d" % counts["quit"])
+		return
+
+	game_ui.queue_free()
+	await process_frame
+	print("[PASS] 7. Single execution guarantee: Mỗi thao tác chỉ chạy đúng 1 lần OK")

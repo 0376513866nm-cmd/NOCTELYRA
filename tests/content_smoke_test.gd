@@ -1,6 +1,9 @@
 extends SceneTree
 
 func _init() -> void:
+	call_deferred("_run")
+
+func _run() -> void:
 	var content := load("res://src/data/content_catalog.tres") as ContentCatalog
 	if content == null:
 		push_error("Không tải được content catalog")

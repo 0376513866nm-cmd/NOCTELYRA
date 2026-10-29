@@ -39,6 +39,7 @@ func _run() -> void:
 		return
 	SaveManager.delete_save()
 	SaveManager.custom_save_path = ""
+	world.free()
 	print("SAVE_SCHEMA_OK version=" + SaveManager.CURRENT_VERSION)
 	quit(0)
 

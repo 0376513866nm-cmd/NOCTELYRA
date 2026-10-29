@@ -3,7 +3,6 @@ extends CanvasLayer
 
 const SettingsManager = preload("res://src/ui/settings_manager.gd")
 const SettingsUIController = preload("res://src/ui/controllers/settings_ui_controller.gd")
-const SidebarController = preload("res://src/ui/controllers/sidebar_controller.gd")
 const BossHUDClass = preload("res://src/ui/boss_hud.gd")
 const WorldOverlayUIClass = preload("res://src/ui/world_overlay_ui.gd")
 const EndScreenUIClass = preload("res://src/ui/end_screen_ui.gd")
@@ -41,7 +40,7 @@ signal hybrid_controls_changed(enabled: bool)
 @onready var pause_menu_controller: PauseMenuUIClass = find_child("PauseMenu", true, false) as PauseMenuUIClass
 @onready var sidebar_ui: SidebarUIClass = find_child("Sidebar", true, false) as SidebarUIClass
 
-# Boss UI (M4) - Compatibility accessors
+# Compatibility accessors for extracted components
 @onready var boss_hud: Control = boss_hud_controller.boss_bar_panel if boss_hud_controller else null
 @onready var boss_name_label: Label = boss_hud_controller.boss_name_label if boss_hud_controller else null
 @onready var boss_phase_label: Label = boss_hud_controller.boss_phase_label if boss_hud_controller else null
@@ -50,7 +49,6 @@ signal hybrid_controls_changed(enabled: bool)
 @onready var boss_warning_label: Label = boss_hud_controller.boss_warning_label if boss_hud_controller else null
 @onready var boss_announcement_label: Label = boss_hud_controller.boss_announcement_label if boss_hud_controller else null
 
-# End Screen UI - Compatibility accessors
 @onready var victory_panel: Control = end_screen_ui.victory_panel if end_screen_ui else null
 @onready var victory_title: Label = end_screen_ui.victory_title if end_screen_ui else null
 @onready var victory_subtitle: Label = end_screen_ui.victory_subtitle if end_screen_ui else null
@@ -58,112 +56,51 @@ signal hybrid_controls_changed(enabled: bool)
 @onready var game_over_panel: Control = end_screen_ui.game_over_panel if end_screen_ui else null
 @onready var retry_button: Button = end_screen_ui.retry_button if end_screen_ui else null
 
-@onready var dialogue_box: Control = $DialogueBox
-@onready var dialogue_speaker: Label = $DialogueBox/Panel/SpeakerLabel
-@onready var dialogue_text: Label = $DialogueBox/Panel/DialogueText
-@onready var dialogue_hint: Label = $DialogueBox/Panel/NextHint
-
-# Pause Menu UI - Compatibility accessors
 @onready var pause_menu: Control = pause_menu_controller if pause_menu_controller else null
 @onready var pause_panel: Panel = pause_menu_controller.pause_panel if pause_menu_controller else null
 @onready var resume_btn: Button = pause_menu_controller.resume_btn if pause_menu_controller else null
 @onready var settings_btn: Button = pause_menu_controller.settings_btn if pause_menu_controller else null
 @onready var save_btn: Button = pause_menu_controller.save_btn if pause_menu_controller else null
 @onready var quit_btn: Button = pause_menu_controller.quit_btn if pause_menu_controller else null
-
 @onready var settings_panel: Panel = pause_menu_controller.settings_panel if pause_menu_controller else null
-@onready var zoom_out_btn: Button = pause_menu_controller.zoom_out_btn if pause_menu_controller else null
+@onready var settings_close_btn: Button = pause_menu_controller.settings_close_btn if pause_menu_controller else null
 @onready var zoom_label: Label = pause_menu_controller.zoom_label if pause_menu_controller else null
-@onready var zoom_in_btn: Button = pause_menu_controller.zoom_in_btn if pause_menu_controller else null
-@onready var zoom_reset_btn: Button = pause_menu_controller.zoom_reset_btn if pause_menu_controller else null
 @onready var zoom_slider: HSlider = pause_menu_controller.zoom_slider if pause_menu_controller else null
 @onready var fullscreen_btn: Button = pause_menu_controller.fullscreen_btn if pause_menu_controller else null
-@onready var fps_btn: Button = find_child("FPSBtn", true, false) as Button
-@onready var settings_close_btn: Button = pause_menu_controller.settings_close_btn if pause_menu_controller else null
+@onready var fps_btn: Button = pause_menu_controller.fps_btn if pause_menu_controller else null
 
-@onready var inventory_ui: InventoryUI = $InventoryUI
-@onready var quest_journal_ui: QuestJournalUI = $QuestJournalUI
-@onready var character_sheet_ui: CharacterSheetUI = $CharacterSheetUI
-@onready var spell_hotbar: SpellHotbar = $HUD/SpellHotbar
-
-# Sidebar Nodes
-@onready var sidebar_toggle_btn: Button = get_node_or_null("HUD/SidebarToggleBtn") as Button
-@onready var sidebar: Control = get_node_or_null("Sidebar")
-@onready var touch_controls: Control = get_node_or_null("HUD/TouchControls") as Control
-@onready var sidebar_close_btn: Button = get_node_or_null("Sidebar/MainVBox/HeaderHBox/CloseBtn") as Button
-@onready var tab_btn_stats: Button = get_node_or_null("Sidebar/MainVBox/TabBar/TabBtn_Stats") as Button
-@onready var tab_btn_quests: Button = get_node_or_null("Sidebar/MainVBox/TabBar/TabBtn_Quests") as Button
-@onready var tab_btn_inventory: Button = get_node_or_null("Sidebar/MainVBox/TabBar/TabBtn_Inventory") as Button
-@onready var tab_btn_settings: Button = get_node_or_null("Sidebar/MainVBox/TabBar/TabBtn_Settings") as Button
-
-@onready var panel_stats: Control = get_node_or_null("Sidebar/MainVBox/ContentContainer/StatsPanel") as Control
-@onready var panel_quests: Control = get_node_or_null("Sidebar/MainVBox/ContentContainer/QuestsPanel") as Control
-@onready var panel_inventory: Control = get_node_or_null("Sidebar/MainVBox/ContentContainer/InventoryPanel") as Control
-@onready var panel_settings: Control = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel") as Control
-
-@onready var sidebar_race_label: Label = find_child("RaceLabel", true, false) as Label
-@onready var sidebar_level_label: Label = find_child("LevelExpLabel", true, false) as Label
-@onready var sidebar_exp_bar: ProgressBar = find_child("ExpBar", true, false) as ProgressBar
-@onready var sidebar_exp_label: Label = find_child("ExpLabel", true, false) as Label
-@onready var sidebar_stat_hp: Label = find_child("StatHP", true, false) as Label
-@onready var sidebar_stat_mp: Label = find_child("StatMP", true, false) as Label
-@onready var sidebar_stat_atk: Label = find_child("StatATK", true, false) as Label
-@onready var sidebar_stat_regen: Label = find_child("StatRegen", true, false) as Label
-@onready var sidebar_stat_speed: Label = find_child("StatSpeed", true, false) as Label
-@onready var sidebar_stat_magic: Label = find_child("StatMagic", true, false) as Label
-@onready var sidebar_equip_weapon: Label = find_child("EquipWeapon", true, false) as Label
-@onready var sidebar_equip_armor: Label = find_child("EquipArmor", true, false) as Label
-@onready var sidebar_equip_acc: Label = find_child("EquipAccessory", true, false) as Label
-@onready var sidebar_open_sheet_btn: Button = find_child("OpenSheetBtn", true, false) as Button
-@onready var sidebar_shard_label: Label = find_child("SpellUpgradeShardCount", true, false) as Label
-@onready var sidebar_upgrade_moon_btn: Button = _get_spell_btn("SpellItem_Moon")
-@onready var sidebar_upgrade_ember_btn: Button = _get_spell_btn("SpellItem_Ember")
-@onready var sidebar_upgrade_frost_btn: Button = _get_spell_btn("SpellItem_Frost")
-@onready var sidebar_spell_moon_lbl: Label = _get_spell_lbl("SpellItem_Moon")
-@onready var sidebar_spell_ember_lbl: Label = _get_spell_lbl("SpellItem_Ember")
-@onready var sidebar_spell_frost_lbl: Label = _get_spell_lbl("SpellItem_Frost")
-
-@onready var sidebar_quest_title: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/QuestsPanel/SidebarQuestTitle") as Label
-@onready var sidebar_quest_status: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/QuestsPanel/SidebarQuestStatus") as Label
-@onready var sidebar_quest_desc: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/QuestsPanel/SidebarQuestDesc") as Label
-@onready var sidebar_quest_progress: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/QuestsPanel/SidebarQuestProgress") as Label
-@onready var sidebar_open_journal_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/QuestsPanel/OpenJournalBtn") as Button
-
-@onready var sidebar_inv_gold: Label = get_node_or_null("Sidebar/MainVBox/ContentContainer/InventoryPanel/InvGoldLabel") as Label
-@onready var sidebar_open_inv_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/InventoryPanel/OpenInvBtn") as Button
-
-@onready var sidebar_zoom_out_btn: Button = find_child("SidebarZoomOutBtn", true, false) as Button
-@onready var sidebar_zoom_label: Label = find_child("SidebarZoomLabel", true, false) as Label
-@onready var sidebar_zoom_in_btn: Button = find_child("SidebarZoomInBtn", true, false) as Button
-@onready var sidebar_zoom_reset_btn: Button = find_child("SidebarZoomResetBtn", true, false) as Button
-@onready var sidebar_zoom_slider: HSlider = find_child("SidebarZoomSlider", true, false) as HSlider
-@onready var sidebar_fullscreen_btn: Button = find_child("SidebarFullscreenBtn", true, false) as Button
-@onready var sidebar_fps_btn: Button = find_child("SidebarFPSBtn", true, false) as Button
-@onready var fps_panel: PanelContainer = find_child("FPSPanel", true, false) as PanelContainer
-@onready var fps_label: Label = find_child("FPSLabel", true, false) as Label
-@onready var sidebar_save_btn: Button = find_child("SidebarSaveBtn", true, false) as Button
-@onready var sidebar_quit_btn: Button = find_child("SidebarQuitBtn", true, false) as Button
-@onready var sidebar_hybrid_controls_btn: Button = find_child("SidebarHybridControlsBtn", true, false) as Button
-@onready var sidebar_day_night_btn: Button = find_child("SidebarDayNightBtn", true, false) as Button
-@onready var guide_toggle_btn: Button = find_child("GuideToggleBtn", true, false) as Button
-@onready var guide_content: Control = find_child("GuideContent", true, false) as Control
-@onready var time_btn: Button = get_node_or_null("HUD/TimePanel/TimeBtn") as Button
-
-var _current_sidebar_tab: int = 0
-
-# World Overlay UI (M6) - Compatibility accessors
 @onready var notification_label: Label = world_overlay_ui.notification_label if world_overlay_ui else null
 @onready var zone_label: Label = world_overlay_ui.zone_label if world_overlay_ui else null
 @onready var zone_banner: Control = world_overlay_ui.zone_banner if world_overlay_ui else null
 @onready var zone_banner_title: Label = world_overlay_ui.zone_banner_title if world_overlay_ui else null
 @onready var zone_banner_subtitle: Label = world_overlay_ui.zone_banner_subtitle if world_overlay_ui else null
 
+@onready var sidebar: Control = sidebar_ui if sidebar_ui else null
+@onready var sidebar_hybrid_controls_btn: Button = sidebar_ui.sidebar_hybrid_controls_btn if sidebar_ui else null
+
+@onready var dialogue_box: Control = $DialogueBox
+@onready var dialogue_speaker: Label = $DialogueBox/Panel/SpeakerLabel
+@onready var dialogue_text: Label = $DialogueBox/Panel/DialogueText
+@onready var dialogue_hint: Label = $DialogueBox/Panel/NextHint
+
+@onready var inventory_ui: InventoryUI = $InventoryUI
+@onready var quest_journal_ui: QuestJournalUI = $QuestJournalUI
+@onready var character_sheet_ui: CharacterSheetUI = $CharacterSheetUI
+@onready var spell_hotbar: SpellHotbar = $HUD/SpellHotbar
+
+# HUD Interactive controls
+@onready var sidebar_toggle_btn: Button = get_node_or_null("HUD/SidebarToggleBtn") as Button
+@onready var touch_controls: Control = get_node_or_null("HUD/TouchControls") as Control
+@onready var fps_panel: PanelContainer = find_child("FPSPanel", true, false) as PanelContainer
+@onready var fps_label: Label = find_child("FPSLabel", true, false) as Label
+@onready var time_btn: Button = get_node_or_null("HUD/TimePanel/TimeBtn") as Button
+
+var _current_sidebar_tab: int = 0
 var _ui_close_grace_cooldown: float = 0.0
 var _fps_update_timer: float = 0.0
 var _connected_spellbook: SpellbookComponent = null
 var _dialogue_controller: DialogueController
 var _settings_controller: SettingsUIController
-var _sidebar_controller: SidebarController
 var _active_ui_locks: Dictionary = {}
 var _cached_player: Node = null
 
@@ -223,56 +160,21 @@ func _apply_safe_insets() -> void:
 func _sync_extracted_components() -> void:
 	if boss_hud_controller == null:
 		boss_hud_controller = find_child("BossHUD", true, false) as BossHUDClass
-	if boss_hud_controller:
-		boss_hud = boss_hud_controller.boss_bar_panel
-		boss_name_label = boss_hud_controller.boss_name_label
-		boss_phase_label = boss_hud_controller.boss_phase_label
-		boss_hp_bar = boss_hud_controller.boss_hp_bar
-		boss_hp_label = boss_hud_controller.boss_hp_label
-		boss_warning_label = boss_hud_controller.boss_warning_label
-		boss_announcement_label = boss_hud_controller.boss_announcement_label
 
 	if world_overlay_ui == null:
 		world_overlay_ui = find_child("WorldOverlayUI", true, false) as WorldOverlayUIClass
-	if world_overlay_ui:
-		zone_label = world_overlay_ui.zone_label
-		notification_label = world_overlay_ui.notification_label
-		zone_banner = world_overlay_ui.zone_banner
-		zone_banner_title = world_overlay_ui.zone_banner_title
-		zone_banner_subtitle = world_overlay_ui.zone_banner_subtitle
 
 	if end_screen_ui == null:
 		end_screen_ui = find_child("EndScreenUI", true, false) as EndScreenUIClass
 	if end_screen_ui:
-		game_over_panel = end_screen_ui.game_over_panel
-		retry_button = end_screen_ui.retry_button
-		victory_panel = end_screen_ui.victory_panel
-		victory_title = end_screen_ui.victory_title
-		victory_subtitle = end_screen_ui.victory_subtitle
-		victory_continue_btn = end_screen_ui.victory_continue_btn
-		if not end_screen_ui.retry_requested.is_connected(_on_end_screen_retry_requested):
-			end_screen_ui.retry_requested.connect(_on_end_screen_retry_requested)
-		if not end_screen_ui.victory_dismissed.is_connected(_on_end_screen_victory_dismissed):
-			end_screen_ui.victory_dismissed.connect(_on_end_screen_victory_dismissed)
+		if not end_screen_ui.retry_requested.is_connected(_on_retry_pressed):
+			end_screen_ui.retry_requested.connect(_on_retry_pressed)
+		if not end_screen_ui.victory_dismissed.is_connected(_on_victory_dismissed):
+			end_screen_ui.victory_dismissed.connect(_on_victory_dismissed)
 
 	if pause_menu_controller == null:
 		pause_menu_controller = find_child("PauseMenu", true, false) as PauseMenuUIClass
 	if pause_menu_controller:
-		pause_menu = pause_menu_controller
-		pause_panel = pause_menu_controller.pause_panel
-		resume_btn = pause_menu_controller.resume_btn
-		settings_btn = pause_menu_controller.settings_btn
-		save_btn = pause_menu_controller.save_btn
-		quit_btn = pause_menu_controller.quit_btn
-		settings_panel = pause_menu_controller.settings_panel
-		zoom_out_btn = pause_menu_controller.zoom_out_btn
-		zoom_label = pause_menu_controller.zoom_label
-		zoom_in_btn = pause_menu_controller.zoom_in_btn
-		zoom_reset_btn = pause_menu_controller.zoom_reset_btn
-		zoom_slider = pause_menu_controller.zoom_slider
-		fullscreen_btn = pause_menu_controller.fullscreen_btn
-		fps_btn = pause_menu_controller.fps_btn
-		settings_close_btn = pause_menu_controller.settings_close_btn
 		if not pause_menu_controller.resume_requested.is_connected(_on_resume_pressed):
 			pause_menu_controller.resume_requested.connect(_on_resume_pressed)
 		if not pause_menu_controller.save_requested.is_connected(_on_save_pressed):
@@ -287,58 +189,6 @@ func _sync_extracted_components() -> void:
 	if sidebar_ui == null:
 		sidebar_ui = find_child("Sidebar", true, false) as SidebarUIClass
 	if sidebar_ui:
-		sidebar = sidebar_ui
-		sidebar_close_btn = sidebar_ui.close_btn
-		tab_btn_stats = sidebar_ui.tab_btn_stats
-		tab_btn_quests = sidebar_ui.tab_btn_quests
-		tab_btn_inventory = sidebar_ui.tab_btn_inventory
-		tab_btn_settings = sidebar_ui.tab_btn_settings
-		panel_stats = sidebar_ui.panel_stats
-		panel_quests = sidebar_ui.panel_quests
-		panel_inventory = sidebar_ui.panel_inventory
-		panel_settings = sidebar_ui.panel_settings
-		sidebar_race_label = sidebar_ui.race_label
-		sidebar_level_label = sidebar_ui.level_label
-		sidebar_exp_bar = sidebar_ui.exp_bar
-		sidebar_exp_label = sidebar_ui.exp_label
-		sidebar_stat_hp = sidebar_ui.stat_hp
-		sidebar_stat_mp = sidebar_ui.stat_mp
-		sidebar_stat_atk = sidebar_ui.stat_atk
-		sidebar_stat_regen = sidebar_ui.stat_regen
-		sidebar_stat_speed = sidebar_ui.stat_speed
-		sidebar_stat_magic = sidebar_ui.stat_magic
-		sidebar_equip_weapon = sidebar_ui.equip_weapon
-		sidebar_equip_armor = sidebar_ui.equip_armor
-		sidebar_equip_acc = sidebar_ui.equip_acc
-		sidebar_open_sheet_btn = sidebar_ui.open_sheet_btn
-		sidebar_shard_label = sidebar_ui.shard_label
-		sidebar_upgrade_moon_btn = sidebar_ui.spell_moon_btn
-		sidebar_upgrade_ember_btn = sidebar_ui.spell_ember_btn
-		sidebar_upgrade_frost_btn = sidebar_ui.spell_frost_btn
-		sidebar_spell_moon_lbl = sidebar_ui.spell_moon_lbl
-		sidebar_spell_ember_lbl = sidebar_ui.spell_ember_lbl
-		sidebar_spell_frost_lbl = sidebar_ui.spell_frost_lbl
-		sidebar_quest_title = sidebar_ui.quest_title
-		sidebar_quest_status = sidebar_ui.quest_status
-		sidebar_quest_desc = sidebar_ui.quest_desc
-		sidebar_quest_progress = sidebar_ui.quest_progress
-		sidebar_open_journal_btn = sidebar_ui.open_journal_btn
-		sidebar_inv_gold = sidebar_ui.inv_gold
-		sidebar_open_inv_btn = sidebar_ui.open_inv_btn
-		sidebar_zoom_out_btn = sidebar_ui.sidebar_zoom_out_btn
-		sidebar_zoom_label = sidebar_ui.sidebar_zoom_label
-		sidebar_zoom_in_btn = sidebar_ui.sidebar_zoom_in_btn
-		sidebar_zoom_reset_btn = sidebar_ui.sidebar_zoom_reset_btn
-		sidebar_zoom_slider = sidebar_ui.sidebar_zoom_slider
-		sidebar_fullscreen_btn = sidebar_ui.sidebar_fullscreen_btn
-		sidebar_fps_btn = sidebar_ui.sidebar_fps_btn
-		sidebar_save_btn = sidebar_ui.sidebar_save_btn
-		sidebar_quit_btn = sidebar_ui.sidebar_quit_btn
-		sidebar_hybrid_controls_btn = sidebar_ui.sidebar_hybrid_controls_btn
-		sidebar_day_night_btn = sidebar_ui.sidebar_day_night_btn
-		guide_toggle_btn = sidebar_ui.guide_toggle_btn
-		guide_content = sidebar_ui.guide_content
-
 		if not sidebar_ui.closed.is_connected(_on_sidebar_closed):
 			sidebar_ui.closed.connect(_on_sidebar_closed)
 		if not sidebar_ui.tab_changed.is_connected(_on_sidebar_tab_changed):
@@ -389,57 +239,18 @@ func _ready() -> void:
 
 	_settings_controller = SettingsUIController.new()
 	_settings_controller.setup(
-		pause_panel,
-		settings_panel,
-		zoom_label,
-		zoom_slider,
-		fullscreen_btn,
-		sidebar_zoom_label,
-		sidebar_zoom_slider,
-		sidebar_fullscreen_btn,
-		fps_btn,
-		sidebar_fps_btn
+		pause_menu_controller.pause_panel if pause_menu_controller else null,
+		pause_menu_controller.settings_panel if pause_menu_controller else null,
+		pause_menu_controller.zoom_label if pause_menu_controller else null,
+		pause_menu_controller.zoom_slider if pause_menu_controller else null,
+		pause_menu_controller.fullscreen_btn if pause_menu_controller else null,
+		sidebar_ui.sidebar_zoom_label if sidebar_ui else null,
+		sidebar_ui.sidebar_zoom_slider if sidebar_ui else null,
+		sidebar_ui.sidebar_fullscreen_btn if sidebar_ui else null,
+		pause_menu_controller.fps_btn if pause_menu_controller else null,
+		sidebar_ui.sidebar_fps_btn if sidebar_ui else null
 	)
-	if game_over_panel:
-		game_over_panel.visible = false
-	if notification_label:
-		notification_label.visible = false
-	if boss_hud:
-		boss_hud.visible = false
-	if boss_warning_label:
-		boss_warning_label.visible = false
-	if boss_announcement_label:
-		boss_announcement_label.visible = false
-	if victory_panel:
-		victory_panel.visible = false
-	if zone_banner:
-		zone_banner.visible = false
-	if retry_button and not retry_button.pressed.is_connected(_on_retry_pressed):
-		retry_button.pressed.connect(_on_retry_pressed)
-	if save_btn and not save_btn.pressed.is_connected(_on_save_pressed):
-		save_btn.pressed.connect(_on_save_pressed)
-	if resume_btn and not resume_btn.pressed.is_connected(_on_resume_pressed):
-		resume_btn.pressed.connect(_on_resume_pressed)
-	if quit_btn and not quit_btn.pressed.is_connected(_on_quit_pressed):
-		quit_btn.pressed.connect(_on_quit_pressed)
-	if settings_btn and not settings_btn.pressed.is_connected(_on_settings_pressed):
-		settings_btn.pressed.connect(_on_settings_pressed)
-	if settings_close_btn and not settings_close_btn.pressed.is_connected(_on_settings_close_pressed):
-		settings_close_btn.pressed.connect(_on_settings_close_pressed)
-	if zoom_out_btn:
-		zoom_out_btn.pressed.connect(_on_zoom_out_pressed)
-	if zoom_in_btn:
-		zoom_in_btn.pressed.connect(_on_zoom_in_pressed)
-	if zoom_reset_btn:
-		zoom_reset_btn.pressed.connect(_on_zoom_reset_pressed)
-	if zoom_slider:
-		zoom_slider.value_changed.connect(_on_zoom_slider_changed)
-	if fullscreen_btn:
-		fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
-	if fps_btn:
-		fps_btn.pressed.connect(_on_toggle_fps_pressed)
-	if victory_continue_btn:
-		victory_continue_btn.pressed.connect(_on_victory_continue_pressed)
+
 	if inventory_ui:
 		inventory_ui.inventory_opened.connect(_on_modal_opened.bind("inventory"))
 		inventory_ui.inventory_closed.connect(_on_modal_closed.bind("inventory"))
@@ -454,8 +265,6 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_apply_safe_insets)
 
 	# Nạp cấu hình cài đặt và cập nhật UI
-	# Kết nối các nút trong Sidebar
-	# Nạp cài đặt trước để kiểm tra trạng thái phím ảo Hybrid
 	SettingsManager.load_settings()
 
 	# Thiết lập hiển thị điều khiển theo nền tảng:
@@ -467,61 +276,19 @@ func _ready() -> void:
 		sidebar_toggle_btn.pressed.connect(toggle_sidebar)
 		sidebar_toggle_btn.visible = not initial_touch_visible
 	if settings_gear_btn:
-		# One menu entry: touch MENU in hybrid mode, HUD MENU otherwise.
 		settings_gear_btn.visible = false
 		settings_gear_btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if sidebar_hybrid_controls_btn and sidebar_ui == null:
-		sidebar_hybrid_controls_btn.pressed.connect(toggle_touch_controls)
 
 	if touch_controls and touch_controls.has_signal("menu_pressed"):
 		touch_controls.menu_pressed.connect(toggle_sidebar)
 
-	if sidebar_ui == null:
-		if sidebar_close_btn:
-			sidebar_close_btn.pressed.connect(close_sidebar)
-		if tab_btn_stats:
-			tab_btn_stats.pressed.connect(func(): switch_sidebar_tab(0))
-		if tab_btn_quests:
-			tab_btn_quests.pressed.connect(func(): switch_sidebar_tab(1))
-		if tab_btn_inventory:
-			tab_btn_inventory.pressed.connect(func(): switch_sidebar_tab(2))
-		if tab_btn_settings:
-			tab_btn_settings.pressed.connect(func(): switch_sidebar_tab(3))
-		if sidebar_open_sheet_btn:
-			sidebar_open_sheet_btn.pressed.connect(open_character_sheet)
-		if sidebar_upgrade_moon_btn:
-			sidebar_upgrade_moon_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("moon_bolt"))
-		if sidebar_upgrade_ember_btn:
-			sidebar_upgrade_ember_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("ember_bloom"))
-		if sidebar_upgrade_frost_btn:
-			sidebar_upgrade_frost_btn.pressed.connect(func(): _on_sidebar_upgrade_spell("frost_shard"))
-		if sidebar_open_journal_btn:
-			sidebar_open_journal_btn.pressed.connect(open_quest_journal)
-		if sidebar_open_inv_btn:
-			sidebar_open_inv_btn.pressed.connect(open_inventory)
-		if sidebar_zoom_out_btn:
-			sidebar_zoom_out_btn.pressed.connect(_on_zoom_out_pressed)
-		if sidebar_zoom_in_btn:
-			sidebar_zoom_in_btn.pressed.connect(_on_zoom_in_pressed)
-		if sidebar_zoom_reset_btn:
-			sidebar_zoom_reset_btn.pressed.connect(_on_zoom_reset_pressed)
-		if sidebar_zoom_slider:
-			sidebar_zoom_slider.value_changed.connect(_on_zoom_slider_changed)
-		if sidebar_fullscreen_btn:
-			sidebar_fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
-		if sidebar_fps_btn:
-			sidebar_fps_btn.pressed.connect(_on_toggle_fps_pressed)
-		if guide_toggle_btn:
-			guide_toggle_btn.pressed.connect(_on_guide_toggle_pressed)
-		if sidebar_save_btn:
-			sidebar_save_btn.pressed.connect(_on_save_pressed)
-		if sidebar_quit_btn:
-			sidebar_quit_btn.pressed.connect(_on_quit_pressed)
-		if sidebar_day_night_btn:
-			sidebar_day_night_btn.pressed.connect(_on_toggle_day_night_pressed)
-
 	if time_btn:
 		time_btn.pressed.connect(_on_toggle_day_night_pressed)
+
+	switch_sidebar_tab(0)
+
+	_update_settings_ui()
+	call_deferred("_initial_sync_player")
 
 	switch_sidebar_tab(0)
 
@@ -906,8 +673,8 @@ func update_gold(amount: int) -> void:
 	_current_gold = amount
 	if gold_label:
 		gold_label.text = "Vàng: %d G" % amount
-	if sidebar_inv_gold:
-		sidebar_inv_gold.text = "🪙 Vàng Sở Hữu: %d G" % amount
+	if sidebar_ui and sidebar_ui.inv_gold:
+		sidebar_ui.inv_gold.text = "🪙 Vàng Sở Hữu: %d G" % amount
 
 func update_quest_info(_unused_arg: Variant = null) -> void:
 	var q_title: String = ""
@@ -963,10 +730,6 @@ func hide_game_over() -> void:
 	elif game_over_panel:
 		game_over_panel.visible = false
 	_set_input_lock("game_over", false)
-
-func _on_end_screen_retry_requested() -> void:
-	_set_input_lock("game_over", false)
-	retry_requested.emit()
 
 func _on_retry_pressed() -> void:
 	hide_game_over()
@@ -1046,11 +809,7 @@ func hide_victory_banner() -> void:
 	_ui_close_grace_cooldown = 0.25
 	_set_input_lock("ui_cooldown", true)
 
-func _on_end_screen_victory_dismissed() -> void:
-	hide_victory_banner()
-	victory_dismissed.emit()
-
-func _on_victory_continue_pressed() -> void:
+func _on_victory_dismissed() -> void:
 	hide_victory_banner()
 	victory_dismissed.emit()
 
@@ -1106,9 +865,11 @@ func _on_resume_pressed() -> void:
 	resume_requested.emit()
 
 func _on_quit_pressed() -> void:
+	close_pause_menu()
 	quit_requested.emit()
-	get_tree().paused = false
-	get_tree().change_scene_to_file("res://src/ui/main_menu.tscn")
+	if quit_requested.get_connections().is_empty():
+		get_tree().paused = false
+		get_tree().change_scene_to_file("res://src/ui/main_menu.tscn")
 
 func _on_settings_pressed() -> void:
 	if _settings_controller:
@@ -1151,10 +912,6 @@ func _on_toggle_fps_pressed() -> void:
 func _on_guide_toggle_pressed() -> void:
 	if sidebar_ui:
 		sidebar_ui.toggle_guide()
-	elif guide_content:
-		guide_content.visible = not guide_content.visible
-		if guide_toggle_btn:
-			guide_toggle_btn.text = "📖 Hướng Dẫn Điều Khiển & Phím Tắt ▼ (Thu gọn)" if guide_content.visible else "📖 Hướng Dẫn Điều Khiển & Phím Tắt ▶"
 
 func _update_settings_ui() -> void:
 	if _settings_controller:
@@ -1162,15 +919,11 @@ func _update_settings_ui() -> void:
 	_update_hybrid_controls_ui()
 
 func is_sidebar_open() -> bool:
-	if sidebar_ui:
-		return sidebar_ui.is_open()
-	return _sidebar_controller != null and _sidebar_controller.is_open()
+	return sidebar_ui != null and sidebar_ui.is_open()
 
 func open_sidebar(tab_idx: int = -1) -> void:
 	if sidebar_ui:
 		sidebar_ui.open(tab_idx)
-	elif _sidebar_controller:
-		_sidebar_controller.open(tab_idx)
 	if touch_controls:
 		touch_controls.visible = false
 	if sidebar_toggle_btn:
@@ -1184,8 +937,6 @@ func close_sidebar() -> void:
 	if sidebar_ui and sidebar_ui.is_open():
 		sidebar_ui.close()
 		return
-	elif _sidebar_controller and _sidebar_controller.is_open():
-		_sidebar_controller.close()
 	_on_sidebar_closed()
 
 func _on_sidebar_closed() -> void:
@@ -1212,19 +963,16 @@ func switch_sidebar_tab(tab_idx: int) -> void:
 	_current_sidebar_tab = tab_idx
 	if sidebar_ui:
 		sidebar_ui.switch_tab(tab_idx)
-	elif _sidebar_controller:
-		_sidebar_controller.switch_tab(tab_idx)
 	_refresh_sidebar_content()
 
 func _refresh_sidebar_content() -> void:
+	if sidebar_ui == null:
+		return
 	var scene := _get_active_scene()
 	var player: Player = scene.get_node_or_null("Player") as Player if scene else null
 	var q_title := quest_title_label.text if quest_title_label else ""
 	var q_prog := quest_progress_label.text if quest_progress_label else ""
-	if sidebar_ui:
-		sidebar_ui.refresh_content(player, _current_gold, q_title, q_prog)
-	elif _sidebar_controller:
-		_sidebar_controller.refresh_content(player, _current_gold, q_title, q_prog)
+	sidebar_ui.refresh_content(player, _current_gold, q_title, q_prog)
 
 func _on_sidebar_upgrade_spell(spell_id: String) -> void:
 	var scene := _get_active_scene()
@@ -1239,22 +987,6 @@ func _on_sidebar_upgrade_spell(spell_id: String) -> void:
 			if res.has("message"):
 				show_notification(str(res["message"]))
 			_refresh_sidebar_content()
-
-func _get_spell_btn(item_name: String) -> Button:
-	if sidebar_ui and sidebar_ui.has_method("_get_spell_btn"):
-		return sidebar_ui._get_spell_btn(item_name)
-	var item = find_child(item_name, true, false)
-	if item:
-		return item.get_node_or_null("UpgradeBtn") as Button
-	return null
-
-func _get_spell_lbl(item_name: String) -> Label:
-	if sidebar_ui and sidebar_ui.has_method("_get_spell_lbl"):
-		return sidebar_ui._get_spell_lbl(item_name)
-	var item = find_child(item_name, true, false)
-	if item:
-		return item.get_node_or_null("Label") as Label
-	return null
 
 func toggle_touch_controls() -> void:
 	var next_enabled := not SettingsManager.hybrid_controls_enabled
@@ -1326,5 +1058,5 @@ func update_time_display(time_str: String, phase: String, icon: String) -> void:
 	var text_fmt := "%s %s %s" % [icon, time_str, p_name]
 	if time_btn:
 		time_btn.text = text_fmt
-	if sidebar_day_night_btn:
-		sidebar_day_night_btn.text = "%s Đổi Thời Gian (%s)" % [icon, text_fmt]
+	if sidebar_ui and sidebar_ui.sidebar_day_night_btn:
+		sidebar_ui.sidebar_day_night_btn.text = "%s Đổi Thời Gian (%s)" % [icon, text_fmt]
