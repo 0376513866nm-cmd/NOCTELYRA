@@ -78,12 +78,7 @@ static func apply(world: Node, data: Dictionary) -> bool:
 		spellbook.from_dict(data.get("spellbook", {}))
 	var journal := player.quest_journal_component
 	if journal:
-		if data.has("quest_journal") and (data["quest_journal"] is Dictionary) and not data["quest_journal"].is_empty():
-			journal.from_dict(data["quest_journal"])
-		else:
-			journal._quests.clear()
-			journal._kill_history.clear()
-			journal._ensure_default_quests()
+		journal.from_dict(data.get("quest_journal", {}))
 
 	var health := player.health_component
 	if health:
@@ -117,8 +112,28 @@ static func apply(world: Node, data: Dictionary) -> bool:
 	_migrate_quest_data(data, journal, quest_manager, progression)
 	return true
 
+const KNOWN_LEGACY_ENEMY_IDS: Dictionary = {
+	"enemy_forest_1": "corrupted_wolf",
+	"enemy_forest_2": "corrupted_wolf",
+	"enemy_forest_3": "corrupted_wolf",
+	"elyndra_mooncap_1": "corrupted_mooncap",
+	"elyndra_mooncap_2": "corrupted_mooncap",
+	"elyndra_mooncap_3": "corrupted_mooncap",
+	"elyndra_wisp_1": "corrupted_mana_wisp",
+	"elyndra_wisp_2": "corrupted_mana_wisp",
+	"vharok_wolf_1": "ashfang_wolf",
+	"vharok_wolf_2": "ashfang_wolf",
+	"vharok_wolf_3": "ashfang_wolf",
+	"vharok_lizard_1": "ember_lizard",
+	"vharok_lizard_2": "ember_lizard",
+}
+
 static func _classify_enemy_id(id_str: String) -> String:
-	var s := id_str.to_lower()
+	var clean_id := id_str.strip_edges()
+	if KNOWN_LEGACY_ENEMY_IDS.has(clean_id):
+		return KNOWN_LEGACY_ENEMY_IDS[clean_id]
+
+	var s := clean_id.to_lower()
 	if s.find("mooncap") != -1:
 		return "corrupted_mooncap"
 	if s.find("wisp") != -1:
@@ -224,26 +239,26 @@ static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent
 					if final_counted.size() == final_amount:
 						break
 
-		# 3. Bổ sung từ generic candidates nếu cần
+		# 3. Bổ sung từ generic candidates nếu cần (bảo toàn tiến trình, nhưng KHÔNG đưa vào _kill_history["corrupted_wolf"])
 		if final_counted.size() < final_amount:
 			for oid in other_candidates:
 				if not oid in final_counted:
 					final_counted.append(oid)
-					_record_kill_history(journal, "corrupted_wolf", oid)
 					if final_counted.size() == final_amount:
 						break
 
-		# 4. Fallback ổn định nếu không có đủ ID
+		# 4. Fallback ổn định nếu không có đủ ID (bảo toàn tiến trình, nhưng KHÔNG đưa vào _kill_history["corrupted_wolf"])
 		var fallback_idx := 1
 		while final_counted.size() < final_amount:
 			var fid := "legacy_wolf_" + str(fallback_idx)
 			fallback_idx += 1
 			if not fid in final_counted:
 				final_counted.append(fid)
-				_record_kill_history(journal, "corrupted_wolf", fid)
 
+	# Chỉ ghi nhận vào _kill_history["corrupted_wolf"] các ID thực sự là sói (hoặc known wolf mapping)
 	for fc in final_counted:
-		_record_kill_history(journal, "corrupted_wolf", str(fc))
+		if _classify_enemy_id(str(fc)) == "corrupted_wolf":
+			_record_kill_history(journal, "corrupted_wolf", str(fc))
 
 	# 4. Áp dụng đồng bộ vào QuestJournalComponent
 	journal._quests["quest_noctis_purify"] = {

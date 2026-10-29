@@ -308,13 +308,22 @@ func to_dict() -> Dictionary:
 	return d
 
 func from_dict(data: Dictionary) -> void:
+	# 1. Reset sạch sẽ toàn bộ trạng thái Quest và lịch sử diệt quái hiện tại (Tránh rò rỉ session cũ)
+	_quests.clear()
+	_kill_history.clear()
+
+	# 2. Khởi tạo danh mục quest mặc định
 	_ensure_default_quests()
+
 	if data == null or data.is_empty():
+		emit_signal("journal_changed")
 		return
 
+	# 3. Khôi phục lịch sử diệt quái nếu có trong snapshot
 	if data.has("_kill_history") and (data["_kill_history"] is Dictionary):
 		_kill_history = data["_kill_history"].duplicate(true)
 
+	# 4. Áp dụng dữ liệu cho các quest có trong snapshot
 	for k in data.keys():
 		if k == "_kill_history":
 			continue
@@ -326,4 +335,8 @@ func from_dict(data: Dictionary) -> void:
 				"reward_claimed": bool(q_data.get("reward_claimed", false)),
 				"counted_enemy_ids": q_data.get("counted_enemy_ids", []).duplicate()
 			}
+
+	# 5. Bổ sung trạng thái mặc định cho các quest trong ContentCatalog bị thiếu trong snapshot
+	_ensure_default_quests()
+
 	emit_signal("journal_changed")

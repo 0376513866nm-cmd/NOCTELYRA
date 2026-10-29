@@ -657,7 +657,7 @@ func _run_all_tests() -> void:
 		return
 	print("[PASS] Test 7.7: Legacy READY 3/3 + Journal ACTIVE 2/3 -> Không mất tiến trình, đồng bộ READY 3/3 OK.")
 
-	# 7.8 (P1): Danh sách quái đã diệt chứa nhiều loại (2 wolves + 1 mooncap)
+	# 7.8 (P1): Danh sách quái đã diệt chứa ID thật của Noctis Forest và quái khác loại (enemy_forest_1, enemy_forest_2, elyndra_mooncap_1)
 	var fixture_78 := {
 		"save_version": "2.0.0",
 		"timestamp": 1700000008,
@@ -676,14 +676,14 @@ func _run_all_tests() -> void:
 					"state": 1,
 					"current_amount": 2,
 					"reward_claimed": false,
-					"counted_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2"]
+					"counted_enemy_ids": ["enemy_forest_1", "enemy_forest_2"]
 				}
 			},
 			"legacy_quest": {
 				"state": 1,
 				"current_amount": 2
 			},
-			"killed_enemy_ids": ["noctis_wolf_1", "noctis_wolf_2", "elyndra_mooncap_1"]
+			"killed_enemy_ids": ["enemy_forest_1", "enemy_forest_2", "elyndra_mooncap_1"]
 		}
 	}
 	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
@@ -712,16 +712,20 @@ func _run_all_tests() -> void:
 		_fail("Test 7.8: Quái mooncap phải được ghi nhận vào _kill_history['corrupted_mooncap']!")
 		world.queue_free()
 		return
+	if not ("enemy_forest_1" in journal._kill_history.get("corrupted_wolf", []) and "enemy_forest_2" in journal._kill_history.get("corrupted_wolf", [])):
+		_fail("Test 7.8: ID thật enemy_forest_1 và enemy_forest_2 phải được map vào _kill_history['corrupted_wolf']!")
+		world.queue_free()
+		return
 
-	# Tạo mock Enemy sói để kiểm tra tiêu diệt quái thứ 3
+	# Tạo mock Enemy sói thật (enemy_forest_3) để hoàn thành quest
 	var mock_wolf := Enemy.new()
 	mock_wolf.enemy_type_id = "corrupted_wolf"
-	mock_wolf.enemy_id = "noctis_wolf_3"
+	mock_wolf.enemy_id = "enemy_forest_3"
 	journal.register_enemy_kill(mock_wolf)
 	mock_wolf.free()
 
 	if journal.get_quest_progress("quest_noctis_purify") != 3:
-		_fail("Test 7.8: Sau khi diệt sói thứ 3, tiến trình phải là 3/3! Nhận: " + str(journal.get_quest_progress("quest_noctis_purify")))
+		_fail("Test 7.8: Sau khi diệt sói thứ 3 (enemy_forest_3), tiến trình phải là 3/3! Nhận: " + str(journal.get_quest_progress("quest_noctis_purify")))
 		world.queue_free()
 		return
 	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN:
@@ -740,7 +744,144 @@ func _run_all_tests() -> void:
 		_fail("Test 7.8: Diệt quái mooncap không được làm biến đổi số lượng của quest sói!")
 		world.queue_free()
 		return
-	print("[PASS] Test 7.8: Chuẩn hóa dữ liệu quái đã giết (bóc tách wolf vs mooncap, chống đếm sai) OK.")
+	print("[PASS] Test 7.8: Ánh xạ ID thật noctis_forest (enemy_forest_1..3) & bóc tách quái chuẩn xác OK.")
+
+	# 7.9 (P1): Quái có ID generic không xác định loại ("unknown_mob_99")
+	# Bảo toàn số lượng tiến trình 2/3 nhưng KHÔNG được đưa vào _kill_history["corrupted_wolf"]
+	var fixture_79 := {
+		"save_version": "2.0.0",
+		"timestamp": 1700000009,
+		"current_zone_id": "noctis_forest",
+		"gold": 125,
+		"player_state": {
+			"race_id": "human",
+			"level": 2,
+			"current_exp": 40,
+			"claimed_exp_sources": [],
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"gold": 125,
+			"quest_journal": {},
+			"legacy_quest": {
+				"state": 1,
+				"current_amount": 2
+			},
+			"killed_enemy_ids": ["unknown_mob_99", "generic_creature_01"]
+		}
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(fixture_79))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp fixture 7.9!")
+		world.queue_free()
+		return
+
+	if journal.get_quest_progress("quest_noctis_purify") != 2:
+		_fail("Test 7.9: Tiến trình quest phải bảo toàn là 2/3!")
+		world.queue_free()
+		return
+	var wolf_history: Array = journal._kill_history.get("corrupted_wolf", [])
+	if "unknown_mob_99" in wolf_history or "generic_creature_01" in wolf_history:
+		_fail("Test 7.9: ID không rõ loại tuyệt đối không được đưa vào _kill_history['corrupted_wolf']!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.9: ID không rõ loại bảo toàn tiến trình mà không làm sai lệch kill_history OK.")
+
+	# 7.10 (P1): Reset trạng thái Quest khi load snapshot không đầy đủ (Save A -> Save B)
+	# Save A có Side Quest quest_kaelis_cure COMPLETED và kill history mooncap
+	var save_a_dict := {
+		"save_version": "2.0.0",
+		"timestamp": 1700000010,
+		"current_zone_id": "noctis_forest",
+		"gold": 100,
+		"player_state": {
+			"race_id": "human",
+			"level": 2,
+			"current_exp": 50,
+			"claimed_exp_sources": [],
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"gold": 100,
+			"quest_journal": {
+				"_kill_history": {
+					"corrupted_mooncap": ["elyndra_mooncap_1", "elyndra_mooncap_2"]
+				},
+				"quest_kaelis_cure": {
+					"state": 3, # COMPLETED
+					"current_amount": 5,
+					"reward_claimed": true,
+					"counted_enemy_ids": []
+				}
+			}
+		}
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(save_a_dict))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp Save A cho Test 7.10!")
+		world.queue_free()
+		return
+
+	if journal.get_quest_state("quest_kaelis_cure") != QuestDefinition.State.COMPLETED:
+		_fail("Test 7.10: Save A phải có quest_kaelis_cure COMPLETED!")
+		world.queue_free()
+		return
+	if journal._kill_history.get("corrupted_mooncap", []).size() != 2:
+		_fail("Test 7.10: Save A phải có 2 mooncap trong kill_history!")
+		world.queue_free()
+		return
+
+	# Save B nạp tiếp trong cùng session: Chỉ có Main Quest, hoàn toàn không có quest_kaelis_cure hay _kill_history
+	var save_b_dict := {
+		"save_version": "2.0.0",
+		"timestamp": 1700000011,
+		"current_zone_id": "noctis_forest",
+		"gold": 150,
+		"player_state": {
+			"race_id": "human",
+			"level": 2,
+			"current_exp": 10,
+			"claimed_exp_sources": [],
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"gold": 150,
+			"quest_journal": {
+				"quest_noctis_purify": {
+					"state": 1, # ACTIVE
+					"current_amount": 1,
+					"reward_claimed": false,
+					"counted_enemy_ids": ["enemy_forest_1"]
+				}
+			}
+		}
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(save_b_dict))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp Save B cho Test 7.10!")
+		world.queue_free()
+		return
+
+	# Kiểm tra dữ liệu của Save A KHÔNG ĐƯỢC RÒ RỈ sang Save B
+	if journal.get_quest_state("quest_kaelis_cure") != QuestDefinition.State.NOT_STARTED:
+		_fail("Test 7.10: quest_kaelis_cure từ Save A bị rò rỉ sang Save B! Nhận state: " + str(journal.get_quest_state("quest_kaelis_cure")))
+		world.queue_free()
+		return
+	if not journal._kill_history.get("corrupted_mooncap", []).is_empty():
+		_fail("Test 7.10: Lịch sử diệt mooncap từ Save A bị rò rỉ sang Save B!")
+		world.queue_free()
+		return
+	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.ACTIVE or journal.get_quest_progress("quest_noctis_purify") != 1:
+		_fail("Test 7.10: Tiến độ Main Quest trong Save B không chuẩn xác!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.10: Snapshot Isolation tuyệt đối (nạp Save A có Side Quest rồi nạp Save B chỉ có Main Quest, 0% rò rỉ dữ liệu) OK.")
 
 	# --- TEST 8: TÍNH TOÀN VẸN VÀ IDEMPOTENT CỦA SAVE v2.0.0 (Save -> Load -> Save -> Load) ---
 	quest_mgr.current_quest.current_state = QuestData.State.ACTIVE
