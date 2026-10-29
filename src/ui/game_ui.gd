@@ -2,6 +2,8 @@ class_name GameUI
 extends CanvasLayer
 
 const SettingsManager = preload("res://src/ui/settings_manager.gd")
+const SettingsUIController = preload("res://src/ui/controllers/settings_ui_controller.gd")
+const SidebarController = preload("res://src/ui/controllers/sidebar_controller.gd")
 
 ## Giao diện người dùng chính (HUD, Dialogue, GameOver, PauseMenu, BossHUD, Victory) cho NOCTELYRA (M4)
 
@@ -137,6 +139,8 @@ var _announcement_timer: float = 0.0
 var _zone_banner_timer: float = 0.0
 var _connected_spellbook: SpellbookComponent = null
 var _dialogue_controller: DialogueController
+var _settings_controller: SettingsUIController
+var _sidebar_controller: SidebarController
 var _active_ui_locks: Dictionary = {}
 var _cached_player: Node = null
 
@@ -202,6 +206,61 @@ func _ready() -> void:
 		dialogue_box.visible = false
 	_dialogue_controller = DialogueController.new()
 	_dialogue_controller.setup(dialogue_box, dialogue_speaker, dialogue_text, dialogue_hint)
+
+	_settings_controller = SettingsUIController.new()
+	_settings_controller.setup(
+		pause_panel,
+		settings_panel,
+		zoom_label,
+		zoom_slider,
+		fullscreen_btn,
+		sidebar_zoom_label,
+		sidebar_zoom_slider,
+		sidebar_fullscreen_btn
+	)
+
+	_sidebar_controller = SidebarController.new()
+	_sidebar_controller.sidebar_panel = sidebar
+	_sidebar_controller.touch_controls = touch_controls
+	_sidebar_controller.toggle_btn = sidebar_toggle_btn
+	_sidebar_controller.close_btn = sidebar_close_btn
+
+	_sidebar_controller.tab_btn_stats = tab_btn_stats
+	_sidebar_controller.tab_btn_quests = tab_btn_quests
+	_sidebar_controller.tab_btn_inventory = tab_btn_inventory
+	_sidebar_controller.tab_btn_settings = tab_btn_settings
+
+	_sidebar_controller.panel_stats = panel_stats
+	_sidebar_controller.panel_quests = panel_quests
+	_sidebar_controller.panel_inventory = panel_inventory
+	_sidebar_controller.panel_settings = panel_settings
+
+	_sidebar_controller.race_label = sidebar_race_label
+	_sidebar_controller.level_label = sidebar_level_label
+	_sidebar_controller.exp_bar = sidebar_exp_bar
+	_sidebar_controller.exp_label = sidebar_exp_label
+	_sidebar_controller.stat_hp = sidebar_stat_hp
+	_sidebar_controller.stat_mp = sidebar_stat_mp
+	_sidebar_controller.stat_atk = sidebar_stat_atk
+	_sidebar_controller.stat_regen = sidebar_stat_regen
+	_sidebar_controller.stat_speed = sidebar_stat_speed
+	_sidebar_controller.stat_magic = sidebar_stat_magic
+
+	_sidebar_controller.equip_weapon = sidebar_equip_weapon
+	_sidebar_controller.equip_armor = sidebar_equip_armor
+	_sidebar_controller.equip_acc = sidebar_equip_acc
+
+	_sidebar_controller.shard_label = sidebar_shard_label
+	_sidebar_controller.spell_moon_btn = sidebar_upgrade_moon_btn
+	_sidebar_controller.spell_ember_btn = sidebar_upgrade_ember_btn
+	_sidebar_controller.spell_frost_btn = sidebar_upgrade_frost_btn
+	_sidebar_controller.spell_moon_lbl = sidebar_spell_moon_lbl
+	_sidebar_controller.spell_ember_lbl = sidebar_spell_ember_lbl
+	_sidebar_controller.spell_frost_lbl = sidebar_spell_frost_lbl
+
+	_sidebar_controller.quest_title = sidebar_quest_title
+	_sidebar_controller.quest_progress = sidebar_quest_progress
+	_sidebar_controller.inv_gold = sidebar_inv_gold
 	if game_over_panel:
 		game_over_panel.visible = false
 	if notification_label:
@@ -810,84 +869,51 @@ func _on_quit_pressed() -> void:
 	get_tree().change_scene_to_file("res://src/ui/main_menu.tscn")
 
 func _on_settings_pressed() -> void:
-	if pause_panel:
-		pause_panel.visible = false
-	if settings_panel:
-		settings_panel.visible = true
-	_update_settings_ui()
+	if _settings_controller:
+		_settings_controller.open_settings()
+	_update_hybrid_controls_ui()
 
 func _on_settings_close_pressed() -> void:
-	if settings_panel:
-		settings_panel.visible = false
-	if pause_panel:
-		pause_panel.visible = true
-	SettingsManager.save_settings()
+	if _settings_controller:
+		_settings_controller.close_settings()
 
 func _on_zoom_out_pressed() -> void:
-	SettingsManager.zoom_out(0.1)
-	_update_settings_ui()
+	if _settings_controller:
+		_settings_controller.zoom_out(0.1)
 
 func _on_zoom_in_pressed() -> void:
-	SettingsManager.zoom_in(0.1)
-	_update_settings_ui()
+	if _settings_controller:
+		_settings_controller.zoom_in(0.1)
 
 func _on_zoom_reset_pressed() -> void:
-	SettingsManager.set_zoom(1.0)
-	_update_settings_ui()
+	if _settings_controller:
+		_settings_controller.reset_zoom()
 
 func _on_zoom_slider_changed(val: float) -> void:
-	SettingsManager.set_zoom(val)
-	_update_settings_ui()
+	if _settings_controller:
+		_settings_controller.set_zoom_slider(val)
 
 func _on_fullscreen_pressed() -> void:
-	SettingsManager.toggle_fullscreen()
-	_update_settings_ui()
+	if _settings_controller:
+		_settings_controller.toggle_fullscreen()
 
 func _update_settings_ui() -> void:
-	var cur_z = SettingsManager.camera_zoom
-	var zoom_pct_str = "%d%% (%.1fx)" % [roundi(cur_z * 100.0), cur_z]
-	if zoom_label:
-		zoom_label.text = zoom_pct_str
-	if zoom_slider and not is_equal_approx(zoom_slider.value, cur_z):
-		zoom_slider.set_value_no_signal(cur_z)
-	if sidebar_zoom_label:
-		sidebar_zoom_label.text = zoom_pct_str
-	if sidebar_zoom_slider and not is_equal_approx(sidebar_zoom_slider.value, cur_z):
-		sidebar_zoom_slider.set_value_no_signal(cur_z)
-
-	var fs_text = "Toàn Màn Hình: BẬT" if SettingsManager.is_fullscreen else "Toàn Màn Hình: TẮT"
-	if fullscreen_btn:
-		fullscreen_btn.text = fs_text
-	if sidebar_fullscreen_btn:
-		sidebar_fullscreen_btn.text = fs_text
-
+	if _settings_controller:
+		_settings_controller.update_ui()
 	_update_hybrid_controls_ui()
 
 func is_sidebar_open() -> bool:
-	return sidebar != null and sidebar.visible
+	return _sidebar_controller != null and _sidebar_controller.is_open()
 
 func open_sidebar(tab_idx: int = -1) -> void:
-	var was_open := is_sidebar_open()
-	if sidebar:
-		sidebar.visible = true
-		if tab_idx >= 0:
-			switch_sidebar_tab(tab_idx)
-		_refresh_sidebar_content()
-	if touch_controls:
-		if not was_open:
-			_was_touch_controls_visible = touch_controls.visible
-		touch_controls.visible = false
-	if sidebar_toggle_btn:
-		sidebar_toggle_btn.visible = false
+	if _sidebar_controller:
+		_sidebar_controller.open(tab_idx)
+	_refresh_sidebar_content()
 	_set_input_lock("sidebar", true)
 
 func close_sidebar() -> void:
-	if sidebar:
-		sidebar.visible = false
-	if touch_controls:
-		touch_controls.visible = _was_touch_controls_visible
-	if sidebar_toggle_btn:
-		sidebar_toggle_btn.visible = not _was_touch_controls_visible
+	if _sidebar_controller:
+		_sidebar_controller.close()
 	_set_input_lock("sidebar", false)
 	_ui_close_grace_cooldown = 0.15
 	_set_input_lock("ui_cooldown", true)
@@ -900,139 +926,32 @@ func toggle_sidebar() -> void:
 
 func switch_sidebar_tab(tab_idx: int) -> void:
 	_current_sidebar_tab = tab_idx
-	if tab_btn_stats:
-		tab_btn_stats.button_pressed = (tab_idx == 0)
-	if tab_btn_quests:
-		tab_btn_quests.button_pressed = (tab_idx == 1)
-	if tab_btn_inventory:
-		tab_btn_inventory.button_pressed = (tab_idx == 2)
-	if tab_btn_settings:
-		tab_btn_settings.button_pressed = (tab_idx == 3)
-
-	if panel_stats:
-		panel_stats.visible = (tab_idx == 0)
-	if panel_quests:
-		panel_quests.visible = (tab_idx == 1)
-	if panel_inventory:
-		panel_inventory.visible = (tab_idx == 2)
-	if panel_settings:
-		panel_settings.visible = (tab_idx == 3)
-
+	if _sidebar_controller:
+		_sidebar_controller.switch_tab(tab_idx)
 	_refresh_sidebar_content()
 
 func _refresh_sidebar_content() -> void:
-	var scene = _get_active_scene()
-	if scene == null:
+	if _sidebar_controller == null:
 		return
-	var player = scene.get_node_or_null("Player")
-	if player:
-		if sidebar_inv_gold:
-			sidebar_inv_gold.text = "🪙 Vàng Sở Hữu: %d G" % _current_gold
-
-		var r_name = "Nhân Loại (Human)"
-		if player.race_id == "elf":
-			r_name = "Tinh Linh (Elf)"
-		elif player.race_id == "demon_beast":
-			r_name = "Ma Thú (Demon Beast)"
-		if sidebar_race_label:
-			sidebar_race_label.text = "Chủng tộc: %s" % r_name
-
-		var cur_lvl = 1
-		var cur_exp = 0
-		var target_exp = 60
-		if player.progression_component:
-			cur_lvl = player.progression_component.level
-			cur_exp = player.progression_component.current_exp
-			target_exp = player.progression_component.get_current_target_exp()
-		if sidebar_level_label:
-			sidebar_level_label.text = "Cấp độ: Lv %d — Tiến độ EXP" % cur_lvl
-		if sidebar_exp_bar:
-			sidebar_exp_bar.max_value = target_exp if target_exp > 0 else 100
-			sidebar_exp_bar.value = cur_exp
-		if sidebar_exp_label:
-			var pct = (float(cur_exp) / float(target_exp) * 100.0) if target_exp > 0 else 100.0
-			sidebar_exp_label.text = "%d / %d EXP (%d%%)" % [cur_exp, target_exp, roundi(pct)]
-
-		if player.health_component and sidebar_stat_hp:
-			sidebar_stat_hp.text = "❤️ Sinh Lực (HP): %d / %d" % [roundi(player.health_component.current_health), roundi(player.health_component.max_health)]
-		if player.health_component and sidebar_stat_mp:
-			sidebar_stat_mp.text = "💧 Nội Khí (MP): %d / %d" % [roundi(player.health_component.current_mana), roundi(player.health_component.max_mana)]
-		if player.player_stats_component:
-			var stats = player.player_stats_component
-			if sidebar_stat_atk:
-				sidebar_stat_atk.text = "⚔️ Sức Tấn Công (ATK): %d" % roundi(stats.final_attack)
-			if sidebar_stat_regen:
-				sidebar_stat_regen.text = "🌀 Hồi Phục: %.1f MP/s" % stats.final_mana_regen
-			if sidebar_stat_speed:
-				sidebar_stat_speed.text = "⚡ Tốc Độ Di Chuyển: %.0f px/s" % stats.final_move_speed
-			if sidebar_stat_magic:
-				sidebar_stat_magic.text = "✨ Hệ Số Phép Thuật: %.1fx" % stats.final_magic_multiplier
-
-		# Cập nhật thông tin ma pháp & nâng cấp trong Sidebar
-		var sb: SpellbookComponent = player.get_node_or_null("SpellbookComponent") as SpellbookComponent
-		var inv: InventoryComponent = player.get_node_or_null("InventoryComponent") as InventoryComponent
-		if sb and inv:
-			var shards = inv.get_item_count("mana_shard")
-			if sidebar_shard_label:
-				sidebar_shard_label.text = "💎 Tinh Thể Ma Lực hiện có: %d" % shards
-			_update_sidebar_spell_row("moon_bolt", sidebar_spell_moon_lbl, sidebar_upgrade_moon_btn, sb, shards)
-			_update_sidebar_spell_row("ember_bloom", sidebar_spell_ember_lbl, sidebar_upgrade_ember_btn, sb, shards)
-			_update_sidebar_spell_row("frost_shard", sidebar_spell_frost_lbl, sidebar_upgrade_frost_btn, sb, shards)
-
-		if player.equipment_component:
-			var eq = player.equipment_component
-			if sidebar_equip_weapon:
-				var w_name = "Chưa trang bị"
-				if not eq.equipped_weapon.is_empty() and ItemDatabase.has_item(eq.equipped_weapon):
-					var w_def = ItemDatabase.get_item(eq.equipped_weapon)
-					if w_def:
-						w_name = w_def.display_name
-				sidebar_equip_weapon.text = "• Vũ khí: %s" % w_name
-			if sidebar_equip_acc:
-				var a_name = "Chưa trang bị"
-				if not eq.equipped_accessory.is_empty() and ItemDatabase.has_item(eq.equipped_accessory):
-					var a_def = ItemDatabase.get_item(eq.equipped_accessory)
-					if a_def:
-						a_name = a_def.display_name
-				sidebar_equip_acc.text = "• Phụ kiện: %s" % a_name
-			if sidebar_equip_armor:
-				sidebar_equip_armor.text = "• Giáp: Áo Choàng Cơ Bản"
-
-	if quest_title_label and sidebar_quest_title:
-		sidebar_quest_title.text = quest_title_label.text
-	if quest_progress_label and sidebar_quest_progress:
-		sidebar_quest_progress.text = quest_progress_label.text
+	var scene := _get_active_scene()
+	var player: Player = scene.get_node_or_null("Player") as Player if scene else null
+	var q_title := quest_title_label.text if quest_title_label else ""
+	var q_prog := quest_progress_label.text if quest_progress_label else ""
+	_sidebar_controller.refresh_content(player, _current_gold, q_title, q_prog)
 
 func _on_sidebar_upgrade_spell(spell_id: String) -> void:
-	var scene = _get_active_scene()
+	var scene := _get_active_scene()
 	if scene == null:
 		return
-	var player = scene.get_node_or_null("Player")
+	var player := scene.get_node_or_null("Player") as Player
 	if player:
 		var sb: SpellbookComponent = player.get_node_or_null("SpellbookComponent") as SpellbookComponent
 		var inv: InventoryComponent = player.get_node_or_null("InventoryComponent") as InventoryComponent
 		if sb and inv:
-			var res = sb.upgrade_spell(spell_id, inv, scene)
+			var res := sb.upgrade_spell(spell_id, inv, scene)
 			if res.has("message"):
-				show_notification(res["message"])
+				show_notification(str(res["message"]))
 			_refresh_sidebar_content()
-
-func _update_sidebar_spell_row(spell_id: String, lbl: Label, btn: Button, sb: SpellbookComponent, shards: int) -> void:
-	var spell = SpellDatabase.get_spell(spell_id)
-	if spell == null or lbl == null or btn == null:
-		return
-	var lvl = sb.get_spell_level(spell_id)
-	var dmg = sb.get_spell_damage(spell_id)
-	var prefix = "✦" if spell_id == "moon_bolt" else ("🔥" if spell_id == "ember_bloom" else "❄")
-	lbl.text = "%s %s (Lv %d): %.0f DMG" % [prefix, spell.display_name, lvl, dmg]
-
-	var cost = spell.get_upgrade_cost(lvl)
-	if cost <= 0 or lvl >= 3:
-		btn.text = "TỐI ĐA (MAX)"
-		btn.disabled = true
-	else:
-		btn.text = "Lên Lv %d (%d 💎)" % [lvl + 1, cost]
-		btn.disabled = (shards < cost)
 
 func _get_spell_btn(item_name: String) -> Button:
 	var item = find_child(item_name, true, false)
