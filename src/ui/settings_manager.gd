@@ -15,6 +15,7 @@ static var camera_zoom: float = 1.0:
 
 static var is_fullscreen: bool = false
 static var hybrid_controls_enabled: bool = false
+static var show_fps: bool = false
 
 static func apply_camera_zoom(world: Node = null) -> void:
 	var target := world
@@ -49,11 +50,17 @@ static func toggle_fullscreen() -> bool:
 	set_fullscreen(not is_fullscreen)
 	return is_fullscreen
 
+static func toggle_show_fps() -> bool:
+	show_fps = not show_fps
+	save_settings()
+	return show_fps
+
 static func save_settings() -> void:
 	var data := {
 		"camera_zoom": camera_zoom,
 		"is_fullscreen": is_fullscreen,
-		"hybrid_controls_enabled": hybrid_controls_enabled
+		"hybrid_controls_enabled": hybrid_controls_enabled,
+		"show_fps": show_fps
 	}
 	var f := FileAccess.open(get_settings_path(), FileAccess.WRITE)
 	if f:
@@ -82,3 +89,5 @@ static func load_settings(force_reload: bool = false) -> void:
 			set_fullscreen(is_fullscreen)
 		if d.has("hybrid_controls_enabled"):
 			hybrid_controls_enabled = bool(d["hybrid_controls_enabled"])
+		if d.has("show_fps"):
+			show_fps = bool(d["show_fps"])

@@ -59,6 +59,7 @@ signal input_lock_changed(reason: String, blocked: bool)
 @onready var zoom_reset_btn: Button = $PauseMenu/SettingsPanel/ZoomControls/ZoomResetBtn
 @onready var zoom_slider: HSlider = $PauseMenu/SettingsPanel/ZoomSlider
 @onready var fullscreen_btn: Button = $PauseMenu/SettingsPanel/FullscreenBtn
+@onready var fps_btn: Button = find_child("FPSBtn", true, false) as Button
 @onready var settings_close_btn: Button = $PauseMenu/SettingsPanel/SettingsCloseBtn
 
 @onready var inventory_ui: InventoryUI = $InventoryUI
@@ -118,6 +119,9 @@ signal input_lock_changed(reason: String, blocked: bool)
 @onready var sidebar_zoom_reset_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/ZoomControlsHBox/SidebarZoomResetBtn") as Button
 @onready var sidebar_zoom_slider: HSlider = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SidebarZoomSlider") as HSlider
 @onready var sidebar_fullscreen_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SidebarFullscreenBtn") as Button
+@onready var sidebar_fps_btn: Button = find_child("SidebarFPSBtn", true, false) as Button
+@onready var fps_panel: PanelContainer = find_child("FPSPanel", true, false) as PanelContainer
+@onready var fps_label: Label = find_child("FPSLabel", true, false) as Label
 @onready var sidebar_save_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SystemBtnsHBox/SidebarSaveBtn") as Button
 @onready var sidebar_quit_btn: Button = get_node_or_null("Sidebar/MainVBox/ContentContainer/SettingsPanel/SystemBtnsHBox/SidebarQuitBtn") as Button
 @onready var sidebar_hybrid_controls_btn: Button = find_child("SidebarHybridControlsBtn", true, false) as Button
@@ -133,6 +137,7 @@ var _current_sidebar_tab: int = 0
 
 var _notif_timer: float = 0.0
 var _ui_close_grace_cooldown: float = 0.0
+var _fps_update_timer: float = 0.0
 var _warning_timer: float = 0.0
 var _announcement_timer: float = 0.0
 var _zone_banner_timer: float = 0.0
@@ -215,7 +220,9 @@ func _ready() -> void:
 		fullscreen_btn,
 		sidebar_zoom_label,
 		sidebar_zoom_slider,
-		sidebar_fullscreen_btn
+		sidebar_fullscreen_btn,
+		fps_btn,
+		sidebar_fps_btn
 	)
 
 	_sidebar_controller = SidebarController.new()
@@ -297,6 +304,8 @@ func _ready() -> void:
 		zoom_slider.value_changed.connect(_on_zoom_slider_changed)
 	if fullscreen_btn:
 		fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
+	if fps_btn:
+		fps_btn.pressed.connect(_on_toggle_fps_pressed)
 	if victory_continue_btn:
 		victory_continue_btn.pressed.connect(_on_victory_continue_pressed)
 	if inventory_ui:
@@ -366,6 +375,8 @@ func _ready() -> void:
 		sidebar_zoom_slider.value_changed.connect(_on_zoom_slider_changed)
 	if sidebar_fullscreen_btn:
 		sidebar_fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
+	if sidebar_fps_btn:
+		sidebar_fps_btn.pressed.connect(_on_toggle_fps_pressed)
 	if sidebar_save_btn:
 		sidebar_save_btn.pressed.connect(_on_save_pressed)
 	if sidebar_quit_btn:
@@ -388,6 +399,24 @@ func _process(delta: float) -> void:
 		var p = active_sc.get_node_or_null("Player") as Node2D
 		if p:
 			coord_label.text = "[Bìa Rừng Noctis] X: %d - Y: %d" % [int(p.global_position.x), int(p.global_position.y)]
+
+	if fps_panel:
+		if SettingsManager.show_fps:
+			fps_panel.visible = true
+			_fps_update_timer -= delta
+			if _fps_update_timer <= 0.0:
+				_fps_update_timer = 0.25
+				var cur_fps := Engine.get_frames_per_second()
+				if fps_label:
+					fps_label.text = "%d FPS" % cur_fps
+					if cur_fps >= 55:
+						fps_label.modulate = Color(0.35, 1.0, 0.45)
+					elif cur_fps >= 30:
+						fps_label.modulate = Color(1.0, 0.85, 0.25)
+					else:
+						fps_label.modulate = Color(1.0, 0.35, 0.35)
+		else:
+			fps_panel.visible = false
 
 	if _notif_timer > 0.0:
 		_notif_timer -= delta
@@ -426,6 +455,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Phím F1: Bật / Tắt phím ảo cảm ứng (Hybrid Controls)
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F1:
 		toggle_touch_controls()
+		if get_viewport():
+			get_viewport().set_input_as_handled()
+		return
+
+	# Phím F3: Bật / Tắt hiển thị FPS
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F3:
+		_on_toggle_fps_pressed()
 		if get_viewport():
 			get_viewport().set_input_as_handled()
 		return
@@ -901,6 +937,15 @@ func _on_zoom_slider_changed(val: float) -> void:
 func _on_fullscreen_pressed() -> void:
 	if _settings_controller:
 		_settings_controller.toggle_fullscreen()
+
+func _on_toggle_fps_pressed() -> void:
+	if _settings_controller:
+		_settings_controller.toggle_show_fps()
+	else:
+		SettingsManager.toggle_show_fps()
+	_update_settings_ui()
+	var state_str := "BẬT" if SettingsManager.show_fps else "TẮT"
+	show_notification("Hiển thị FPS: " + state_str)
 
 func _update_settings_ui() -> void:
 	if _settings_controller:

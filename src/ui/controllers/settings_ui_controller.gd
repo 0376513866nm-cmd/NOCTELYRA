@@ -8,10 +8,12 @@ var settings_panel: Panel
 var zoom_label: Label
 var zoom_slider: HSlider
 var fullscreen_btn: Button
+var fps_btn: Button
 
 var sidebar_zoom_label: Label
 var sidebar_zoom_slider: HSlider
 var sidebar_fullscreen_btn: Button
+var sidebar_fps_btn: Button
 
 func setup(
 	p_pause_panel: Panel,
@@ -21,16 +23,20 @@ func setup(
 	p_fs_btn: Button,
 	p_sb_zoom_lbl: Label,
 	p_sb_zoom_sld: HSlider,
-	p_sb_fs_btn: Button
+	p_sb_fs_btn: Button,
+	p_fps_btn: Button = null,
+	p_sb_fps_btn: Button = null
 ) -> void:
 	pause_panel = p_pause_panel
 	settings_panel = p_settings_panel
 	zoom_label = p_zoom_lbl
 	zoom_slider = p_zoom_sld
 	fullscreen_btn = p_fs_btn
+	fps_btn = p_fps_btn
 	sidebar_zoom_label = p_sb_zoom_lbl
 	sidebar_zoom_slider = p_sb_zoom_sld
 	sidebar_fullscreen_btn = p_sb_fs_btn
+	sidebar_fps_btn = p_sb_fps_btn
 
 func open_settings() -> void:
 	if pause_panel:
@@ -69,6 +75,10 @@ func toggle_fullscreen() -> void:
 	SettingsManager.toggle_fullscreen()
 	update_ui()
 
+func toggle_show_fps() -> void:
+	SettingsManager.toggle_show_fps()
+	update_ui()
+
 func update_ui() -> void:
 	var cur_z: float = SettingsManager.camera_zoom
 	var zoom_pct_str := "%d%% (%.1fx)" % [roundi(cur_z * 100.0), cur_z]
@@ -88,3 +98,9 @@ func update_ui() -> void:
 		fullscreen_btn.text = fs_text
 	if sidebar_fullscreen_btn:
 		sidebar_fullscreen_btn.text = fs_text
+
+	var fps_text := "Hiển Thị FPS: BẬT" if SettingsManager.show_fps else "Hiển Thị FPS: TẮT"
+	if fps_btn:
+		fps_btn.text = fps_text
+	if sidebar_fps_btn:
+		sidebar_fps_btn.text = fps_text
