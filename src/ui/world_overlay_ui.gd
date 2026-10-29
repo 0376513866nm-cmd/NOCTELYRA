@@ -31,6 +31,10 @@ func update_zone(zone_id: String) -> void:
 	if zone_label:
 		zone_label.text = "📍 %s" % ZoneDefinition.get_zone_display_name(zone_id)
 
+func set_zone_text(text: String) -> void:
+	if zone_label:
+		zone_label.text = text
+
 func show_notification(msg: String, duration: float = 3.5) -> void:
 	if notification_label:
 		notification_label.text = msg
