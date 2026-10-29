@@ -37,6 +37,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	# Chặn kích hoạt tương tác thế giới
 	var player := _find_player()
 	if player and player.is_input_blocked():
+		get_viewport().set_input_as_handled()
 		return
 
 	# 4. Khi chưa mở hội thoại và không bị khóa input: E dùng để kích hoạt tương tác với NPC gần nhất

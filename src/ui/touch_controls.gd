@@ -462,6 +462,19 @@ func _trigger_interact() -> void:
 		coords[0]._unhandled_input(ev_press)
 		return
 
+	# Kiểm tra nếu đang trong thời gian hồi đối thoại hoặc Player đang bị khóa input
+	for gui in game_uis:
+		if gui.has_method("is_dialogue_cooling_down") and gui.is_dialogue_cooling_down():
+			return
+		if gui.has_method("is_ui_cooling_down") and gui.is_ui_cooling_down():
+			return
+
+	var players := tree.get_nodes_in_group(GameGroups.PLAYERS)
+	if players.size() > 0:
+		var p = players[0]
+		if p.has_method("is_input_blocked") and p.is_input_blocked():
+			return
+
 	# 3. Kích hoạt trực tiếp NPC gần nhất
 	for n in tree.get_nodes_in_group(GameGroups.NPCS):
 		if n.has_method("is_interactable") and n.is_interactable() and n.has_method("trigger_interaction"):
