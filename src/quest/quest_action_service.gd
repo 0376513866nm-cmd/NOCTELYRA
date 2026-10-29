@@ -26,16 +26,24 @@ static func execute(action: String, scene: Node) -> Dictionary:
 			return {"handled": true, "success": true, "refresh_journal": true, "message": "Đã hoàn thành nhiệm vụ và nhận thưởng!"}
 		return {"handled": true, "success": false, "message": str(result.get("reason", "Không thể hoàn thành nhiệm vụ."))}
 
-	if quest_manager == null:
-		return {"handled": false}
 	if action == "start_quest":
-		var started := quest_manager.start_quest()
+		var started := false
+		if player and player.quest_journal_component:
+			started = player.quest_journal_component.start_quest("quest_noctis_purify")
+		if not started and quest_manager:
+			started = quest_manager.start_quest()
 		return {"handled": true, "success": started}
 	if action == "complete_quest":
-		var health := player.health_component if player else null
-		var completed := quest_manager.complete_quest(health)
-		if completed and player and player.progression_component:
-			player.progression_component.add_exp(ExpDatabase.get_quest_exp("quest_tutorial"), "quest:quest_tutorial")
-			SaveManager.save_game(scene)
-		return {"handled": true, "success": completed}
+		if player and player.quest_journal_component:
+			var result := player.quest_journal_component.turn_in_quest("quest_noctis_purify", player.inventory_component, quest_manager)
+			if bool(result.get("success", false)):
+				SaveManager.save_game(scene)
+				return {"handled": true, "success": true, "refresh_journal": true, "message": "Đã hoàn thành nhiệm vụ và nhận thưởng!"}
+		if quest_manager:
+			var health := player.health_component if player else null
+			var completed := quest_manager.complete_quest(health)
+			if completed and player and player.progression_component:
+				player.progression_component.add_exp(ExpDatabase.get_quest_exp("quest_tutorial"), "quest:quest_tutorial")
+				SaveManager.save_game(scene)
+			return {"handled": true, "success": completed}
 	return {"handled": false}

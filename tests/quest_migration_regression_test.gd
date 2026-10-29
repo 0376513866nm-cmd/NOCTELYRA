@@ -1220,7 +1220,141 @@ func _run_all_tests() -> void:
 	SaveManager.custom_save_path = ""
 	print("[PASS] Test 9: Chuyển vùng A -> B -> A, tích lũy vàng liên vùng và Save/Load thành công 100%.")
 
-	print("ALL_STAGE_2_STEP_3_TESTS_PASS_SUCCESSFULLY")
+	# --- TEST 10: COMMIT A GAMEPLAY INTEGRATION (EIRAN -> QUÝT -> MAGIC GATE -> REWARD) ---
+	var world_flow := forest_scene.instantiate()
+	root.add_child(world_flow)
+	await process_frame
+	await process_frame
+
+	var player_flow := world_flow.get_node_or_null("Player") as Player
+	var eiran_flow := world_flow.get_node_or_null("NPC_Elyra") as NPC
+	var gate_flow := world_flow.get_node_or_null("MagicGate") as MagicGate
+	var journal_flow := player_flow.quest_journal_component
+
+	if eiran_flow == null:
+		_fail("Test 10: Không tìm thấy NPC Eiran (NPC_Elyra) trong Noctis Forest!")
+		world_flow.queue_free()
+		return
+
+	# 10.1: Kiểm tra quest_id của Eiran đã được gán sang quest_noctis_purify
+	if eiran_flow.quest_id != "quest_noctis_purify":
+		_fail("Test 10: Eiran phải liên kết với quest_noctis_purify, nhận: " + eiran_flow.quest_id)
+		world_flow.queue_free()
+		return
+
+	# 10.2: Tương tác với Eiran khi NOT_STARTED -> kiểm tra lời thoại gốc chính xác
+	var interact_offer := eiran_flow._get_catalog_quest_interaction(player_flow)
+	var offer_lines: Array = interact_offer.get("lines", [])
+	if offer_lines.is_empty() or not offer_lines[0].begins_with("Mừng con đã trở về Tổ Ấm Đèn Nguyệt"):
+		_fail("Test 10: Lời thoại nhận nhiệm vụ của Eiran không khớp bản gốc! Nhận: " + str(offer_lines))
+		world_flow.queue_free()
+		return
+	if interact_offer.get("action") != "start_quest:quest_noctis_purify":
+		_fail("Test 10: Action nhận nhiệm vụ phải là start_quest:quest_noctis_purify, nhận: " + str(interact_offer.get("action")))
+		world_flow.queue_free()
+		return
+
+	# 10.3: Nhận nhiệm vụ qua QuestActionService
+	var act_start_res := QuestActionService.execute(str(interact_offer.get("action")), world_flow)
+	if not act_start_res.get("success", false):
+		_fail("Test 10: Nhận quest_noctis_purify qua QuestActionService thất bại!")
+		world_flow.queue_free()
+		return
+	if journal_flow.get_quest_state("quest_noctis_purify") != QuestDefinition.State.ACTIVE:
+		_fail("Test 10: Nhiệm vụ phải ở trạng thái ACTIVE sau khi nhận!")
+		world_flow.queue_free()
+		return
+	if gate_flow.is_open:
+		_fail("Test 10: Cổng Ma Pháp phải đóng khi mới nhận nhiệm vụ!")
+		world_flow.queue_free()
+		return
+
+	# 10.4: Tiêu diệt 3 quái sói thật
+	for w_idx in [1, 2, 3]:
+		var wolf_enemy := Enemy.new()
+		wolf_enemy.enemy_type_id = "corrupted_wolf"
+		wolf_enemy.enemy_id = "enemy_forest_" + str(w_idx)
+		journal_flow.register_enemy_kill(wolf_enemy)
+		wolf_enemy.free()
+
+	if journal_flow.get_quest_progress("quest_noctis_purify") != 3:
+		_fail("Test 10: Tiến độ phải đạt 3/3 sau khi diệt 3 sói!")
+		world_flow.queue_free()
+		return
+	if journal_flow.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN:
+		_fail("Test 10: Nhiệm vụ phải đạt READY_TO_TURN_IN sau khi đủ 3 quái!")
+		world_flow.queue_free()
+		return
+	if gate_flow.is_open:
+		_fail("Test 10: Cổng Ma Pháp phải giữ khóa khi chưa trả nhiệm vụ!")
+		world_flow.queue_free()
+		return
+
+	# 10.5: Tương tác với Eiran khi READY_TO_TURN_IN -> kiểm tra lời thoại gốc chính xác
+	var interact_ready := eiran_flow._get_catalog_quest_interaction(player_flow)
+	var ready_lines: Array = interact_ready.get("lines", [])
+	if ready_lines.is_empty() or not ready_lines[0].begins_with("Con đã trở về an toàn rồi! Mầm và Lumi"):
+		_fail("Test 10: Lời thoại trả nhiệm vụ của Eiran không khớp bản gốc! Nhận: " + str(ready_lines))
+		world_flow.queue_free()
+		return
+	if interact_ready.get("action") != "complete_quest:quest_noctis_purify":
+		_fail("Test 10: Action trả nhiệm vụ phải là complete_quest:quest_noctis_purify, nhận: " + str(interact_ready.get("action")))
+		world_flow.queue_free()
+		return
+
+	# Giả lập thương tích để kiểm tra hồi máu / mana
+	player_flow.health_component.current_health = 10.0
+	player_flow.health_component.current_mana = 5.0
+	var gold_before: int = player_flow.wallet_component.gold
+	var exp_before: int = player_flow.progression_component.current_exp
+
+	# 10.6: Trả nhiệm vụ qua QuestActionService
+	var act_complete_res := QuestActionService.execute(str(interact_ready.get("action")), world_flow)
+	if not act_complete_res.get("success", false):
+		_fail("Test 10: Trả quest_noctis_purify qua QuestActionService thất bại!")
+		world_flow.queue_free()
+		return
+
+	# Kiểm tra phần thưởng: +50 Vàng, +50 EXP, 100% HP & MP
+	if player_flow.wallet_component.gold != gold_before + 50:
+		_fail("Test 10: Trả nhiệm vụ phải cộng đúng 50 Vàng! Trước: %d, Sau: %d" % [gold_before, player_flow.wallet_component.gold])
+		world_flow.queue_free()
+		return
+	if player_flow.progression_component.current_exp != exp_before + 50:
+		_fail("Test 10: Trả nhiệm vụ phải cộng đúng 50 EXP!")
+		world_flow.queue_free()
+		return
+	if not is_equal_approx(player_flow.health_component.current_health, player_flow.health_component.max_health):
+		_fail("Test 10: Trả nhiệm vụ phải hồi 100% HP!")
+		world_flow.queue_free()
+		return
+	if not is_equal_approx(player_flow.health_component.current_mana, player_flow.health_component.max_mana):
+		_fail("Test 10: Trả nhiệm vụ phải hồi 100% MP!")
+		world_flow.queue_free()
+		return
+
+	# 10.7: Cổng Ma Pháp phải TỰ ĐỘNG MỞ sau khi hoàn thành nhiệm vụ
+	if not gate_flow.is_open:
+		_fail("Test 10: Cổng Ma Pháp PHẢI MỞ sau khi trả nhiệm vụ thanh tẩy cho Eiran!")
+		world_flow.queue_free()
+		return
+
+	# 10.8: Thử trả lại một lần nữa -> Bắt buộc bị từ chối
+	var double_turn_in := QuestActionService.execute(str(interact_ready.get("action")), world_flow)
+	if double_turn_in.get("success", false):
+		_fail("Test 10: Không được phép trả nhiệm vụ lần thứ 2!")
+		world_flow.queue_free()
+		return
+	if player_flow.wallet_component.gold != gold_before + 50:
+		_fail("Test 10: Vàng bị tăng thêm sau khi cố trả lại nhiệm vụ!")
+		world_flow.queue_free()
+		return
+
+	world_flow.queue_free()
+	await process_frame
+	print("[PASS] Test 10: Gameplay Luồng Eiran -> Diệt Sói -> Trả Thưởng (+50 Vàng/EXP, Hồi Full HP/MP) -> Mở Cổng Ma Pháp hoàn tất 100%.")
+
+	print("ALL_STAGE_2_STEP_4A_TESTS_PASS_SUCCESSFULLY")
 	quit(0)
 
 func _fail(msg: String) -> void:

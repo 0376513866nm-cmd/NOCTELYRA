@@ -58,14 +58,17 @@ func setup_signals() -> void:
 	if npc_elyra and not npc_elyra.dialogue_requested.is_connected(_on_npc_dialogue_requested):
 		npc_elyra.dialogue_requested.connect(_on_npc_dialogue_requested)
 
-	# Kết nối các quái vật trên map
+	# Kết nối các quái vật trên map (Chỉ qua QuestJournalComponent duy nhất từ BaseZone)
 	var enemies = get_tree().get_nodes_in_group(GameGroups.ENEMIES) if get_tree() else []
 	for e in enemies:
 		if e is Enemy:
-			if quest_manager and not e.enemy_defeated.is_connected(quest_manager.register_enemy_kill):
-				e.enemy_defeated.connect(quest_manager.register_enemy_kill)
 			if not e.enemy_defeated.is_connected(_on_enemy_defeated):
 				e.enemy_defeated.connect(_on_enemy_defeated)
+
+	# Kết nối tín hiệu hoàn thành nhiệm vụ từ QuestJournalComponent để mở Cổng Ma Pháp
+	if player and player.quest_journal_component:
+		if not player.quest_journal_component.quest_completed.is_connected(_on_journal_quest_completed):
+			player.quest_journal_component.quest_completed.connect(_on_journal_quest_completed)
 
 	# Kết nối Boss Lunareth (M4)
 	if boss_lunareth and not boss_lunareth.boss_health_changed.is_connected(_on_boss_health_changed):
@@ -98,8 +101,15 @@ func _unhandled_input(event: InputEvent) -> void:
 func setup_ui() -> void:
 	super.setup_ui()
 	# Đồng bộ trạng thái mở cổng theo nhiệm vụ
-	if magic_gate and quest_manager and quest_manager.current_quest:
-		magic_gate.update_quest_status(quest_manager.current_quest)
+	if magic_gate:
+		if quest_manager and quest_manager.current_quest:
+			magic_gate.update_quest_status(quest_manager.current_quest)
+		else:
+			magic_gate.update_quest_status()
+
+func _on_journal_quest_completed(quest_id: String) -> void:
+	if quest_id == "quest_noctis_purify" and magic_gate:
+		magic_gate.open_gate(true)
 
 func is_boss_battle_active() -> bool:
 	return boss_battle_started and not boss_defeated and boss_lunareth != null and boss_lunareth.current_state != BossLunarethScript.State.DEFEATED

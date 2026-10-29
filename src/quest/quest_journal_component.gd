@@ -223,7 +223,7 @@ func can_turn_in(quest_id: String, inventory: InventoryComponent = null) -> bool
 
 	return true
 
-func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manager: QuestManager) -> Dictionary:
+func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manager: QuestManager = null) -> Dictionary:
 	_ensure_default_quests()
 	if not _quests.has(quest_id):
 		return {"success": false, "reason": "Nhiệm vụ không tồn tại!"}

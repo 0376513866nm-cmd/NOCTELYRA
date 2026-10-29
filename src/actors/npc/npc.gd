@@ -12,6 +12,9 @@ signal dialogue_requested(npc: NPC, dialogue_lines: Array[String], quest_action:
 
 func _ready() -> void:
 	add_to_group(GameGroups.NPCS)
+	# Hợp nhất Eiran vào hệ Catalog Quest của QuestJournalComponent
+	if quest_id.is_empty() and npc_name in ["Eiran", "Elyra"]:
+		quest_id = "quest_noctis_purify"
 	if prompt_label:
 		prompt_label.visible = false
 	if interaction_component:
