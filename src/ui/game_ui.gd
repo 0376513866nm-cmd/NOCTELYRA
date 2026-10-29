@@ -7,6 +7,7 @@ const SidebarController = preload("res://src/ui/controllers/sidebar_controller.g
 const BossHUDClass = preload("res://src/ui/boss_hud.gd")
 const WorldOverlayUIClass = preload("res://src/ui/world_overlay_ui.gd")
 const EndScreenUIClass = preload("res://src/ui/end_screen_ui.gd")
+const PauseMenuUIClass = preload("res://src/ui/pause_menu.gd")
 
 ## Giao diện người dùng chính (HUD, Dialogue, GameOver, PauseMenu, BossHUD, Victory) cho NOCTELYRA (M4)
 
@@ -36,6 +37,7 @@ signal hybrid_controls_changed(enabled: bool)
 @onready var boss_hud_controller: BossHUDClass = find_child("BossHUD", true, false) as BossHUDClass
 @onready var world_overlay_ui: WorldOverlayUIClass = find_child("WorldOverlayUI", true, false) as WorldOverlayUIClass
 @onready var end_screen_ui: EndScreenUIClass = find_child("EndScreenUI", true, false) as EndScreenUIClass
+@onready var pause_menu_controller: PauseMenuUIClass = find_child("PauseMenu", true, false) as PauseMenuUIClass
 
 # Boss UI (M4) - Compatibility accessors
 @onready var boss_hud: Control = boss_hud_controller.boss_bar_panel if boss_hud_controller else null
@@ -59,22 +61,23 @@ signal hybrid_controls_changed(enabled: bool)
 @onready var dialogue_text: Label = $DialogueBox/Panel/DialogueText
 @onready var dialogue_hint: Label = $DialogueBox/Panel/NextHint
 
-@onready var pause_menu: Control = $PauseMenu
-@onready var pause_panel: Panel = $PauseMenu/Panel
-@onready var resume_btn: Button = $PauseMenu/Panel/ResumeBtn
-@onready var settings_btn: Button = $PauseMenu/Panel/SettingsBtn
-@onready var save_btn: Button = $PauseMenu/Panel/SaveBtn
-@onready var quit_btn: Button = $PauseMenu/Panel/QuitBtn
+# Pause Menu UI - Compatibility accessors
+@onready var pause_menu: Control = pause_menu_controller if pause_menu_controller else null
+@onready var pause_panel: Panel = pause_menu_controller.pause_panel if pause_menu_controller else null
+@onready var resume_btn: Button = pause_menu_controller.resume_btn if pause_menu_controller else null
+@onready var settings_btn: Button = pause_menu_controller.settings_btn if pause_menu_controller else null
+@onready var save_btn: Button = pause_menu_controller.save_btn if pause_menu_controller else null
+@onready var quit_btn: Button = pause_menu_controller.quit_btn if pause_menu_controller else null
 
-@onready var settings_panel: Panel = $PauseMenu/SettingsPanel
-@onready var zoom_out_btn: Button = $PauseMenu/SettingsPanel/ZoomControls/ZoomOutBtn
-@onready var zoom_label: Label = $PauseMenu/SettingsPanel/ZoomControls/ZoomLabel
-@onready var zoom_in_btn: Button = $PauseMenu/SettingsPanel/ZoomControls/ZoomInBtn
-@onready var zoom_reset_btn: Button = $PauseMenu/SettingsPanel/ZoomControls/ZoomResetBtn
-@onready var zoom_slider: HSlider = $PauseMenu/SettingsPanel/ZoomSlider
-@onready var fullscreen_btn: Button = $PauseMenu/SettingsPanel/FullscreenBtn
+@onready var settings_panel: Panel = pause_menu_controller.settings_panel if pause_menu_controller else null
+@onready var zoom_out_btn: Button = pause_menu_controller.zoom_out_btn if pause_menu_controller else null
+@onready var zoom_label: Label = pause_menu_controller.zoom_label if pause_menu_controller else null
+@onready var zoom_in_btn: Button = pause_menu_controller.zoom_in_btn if pause_menu_controller else null
+@onready var zoom_reset_btn: Button = pause_menu_controller.zoom_reset_btn if pause_menu_controller else null
+@onready var zoom_slider: HSlider = pause_menu_controller.zoom_slider if pause_menu_controller else null
+@onready var fullscreen_btn: Button = pause_menu_controller.fullscreen_btn if pause_menu_controller else null
 @onready var fps_btn: Button = find_child("FPSBtn", true, false) as Button
-@onready var settings_close_btn: Button = $PauseMenu/SettingsPanel/SettingsCloseBtn
+@onready var settings_close_btn: Button = pause_menu_controller.settings_close_btn if pause_menu_controller else null
 
 @onready var inventory_ui: InventoryUI = $InventoryUI
 @onready var quest_journal_ui: QuestJournalUI = $QuestJournalUI
@@ -250,6 +253,35 @@ func _sync_extracted_components() -> void:
 		if not end_screen_ui.victory_dismissed.is_connected(_on_end_screen_victory_dismissed):
 			end_screen_ui.victory_dismissed.connect(_on_end_screen_victory_dismissed)
 
+	if pause_menu_controller == null:
+		pause_menu_controller = find_child("PauseMenu", true, false) as PauseMenuUIClass
+	if pause_menu_controller:
+		pause_menu = pause_menu_controller
+		pause_panel = pause_menu_controller.pause_panel
+		resume_btn = pause_menu_controller.resume_btn
+		settings_btn = pause_menu_controller.settings_btn
+		save_btn = pause_menu_controller.save_btn
+		quit_btn = pause_menu_controller.quit_btn
+		settings_panel = pause_menu_controller.settings_panel
+		zoom_out_btn = pause_menu_controller.zoom_out_btn
+		zoom_label = pause_menu_controller.zoom_label
+		zoom_in_btn = pause_menu_controller.zoom_in_btn
+		zoom_reset_btn = pause_menu_controller.zoom_reset_btn
+		zoom_slider = pause_menu_controller.zoom_slider
+		fullscreen_btn = pause_menu_controller.fullscreen_btn
+		fps_btn = pause_menu_controller.fps_btn
+		settings_close_btn = pause_menu_controller.settings_close_btn
+		if not pause_menu_controller.resume_requested.is_connected(_on_resume_pressed):
+			pause_menu_controller.resume_requested.connect(_on_resume_pressed)
+		if not pause_menu_controller.save_requested.is_connected(_on_save_pressed):
+			pause_menu_controller.save_requested.connect(_on_save_pressed)
+		if not pause_menu_controller.quit_requested.is_connected(_on_quit_pressed):
+			pause_menu_controller.quit_requested.connect(_on_quit_pressed)
+		if not pause_menu_controller.settings_opened.is_connected(_on_settings_pressed):
+			pause_menu_controller.settings_opened.connect(_on_settings_pressed)
+		if not pause_menu_controller.settings_closed.is_connected(_on_settings_close_pressed):
+			pause_menu_controller.settings_closed.connect(_on_settings_close_pressed)
+
 func _ready() -> void:
 	_sync_extracted_components()
 	if character_sheet_ui == null:
@@ -332,17 +364,17 @@ func _ready() -> void:
 		victory_panel.visible = false
 	if zone_banner:
 		zone_banner.visible = false
-	if retry_button:
+	if retry_button and not retry_button.pressed.is_connected(_on_retry_pressed):
 		retry_button.pressed.connect(_on_retry_pressed)
-	if save_btn:
+	if save_btn and not save_btn.pressed.is_connected(_on_save_pressed):
 		save_btn.pressed.connect(_on_save_pressed)
-	if resume_btn:
+	if resume_btn and not resume_btn.pressed.is_connected(_on_resume_pressed):
 		resume_btn.pressed.connect(_on_resume_pressed)
-	if quit_btn:
+	if quit_btn and not quit_btn.pressed.is_connected(_on_quit_pressed):
 		quit_btn.pressed.connect(_on_quit_pressed)
-	if settings_btn:
+	if settings_btn and not settings_btn.pressed.is_connected(_on_settings_pressed):
 		settings_btn.pressed.connect(_on_settings_pressed)
-	if settings_close_btn:
+	if settings_close_btn and not settings_close_btn.pressed.is_connected(_on_settings_close_pressed):
 		settings_close_btn.pressed.connect(_on_settings_close_pressed)
 	if zoom_out_btn:
 		zoom_out_btn.pressed.connect(_on_zoom_out_pressed)

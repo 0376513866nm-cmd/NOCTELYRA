@@ -1,0 +1,255 @@
+[gd_scene load_steps=2 format=3 uid="uid://p4ause_menu_scene_01"]
+
+[ext_resource type="Script" path="res://src/ui/pause_menu.gd" id="1_pausemenu"]
+
+[node name="PauseMenu" type="Control"]
+process_mode = 2
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pausemenu")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -175.0
+offset_right = 160.0
+offset_bottom = 175.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -100.0
+offset_top = 20.0
+offset_right = 100.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 18
+text = "TẠM DỪNG / PAUSE"
+horizontal_alignment = 1
+
+[node name="ResumeBtn" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -75.0
+offset_right = 100.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Tiếp tục (Resume)"
+
+[node name="SettingsBtn" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -30.0
+offset_right = 100.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Cài Đặt / Settings"
+
+[node name="SaveBtn" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = 15.0
+offset_right = 100.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Lưu Game (Save)"
+
+[node name="QuitBtn" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = 60.0
+offset_right = 100.0
+offset_bottom = 95.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Thoát (Quit)"
+
+[node name="SettingsPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -205.0
+offset_right = 210.0
+offset_bottom = 205.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 18.0
+offset_right = 150.0
+offset_bottom = 48.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 18
+text = "CÀI ĐẶT / SETTINGS"
+horizontal_alignment = 1
+
+[node name="ZoomTitle" type="Label" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 62.0
+offset_right = 180.0
+offset_bottom = 86.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 14
+text = "Thu Phóng Màn Hình (Camera Zoom):"
+
+[node name="ZoomControls" type="HBoxContainer" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 92.0
+offset_right = 180.0
+offset_bottom = 127.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="ZoomOutBtn" type="Button" parent="SettingsPanel/ZoomControls"]
+custom_minimum_size = Vector2(40, 32)
+layout_mode = 2
+text = "－"
+
+[node name="ZoomLabel" type="Label" parent="SettingsPanel/ZoomControls"]
+custom_minimum_size = Vector2(100, 30)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "100%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ZoomInBtn" type="Button" parent="SettingsPanel/ZoomControls"]
+custom_minimum_size = Vector2(40, 32)
+layout_mode = 2
+text = "＋"
+
+[node name="ZoomResetBtn" type="Button" parent="SettingsPanel/ZoomControls"]
+custom_minimum_size = Vector2(90, 32)
+layout_mode = 2
+text = "Mặc định"
+
+[node name="ZoomSlider" type="HSlider" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 138.0
+offset_right = 180.0
+offset_bottom = 162.0
+grow_horizontal = 2
+min_value = 0.6
+max_value = 1.8
+step = 0.05
+value = 1.0
+
+[node name="DisplayTitle" type="Label" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 185.0
+offset_right = 180.0
+offset_bottom = 209.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 14
+text = "Chế Độ Màn Hình (Display):"
+
+[node name="FullscreenBtn" type="Button" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 215.0
+offset_right = 180.0
+offset_bottom = 250.0
+grow_horizontal = 2
+text = "Toàn Màn Hình: TẮT (Cửa Sổ)"
+
+[node name="FPSBtn" type="Button" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -180.0
+offset_top = 258.0
+offset_right = 180.0
+offset_bottom = 293.0
+grow_horizontal = 2
+text = "Hiển Thị FPS: TẮT"
+
+[node name="SettingsCloseBtn" type="Button" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -52.0
+offset_right = 100.0
+offset_bottom = -17.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Đóng Cài Đặt (Áp dụng)"
