@@ -245,8 +245,8 @@ func _physics_process(delta: float) -> void:
 		else:
 			if current_state != State.FALL and current_state != State.AUTO_HOP:
 				_change_state(State.FALL)
-		_update_ground_shadow()
 		move_and_slide()
+		_update_ground_shadow()
 		return
 
 	# Xử lý input tấn công & ma pháp (J & K)
@@ -461,11 +461,6 @@ func _upgrade_current_spell() -> void:
 
 func _notify_ui(msg: String) -> void:
 	emit_signal("notification_posted", msg)
-	var cur = get_tree().current_scene if get_tree() else null
-	if cur:
-		var ui = cur.get_node_or_null("GameUI")
-		if ui and ui.has_method("show_notification"):
-			ui.show_notification(msg)
 
 func _on_invuln_started() -> void:
 	if sprite_root and current_state != State.DEAD:
@@ -512,12 +507,6 @@ func _on_player_died() -> void:
 	attack_anim_timer = 0.0
 	cast_anim_timer = 0.0
 	emit_signal("player_died")
-
-	var cur = get_tree().current_scene if get_tree() else null
-	if cur:
-		var ui = cur.get_node_or_null("GameUI")
-		if ui and ui.has_method("show_game_over"):
-			ui.show_game_over()
 
 func respawn() -> void:
 	clear_all_input_locks()

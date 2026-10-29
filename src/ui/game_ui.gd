@@ -150,9 +150,6 @@ func _set_input_lock(reason: String, blocked: bool) -> void:
 			return
 		_active_ui_locks.erase(reason)
 	emit_signal("input_lock_changed", reason, blocked)
-	var p := _get_player_ref()
-	if p and p.has_method("set_input_blocked"):
-		p.set_input_blocked(reason, blocked)
 
 func sync_locks_to_player(p: Node) -> void:
 	if p == null:
@@ -181,6 +178,8 @@ func _get_player_ref() -> Node:
 func _initial_sync_player() -> void:
 	var p = _get_player_ref()
 	if p:
+		if not input_lock_changed.is_connected(p.set_input_blocked):
+			input_lock_changed.connect(p.set_input_blocked)
 		sync_locks_to_player(p)
 
 

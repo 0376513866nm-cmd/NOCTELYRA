@@ -33,26 +33,44 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 
-	# 3. Khi chưa mở hội thoại: E dùng để kích hoạt tương tác với NPC gần nhất
+	# 3. Khi Player đang bị khóa input (mở túi đồ, sổ nhiệm vụ, sidebar, hoặc cooldown đóng UI...):
+	# Chặn kích hoạt tương tác thế giới
+	var player := _find_player()
+	if player and player.is_input_blocked():
+		return
+
+	# 4. Khi chưa mở hội thoại và không bị khóa input: E dùng để kích hoạt tương tác với NPC gần nhất
 	var target_npc := _find_nearby_interactable_npc()
 	if target_npc:
 		target_npc.trigger_interaction()
 		get_viewport().set_input_as_handled()
 		return
 
-	# 4. Khi đứng gần Portal: kích hoạt dịch chuyển khu vực
+	# 5. Khi đứng gần Portal: kích hoạt dịch chuyển khu vực
 	var target_portal := _find_nearby_portal()
 	if target_portal:
 		target_portal.trigger_interaction()
 		get_viewport().set_input_as_handled()
 		return
 
-	# 5. Khi đứng gần vật thể tương tác khác (Tinh thạch cổ, bia đá,...):
+	# 6. Khi đứng gần vật thể tương tác khác (Tinh thạch cổ, bia đá,...):
 	var target_interactable := _find_nearby_interactable()
 	if target_interactable:
 		target_interactable.trigger_interaction()
 		get_viewport().set_input_as_handled()
 		return
+
+func _find_player() -> Player:
+	var cur = get_tree().current_scene if get_tree() else null
+	if cur:
+		var p = cur.get_node_or_null("Player") as Player
+		if p:
+			return p
+	if get_tree():
+		var players = get_tree().get_nodes_in_group(GameGroups.PLAYERS)
+		if players.size() > 0:
+			return players[0] as Player
+	return null
 
 func _find_nearby_interactable_npc() -> NPC:
 	var npcs = get_tree().get_nodes_in_group(GameGroups.NPCS)

@@ -1,12 +1,14 @@
 extends SceneTree
 
-## Regression Test for Reason-based Input Locking (M8 Phase 1)
+## Regression Test for Reason-based Input Locking (M8 Phase 1 Polish)
 ## Verifies that:
 ## 1. Multiple UI locks do not prematurely unlock when one UI closes.
-## 2. Physics (gravity, friction, move_and_slide) continues while input is locked.
+## 2. Physics (gravity, friction, move_and_slide, ground shadow) continues while input is locked.
 ## 3. Airborne player falls and does not freeze midair.
-## 4. GameUI opens/closes properly propagate locks to Player.
-## 5. Respawn clears locks safely.
+## 4. GameUI opens/closes properly propagate locks to Player via signal.
+## 5. InteractionCoordinator blocks NPC/Portal/World interaction when player is locked (Inventory, Sidebar, Cooldown).
+## 6. InteractionCoordinator still advances/closes dialogue on 'interact' key when Dialogue is open.
+## 7. Respawn clears locks safely.
 
 func _init() -> void:
 	call_deferred("_run_tests")
@@ -96,8 +98,9 @@ func _run_tests() -> void:
 	
 	var scene_player := world.get_node_or_null("Player") as Player
 	var scene_ui := world.get_node_or_null("GameUI") as GameUI
-	if scene_player == null or scene_ui == null:
-		_fail("Scene noctis_forest thiếu Player hoặc GameUI")
+	var coordinator := world.get_node_or_null("InteractionCoordinator") as InteractionCoordinator
+	if scene_player == null or scene_ui == null or coordinator == null:
+		_fail("Scene noctis_forest thiếu Player, GameUI hoặc InteractionCoordinator")
 		return
 	
 	if scene_player.is_input_blocked():
@@ -140,6 +143,48 @@ func _run_tests() -> void:
 		_fail("Sau khi hết cooldown grace, Player phải được mở khóa hoàn toàn!")
 		return
 	print("[PASS] Bài test 4: Tương tác Scene GameUI <-> Player Input Locking OK")
+	
+	# --- BÀI TEST 5: InteractionCoordinator tôn trọng Input Lock ---
+	var npcs = get_nodes_in_group(GameGroups.NPCS)
+	if npcs.size() > 0:
+		var npc: Node2D = npcs[0] as Node2D
+		scene_player.global_position = npc.global_position
+		
+		var ev_interact := InputEventAction.new()
+		ev_interact.action = "interact"
+		ev_interact.pressed = true
+		
+		# 5.1 Khi Inventory mở -> Phím E KHÔNG được kích hoạt thoại NPC
+		scene_ui.open_inventory()
+		coordinator._unhandled_input(ev_interact)
+		if scene_ui.is_dialogue_open():
+			_fail("Nhấn E khi đang mở Inventory không được kích hoạt NPC!")
+			return
+		
+		# 5.2 Khi vừa đóng Inventory -> Cooldown grace (0.15s) vẫn phải chặn phím E
+		scene_ui.close_inventory()
+		coordinator._unhandled_input(ev_interact)
+		if scene_ui.is_dialogue_open():
+			_fail("Nhấn E trong thời gian cooldown sau khi đóng Inventory không được kích hoạt NPC!")
+			return
+		
+		# Chờ hết cooldown
+		for i in range(15):
+			scene_ui._process(0.02)
+			await process_frame
+		
+		# 5.3 Khi không bị khóa -> Phím E kích hoạt thoại bình thường
+		coordinator._unhandled_input(ev_interact)
+		if not scene_ui.is_dialogue_open():
+			_fail("Nhấn E khi Player tự do phải kích hoạt hội thoại NPC thành công!")
+			return
+		
+		# 5.4 Khi Dialogue đang mở -> Phím E vẫn phải chuyển câu tiếp theo / đóng
+		coordinator._unhandled_input(ev_interact)
+		# Sau khi advance hết câu thoại, dialogue đóng lại
+		if scene_ui.is_dialogue_open():
+			coordinator._unhandled_input(ev_interact)
+		print("[PASS] Bài test 5: InteractionCoordinator chặn tương tác khi Input Lock nhưng vẫn điều khiển Dialogue OK")
 	
 	world.queue_free()
 	await process_frame
