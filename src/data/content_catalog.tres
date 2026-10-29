@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ContentCatalog" load_steps=24 format=3]
+[gd_resource type="Resource" script_class="ContentCatalog" load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://src/data/content_catalog.gd" id="1_catalog"]
 [ext_resource type="Resource" path="res://src/data/content/items/mana_shard.tres" id="2_item"]
@@ -23,12 +23,13 @@
 [ext_resource type="Resource" path="res://src/data/content/zones/noctis_forest.tres" id="21_zone"]
 [ext_resource type="Resource" path="res://src/data/content/zones/elyndra_glade.tres" id="22_zone"]
 [ext_resource type="Resource" path="res://src/data/content/zones/vharok_outpost.tres" id="23_zone"]
+[ext_resource type="Resource" path="res://src/data/content/quests/quest_noctis_purify.tres" id="24_quest"]
 
 [resource]
 script = ExtResource("1_catalog")
 items = [ExtResource("2_item"), ExtResource("3_item"), ExtResource("4_item"), ExtResource("5_item"), ExtResource("6_item"), ExtResource("7_item")]
 spells = [ExtResource("8_spell"), ExtResource("9_spell"), ExtResource("10_spell")]
 races = [ExtResource("11_race"), ExtResource("12_race"), ExtResource("13_race")]
-quests = [ExtResource("14_quest"), ExtResource("15_quest")]
+quests = [ExtResource("24_quest"), ExtResource("14_quest"), ExtResource("15_quest")]
 enemies = [ExtResource("16_enemy"), ExtResource("17_enemy"), ExtResource("18_enemy"), ExtResource("19_enemy"), ExtResource("20_enemy")]
 zones = [ExtResource("21_zone"), ExtResource("22_zone"), ExtResource("23_zone")]

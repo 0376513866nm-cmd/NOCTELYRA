@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="QuestDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/quest/quest_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+quest_id = "quest_noctis_purify"
+title = "Ánh Sáng Bị Nuốt Chửng"
+description = "Ma lực tại Rừng Hắc Nguyệt đang mất cân bằng. Hãy tiêu diệt 3 sinh vật bị ma lực tha hóa để bảo vệ ngôi làng."
+giver_name = "Eiran"
+giver_location = "Rừng Hắc Nguyệt"
+is_main_quest = true
+quest_type = 0
+target_id = "corrupted_wolf"
+target_amount = 3
+reward_gold = 50
+reward_exp = 50
+reward_items = []
+restore_health_on_complete = true
+restore_mana_on_complete = true
+offer_dialogue = ["Chào lữ khách. Ta là Eiran, Người Canh Giữ Ngọn Đèn của Rừng Hắc Nguyệt.", "Ma lực bóng tối đang tràn lan, làm tha hóa các sinh vật xung quanh.", "Hãy giúp ta tiêu diệt {target} {target_name} để phong ấn ma lực và bảo vệ khu rừng!"]
+active_dialogue = ["Khu rừng lúc này vô cùng hiểm trở. Hãy cẩn trọng từng bước chân.", "Tiến độ hiện tại: {progress}/{target} {target_name}. Cố gắng lên nhé!"]
+ready_dialogue = ["Ngươi đã làm được! Cảm ơn người hùng dũng cảm.", "Hãy nhận {reward} và hồi phục thể lực, cánh cổng ma pháp dẫn tới các vùng đất khác đã sẵn sàng mở ra!"]
+inventory_full_dialogue = ["Túi đồ của ngươi hiện đã đầy!", "Hãy dọn chỗ trống trong túi đồ trước khi nhận thưởng nhé."]
+completed_dialogue = ["Cảm ơn ngươi đã bảo vệ Rừng Hắc Nguyệt.", "Cổng Ma Pháp đã được giải trừ phong ấn. Ngươi có thể tiếp tục hành trình khám phá thế giới."]
