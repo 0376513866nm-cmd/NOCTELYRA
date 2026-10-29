@@ -66,8 +66,9 @@ var _is_slowed: bool = false
 var _slow_timer: float = 0.0
 var _slow_ratio: float = 0.0
 
-# Scene đạn quái mặc định
+# Scene đạn quái mặc định và rơi vật phẩm
 const EnemyProjectileScene = preload("res://src/actors/enemy/enemy_projectile.tscn")
+const ItemPickupScene = preload("res://src/loot/item_pickup.tscn")
 
 func _ready() -> void:
 	_initial_collision_layer = collision_layer
@@ -157,15 +158,13 @@ func _physics_process(delta: float) -> void:
 		velocity.y = move_toward(velocity.y, 0.0, 400.0 * delta)
 
 	# Kiểm tra người chơi: Ngừng tấn công ngay lập tức khi Player tử vong
-	if target_player and is_instance_valid(target_player):
-		var p_health: HealthComponent = target_player.get_node_or_null("HealthComponent")
-		if p_health and not p_health.is_alive():
-			target_player = null
-			_is_returning = false
-			if attack_hitbox:
-				attack_hitbox.set_deferred("monitoring", false)
-				attack_hitbox.visible = false
-			_change_state(State.IDLE)
+	if target_player and not _is_target_player_alive():
+		target_player = null
+		_is_returning = false
+		if attack_hitbox:
+			attack_hitbox.set_deferred("monitoring", false)
+			attack_hitbox.visible = false
+		_change_state(State.IDLE)
 
 	match current_state:
 		State.IDLE:
@@ -535,41 +534,45 @@ func _notify_kill_once() -> void:
 
 func _spawn_loot() -> void:
 	var spawn_parent = get_parent()
-	if spawn_parent:
-		if loot_table:
-			loot_table.spawn_loot(global_position, spawn_parent)
-		else:
-			var drop_id: String = "mana_shard"
-			if definition and not definition.drop_item_id.is_empty():
-				drop_id = definition.drop_item_id
-			var pickup_scene: PackedScene = load("res://src/loot/item_pickup.tscn")
-			if pickup_scene:
-				var pickup := pickup_scene.instantiate() as ItemPickup
-				if pickup:
-					pickup.item_id = drop_id
-					pickup.amount = 1
-					pickup.is_dynamic = true
-					pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
-					pickup.global_position = global_position
-					spawn_parent.add_child.call_deferred(pickup)
+	if spawn_parent == null:
+		return
+	if loot_table:
+		loot_table.spawn_loot(global_position, spawn_parent)
+	else:
+		var drop_id: String = "mana_shard"
+		if definition and not definition.drop_item_id.is_empty():
+			drop_id = definition.drop_item_id
+		var pickup := ItemPickupScene.instantiate() as ItemPickup
+		if pickup:
+			pickup.item_id = drop_id
+			pickup.amount = 1
+			pickup.is_dynamic = true
+			pickup.pickup_id = "drop_en_" + str(Time.get_ticks_usec()) + "_" + str(randi() % 100000)
+			pickup.global_position = global_position
+			spawn_parent.add_child.call_deferred(pickup)
+
+func _is_target_player_alive() -> bool:
+	if target_player == null or not is_instance_valid(target_player):
+		return false
+	var p_health := target_player.health_component if target_player.health_component else target_player.get_node_or_null("HealthComponent") as HealthComponent
+	return p_health != null and p_health.is_alive()
 
 func _find_target() -> void:
 	if _is_returning or _aggro_retry_timer > 0.0:
 		return
-	if target_player and is_instance_valid(target_player):
+	if _is_target_player_alive():
 		return
 	var players := get_tree().get_nodes_in_group(GameGroups.PLAYERS) if get_tree() else []
 	for p in players:
-		var p_health: HealthComponent = p.get_node_or_null("HealthComponent")
-		if p_health and p_health.is_alive():
-			target_player = p as Player
-			break
+		if p is Player:
+			var p_health: HealthComponent = p.health_component if p.health_component else p.get_node_or_null("HealthComponent") as HealthComponent
+			if p_health and p_health.is_alive():
+				target_player = p as Player
+				break
 
 func _is_target_in_range(range_val: float) -> bool:
-	if target_player and is_instance_valid(target_player):
-		var p_health: HealthComponent = target_player.get_node_or_null("HealthComponent")
-		if p_health and p_health.is_alive():
-			return global_position.distance_to(target_player.global_position) <= range_val
+	if _is_target_player_alive():
+		return global_position.distance_to(target_player.global_position) <= range_val
 	return false
 
 func _set_facing(dir: int) -> void:

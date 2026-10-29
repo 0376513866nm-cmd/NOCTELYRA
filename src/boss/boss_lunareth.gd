@@ -128,21 +128,11 @@ func _physics_process(delta: float) -> void:
 		State.PHASE_TRANSITION:
 			velocity.x = move_toward(velocity.x, 0.0, 800.0 * delta)
 			_state_timer -= delta
-			# Đảm bảo duy trì trạng thái bất tử trong suốt 1.3s chuyển phase
 			if health_component:
-				health_component.is_invulnerable = true
-				if health_component.has_method("set_invulnerable_duration"):
-					health_component.set_invulnerable_duration(_state_timer)
-				else:
-					health_component.set("_invuln_timer", _state_timer)
+				health_component.set_invulnerable_duration(_state_timer)
 			if _state_timer <= 0.0:
-				# Kết thúc chuyển giai đoạn: tắt bất tử ngay lập tức, Boss nhận sát thương bình thường
 				if health_component:
-					if health_component.has_method("cancel_invulnerability"):
-						health_component.cancel_invulnerability()
-					else:
-						health_component.is_invulnerable = false
-						health_component.set("_invuln_timer", 0.0)
+					health_component.cancel_invulnerability()
 				_change_state(State.RECOVERY)
 			move_and_slide()
 
