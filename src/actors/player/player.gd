@@ -35,7 +35,6 @@ enum State {
 @onready var player_stats_component: PlayerStatsComponent = $PlayerStatsComponent
 @onready var ground_shadow: Polygon2D = get_node_or_null("GroundShadow")
 @onready var hop_sprite: Sprite2D = get_node_or_null("SpriteRoot/HopSprite") as Sprite2D
-var _shadow_ray: RayCast2D = null
 
 var current_state: State = State.IDLE
 var facing_direction: int = 1
@@ -389,16 +388,9 @@ func _update_ground_shadow() -> void:
 		ground_shadow.scale = Vector2.ONE
 		ground_shadow.modulate.a = 0.45
 	else:
-		if _shadow_ray == null:
-			_shadow_ray = RayCast2D.new()
-			_shadow_ray.target_position = Vector2(0, 360)
-			_shadow_ray.collision_mask = 1
-			add_child(_shadow_ray)
-		_shadow_ray.force_raycast_update()
-		if _shadow_ray.is_colliding():
-			var hit_y: float = _shadow_ray.get_collision_point().y - global_position.y
-			ground_shadow.position.y = hit_y
-			var dist: float = maxf(0.0, hit_y)
+		var dist := _ground_distance(360.0)
+		if dist >= 0.0:
+			ground_shadow.position.y = dist
 			var factor: float = clampf(1.0 - (dist / 280.0), 0.35, 1.0)
 			ground_shadow.scale = Vector2(factor, factor * 0.8)
 			ground_shadow.modulate.a = 0.45 * factor
@@ -410,16 +402,13 @@ func _handle_combat_inputs() -> void:
 		return
 
 	# Phím 1, 2, 3: Chọn phép thuật, phím U: Nâng cấp phép
-	var sb := spellbook_component
-	if sb == null:
-		sb = get_node_or_null("SpellbookComponent") as SpellbookComponent
-	if sb:
+	if spellbook_component:
 		if Input.is_action_just_pressed("spell_1"):
-			sb.select_spell_by_index(0)
+			spellbook_component.select_spell_by_index(0)
 		elif Input.is_action_just_pressed("spell_2"):
-			sb.select_spell_by_index(1)
+			spellbook_component.select_spell_by_index(1)
 		elif Input.is_action_just_pressed("spell_3"):
-			sb.select_spell_by_index(2)
+			spellbook_component.select_spell_by_index(2)
 		elif Input.is_action_just_pressed("spell_upgrade"):
 			_upgrade_current_spell()
 
@@ -429,41 +418,25 @@ func _handle_combat_inputs() -> void:
 		combat_component.cast_spell(self, facing_direction, health_component)
 
 func _unhandled_input(event: InputEvent) -> void:
-	if current_state == State.DEAD:
+	if current_state == State.DEAD or is_input_blocked():
 		return
-	if is_input_blocked():
-		return
-	if event is InputEventMouseButton and event.pressed:
-		var sb := spellbook_component
-		if sb == null:
-			sb = get_node_or_null("SpellbookComponent") as SpellbookComponent
-		if sb:
-			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				sb.cycle_prev_spell()
-				if get_viewport():
-					get_viewport().set_input_as_handled()
-			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				sb.cycle_next_spell()
-				if get_viewport():
-					get_viewport().set_input_as_handled()
+	if event is InputEventMouseButton and event.pressed and spellbook_component:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			spellbook_component.cycle_prev_spell()
+			if get_viewport():
+				get_viewport().set_input_as_handled()
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			spellbook_component.cycle_next_spell()
+			if get_viewport():
+				get_viewport().set_input_as_handled()
 
 func _upgrade_current_spell() -> void:
-	var sb := spellbook_component
-	if sb == null:
-		sb = get_node_or_null("SpellbookComponent") as SpellbookComponent
-	var inv := inventory_component
-	if inv == null:
-		inv = get_node_or_null("InventoryComponent") as InventoryComponent
-	if sb == null or inv == null:
+	if spellbook_component == null or inventory_component == null:
 		return
-	if current_state == State.DEAD:
+	if current_state == State.DEAD or is_input_blocked() or (get_tree() and get_tree().paused):
 		return
-	if get_tree().paused:
-		return
-	if is_input_blocked():
-		return
-	var world := get_tree().current_scene
-	var res := sb.upgrade_spell(sb.selected_spell_id, inv, world)
+	var world := get_tree().current_scene if get_tree() else null
+	var res := spellbook_component.upgrade_spell(spellbook_component.selected_spell_id, inventory_component, world)
 	if res.has("message"):
 		_notify_ui(str(res["message"]))
 
