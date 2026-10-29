@@ -195,10 +195,13 @@ def extract_frames_from_video(
     video_path: Path,
     target_fps: float = 8.0,
     max_frames: int = 36,
+    keep_all_frames: bool = False,
     progress_callback=None
 ) -> list[Image.Image]:
     """
-    Trích xuất danh sách frame PIL Image từ video theo FPS mục tiêu và giới hạn số frame.
+    Trích xuất danh sách frame PIL Image từ video.
+    - keep_all_frames = True: Lấy toàn bộ khung hình gốc của video (không bỏ sót frame).
+    - keep_all_frames = False: Lấy mẫu theo target_fps và max_frames.
     """
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
@@ -208,44 +211,59 @@ def extract_frames_from_video(
     total_video_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 0
     duration_sec = total_video_frames / video_fps if video_fps > 0 else 1.0
 
-    if target_fps <= 0:
-        target_fps = 8.0
-
-    desired_total = int(round(duration_sec * target_fps))
-    if max_frames > 0 and desired_total > max_frames:
-        desired_total = max_frames
-    desired_total = max(1, desired_total)
-
-    if total_video_frames > 0:
-        sample_indices = np.linspace(0, total_video_frames - 1, desired_total, dtype=int)
-    else:
-        sample_indices = None
-
     frames = []
-    current_idx = 0
-    sampled_set = set(sample_indices) if sample_indices is not None else set()
 
-    while True:
-        ret, frame_bgr = cap.read()
-        if not ret:
-            break
+    if keep_all_frames:
+        idx = 0
+        while True:
+            ret, frame_bgr = cap.read()
+            if not ret:
+                break
+            frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
+            frames.append(Image.fromarray(frame_rgb))
+            idx += 1
+            if progress_callback:
+                progress_callback(idx, total_video_frames or idx, f"Đang trích xuất frame {idx}/{total_video_frames}...")
+            if max_frames > 0 and idx >= max_frames:
+                break
+    else:
+        if target_fps <= 0:
+            target_fps = 8.0
 
-        if sample_indices is not None:
-            if current_idx in sampled_set:
-                frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
-                frames.append(Image.fromarray(frame_rgb))
-                if progress_callback:
-                    progress_callback(len(frames), desired_total, f"Đang trích xuất frame {len(frames)}/{desired_total}...")
+        desired_total = int(round(duration_sec * target_fps))
+        if max_frames > 0 and desired_total > max_frames:
+            desired_total = max_frames
+        desired_total = max(1, desired_total)
+
+        if total_video_frames > 0:
+            sample_indices = np.linspace(0, total_video_frames - 1, desired_total, dtype=int)
         else:
-            if current_idx % max(1, int(round(video_fps / target_fps))) == 0:
-                frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
-                frames.append(Image.fromarray(frame_rgb))
-                if max_frames > 0 and len(frames) >= max_frames:
-                    break
+            sample_indices = None
 
-        current_idx += 1
-        if max_frames > 0 and len(frames) >= max_frames:
-            break
+        current_idx = 0
+        sampled_set = set(sample_indices) if sample_indices is not None else set()
+
+        while True:
+            ret, frame_bgr = cap.read()
+            if not ret:
+                break
+
+            if sample_indices is not None:
+                if current_idx in sampled_set:
+                    frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
+                    frames.append(Image.fromarray(frame_rgb))
+                    if progress_callback:
+                        progress_callback(len(frames), desired_total, f"Đang trích xuất frame {len(frames)}/{desired_total}...")
+            else:
+                if current_idx % max(1, int(round(video_fps / target_fps))) == 0:
+                    frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
+                    frames.append(Image.fromarray(frame_rgb))
+                    if max_frames > 0 and len(frames) >= max_frames:
+                        break
+
+            current_idx += 1
+            if max_frames > 0 and len(frames) >= max_frames:
+                break
 
     cap.release()
 
@@ -579,14 +597,16 @@ def launch_gui(default_project_dir: str = None):
 
     # Variables
     video_path_var = tk.StringVar()
+    video_info_var = tk.StringVar(value="")
     npc_id_var = tk.StringVar(value="luna")
     npc_name_var = tk.StringVar(value="Luna")
     npc_title_var = tk.StringVar(value="Phù Thủy Ánh Trăng")
     project_dir_var = tk.StringVar(value=default_project_dir or os.getcwd())
     mode_var = tk.StringVar(value="black")
     threshold_var = tk.IntVar(value=35)
-    fps_var = tk.DoubleVar(value=8.0)
-    max_frames_var = tk.IntVar(value=32)
+    fps_var = tk.DoubleVar(value=12.0)
+    max_frames_var = tk.IntVar(value=60)
+    keep_all_var = tk.BooleanVar(value=True)
     status_var = tk.StringVar(value="Sẵn sàng. Hãy chọn file Video để bắt đầu.")
     progress_val = tk.DoubleVar(value=0)
     is_processing = [False]
@@ -611,6 +631,25 @@ def launch_gui(default_project_dir: str = None):
     v_entry = ttk.Entry(v_box, textvariable=video_path_var, font=("Segoe UI", 9))
     v_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
 
+    info_lbl = ttk.Label(video_group, textvariable=video_info_var, font=("Segoe UI", 9, "bold"), foreground="#0066cc")
+    info_lbl.pack(anchor=tk.W, pady=(4, 0))
+
+    def update_video_info(fn: str):
+        try:
+            cap = cv2.VideoCapture(fn)
+            if cap.isOpened():
+                v_fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+                v_total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 0
+                v_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                v_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                v_dur = v_total / v_fps if v_fps > 0 else 0
+                video_info_var.set(f"ℹ️ Video gốc: {v_total} khung hình | {v_fps:.1f} FPS | {v_w}x{v_h} | Thời lượng: {v_dur:.2f} giây")
+                if v_total > 0:
+                    max_frames_var.set(max(v_total, 32))
+                cap.release()
+        except Exception:
+            pass
+
     def browse_video():
         fn = filedialog.askopenfilename(
             title="Chọn Video Nhân Vật",
@@ -621,6 +660,7 @@ def launch_gui(default_project_dir: str = None):
         )
         if fn:
             video_path_var.set(fn)
+            update_video_info(fn)
             stem = re.sub(r'[^a-zA-Z0-9_]', '_', Path(fn).stem.lower())
             if stem and npc_id_var.get() in ["luna", ""]:
                 npc_id_var.set(stem)
@@ -670,6 +710,12 @@ def launch_gui(default_project_dir: str = None):
 
     ttk.Label(o_grid, text="Số frame tối đa:").grid(row=2, column=0, sticky=tk.W, pady=3)
     ttk.Spinbox(o_grid, from_=8, to=120, increment=4, textvariable=max_frames_var, width=8).grid(row=2, column=1, sticky=tk.W, padx=5, pady=3)
+
+    ttk.Checkbutton(
+        o_grid,
+        text="Lấy trọn vẹn tất cả frame gốc của video (khuyên dùng khi làm sprite animation)",
+        variable=keep_all_var
+    ).grid(row=3, column=0, columnspan=4, sticky=tk.W, pady=(6, 2))
 
     # 4. Thư mục dự án
     proj_group = ttk.LabelFrame(main_frame, text=" 4. Thư Mục Dự Án Game (NOCTELYRA) ", padding="8")
@@ -770,6 +816,7 @@ def launch_gui(default_project_dir: str = None):
                 v_path,
                 target_fps=fps_var.get(),
                 max_frames=max_frames_var.get(),
+                keep_all_frames=keep_all_var.get(),
                 progress_callback=lambda c, t, m: on_progress(c, t * 2, m)
             )
 
@@ -843,6 +890,7 @@ def main():
     parser.add_argument("--fps", type=float, default=8.0, help="FPS của hoạt ảnh")
     parser.add_argument("--max-frames", type=int, default=32, help="Số frame tối đa")
     parser.add_argument("--height", type=int, default=512, help="Chiều cao frame chuẩn hóa trong atlas (pixel)")
+    parser.add_argument("--all-frames", "-a", action="store_true", help="Lấy trọn vẹn toàn bộ frame gốc của video")
     parser.add_argument("--cli", action="store_true", help="Chạy chế độ dòng lệnh không mở GUI")
 
     args = parser.parse_args()
@@ -879,6 +927,7 @@ def main():
             v_path,
             target_fps=args.fps,
             max_frames=args.max_frames,
+            keep_all_frames=args.all_frames,
             progress_callback=lambda c, t, m: print(f"[{c}/{t}] {m}")
         )
 
