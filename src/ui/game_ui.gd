@@ -1149,7 +1149,9 @@ func _on_toggle_fps_pressed() -> void:
 	show_notification("Hiển thị FPS: " + state_str)
 
 func _on_guide_toggle_pressed() -> void:
-	if guide_content:
+	if sidebar_ui:
+		sidebar_ui.toggle_guide()
+	elif guide_content:
 		guide_content.visible = not guide_content.visible
 		if guide_toggle_btn:
 			guide_toggle_btn.text = "📖 Hướng Dẫn Điều Khiển & Phím Tắt ▼ (Thu gọn)" if guide_content.visible else "📖 Hướng Dẫn Điều Khiển & Phím Tắt ▶"
@@ -1239,12 +1241,16 @@ func _on_sidebar_upgrade_spell(spell_id: String) -> void:
 			_refresh_sidebar_content()
 
 func _get_spell_btn(item_name: String) -> Button:
+	if sidebar_ui and sidebar_ui.has_method("_get_spell_btn"):
+		return sidebar_ui._get_spell_btn(item_name)
 	var item = find_child(item_name, true, false)
 	if item:
 		return item.get_node_or_null("UpgradeBtn") as Button
 	return null
 
 func _get_spell_lbl(item_name: String) -> Label:
+	if sidebar_ui and sidebar_ui.has_method("_get_spell_lbl"):
+		return sidebar_ui._get_spell_lbl(item_name)
 	var item = find_child(item_name, true, false)
 	if item:
 		return item.get_node_or_null("Label") as Label
