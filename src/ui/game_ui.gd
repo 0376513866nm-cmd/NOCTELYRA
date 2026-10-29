@@ -299,6 +299,15 @@ func _ready() -> void:
 		fullscreen_btn.pressed.connect(_on_fullscreen_pressed)
 	if victory_continue_btn:
 		victory_continue_btn.pressed.connect(_on_victory_continue_pressed)
+	if inventory_ui:
+		inventory_ui.inventory_opened.connect(_on_modal_opened.bind("inventory"))
+		inventory_ui.inventory_closed.connect(_on_modal_closed.bind("inventory"))
+	if quest_journal_ui:
+		quest_journal_ui.journal_opened.connect(_on_modal_opened.bind("quest_journal"))
+		quest_journal_ui.journal_closed.connect(_on_modal_closed.bind("quest_journal"))
+	if character_sheet_ui:
+		character_sheet_ui.sheet_opened.connect(_on_modal_opened.bind("character_sheet"))
+		character_sheet_ui.sheet_closed.connect(_on_modal_closed.bind("character_sheet"))
 	add_to_group(GameGroups.GAME_UI)
 	_apply_safe_insets()
 	get_viewport().size_changed.connect(_apply_safe_insets)
@@ -585,13 +594,17 @@ func open_inventory() -> void:
 		close_character_sheet()
 	if inventory_ui:
 		inventory_ui.open()
-	_set_input_lock("inventory", true)
 
 func close_inventory() -> void:
 	if inventory_ui:
 		inventory_ui.close()
-	_set_input_lock("inventory", false)
-	_ui_close_grace_cooldown = 0.15
+
+func _on_modal_opened(reason: String) -> void:
+	_set_input_lock(reason, true)
+
+func _on_modal_closed(reason: String) -> void:
+	_set_input_lock(reason, false)
+	_ui_close_grace_cooldown = maxf(_ui_close_grace_cooldown, 0.15)
 	_set_input_lock("ui_cooldown", true)
 
 func is_inventory_open() -> bool:
@@ -614,14 +627,10 @@ func open_quest_journal() -> void:
 		close_character_sheet()
 	if quest_journal_ui:
 		quest_journal_ui.open()
-	_set_input_lock("quest_journal", true)
 
 func close_quest_journal() -> void:
 	if quest_journal_ui:
 		quest_journal_ui.close()
-	_set_input_lock("quest_journal", false)
-	_ui_close_grace_cooldown = 0.15
-	_set_input_lock("ui_cooldown", true)
 
 func is_quest_journal_open() -> bool:
 	return quest_journal_ui != null and quest_journal_ui.is_open()
@@ -653,14 +662,10 @@ func open_character_sheet() -> void:
 			if players.size() > 0:
 				player = players[0] as Player
 		character_sheet_ui.open(player)
-	_set_input_lock("character_sheet", true)
 
 func close_character_sheet() -> void:
 	if character_sheet_ui:
 		character_sheet_ui.close()
-	_set_input_lock("character_sheet", false)
-	_ui_close_grace_cooldown = 0.15
-	_set_input_lock("ui_cooldown", true)
 
 func is_character_sheet_open() -> bool:
 	return character_sheet_ui != null and character_sheet_ui.is_open()

@@ -1,5 +1,11 @@
 extends SceneTree
 
+const TEST_SETTINGS_PATH := "user://input_locking_regression_settings.json"
+
+var _settings_test_active := false
+var _previous_settings_path := ""
+var _previous_hybrid_controls_enabled := false
+
 ## Regression Test for Reason-based Input Locking & Decoupling (M8 Phase 1 Final Polish)
 ## Verifies that:
 ## 1. Multiple UI locks do not prematurely unlock when one UI closes.
@@ -312,8 +318,10 @@ func _run_tests() -> void:
 		_fail("Signal player_died từ Player phải làm hiển thị Game Over panel trên GameUI!")
 		return
 	print("[PASS] Bài test 8: Signals notification_posted và player_died kết nối đúng sang GameUI OK")
+	scene_ui.hide_game_over()
 	
 	# --- BÀI TEST 9: Bảo toàn trạng thái Hybrid Controls khi thay đổi trong Sidebar và sau khi đóng Sidebar ---
+	_begin_isolated_settings_test()
 	# 9.1 Bắt đầu với Hybrid Controls tắt
 	scene_ui.set_touch_controls_visible(false)
 	if touch.visible:
@@ -373,6 +381,73 @@ func _run_tests() -> void:
 		_fail("SidebarToggleBtn PHẢI hiển thị sau khi đóng Sidebar vì Touch controls đã tắt!")
 		return
 	print("[PASS] Bài test 9: Bảo toàn trạng thái Hybrid Controls khi thay đổi trong Sidebar và sau khi đóng Sidebar OK")
+
+	# --- BÀI TEST 10: Nút đóng trực tiếp của Inventory phải gỡ input lock cho cả cảm ứng và bàn phím ---
+	scene_ui.set_touch_controls_visible(true)
+	scene_ui.open_inventory()
+	if not scene_player.input_locks.has("inventory"):
+		_fail("Mở Inventory phải tạo input lock trước khi kiểm tra nút đóng trực tiếp!")
+		return
+
+	# Mô phỏng nút X của InventoryUI: nút này gọi InventoryUI.close(), không gọi GameUI.close_inventory().
+	scene_ui.inventory_ui.close()
+	if scene_player.input_locks.has("inventory"):
+		_fail("Nút X của InventoryUI phải gỡ reason 'inventory' khỏi Player!")
+		return
+	if not scene_player.input_locks.has("ui_cooldown"):
+		_fail("Đóng Inventory trực tiếp phải tạo cooldown ngắn để chống bấm nhầm!")
+		return
+
+	for i in range(10):
+		scene_ui._process(0.02)
+		await process_frame
+	if scene_player.is_input_blocked():
+		_fail("Player phải được mở khóa hoàn toàn sau cooldown của nút X Inventory!")
+		return
+
+	# Kiểm tra đường input cảm ứng qua joystick.
+	var test_touch_id := 910
+	var joystick_press: Vector2 = touch.joystick_base_pos + Vector2(45.0, 0.0)
+	touch._handle_touch_event(test_touch_id, joystick_press, true)
+	if not Input.is_action_pressed("move_right"):
+		_fail("Joystick ảo phải phát move_right sau khi đóng Inventory!")
+		return
+	touch._handle_touch_event(test_touch_id, joystick_press, false)
+	if Input.is_action_pressed("move_right"):
+		_fail("Joystick ảo phải nhả move_right khi thả tay!")
+		return
+
+	# Kiểm tra đường input bàn phím dùng chung không còn bị khóa.
+	Input.action_press("move_right")
+	if scene_player.is_input_blocked() or scene_player._get_input_direction() <= 0.0:
+		Input.action_release("move_right")
+		_fail("Bàn phím phải điều khiển được sau khi đóng Inventory!")
+		return
+	Input.action_release("move_right")
+
+	# Hai modal còn lại cũng có nút X gọi close() trực tiếp và phải dùng cùng cơ chế gỡ lock.
+	scene_ui.open_quest_journal()
+	scene_ui.quest_journal_ui.close()
+	if scene_player.input_locks.has("quest_journal"):
+		_fail("Nút X của QuestJournalUI phải gỡ reason 'quest_journal'!")
+		return
+	for i in range(10):
+		scene_ui._process(0.02)
+		await process_frame
+
+	scene_ui.open_character_sheet()
+	scene_ui.character_sheet_ui.close()
+	if scene_player.input_locks.has("character_sheet"):
+		_fail("Nút X của CharacterSheetUI phải gỡ reason 'character_sheet'!")
+		return
+	for i in range(10):
+		scene_ui._process(0.02)
+		await process_frame
+	if scene_player.is_input_blocked():
+		_fail("Player phải được mở khóa sau khi đóng trực tiếp mọi modal UI!")
+		return
+	print("[PASS] Bài test 10: Nút X của Inventory/Quest/Character gỡ lock; joystick ảo và bàn phím hoạt động lại OK")
+	_end_isolated_settings_test()
 	
 	world.queue_free()
 	await process_frame
@@ -381,5 +456,28 @@ func _run_tests() -> void:
 	quit(0)
 
 func _fail(msg: String) -> void:
+	_end_isolated_settings_test()
 	push_error("LỖI TEST: " + msg)
 	quit(1)
+
+func _begin_isolated_settings_test() -> void:
+	if _settings_test_active:
+		return
+	_settings_test_active = true
+	_previous_settings_path = SettingsManager.custom_settings_path
+	_previous_hybrid_controls_enabled = SettingsManager.hybrid_controls_enabled
+	SettingsManager.custom_settings_path = TEST_SETTINGS_PATH
+	SettingsManager.hybrid_controls_enabled = false
+	var absolute_test_path: String = ProjectSettings.globalize_path(TEST_SETTINGS_PATH)
+	if FileAccess.file_exists(TEST_SETTINGS_PATH):
+		DirAccess.remove_absolute(absolute_test_path)
+
+func _end_isolated_settings_test() -> void:
+	if not _settings_test_active:
+		return
+	var absolute_test_path: String = ProjectSettings.globalize_path(TEST_SETTINGS_PATH)
+	if FileAccess.file_exists(TEST_SETTINGS_PATH):
+		DirAccess.remove_absolute(absolute_test_path)
+	SettingsManager.custom_settings_path = _previous_settings_path
+	SettingsManager.hybrid_controls_enabled = _previous_hybrid_controls_enabled
+	_settings_test_active = false
