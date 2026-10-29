@@ -130,6 +130,10 @@ const KNOWN_LEGACY_ENEMY_IDS: Dictionary = {
 
 static func _classify_enemy_id(id_str: String) -> String:
 	var clean_id := id_str.strip_edges()
+	# Nhận diện và loại trừ ID credit giả (cả prefix mới và prefix trung gian cũ)
+	if clean_id.begins_with("__legacy_credit_") or clean_id.begins_with("legacy_wolf_"):
+		return ""
+
 	if KNOWN_LEGACY_ENEMY_IDS.has(clean_id):
 		return KNOWN_LEGACY_ENEMY_IDS[clean_id]
 
@@ -250,7 +254,7 @@ static func _migrate_quest_data(data: Dictionary, journal: QuestJournalComponent
 		# 4. Fallback ổn định nếu không có đủ ID (bảo toàn tiến trình, nhưng KHÔNG đưa vào _kill_history["corrupted_wolf"])
 		var fallback_idx := 1
 		while final_counted.size() < final_amount:
-			var fid := "legacy_wolf_" + str(fallback_idx)
+			var fid := "__legacy_credit_" + str(fallback_idx)
 			fallback_idx += 1
 			if not fid in final_counted:
 				final_counted.append(fid)

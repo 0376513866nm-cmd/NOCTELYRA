@@ -883,6 +883,148 @@ func _run_all_tests() -> void:
 		return
 	print("[PASS] Test 7.10: Snapshot Isolation tuyệt đối (nạp Save A có Side Quest rồi nạp Save B chỉ có Main Quest, 0% rò rỉ dữ liệu) OK.")
 
+	# 7.11 (P1): Legacy ACTIVE 2/3 nhưng killed_enemy_ids = []
+	# Fallback tạo __legacy_credit_1..2: bảo toàn tiến trình 2/3 nhưng KHÔNG tạo Wolf kill history giả!
+	var fixture_711 := {
+		"save_version": "1.5.0",
+		"timestamp": 1700000012,
+		"current_zone_id": "noctis_forest",
+		"gold": 125,
+		"player": {
+			"race_id": "human",
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"progression": {
+				"level": 2,
+				"current_exp": 40,
+				"claimed_exp_sources": []
+			}
+		},
+		"quest": {
+			"state": 1, # ACTIVE
+			"current_amount": 2
+		},
+		"defeated_enemy_ids": [] # Rỗng
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(fixture_711))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp fixture 7.11!")
+		world.queue_free()
+		return
+
+	if journal.get_quest_progress("quest_noctis_purify") != 2:
+		_fail("Test 7.11: Tiến trình quest sói phải được bảo toàn là 2/3 khi killed_enemy_ids rỗng!")
+		world.queue_free()
+		return
+	var counted_711: Array = journal._quests["quest_noctis_purify"].get("counted_enemy_ids", [])
+	if counted_711.size() != 2:
+		_fail("Test 7.11: counted_enemy_ids phải chứa 2 credit fallback!")
+		world.queue_free()
+		return
+	if not ("__legacy_credit_1" in counted_711 and "__legacy_credit_2" in counted_711):
+		_fail("Test 7.11: counted_enemy_ids phải dùng prefix '__legacy_credit_' thay vì tên quái giả!")
+		world.queue_free()
+		return
+	var wolf_history_711: Array = journal._kill_history.get("corrupted_wolf", [])
+	if not wolf_history_711.is_empty():
+		_fail("Test 7.11: Credit giả không được phép xuất hiện trong _kill_history['corrupted_wolf']! Nhận: " + str(wolf_history_711))
+		world.queue_free()
+		return
+
+	# Tiêu diệt thêm 1 sói thật trong game (enemy_forest_3)
+	var mock_wolf_real := Enemy.new()
+	mock_wolf_real.enemy_type_id = "corrupted_wolf"
+	mock_wolf_real.enemy_id = "enemy_forest_3"
+	journal.register_enemy_kill(mock_wolf_real)
+	mock_wolf_real.free()
+
+	if journal.get_quest_progress("quest_noctis_purify") != 3:
+		_fail("Test 7.11: Sau khi diệt sói thật thứ 3, tiến trình phải tăng đúng lên 3/3!")
+		world.queue_free()
+		return
+	if journal.get_quest_state("quest_noctis_purify") != QuestDefinition.State.READY_TO_TURN_IN:
+		_fail("Test 7.11: Quest phải chuyển sang READY_TO_TURN_IN sau khi hoàn thành 3/3!")
+		world.queue_free()
+		return
+	wolf_history_711 = journal._kill_history.get("corrupted_wolf", [])
+	if wolf_history_711 != ["enemy_forest_3"]:
+		_fail("Test 7.11: _kill_history['corrupted_wolf'] chỉ được chứa sói thật 'enemy_forest_3'! Nhận: " + str(wolf_history_711))
+		world.queue_free()
+		return
+	print("[PASS] Test 7.11: Fallback credit (__legacy_credit_) bảo toàn 2/3, 0% sói giả trong kill_history và tăng đúng 3/3 khi diệt sói thật OK.")
+
+	# 7.12 (P1): Tương thích ngược với save trung gian chứa 'legacy_wolf_1' + Idempotency
+	# Đảm bảo 'legacy_wolf_' cũ không bị biến thành Wolf thật trong kill_history qua chu kỳ Save/Load
+	var fixture_712 := {
+		"save_version": "2.0.0",
+		"timestamp": 1700000013,
+		"current_zone_id": "noctis_forest",
+		"gold": 125,
+		"player_state": {
+			"race_id": "human",
+			"level": 2,
+			"current_exp": 40,
+			"claimed_exp_sources": [],
+			"current_health": 80.0,
+			"current_mana": 40.0,
+			"gold": 125,
+			"quest_journal": {
+				"quest_noctis_purify": {
+					"state": 1,
+					"current_amount": 2,
+					"reward_claimed": false,
+					"counted_enemy_ids": ["legacy_wolf_1", "legacy_wolf_2"]
+				}
+			},
+			"legacy_quest": {
+				"state": 1,
+				"current_amount": 2
+			},
+			"killed_enemy_ids": ["legacy_wolf_1", "legacy_wolf_2"]
+		}
+	}
+	f = FileAccess.open(TEST_SAVE_PATH, FileAccess.WRITE)
+	f.store_string(JSON.stringify(fixture_712))
+	f.close()
+
+	if not SaveManager.load_game(world):
+		_fail("Không thể nạp fixture 7.12!")
+		world.queue_free()
+		return
+
+	# Lần 1: Lưu -> Tải lại
+	if not SaveManager.save_game(world) or not SaveManager.load_game(world):
+		_fail("Test 7.12: Chu kỳ Save -> Load lần 1 thất bại!")
+		world.queue_free()
+		return
+	# Lần 2: Lưu -> Tải lại lần nữa
+	if not SaveManager.save_game(world) or not SaveManager.load_game(world):
+		_fail("Test 7.12: Chu kỳ Save -> Load lần 2 thất bại!")
+		world.queue_free()
+		return
+
+	if journal.get_quest_progress("quest_noctis_purify") != 2:
+		_fail("Test 7.12: Tiến trình 2/3 bị biến dạng sau chu kỳ Save/Load!")
+		world.queue_free()
+		return
+	var wolf_history_712: Array = journal._kill_history.get("corrupted_wolf", [])
+	if "legacy_wolf_1" in wolf_history_712 or "legacy_wolf_2" in wolf_history_712:
+		_fail("Test 7.12: legacy_wolf_ cũ không được phép bị biến thành Wolf thật trong _kill_history!")
+		world.queue_free()
+		return
+	if gate.is_open:
+		_fail("Test 7.12: Cổng Ma Pháp phải giữ khóa khi quest đang ACTIVE 2/3!")
+		world.queue_free()
+		return
+	if player.wallet_component.gold != 125:
+		_fail("Test 7.12: Vàng bị biến dạng sau chu kỳ Save/Load!")
+		world.queue_free()
+		return
+	print("[PASS] Test 7.12: Khử nhận nhầm 'legacy_wolf_' cũ thành Wolf thật & bảo toàn Idempotent tuyệt đối OK.")
+
 	# --- TEST 8: TÍNH TOÀN VẸN VÀ IDEMPOTENT CỦA SAVE v2.0.0 (Save -> Load -> Save -> Load) ---
 	quest_mgr.current_quest.current_state = QuestData.State.ACTIVE
 	quest_mgr.current_quest.current_amount = 2
