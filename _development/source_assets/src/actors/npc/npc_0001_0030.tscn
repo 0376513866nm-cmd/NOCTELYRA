@@ -1,0 +1,90 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/actors/npc/npc.gd" id="1_npc"]
+[ext_resource type="Script" path="res://src/interaction/interaction_component.gd" id="2_interact"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/npc/0001_0030/idle/npc_0001_0030_idle.tres" id="3_spriteframes"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_npc"]
+radius = 14.0
+height = 99.8
+
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("VisualRoot:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(0, 0), Vector2(0, -1.5), Vector2(0, 0), Vector2(0, -0.75)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_npc"]
+_data = {
+"idle": SubResource("Animation_idle")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
+radius = 85.0
+
+[node name="NPC" type="CharacterBody2D"]
+collision_layer = 0
+script = ExtResource("1_npc")
+npc_name = "0001_0030"
+title = "Phù Thủy Ánh Trăng"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -52.5)
+shape = SubResource("CapsuleShape2D_npc")
+
+[node name="GroundShadow" type="Polygon2D" parent="."]
+z_index = -2
+color = Color(0, 0, 0, 0.42)
+polygon = PackedVector2Array(-22, -2, -16, -5, 0, -6, 16, -5, 22, -2, 22, 2, 16, 5, 0, 6, -16, 5, -22, 2)
+
+[node name="VisualRoot" type="Node2D" parent="."]
+position = Vector2(0, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_npc")
+}
+autoplay = "idle"
+
+[node name="NameTag" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -123.0
+offset_right = 60.0
+offset_bottom = -100.0
+text = "0001_0030"
+horizontal_alignment = 1
+
+[node name="PromptLabel" type="Label" parent="."]
+visible = false
+offset_left = -70.0
+offset_top = -140.0
+offset_right = 70.0
+offset_bottom = -117.0
+text = "[E] Nói chuyện"
+horizontal_alignment = 1
+
+[node name="InteractionComponent" type="Area2D" parent="."]
+script = ExtResource("2_interact")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionComponent"]
+position = Vector2(0, -52.5)
+shape = SubResource("CircleShape2D_detect")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = -2
+position = Vector2(0, -52.5)
+scale = Vector2(0.20508, 0.20508)
+sprite_frames = ExtResource("3_spriteframes")
+animation = &"idle"
+autoplay = "idle"

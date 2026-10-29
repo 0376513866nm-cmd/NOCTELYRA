@@ -152,7 +152,6 @@ position = Vector2(285, 485)
 
 [node name="NPC_Elyra" parent="." instance=ExtResource("3_npc")]
 position = Vector2(786, 635)
-npc_name = "Eiran"
 quest_id = "quest_noctis_purify"
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
