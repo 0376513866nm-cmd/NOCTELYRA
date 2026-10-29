@@ -166,9 +166,10 @@ func grant_boss_reward() -> void:
 	boss_reward_claimed = true
 
 	# 1. Thưởng 100 Vàng
-	if quest_manager:
+	if player and player.wallet_component:
+		player.wallet_component.add_gold(100)
+	elif quest_manager:
 		quest_manager.gold += 100
-		quest_manager.emit_signal("gold_changed", quest_manager.gold)
 
 	# 1b. Thưởng 150 EXP từ Boss Lunareth (M8)
 	if player and player.progression_component:

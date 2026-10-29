@@ -254,9 +254,12 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 	q["reward_claimed"] = true
 
 	# 3. Trao thưởng Vàng
-	if quest_manager and def.reward_gold > 0:
-		quest_manager.gold += def.reward_gold
-		quest_manager.emit_signal("gold_changed", quest_manager.gold)
+	if def.reward_gold > 0:
+		var parent_player := get_parent() as Player
+		if parent_player and parent_player.wallet_component:
+			parent_player.wallet_component.add_gold(def.reward_gold)
+		elif quest_manager:
+			quest_manager.gold += def.reward_gold
 
 	# 4. Trao thưởng Vật phẩm
 	if inventory:
@@ -271,6 +274,21 @@ func turn_in_quest(quest_id: String, inventory: InventoryComponent, quest_manage
 	var parent_player := get_parent() as Player
 	if parent_player and parent_player.progression_component:
 		parent_player.progression_component.add_exp(exp_gained, "quest:" + quest_id)
+
+	# 6. Hồi phục HP & MP nếu QuestDefinition yêu cầu (Main Quest Eiran)
+	if parent_player and parent_player.health_component:
+		var p_hp := parent_player.health_component
+		if def.restore_health_on_complete:
+			p_hp.current_health = p_hp.max_health
+			p_hp.emit_signal("health_changed", p_hp.current_health, p_hp.max_health)
+		if def.restore_mana_on_complete:
+			p_hp.current_mana = p_hp.max_mana
+			p_hp.emit_signal("mana_changed", p_hp.current_mana, p_hp.max_mana)
+
+	# 7. Đồng bộ sang QuestManager nếu là Main Quest
+	if quest_manager and def.is_main_quest and quest_manager.current_quest:
+		quest_manager.current_quest.current_state = QuestData.State.COMPLETED
+		quest_manager.emit_signal("quest_completed", quest_manager.current_quest)
 
 	emit_signal("quest_completed", quest_id)
 	emit_signal("journal_changed")

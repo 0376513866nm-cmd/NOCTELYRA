@@ -107,6 +107,10 @@ static func load_game(world: Node) -> bool:
 			if not stable_id in quest_manager._killed_enemy_ids:
 				quest_manager._killed_enemy_ids.append(stable_id)
 
+	var gate := world.get_node_or_null("MagicGate") as MagicGate
+	if gate and quest_manager and quest_manager.current_quest:
+		gate.update_quest_status(quest_manager.current_quest)
+
 	var ui := world.get_node_or_null("GameUI") as GameUI
 	if ui:
 		if quest_manager and quest_manager.current_quest:
